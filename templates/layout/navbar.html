@@ -1,0 +1,196 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-white py-lg-0 px-lg-0 border-bottom border-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main_nav">
+        <span class="navbar-toggler-icon text-white"></span>
+    </button>
+    <a class="navbar-brand text-white px-4" href="http://{{ request.get_host }}/">IMMODERMA</a>
+    <div class="collapse navbar-collapse" id="main_nav">
+        <ul class="navbar-nav mr-auto font-bold">
+        {% for navbar in navbars %}
+            {% if navbar.parent == None %}
+            <li class="nav-item dropdown"> 
+            {% if navbar.has_sub == 0 %}
+                {% comment %} <a class="nav-link" href="{{ navbar.link }}">{{ navbar.name }}</a>  {% endcomment %}
+                <a class="nav-link" id="{{ navbar.id }}" 
+                    {% if navbar.link == None %}
+                        {% if navbar.onclick != None %} 
+                            onclick="{{ navbar.onclick }}" 
+                        {% endif %}
+                    {% else %}
+                        {% if navbar.onclick == '#' %}
+                            href="http://{{ navbar.link }}" 
+                        {% elif navbar.onclick == '##' %}
+                            href="http://{{ request.get_host }}/{{ navbar.link }}" 
+                        {% else %}
+                            {% if navbar.link != '#' %} 
+                                href="{{ navbar.link }}"
+                            {% endif %} 
+                        {% endif %}
+                    {% endif %}>
+                    {{ navbar.name }}
+                </a> 
+            {% else %}
+                <a class="nav-link dropdown-toggle" data-toggle="dropdown">
+                    {{ navbar.name }}
+                </a>
+                <ul class="dropdown-menu">
+                {% for subnav1 in navbars %}
+                    {% if subnav1.parent == navbar.id %}
+                    <li> 
+                    {% if subnav1.has_sub == 0 %}
+                        <a class="dropdown-item" 
+                            {% if subnav1.link == None %}
+                                {% if subnav1.onclick != None %} 
+                                    onclick="{{ subnav1.onclick }}" 
+                                {% endif %}
+                            {% else %}
+                                {% if subnav1.onclick == '#' %}
+                                    href="http://{{ subnav1.link }}" 
+                                {% elif subnav1.onclick == '##' %}
+                                    href="http://{{ request.get_host }}/{{ subnav1.link }}" 
+                                {% else %}
+                                    {% if subnav1.link != '#' %} 
+                                        href="{{ subnav1.link }}"
+                                    {% endif %} 
+                                {% endif %}
+                            {% endif %}>
+                            {{ subnav1.name }}
+                        </a> 
+                    {% else %}
+                        <a class="dropdown-item has-child">
+                            <div class="has-child"> {{ subnav1.name }} </div>
+                        </a>
+                        <ul class="submenu dropdown-menu">
+                            {% for subnav2 in navbars %}
+                            {% if subnav2.parent == subnav1.id %}
+                            <li> 
+                            {% if subnav2.has_sub == 0 %}
+                                <a class="dropdown-item" 
+                                    {% if subnav2.link == None %}
+                                        {% if subnav2.onclick != None %} 
+                                            onclick="{{ subnav2.onclick }}" 
+                                        {% endif %}
+                                    {% else %}
+                                        {% if subnav2.onclick == '#' %}
+                                            href="http://{{ subnav2.link }}" 
+                                        {% elif subnav2.onclick == '##' %}
+                                            href="http://{{ request.get_host }}/{{ subnav2.link }}" 
+                                        {% else %}
+                                            {% if subnav2.link != '#' %} 
+                                                href="{{ subnav2.link }}"
+                                            {% endif %} 
+                                        {% endif %}
+                                    {% endif %}>
+                                    {{ subnav2.name }}
+                                </a> 
+                            {% else %}
+                                <a class="dropdown-item has-child">
+                                    <div class="has-child"> {{ subnav2.name }} </div>
+                                </a>
+                                <ul class="submenu dropdown-menu">
+                                    {% for subnav3 in navbars %}
+                                    {% if subnav3.parent == subnav2.id %}
+                                    <li> 
+                                    {% if subnav3.has_sub == 0 %}
+                                        <a class="dropdown-item" {% if subnav3.link == None %} {% if subnav3.onclick != None %} onclick="{{ subnav3.onclick }}" {% endif %}{% else %}{% if subnav3.onclick == '#' %} href="http://{{ subnav3.link }}" {% else %}{% if subnav3.link != '#' %} href="{{ subnav3.link }}"{% endif %} {% endif %}{% endif %}>
+                                            {{ subnav3.name }}
+                                        </a> 
+                                    {% else %}
+                                        <a class="dropdown-item has-child" 
+                                            {% if subnav3.link == None %}
+                                                {% if subnav3.onclick != None %} 
+                                                    onclick="{{ subnav3.onclick }}" 
+                                                {% endif %}
+                                            {% else %}
+                                                {% if subnav3.onclick == '#' %}
+                                                    href="http://{{ subnav3.link }}" 
+                                                {% elif subnav3.onclick == '##' %}
+                                                    href="http://{{ request.get_host }}/{{ subnav3.link }}" 
+                                                {% else %}
+                                                    {% if subnav3.link != '#' %} 
+                                                        href="{{ subnav3.link }}"
+                                                    {% endif %} 
+                                                {% endif %}
+                                            {% endif %}>
+                                            <div class="has-child"> {{ subnav3.name }} </div>
+                                        </a> 
+                                        <ul class="submenu dropdown-menu">
+                                            {% for subnav4 in navbars %}
+                                            {% if subnav4.parent == subnav3.id %}
+                                            <li> 
+                                            {% if subnav4.has_sub == 0 %}
+                                                <a class="dropdown-item" {% if subnav4.link == None %} {% if subnav4.onclick != None %} onclick="{{ subnav4.onclick }}" {% endif %}{% else %}{% if subnav4.onclick == '#' %} href="http://{{ subnav4.link }}" {% else %}{% if subnav4.link != '#' %} href="{{ subnav4.link }}"{% endif %} {% endif %}{% endif %}>
+                                                    {{ subnav4.name }}
+                                                </a> 
+                                            {% else %}
+                                                <a class="dropdown-item has-child" 
+                                                    {% if subnav4.link == None %}
+                                                        {% if subnav4.onclick != None %} 
+                                                            onclick="{{ subnav4.onclick }}" 
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {% if subnav4.onclick == '#' %}
+                                                            href="http://{{ subnav4.link }}" 
+                                                        {% elif subnav4.onclick == '##' %}
+                                                            href="http://{{ request.get_host }}/{{ subnav4.link }}" 
+                                                        {% else %}
+                                                            {% if subnav4.link != '#' %} 
+                                                                href="{{ subnav4.link }}"
+                                                            {% endif %} 
+                                                        {% endif %}
+                                                    {% endif %}>
+                                                    <div class="has-child"> {{ subnav4.name }} </div>
+                                                </a> 
+                                                <ul class="submenu dropdown-menu">
+                                                    {% for subnav5 in navbars %}
+                                                    {% if subnav5.parent == subnav4.id %}
+                                                    <li> 
+                                                    {% if subnav5.has_sub == 0 %}
+                                                        <a class="dropdown-item" {% if subnav5.link == None %} {% if subnav5.onclick != None %} onclick="{{ subnav5.onclick }}" {% endif %}{% else %}{% if subnav5.onclick == '#' %} href="http://{{ subnav5.link }}" {% else %}{% if subnav5.link != '#' %} href="{{ subnav5.link }}"{% endif %} {% endif %}{% endif %}>
+                                                            {{ subnav5.name }}
+                                                        </a>
+                                                    {% else %}
+                                                        {% comment %} MENTOK {% endcomment %}
+                                                        <a class="dropdown-item has-child">
+                                                            <div class="has-child"> {{ subnav5.name }} </div>
+                                                        </a>
+                                                        <ul class="submenu dropdown-menu">
+                                                            {% comment %}  {% endcomment %}
+                                                        </ul>
+                                                    {% endif %}
+                                                    </li>
+                                                    {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            {% endif %}
+                                            </li>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                    </li>
+                                    {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                </ul>
+            {% endif %}
+            </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+        <span class="navbar-text mr-3 font-bold">
+            <a href="/logout">
+                <i class="fas fa-sign-out-alt mr-1"></i>
+                Logout
+            </a>
+        </span>
+    </div>
+</nav>

@@ -1,0 +1,167 @@
+a.navbar-brand {
+    background: #1ab394;
+    color: #fff;
+    font-size: 18px;
+}
+
+.dropdown-item .has-child {
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -ms-flex-pack: justify !important;
+    justify-content: space-between !important;
+}
+
+.dropdown-item>.has-child::after {
+    font-family: "Font Awesome 5 Free";
+    content: "\f0da";
+    font-weight: 600;
+    margin-left: 20px;
+}
+
+.bs-tooltip-auto[x-placement^=bottom] .arrow::before,
+.bs-tooltip-bottom .arrow::before {
+    bottom: 0;
+    border-width: 0 .4rem .4rem;
+    border-bottom-color: #2f4050
+}
+
+.thumbnail {
+    font-family: Helvetica;
+    font-weight: 500;
+    font-size: 12px;
+    color: black;
+    background-color: #fff;
+    border-radius: .3rem !important;
+}
+
+.img-icon {
+    height: 45px;
+    padding-top: 5px;
+}
+
+.caption {
+    padding-bottom: 5px;
+}
+
+.btn-link.disabled,
+.btn-link[disabled] {
+    display: block;
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.custom-card-title {
+    text-align: center;
+    color: white;
+    background-color: rgb(103, 106, 108);
+    padding: 3px 10px 3px;
+    max-height: 35px;
+}
+
+.custom-card-content {
+    padding: 0px 15px;
+    color: black;
+}
+
+.footer-custom {
+    margin-top: 55px;
+}
+
+a.nav-link {
+    color: black !important;
+}
+
+a.nav-link:hover {
+    color: #1ab394 !important;
+}
+
+.form-group-custom {
+    margin-bottom: -5px !important;
+}
+
+.input-sm {
+    font-size: 11px;
+    height: 19px;
+    border-radius: 3px;
+}
+
+.input-md {
+    font-size: 12px;
+    height: 23px;
+    border-radius: 3px;
+}
+
+.btn-md {
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.select-sm {
+    font-size: 11px;
+    height: 19px !important;
+    border-radius: 3px;
+}
+
+.select-md {
+    font-size: 11px;
+    height: 23px !important;
+    border-radius: 3px;
+}
+
+input[type="date"].tanggal {
+    line-height: 10px !important;
+}
+
+.btn-sm-custom {
+    height: 23px;
+    font-size: 12px;
+    line-height: 0px;
+}
+
+.btn-xs {
+    font-size: 11px;
+    padding: 0px;
+    line-height: 17px;
+    margin-bottom: 4px;
+}
+
+.btn-xs-grid {
+    font-size: 11px;
+    padding: 1px 4px;
+    line-height: 17px;
+    margin-bottom: 4px;
+}
+
+input:read-only {
+    background-color: white !important;
+}
+
+.modal-full {
+    max-width: inherit;
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
+}
+
+.modal-container {
+    max-width: inherit;
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+}
+
+.blinking {
+    animation: blinker 1.5s linear infinite;
+}
+
+@keyframes blinker {
+    0% {
+        color: #1ab394;
+    }
+    50% {
+        color: black;
+    }
+    100% {
+        color: #1ab394;
+    }
+}

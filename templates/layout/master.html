@@ -1,0 +1,52 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dropdown.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome/font-awesome.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'css/plugins/css-toggle-switch/toggle-switch.css' %}">
+
+    <!-- DevExtreme themes -->
+    <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.common.css'%}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.light.css'%}" /> {% block head %}{% endblock %}
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    {% csrf_token %} 
+    {% include 'layout/navbar.html' %} 
+    {% include 'layout/menubar.html' %}
+
+    <div class="container-fluid mt-2 mb-2" style="margin: 0 auto;">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="mt-auto bg-white px-3 py-2 font-bold">
+        Medisimed © {% now "Y" %} Copyright.
+    </div>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/dropdown.js' %}"></script>
+    <script src="{% static 'js/font-awesome/font-awesome.min.js' %}"></script>
+    <script src="{% static 'js/font-awesome/solid.min.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/MainProc.js'%}"></script>
+
+    <!-- A DevExtreme library -->
+    <script type="text/javascript" src="{% static 'dxgrid/dx.all.js'%}"></script>
+
+    {% block script %}{% endblock %}
+</body>
+
+</html>

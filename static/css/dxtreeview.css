@@ -1,0 +1,54 @@
+.dx-treeview-toggle-item-visibility::before {
+    position: absolute;
+    display: block;
+    width: 22px;
+    top: 50%;
+    margin-top: -10px;
+    left: 50%;
+    margin-left: -20px;
+}
+
+.dx-treeview-toggle-item-visibility {
+    font: 14px/1 "Font Awesome 5 Free";
+    font-size: 17px;
+    text-align: center;
+    line-height: 22px;
+    color: #333;
+    width: 21px;
+    height: 32px;
+    top: 0;
+    left: 0px;
+}
+
+.dx-treeview-toggle-item-visibility.dx-treeview-toggle-item-visibility-opened {
+    font: 14px/1 "Font Awesome 5 Free";
+    font-size: 17px;
+    text-align: center;
+    line-height: 22px;
+}
+
+.dx-treeview-toggle-item-visibility.dx-treeview-toggle-item-visibility-opened::before {
+    position: absolute;
+    display: block;
+    width: 22px;
+    top: 50%;
+    margin-top: -10px;
+    left: 50%;
+    margin-left: -20px;
+}
+
+.dx-treeview-toggle-item-visibility::before {
+    content: "\f0fe";
+}
+
+.dx-treeview-toggle-item-visibility.dx-treeview-toggle-item-visibility-opened::before {
+    content: "\f146";
+}
+
+.dx-treeview-node-container {
+    list-style-position: inside;
+    padding-left: 12px;
+    margin: 0;
+    display: none;
+    overflow: hidden;
+}

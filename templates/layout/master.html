@@ -12,20 +12,25 @@
     <link rel="stylesheet" href="{% static 'css/loading.css' %}">
     <link rel="stylesheet" href="{% static 'css/dropdown.css' %}">
     <link rel="stylesheet" href="{% static 'css/font-awesome/font-awesome.min.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/plugins/select2/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/plugins/css-toggle-switch/toggle-switch.css' %}">
 
     <!-- DevExtreme themes -->
     <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.common.css'%}" />
     <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.light.css'%}" /> {% block head %}{% endblock %}
 
+    <link rel="stylesheet" href="{% static 'css/plugins/iCheck/custom.css' %}">
+
     <title>{% block title %}{% endblock %}</title>
+    
 </head>
 
 <body class="d-flex flex-column min-vh-100">
     {% csrf_token %} 
+
     {% include 'layout/navbar.html' %} 
     {% include 'layout/menubar.html' %}
+    
 
     <div class="container-fluid mt-2 mb-2" style="margin: 0 auto;">
         {% block content %}{% endblock %}
@@ -42,11 +47,21 @@
     <script src="{% static 'js/font-awesome/solid.min.js' %}"></script>
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/MainProc.js'%}"></script>
+    <script src="{% static 'js/plugins/select2/select2.full.min.js'%}"></script>
+    <script src="{% static 'js/plugins/iCheck/icheck.min.js' %}"></script>
 
     <!-- A DevExtreme library -->
     <script type="text/javascript" src="{% static 'dxgrid/dx.all.js'%}"></script>
 
     {% block script %}{% endblock %}
+    <script>
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    </script>
+    
 </body>
+
 
 </html>

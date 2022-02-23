@@ -1,0 +1,169 @@
+<div class="col-md-6">
+    <label class="control-label col-md-3" style="color:orange;">Nama Keluarga</label>
+    <div class="col-md-8">
+        <div class="col-md-12">
+            <input id="" name="" type="text" class="form-control input-sm">
+        </div>
+    </div>
+</div>
+{% comment %} Row 1 {% endcomment %}
+<div class="col-md-12">
+    <div class="col-md-6">
+        <label class="control-label col-md-3">Identitas</label>
+        <label class="control-label col-md-8">No. Identitas</label>
+        <div class="col-md-3">
+        {% comment %} Identitas {% endcomment %}            
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+        </div>
+        <div class="col-md-9">
+        {% comment %} no Identitas {% endcomment %}
+            <input id="" name="" type="text" class="form-control input-sm">
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <label class="control-label col-md-4">Jenis Kelamin</label>
+        <label class="control-label col-md-4">Status Marital</label>
+        <label class="control-label col-md-4">Agama</label>
+
+        <div class="col-md-4">
+        {% comment %} jenis kelamin {% endcomment %}
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+        </div>
+
+        <div class="col-md-4">
+        {% comment %} status marital {% endcomment %}
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+        </div>
+
+        <div class="col-md-4">
+        {% comment %} agama {% endcomment %}
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+        </div>
+        
+    </div>
+</div>
+{% comment %} end row 1 {% endcomment %}
+
+{% comment %} ROW 2 {% endcomment %}
+
+<div class="col-md-12" style="margin-top:5px;">
+    <div class="col-md-6">
+        <label class="control-label col-md-3">Penidikan</label>
+        <label class="control-label col-md-6">Bahasa</label>
+        <label class="control-label col-md-3">Tempat Lahir</label>
+
+        <div class="col-md-3">
+        {% comment %} Pendidikan {% endcomment %}
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+        </div>
+
+        
+        {% comment %} Bahasa {% endcomment %}
+        <div class="col-md-1">
+            <input id="idBahasa" name="" type="text" class="form-control input-sm">
+        </div>
+        <div class="col-md-4">
+            <input id="namaBahasa" name="" type="text" class="form-control input-sm">
+        </div>
+        <div class="col-md-1">
+            <a id="find-bahasa" class="btn btn-success btn-xs" onclick="gridFindBahasa(event)" >
+                Cari                    
+            </a>
+        </div>
+
+        <div class="col-md-3">
+            <input id="" name="" type="text" class="form-control input-sm">
+        </div>
+        
+    </div>
+
+    <div class="col-md-6">
+        <div class="col-md-4 form-group" >
+            <label class="control-label ">Tgl Lahir</label>
+            <input id="" name="" type="date" class="form-control input-sm">
+
+        </div>
+        <div class="col-md-5 form-group">
+                <div class="col-md-3">
+                    <label>&nbsp</label>
+                    <label>Umur</label>
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="control-label">Thn</label>
+                    <input id="" name="" type="text" class="form-control input-sm">
+                    
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="control-label">Bln</label>
+                    <input id="" name="" type="text" class="form-control input-sm">
+                    
+                </div>
+                <div class="col-md-3 form-group">
+                    <label class="control-label">Hari</label>
+                    <input id="" name="" type="text" class="form-control input-sm">
+                    
+                </div>
+                
+        </div>
+
+        <div class="col-md-3 form-group">
+            <label class="control-label ">G. Darah</label>
+            
+            {% comment %} GOl darah {% endcomment %}            
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+            
+        </div>
+    </div>    
+</div>
+{% comment %} End row 2 {% endcomment %}
+
+{% comment %} Row 3 {% endcomment %}
+<div class="col-md-12" style="margin-top:5px;">
+    <div class="col-md-6">
+        <label class="control-label col-md-3">Asuransi/Kel</label>
+        <label class="control-label col-md-8">Nama Pemegang Assuransi/Anggota</label>
+        <div class="col-md-3">
+        {% comment %} Kel Asuransi {% endcomment %}
+            <select class="form-control input-sm">
+                <option>Pilihan 1</option>
+                <option>Pilihan 2</option>                
+            </select>
+        </div>
+        <div class="col-md-9">
+        {% comment %} Nama Anggota {% endcomment %}
+            <input id="" name="" type="text" class="form-control input-sm">
+        </div>
+    </div>
+
+    <div class="col-md-5">
+        <label class="control-label col-md-12">No. Assuransi /NIRP</label>
+        <div class="col-md-12">        
+            <input id="" name="" type="text" class="form-control input-sm">
+        </div>
+    </div>
+</div>
+{% comment %} end row 3 {% endcomment %}
+
+
+
+
+

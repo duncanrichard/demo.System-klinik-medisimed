@@ -1,69 +1,75 @@
 {% load staticfiles %}
 <div class="container-fluid px-4">
     <div class="row">
-    {% for menubar in menubars %}
-        {% if forloop.counter == 1 or forloop.counter in list_ %} 
-        <div class="{% if menubarsType == 1 %}col-md-6{% else %}col-md-4{% endif %} mt-2">
-            <div class="row">
-        {% endif %}
-            {% if menubar.action_id is None and menubar.link is None %}
-                <div class="col-md-2 px-1">
-                    {% comment %} <a class="btn-link" data-toggle="tooltip" data-placement="top" title="{{ menubar.tooltips|default_if_none:''}}"> {% endcomment %}
-                        <div class="thumbnail">
-                            <center data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <img src="{% static menubar.icon %}" class="img-icon">
-                                <div class="caption">
-                                    <a class="text-dark text-center has-dropdown" data-toggle="tooltip" data-placement="bottom" title="{{ menubar.tooltips|default_if_none:''}}">
-                                        {{menubar.name}} &nbsp;<i class="fas fa-caret-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        {% for submenubar in menubarsChild %}
-                                        {% if submenubar.parent == menubar.id  %}
-                                        {% if submenubar.link is None %}
-                                        <li><a id="{{ submenubar.action_id }}" class="btn-link">{{ submenubar.name }}</a></li>
-                                        {% else %}
-                                        {% if submenubar.onclick == '#' %}
-                                        <li><a href="http://{{ submenubar.link}}" class="btn-link">{{ submenubar.name }}</a></li>
-                                        {% elif submenubar.onclick == '##' %}
-                                        <li><a href="http://{{ request.get_host }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
-                                        {% else %}
-                                        <li><a href="/{{ url }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
-                                        {% endif %}
-                                        {% endif %}
-                                        {% endif %}
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </center>
-                        </div>
-                    {% comment %} </a> {% endcomment %}
-                </div>
-            {% elif menubar.level == 0 %}
-                <div class="col-md-2 px-1">
-                    {% if menubar.link is None %}
-                    <a id="{{ menubar.action_id }}" class="btn-link">
-                    {% else %}
-                        {% if menubar.onclick == '#' %}
-                        <a href="http://{{ menubar.link}}" class="btn-link">
-                        {% elif menubar.onclick == '##' %}
-                        <a href="http://{{ request.get_host }}/{{ menubar.link}}" class="btn-link">
-                        {% else %}
-                        <a href="/{{ url }}/{{ menubar.link}}" class="btn-link">
-                        {% endif %}
-                    {% endif %}
-                        <div class="thumbnail" data-toggle="tooltip" data-placement="bottom" title="{{ menubar.tooltips|default_if_none:''}}">
-                            <center>
-                                <img src="{% static menubar.icon %}" class="img-icon">
-                                <div class="caption">{{menubar.name}}</div>
-                            </center>
-                        </div>
-                    </a>
-                </div>
+        {% for menubar in menubars %}
+            {% if forloop.counter == 1 or forloop.counter in list_ %} 
+            <div class="{% if menubarsType == 1 %}col-md-6{% else %}col-md-4{% endif %} mt-2">
+                <div class="row">
             {% endif %}
-        {% if forloop.counter|divisibleby:6 or forloop.counter == count_ %}
+                {% if menubar.action_id is None and menubar.link is None %}
+                    <div class="col-md-2 px-1">
+                        {% comment %} <a class="btn-link" data-toggle="tooltip" data-placement="top" title="{{ menubar.tooltips|default_if_none:''}}"> {% endcomment %}
+                            <div class="thumbnail">
+                                <center data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <img src="{% static menubar.icon %}" class="img-icon">
+                                    <div class="caption">
+                                        <a class="text-dark text-center has-dropdown" data-toggle="tooltip" data-placement="bottom" title="{{ menubar.tooltips|default_if_none:''}}">
+                                            {{menubar.name}} &nbsp;<i class="fas fa-caret-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            {% for submenubar in menubarsChild %}
+                                            {% if submenubar.parent == menubar.id  %}
+                                            {% if submenubar.link is None %}
+                                            <li><a id="{{ submenubar.action_id }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                            {% else %}
+                                            {% if submenubar.onclick == '#' %}
+                                            <li><a href="http://{{ submenubar.link}}" class="btn-link">{{ submenubar.name }}</a></li>
+                                            {% elif submenubar.onclick == '##' %}
+                                            <li><a href="http://{{ request.get_host }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                            {% else %}
+                                            <li><a href="/{{ url }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                            {% endif %}
+                                            {% endif %}
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </center>
+                            </div>
+                        {% comment %} </a> {% endcomment %}
+                    </div>
+                {% elif menubar.level == 0 %}
+                    <div class="col-md-2 px-1">
+                        {% if menubar.link is None %}
+                        <a id="{{ menubar.action_id }}" class="btn-link">
+                        {% else %}
+                            {% if menubar.onclick == '#' %}
+                            <a href="http://{{ menubar.link}}" class="btn-link">
+                            {% elif menubar.onclick == '##' %}
+                            <a href="http://{{ request.get_host }}/{{ menubar.link}}" class="btn-link">
+                            {% else %}
+                            <a href="/{{ url }}/{{ menubar.link}}" class="btn-link">
+                            {% endif %}
+                        {% endif %}
+                            <div class="thumbnail" data-toggle="tooltip" data-placement="bottom" title="{{ menubar.tooltips|default_if_none:''}}">
+                                <center>
+                                    <img src="{% static menubar.icon %}" class="img-icon">
+                                    <div class="caption">{{menubar.name}}</div>
+                                </center>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% if forloop.counter|divisibleby:6 or forloop.counter == count_ %}
+                </div>
             </div>
-        </div>
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+        {% endfor %}
+        {% comment %} <button id="Findjenis" class="btn btn-success btn-xs" >
+            Previlege Nav Bar
+        </button>
+        <button id="Findjenis2" class="btn btn-success btn-xs" >
+            Previlege Menu Bar
+        </button>   {% endcomment %}
     </div>
 </div>

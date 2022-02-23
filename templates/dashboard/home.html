@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-Dashboard
+IMMODERMA
 {% endblock %}
 
 {% block head %}
@@ -11,6 +11,8 @@ Dashboard
 <link rel="stylesheet" href="{% static 'css/dxtreeview.css' %}">
 <style>
     body {
+        /* background-color: deepskyblue; */
+        background-image: url("/static/img/rajal.png") !important;
         height: 100%;
         background-position: center !important;
         background-repeat: no-repeat !important;
@@ -21,7 +23,12 @@ Dashboard
 {% endblock %}
 
 {% block content %}
+    {% include 'dashboard/modalShift.html' %}
 {% endblock content %}
 
 {% block script %}
+    <script type="text/javascript">
+        {% include 'dashboard/js/init.html' %}
+        {% include 'dashboard/js/shift.html' %}
+    </script>
 {% endblock %}

@@ -1,0 +1,72 @@
+{% load staticfiles %}
+<div class="wrapper wrapper-content dashboard">
+  <div class="container">
+    <div class="row quick-button">
+      {% for i in "x"|ljust:"15" %}
+        <div class="col-xl-12"> &nbsp;</div>
+      {% endfor %}
+      <div class="col-sm-2"> &nbsp;</div>
+      <div class="col-sm-2" style="margin-left: 0px;">
+          <a href="/privilege/menu">
+        <div>
+          <center>
+              <img src="{% static 'img/icons/icon_dashboard.png' %}" alt="..." class="hight80">
+              <div class="caption">
+                <p style="color: white;">Menu Management</p>
+              </div>
+          </center>
+        </div>
+        </a>
+      </div>
+      <div class="col-sm-2" style="margin-left: 0px;">
+          <a href="/privilege/user">
+        <div>
+          <center>
+              <img src="{% static 'img/icons/icon_user.png' %}" alt="..." class="hight80">
+              <div class="caption">
+                <p style="color: white;">User Management</p>
+              </div>
+          </center>
+        </div>
+        </a>
+      </div>
+      <div class="col-sm-2" style="margin-left: 0px;">
+          <a href="/privilege/toolbars">
+        <div>
+          <center>
+              <img src="{% static 'img/icons/icon_toolbars.png' %}" alt="..." class="hight80">
+              <div class="caption">
+                <p style="color: white;">Actionbar Management</p>
+              </div>
+          </center>
+        </div>
+        </a>
+      </div>
+      <div class="col-sm-2" style="margin-left: 0px;">
+          <a href="/privilege/navbars">
+        <div>
+          <center>
+              <img src="{% static 'img/icons/icon_navbars.png' %}" alt="..." class="hight80">
+              <div class="caption">
+                <p style="color: white;">Navbar Management</p>
+              </div>
+          </center>
+        </div>
+        </a>
+      </div>
+      <div class="col-sm-2" style="margin-left: 0px;">
+          <a href="/privilege/menubars">
+        <div>
+          <center>
+              <img src="{% static 'img/icons/icon_menubar.png' %}" alt="..." class="hight80">
+              <div class="caption">
+                <p style="color: white;">Menubar Management</p>
+              </div>
+          </center>
+        </div>
+        </a>
+      </div>
+      <div class="col-sm-1"> &nbsp;</div>
+    </div>
+  </div>
+  </div>

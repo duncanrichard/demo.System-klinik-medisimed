@@ -1,0 +1,124 @@
+$(document).ready(function () {
+    $('#idPasien').keypress(function (e) {
+        // e.preventDefault();
+        e.stopImmediatePropagation();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#idPasien").val() != '') {
+                    getDataPasien($("#idPasien").val());
+                } else {}
+            }
+        }
+
+    })
+
+    $('#btnFindPasienId').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        console.log('dddddd')
+        cariPasien()
+    })
+
+});
+
+function getDataPasien(e) {
+    $.ajax({
+        url: host + "/getDataPasien",
+        method: "GET",
+        data: {
+            "PasienId": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#idPasien').val(datas[0].KD_PASIEN);
+                $('#nama_pasien').val(datas[0].NAMAPASIEN);
+                $('#nama_keluarga').val(datas[0].FMKCUST_ID);
+                $('#idKelamin').val(datas[0].FMKCUSTN);
+
+
+                $('#nama_pasien').focus()
+            } else {
+                $('#DxGridModalPasien').modal('show');
+                cariPasien()
+
+            }
+
+        }
+    })
+}
+
+function cariPasien() {
+    $("#DxGridDataPasien").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        // searchPanel: {
+        //     visible: true
+        // },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getPasien",
+                    method: "GET",
+                    data: {
+                        "search_name": $('#search_name').val(),
+                        "search_almt": $('#search_almt').val(),
+                        "search_kdpas": $('#search_kdpas').val(),
+                        "search_telp": $('#search_telp').val(),
+                    },
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KD_PASIEN",
+                caption: "Kode Pasien",
+            },
+            {
+                dataField: "NAMAPASIEN",
+                caption: "Nama Pasien",
+            },
+            {
+                dataField: "ALAMAT",
+                caption: "Alamat Pasien",
+            },
+            {
+                dataField: "NAMA_KELUARGA",
+                caption: "Nama Keluarga",
+            },
+            {
+                dataField: "TELEPON",
+                caption: "Telepon",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#idPasien").val(e.data.KD_PASIEN);
+            $("#nama_pasien").val(e.data.NAMAPASIEN);
+            $("#nama_keluarga").val(e.data.NAMA_KELUARGA);
+            $('#DxGridModalPasien').modal('hide');
+            $('#namaAsuransi').focus()
+        }
+    });
+}

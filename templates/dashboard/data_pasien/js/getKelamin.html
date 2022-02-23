@@ -1,0 +1,106 @@
+$(document).ready(function () {
+    $('#idKelamin').keypress(function (e) {
+        // e.preventDefault();
+        e.stopImmediatePropagation();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#idKelamin").val() != '') {
+                    getDataKelamin($("#idKelamin").val());
+                } else {
+                    // $('#tempat_lahir').focus()
+                }
+            }
+        }
+
+    })
+
+    $('#btnFindKelamin').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalKelamin').modal('show');
+        cariKelamin(event)
+    })
+
+});
+
+function getDataKelamin(e) {
+    $.ajax({
+        url: host + "/getDataKelamin",
+        method: "GET",
+        data: {
+            "idKelamin": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#idKelamin').val(datas[0].KD_KELAMIN);
+                $('#namaKelamin').val(datas[0].KELAMIN);
+                $('#tempat_lahir').focus()
+            } else {
+                $('#dxGridModalKelamin').modal('show');
+                cariKelamin()
+            }
+
+        }
+    })
+}
+
+function cariKelamin() {
+    $("#dxGridDataKelamin").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        // searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var Kelamin_id = $('#search_kode_Kelamin').val();
+                var nama_kelamin = $('#search_nama_Kelamin').val();
+
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getKelamin",
+                    method: "GET",
+                    data: {
+                        "id_Kelamin": Kelamin_id,
+                        "nama_kelamin": nama_kelamin,
+                    },
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KD_KELAMIN",
+                caption: "Kode Kelamin",
+            },
+            {
+                dataField: "KELAMIN",
+                caption: "Nama Kelamin",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#idKelamin").val(e.data.KD_KELAMIN);
+            $("#namaKelamin").val(e.data.KELAMIN);
+            $('#dxGridModalKelamin').modal('hide');
+        }
+    });
+}

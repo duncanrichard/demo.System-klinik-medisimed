@@ -12,6 +12,12 @@ from django.shortcuts import render, redirect
 from django.core.serializers.json import DjangoJSONEncoder
 
 def login(request):
+
+    # print("==========================")
+    # print(createHashPass("BUDI"))
+    # print("==========================")
+    # print(createHashPass("BUDI"))
+    # print("==========================")
     q = "select * from CABANG"
     cabang = Globals().getDataQuery(q)
     kdCabang = cabang[0]['CABANG_ID']
@@ -33,6 +39,7 @@ def login(request):
             request.session['user_priv'] = user['USER_PRIV']
             request.session['user_name'] = user['USER_NAME']
             request.session['user_id'] = user['USER_ID']
+            # print (request.session['user_id'])
 
             # DELETE STATIC FILES
             Globals().deleteFiles()
@@ -114,4 +121,4 @@ def checkLogin(username, password):
         return None
 
 def createHashPass(password):
-    return bcrypt.hashpw(password, bcrypt.gensalt()).decode("utf-8") 
+    return bcrypt.hashpw(password.encode("utf-8") , bcrypt.gensalt()).decode("utf-8") 

@@ -1,0 +1,353 @@
+{% extends "layout/master.html" %}
+{% load staticfiles %}
+
+{% block title %}
+Navbar Management
+{% endblock title %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/dualListbox/bootstrap-duallistbox.min.css' %}" /> 
+<link rel="stylesheet" type="text/css" href="{% static 'css/plugins/select2/select2.min.css' %}" /> 
+{% endblock head %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>NavBar Management</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>User Privilige </label>
+                        <select  name="main_modul" id="select_user_priv" class="form-control select2">
+                            {% for user_priv in user_privs %}
+                            {% if user_priv.USER_PRIV == request.session.user_priv %}
+                            <option selected value="{{ user_priv.USER_PRIV }}">{{ user_priv.USER_PRIV }}
+                            </option>
+                            {% else %}
+                            <option value="{{ user_priv.USER_PRIV }}">{{ user_priv.USER_PRIV }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Modul Privilige </label>
+                        <select name="main_modul" id="select_modul_priv" class="form-control select2">
+                            {% for modul_priv in modul_privs %}
+                            <option value="{{ modul_priv.name }}">{{ modul_priv.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <form id="form" action="#" class="wizard-big">
+                        <select id="priv" class="form-control dual_select" name="main_modul_select"
+                            multiple>
+                            {% for unselected in unselecteds %}
+                            <option value="{{ unselected.id }}">{{ unselected.name }}</option>
+                            {% endfor %}
+                            {% for selected in selecteds %}
+                            <option selected value="{{ selected.id }}">{{ selected.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                    <button type="button" name="main_modul_submit" class="btn btn-primary float-right mt-2">
+                        <i class="fa fa-check"></i>Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'layout/dxGridModal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+{% load static %}
+<script src="{% static '/js/plugins/dualListbox/jquery.bootstrap-duallistbox.js'%}"></script>
+<script src="{% static '/js/plugins/select2/select2.full.min.js'%}"></script>
+<script type="text/javascript">
+function init(){
+        var user_priv = $("#select_user_priv").children("option:selected").val();
+        var modul_priv = $("#select_modul_priv").children("option:selected").text();
+        $.ajax({
+            type: "GET",
+            url: "/privilege/navbars_priv/",
+            data: {
+                'user_priv': user_priv,
+                'modul_priv': modul_priv
+            },
+            // dataType: "html",
+            success: function (data) {
+                console.log("unselected: " + data['unselecteds'].length +
+                    " selected: " + data['selecteds'].length)
+                $("select[name=main_modul_select]").empty()
+                for (let index = 0; index < data['selecteds'].length; index++) {
+                    const selected = data['selecteds'][index];
+                    $("select[name=main_modul_select]").append('<option value="' +
+                        selected['id'] + '" selected="selected" >' + selected[
+                            'name'] + '<option>');
+                    $('option[value=""],option:not([value])').remove();
+                }
+
+                for (let index = 0; index < data['unselecteds'].length; index++) {
+                    const unselected = data['unselecteds'][index];
+                    $("select[name=main_modul_select]").append('<option value="' +
+                        unselected['id'] + '">' + unselected['name'] + '<option>');
+                    $('option[value=""],option:not([value])').remove();
+                }
+
+                $("select[name=main_modul_select]").bootstrapDualListbox('refresh',
+                    true);
+            },
+            error: function (request, ajaxOptions, thrownError) {
+                $("#debug").html(request.responseText);
+                $("#debug").html("5566");
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        init()
+
+        $("select[name=main_modul]").change(function () {
+            init()
+        });
+    });
+
+    $(document).ready(function () {
+        $("button[name=main_modul_submit]").click(function () {
+            let user_priv = $("#select_user_priv").children("option:selected").val();
+            let modul_priv = $("#select_modul_priv").children("option:selected").val();
+            let items = $("select[name=main_modul_select] option:selected");
+            var param = [];
+            $.each(items, function (index, elem) {
+                param.push(elem.value)
+            });
+            // console.log(param);
+            $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+            $.ajax({
+                type: "POST",
+                url: "/privilege/navbars_post",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'priv': $("select.select2_demo_1").children("option:selected").val(),
+                    'rules': param,
+                    'user_priv': user_priv,
+                    'modul_priv': modul_priv,
+                },
+                // dataType: "html",
+                success: function (response) {
+                    console.log(response)
+                    $('#ibox1').children('.ibox-content').toggleClass('sk-loading');
+                },
+                error: function (request, ajaxOptions, thrownError) {
+                    $("#debug").html(request.responseText);
+                    $("#debug").html("5566");
+                }
+            });
+        });
+    });
+
+    //SubNavBar
+    $(document).ready(function () {
+        $("#selectsub_user_priv").change(function () {
+            var user_priv = $("#selectsub_user_priv").children("option:selected").val();
+            $("#selectsub_modul_priv").val('-').trigger('change');
+            $("#selectsub_submodul_priv").val('-').trigger('change');
+            var modul_priv = $("#selectsub_modul_priv").children("option:selected").text();
+            var submodul_priv = $("#selectsub_submodul_priv").children("option:selected").text();
+
+            $.ajax({
+                type: "GET",
+                url: "/privilege/subnavbars_priv/",
+                data: {
+                    'user_priv': user_priv,
+                    'modul_priv': modul_priv,
+                    'submodul_priv': submodul_priv
+                },
+                // dataType: "html",
+                success: function (data) {
+                    var tHtml = '<option selected value="-">-</option>'
+                    for (let index = 0; index < data.submodul_privs.length; index++) {
+                        tHtml += '<option value="' + data.submodul_privs[index].submodul +
+                            '">' + data.submodul_privs[index].submodul + '</option>'
+                    }
+
+                    $("#selectsub_submodul_priv").html(tHtml)
+
+                    console.log("unselected: " + data['unselecteds'].length +
+                        " selected: " + data['selecteds'].length)
+                    $("select[name=sub_modul_select]").empty()
+                    for (let index = 0; index < data['selecteds'].length; index++) {
+                        const selected = data['selecteds'][index];
+                        $("select[name=sub_modul_select]").append('<option value="' +
+                            selected['id'] + '" selected="selected" >' + selected[
+                                'name'] + '<option>');
+                        $('option[value=""],option:not([value])').remove();
+                    }
+
+                    for (let index = 0; index < data['unselecteds'].length; index++) {
+                        const unselected = data['unselecteds'][index];
+                        $("select[name=sub_modul_select]").append('<option value="' +
+                            unselected['id'] + '">' + unselected['name'] + '<option>');
+                        $('option[value=""],option:not([value])').remove();
+                    }
+
+                    $("select[name=sub_modul_select]").bootstrapDualListbox('refresh',
+                        true);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+                    $("#debug").html(request.responseText);
+                    $("#debug").html("5566");
+                }
+            });
+        });
+
+        $("#selectsub_modul_priv").change(function () {
+            var user_priv = $("#selectsub_user_priv").children("option:selected").val();
+            var modul_priv = $("#selectsub_modul_priv").children("option:selected").text();
+            $("#selectsub_submodul_priv").val('-').trigger('change');
+            var submodul_priv = $("#selectsub_submodul_priv").children("option:selected").text();
+
+            $.ajax({
+                type: "GET",
+                url: "/privilege/subnavbars_priv/",
+                data: {
+                    'user_priv': user_priv,
+                    'modul_priv': modul_priv,
+                    'submodul_priv': submodul_priv
+                },
+                // dataType: "html",
+                success: function (data) {
+                    var tHtml = '<option selected value="-">-</option>'
+                    for (let index = 0; index < data.submodul_privs.length; index++) {
+                        tHtml += '<option value="' + data.submodul_privs[index].submodul +
+                            '">' + data.submodul_privs[index].submodul + '</option>'
+                    }
+
+                    $("#selectsub_submodul_priv").html(tHtml)
+
+                    console.log("unselected: " + data['unselecteds'].length +
+                        " selected: " + data['selecteds'].length)
+                    $("select[name=sub_modul_select]").empty()
+                    for (let index = 0; index < data['selecteds'].length; index++) {
+                        const selected = data['selecteds'][index];
+                        $("select[name=sub_modul_select]").append('<option value="' +
+                            selected['id'] + '" selected="selected" >' + selected[
+                                'name'] + '<option>');
+                        $('option[value=""],option:not([value])').remove();
+                    }
+
+                    for (let index = 0; index < data['unselecteds'].length; index++) {
+                        const unselected = data['unselecteds'][index];
+                        $("select[name=sub_modul_select]").append('<option value="' +
+                            unselected['id'] + '">' + unselected['name'] + '<option>');
+                        $('option[value=""],option:not([value])').remove();
+                    }
+
+                    $("select[name=sub_modul_select]").bootstrapDualListbox('refresh',
+                        true);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+                    $("#debug").html(request.responseText);
+                    $("#debug").html("5566");
+                }
+            });
+        });
+
+        $("#selectsub_submodul_priv").change(function () {
+            var user_priv = $("#selectsub_user_priv").children("option:selected").val();
+            var modul_priv = $("#selectsub_modul_priv").children("option:selected").text();
+            var submodul_priv = $("#selectsub_submodul_priv").children("option:selected").text();
+
+            $.ajax({
+                type: "GET",
+                url: "/privilege/subnavbars_priv/",
+                data: {
+                    'user_priv': user_priv,
+                    'modul_priv': modul_priv,
+                    'submodul_priv': submodul_priv
+                },
+                // dataType: "html",
+                success: function (data) {
+                    console.log("unselected: " + data['unselecteds'].length +
+                        " selected: " + data['selecteds'].length)
+                    $("select[name=sub_modul_select]").empty()
+                    for (let index = 0; index < data['selecteds'].length; index++) {
+                        const selected = data['selecteds'][index];
+                        $("select[name=sub_modul_select]").append('<option value="' +
+                            selected['id'] + '" selected="selected" >' + selected[
+                                'name'] + '<option>');
+                        $('option[value=""],option:not([value])').remove();
+                    }
+
+                    for (let index = 0; index < data['unselecteds'].length; index++) {
+                        const unselected = data['unselecteds'][index];
+                        $("select[name=sub_modul_select]").append('<option value="' +
+                            unselected['id'] + '">' + unselected['name'] + '<option>');
+                        $('option[value=""],option:not([value])').remove();
+                    }
+
+                    $("select[name=sub_modul_select]").bootstrapDualListbox('refresh',
+                        true);
+                },
+                error: function (request, ajaxOptions, thrownError) {
+                    $("#debug").html(request.responseText);
+                    $("#debug").html("5566");
+                }
+            });
+        });
+    });
+    $(document).ready(function () {
+        $("button[name=sub_modul_submit]").click(function () {
+            let user_priv = $("#selectsub_user_priv").children("option:selected").val();
+            let modul_priv = $("#selectsub_modul_priv").children("option:selected").val();
+            let submodul_priv = $("#selectsub_submodul_priv").children("option:selected").text();
+            let items = $("select[name=sub_modul_select] option:selected");
+            var param = [];
+            $.each(items, function (index, elem) {
+                param.push(elem.value)
+            });
+            // console.log(param);
+            $('#ibox2').children('.ibox-content').toggleClass('sk-loading');
+            $.ajax({
+                type: "POST",
+                url: "/privilege/subnavbars_post",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'priv': $("select.select2_demo_1").children("option:selected").val(),
+                    'rules': param,
+                    'user_priv': user_priv,
+                    'modul_priv': modul_priv,
+                    'submodul_priv': submodul_priv,
+                },
+                // dataType: "html",
+                success: function (response) {
+                    console.log(response)
+                    $('#ibox2').children('.ibox-content').toggleClass('sk-loading');
+                },
+                error: function (request, ajaxOptions, thrownError) {
+                    $("#debug").html(request.responseText);
+                    $("#debug").html("5566");
+                }
+            });
+        });
+    });
+
+    $(".select2").select2();
+    $(".select2_demo_1").select2();
+    $(".select2_demo_2").select2();
+    $(".select2_demo_3").select2({
+        placeholder: "Select a state",
+        allowClear: true
+    });
+
+    $('.dual_select').bootstrapDualListbox({
+        selectorMinimalHeight: 160
+    });
+</script>
+{% endblock  %}

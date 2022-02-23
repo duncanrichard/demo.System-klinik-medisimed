@@ -256,6 +256,20 @@ class Globals:
 
 		return tanggal + bulan + tahun
 
+	
+	def isLogin(self,request):
+		# Privilege = getData("select distinct USER_PRIV from USERSPRIV;")
+		Privilege = self.getDataQuery("select distinct USER_PRIV from USERSPRIV;")
+
+		if 'userauth' in request.session:
+			is_login = request.session['userauth']
+			# if(request.session['user_priv'] not in PRIV['USER_PRIV']):
+			if(not any(user['USER_PRIV'] == request.session['user_priv'] for user in Privilege)):
+				is_login = False
+		else:
+			is_login = False
+		return is_login
+
 	def check_access(self, user_priv, id_navbar, modul, submodul = None):
 		if submodul is None:
 			qnavbar = "SELECT * FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+user_priv+"' AND B.modul = '"+ modul +"' AND B.submodul IS NULL AND B.id = '"+ id_navbar +"'"

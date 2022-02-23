@@ -1,0 +1,364 @@
+var host_main = window.location.href.split("/");
+var host_root = host_main[0] + "//" + host_main[2];
+var host = host_main[0] + "//" + host_main[2] + "/" + host_main[3];
+var canAdd = 0
+let status_aud = null;
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+todays = today
+$(".today").val(today)
+
+$(document).ready(function () {
+    setupAwal()
+    enterFocusTo('tempat_lahir', 'tgl_lahir');
+    $('#tgl_lahir').change(function (e) {
+        // var keycode = event.key;;
+        if (canAdd == 1) {
+            // if (keycode == '13') {
+            if ($("#tgl_lahir").val() != '') {
+                // console.log('cccccc')
+                // console.log(keycode)
+                var usia = checkUmur($('#tgl_lahir').val())
+                $('#usia_thn').val(usia.tahun)
+                $('#usia_bln').val(usia.bulan)
+                $('#usia_hari').val(usia.hari)
+                // if (keycode == '13') {
+                //     $('#usia_thn').focus()
+                // }
+            }
+        }
+
+    })
+
+    $('#usia_thn').focusout(function () {
+
+        var today = new Date();
+        var ageDifMs = today.getTime();
+        // var ageDate = new Date(ageDifMs); 
+        var thn = parseInt($('#usia_thn').val());
+        var bln = parseInt($('#usia_bln').val());
+        var hari = $('#usia_hari').val();
+        var yearInMs = 365.24 * 24 * 60 * 60 * 1000 * thn;
+        var MonthInMs = 30.4 * 24 * 60 * 60 * 1000 * bln;
+        var DayInMs = 24 * 60 * 60 * 1000 * hari;
+        var newTime = ageDifMs - yearInMs - MonthInMs - DayInMs;
+        today.setTime(newTime);
+        var newDate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0")
+        console.log(newDate)
+        $('#tgl_lahir').val(newDate);
+    })
+
+    $('#usia_bln').focusout(function () {
+        var today = new Date();
+        var ageDifMs = today.getTime();
+        // var ageDate = new Date(ageDifMs); 
+        var bln = parseInt($('#usia_bln').val());
+        var thn = parseInt($('#usia_thn').val());
+        var hari = $('#usia_hari').val();
+        if (bln > 11) {
+            thn = thn + Math.floor(bln / 12);
+            // console.log(bln);
+            bln = bln % 12;
+            // console.log(bln);
+        }
+
+        var yearInMs = 365.24 * 24 * 60 * 60 * 1000 * thn;
+        var MonthInMs = 30.4 * 24 * 60 * 60 * 1000 * bln;
+        var DayInMs = 24 * 60 * 60 * 1000 * hari;
+        var newTime = ageDifMs - yearInMs - MonthInMs - DayInMs;
+        today.setTime(newTime);
+        var newDate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0")
+        console.log(newDate)
+        $('#usia_bln').val(bln);
+        $('#usia_thn').val(thn);
+        $('#tgl_lahir').val(newDate);
+    })
+
+    $('#usia_hari').focusout(function () {
+        var today = new Date();
+        var ageDifMs = today.getTime();
+        // var ageDate = new Date(ageDifMs);
+        var bln = parseInt($('#usia_bln').val());
+        var thn = parseInt($('#usia_thn').val());
+        var hari = $('#usia_hari').val();
+        var yearInMs = 365.24 * 24 * 60 * 60 * 1000 * thn;
+        var MonthInMs = 30.4 * 24 * 60 * 60 * 1000 * bln;
+        var DayInMs = 24 * 60 * 60 * 1000 * hari;
+        var newTime = ageDifMs - yearInMs - MonthInMs - DayInMs;
+        today.setTime(newTime);
+        var newDate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0")
+        $('#tgl_lahir').val(newDate);
+    })
+
+    enterFocusTo('usia_thn', 'usia_bln');
+    enterFocusTo('usia_bln', 'usia_hari');
+    enterFocusTo('usia_hari', 'alamat');
+    enterFocusTo('alamat', 'telepon');
+    enterFocusTo('telepon', 'kd_pos');
+    enterFocusTo('kd_pos', 'idProvinsi');
+    enterFocusTo('email', 'keterangan');
+    enterFocusTo('keterangan', 'noEKTP');
+    enterFocusTo('noEKTP', 'idKlpPasien');
+    enterFocusTo('namaAsuransi', 'noAsuransi');
+
+    $("#menu_tambah").click(function () {
+        Livetext()
+        Cleartext()
+        canAdd = 1
+    })
+    $("#menu_simpan").click(function () {
+
+    })
+
+    $("#menu_find").click(function () {
+        $('#DxGridModalPasien').modal('show')
+        cariPasien()
+
+
+    })
+
+
+
+})
+
+function setupAwal() {
+    Deathtext()
+    Cleartext()
+
+}
+
+function Cleartext() {
+    $('#tgl_lahir').val(todays);
+    $('#idPasien').val('');
+    $('#nama_pasien').val('');
+    $('#nama_keluarga').val('');
+    $('#idKelamin').val('');
+    $('#namaKelamin').val('');
+    $('#tempat_lahir').val('');
+    $('#usia_thn').val('');
+    $('#usia_bln').val('');
+    $('#usia_hari').val('');
+    $('#alamat').val('');
+    $('#idProvinsi').val('');
+    $('#namaProvinsi').val('');
+    $('#idKabupaten').val('');
+    $('#namaKabupaten').val('');
+    $('#idKecamatan').val('');
+    $('#namaKecamatan').val('');
+    $('#idKelurahan').val('');
+    $('#namaKelurahan').val('');
+    $('#jenisTarif').val('');
+    $('#email').val('');
+    $('#keterangan').val('');
+    $('#noEKTP').val('');
+    $('#idKlpPasien').val('');
+    $('#namaKlpPasien').val('');
+    $('#customerId').val('');
+    $('#namaPerusahaan').val('');
+    $('#namaAsuransi').val('');
+    $('#noAsuransi').val('');
+
+    $('#idAgama').val('');
+    $('#namaAgama').val('');
+    $('#idMarital').val('');
+    $('#namaMarital').val('');
+    $('#idBahasa').val('');
+    $('#namaBahasa').val('');
+    $('#idPendidikan').val('');
+    $('#namaPendidikan').val('');
+    $('#idPekerjaan').val('');
+    $('#namaPekerjaan').val('');
+    $('#idGolDarah').val('');
+    $('#namaGolDarah').val('');
+    $('#idSuku').val('');
+    $('#namaSuku').val('');
+}
+
+function Deathtext() {
+    menuEnable('menu_tambah');
+    menuEnable('menu_edit');
+    menuEnable('menu_hapus');
+    menuDisable('menu_simpan');
+    menuDisable('menu_cancel');
+    menuEnable('menu_cari');
+    menuEnable('menu_cetak');
+
+    // $('#form .btn').prop('disabled', true);
+    // VERSI SIMPEL
+    // $('#form .btn').attr("disabled", true);
+    // $('#form input').prop('readonly', true);
+    // $('#form .input-md').prop('readonly', true);
+    // $('#form .form-control').prop('readonly', true);
+    setReadOnly('idPasien');
+    setReadOnly('nama_pasien')
+    setReadOnly('nama_keluarga')
+
+    setReadOnly('idKelamin')
+    setReadOnly('namaKelamin')
+    btnDisable('btnFindKelamin')
+
+    setReadOnly('tempat_lahir')
+    setReadOnly('tgl_lahir')
+    setReadOnly('usia_thn')
+    setReadOnly('usia_bln')
+    setReadOnly('usia_hari')
+    setReadOnly('alamat')
+    setReadOnly('telepon')
+    setReadOnly('kd_pos')
+
+    setReadOnly('idProvinsi')
+    setReadOnly('namaProvinsi')
+    btnDisable('btnFindProvinsi')
+
+    setReadOnly('idKabupaten')
+    setReadOnly('namaKabupaten')
+    btnDisable('btnFindKabupaten')
+
+    setReadOnly('idKecamatan')
+    setReadOnly('namaKecamatan')
+    btnDisable('btnFindKecamatan')
+
+    setReadOnly('idKelurahan')
+    setReadOnly('namaKelurahan')
+    btnDisable('btnFindKelurahan')
+
+    btnDisable('wni')
+    setReadOnly('email')
+    setReadOnly('keterangan')
+    btnDisable('identitas')
+    setReadOnly('noEKTP')
+
+    setReadOnly('idKlpPasien')
+    setReadOnly('namaKlpPasien')
+    btnDisable('btnFindKlpPasien')
+
+    setReadOnly('customerId')
+    setReadOnly('namaPerusahaan')
+    btnDisable('btnFindcustomerId')
+    setReadOnly('namaAsuransi')
+    setReadOnly('noAsuransi')
+
+    setReadOnly('idAgama')
+    setReadOnly('namaAgama')
+    btnDisable('btnFindAgama')
+
+    setReadOnly('idMarital')
+    setReadOnly('namaMarital')
+    btnDisable('btnFindMarital')
+
+    setReadOnly('idBahasa')
+    setReadOnly('namaBahasa')
+    btnDisable('btnFindBahasa')
+
+    setReadOnly('idPendidikan')
+    setReadOnly('namaPendidikan')
+    btnDisable('btnFindPendidikan')
+
+    setReadOnly('idPekerjaan')
+    setReadOnly('namaPekerjaan')
+    btnDisable('btnFindPekerjaan')
+
+    setReadOnly('idGolDarah')
+    setReadOnly('namaGolDarah')
+    btnDisable('btnFindGolDarah')
+
+    setReadOnly('idSuku')
+    setReadOnly('namaSuku')
+    btnDisable('btnFindSuku')
+
+}
+
+function Livetext() {
+    menuDisable('menu_tambah');
+    menuDisable('menu_edit');
+    menuDisable('menu_hapus');
+    menuEnable('menu_simpan');
+    menuEnable('menu_cancel');
+    menuEnable('menu_cari');
+    menuDisable('menu_cetak');
+
+    setUnReadOnly('idPasien');
+    setUnReadOnly('nama_pasien')
+    setUnReadOnly('nama_keluarga')
+
+    setUnReadOnly('idKelamin')
+    btnEnable('btnFindKelamin')
+
+    setUnReadOnly('tempat_lahir')
+    setUnReadOnly('tgl_lahir')
+    setUnReadOnly('usia_thn')
+    setUnReadOnly('usia_bln')
+    setUnReadOnly('usia_hari')
+    setUnReadOnly('alamat')
+    setUnReadOnly('telepon')
+    setUnReadOnly('kd_pos')
+
+    setUnReadOnly('idProvinsi')
+    setReadOnly('namaProvinsi')
+    btnEnable('btnFindProvinsi')
+
+    setUnReadOnly('idKabupaten')
+    setReadOnly('namaKabupaten')
+    btnEnable('btnFindKabupaten')
+
+    setUnReadOnly('idKecamatan')
+    setReadOnly('namaKecamatan')
+    btnEnable('btnFindKecamatan')
+
+    setUnReadOnly('idKelurahan')
+    setReadOnly('namaKelurahan')
+    btnEnable('btnFindKelurahan')
+
+    btnEnable('wni')
+    setUnReadOnly('email')
+    setUnReadOnly('keterangan')
+    btnEnable('identitas')
+    setReadOnly('noEKTP')
+
+    setReadOnly('idKlpPasien')
+    setReadOnly('namaKlpPasien')
+    btnEnable('btnFindKlpPasien')
+
+    setReadOnly('customerId')
+    setReadOnly('namaPerusahaan')
+    btnEnable('btnFindcustomerId')
+    setUnReadOnly('namaAsuransi')
+    setUnReadOnly('noAsuransi')
+
+    setReadOnly('idAgama')
+    setReadOnly('namaAgama')
+    btnEnable('btnFindAgama')
+
+    setReadOnly('idMarital')
+    setReadOnly('namaMarital')
+    btnEnable('btnFindMarital')
+
+    setReadOnly('idBahasa')
+    setReadOnly('namaBahasa')
+    btnEnable('btnFindBahasa')
+
+    setReadOnly('idPendidikan')
+    setReadOnly('namaPendidikan')
+    btnEnable('btnFindPendidikan')
+
+    setReadOnly('idPekerjaan')
+    setReadOnly('namaPekerjaan')
+    btnEnable('btnFindPekerjaan')
+
+    setReadOnly('idGolDarah')
+    setReadOnly('namaGolDarah')
+    btnEnable('btnFindGolDarah')
+
+    setReadOnly('idSuku')
+    setReadOnly('namaSuku')
+    btnEnable('btnFindSuku')
+
+}

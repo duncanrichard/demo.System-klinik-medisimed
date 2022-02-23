@@ -1,0 +1,70 @@
+{% extends "layout/base.html" %}
+
+{% block title %}
+    Data Pasien
+{% endblock title %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/radiologi-home.css">
+{% endblock %}
+
+{% block navbar %}
+    {% include 'radiologi/kasir_radiologi/layout/navbar.html' %}
+{% endblock %}
+
+
+
+{% block content %}</div</div>
+    {% include 'radiologi/kasir_radiologi/layout/menu.html' %}
+    <div class="wrapper wrapper-content entry animated fadeInRight">
+        <div class="row" >
+            <div class=" col-lg-1"></div>
+            <div class="col-lg-10">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <center><h3>Kasir Radiologi</h3></center>
+                    </div>                        
+                    <div class="ibox-content">
+                        <div class="row">
+
+                            <form id="form" action="#" >
+                                    {% comment %} row1 {% endcomment %}
+                                        {% include 'radiologi/kasir_radiologi/row/row1.html' %}
+                                    {% comment %} end row 1 {% endcomment %}
+
+                                    {% comment %} row2 {% endcomment %}
+                                        {% include 'radiologi/kasir_radiologi/row/row2.html' %}
+                                    {% comment %} end row 2 {% endcomment %}
+                            </form>
+
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class=" col-lg-1"></div>
+        </div>
+    </div>
+    {% include 'layout/dxGridModal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+    {% load static %}
+    <script src="{% static '/js/plugins/metisMenu/jquery.metisMenu.js'%}"></script>
+    <script src="{% static '/js/plugins/slimscroll/jquery.slimscroll.min.js'%}"></script>
+
+    <!-- Custom and plugin javascript -->
+    <script src="{% static '/js/inspinia.js'%}"></script>
+    <script src="{% static '/js/plugins/pace/pace.min.js'%}"></script>
+
+    <!-- Steps -->
+    <script src="{% static '/js/plugins/steps/jquery.steps.min.js'%}"></script>
+    <script src="{% static 'js/process/gridProcess.js'%}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            
+        })
+    </script>
+{% endblock  %}

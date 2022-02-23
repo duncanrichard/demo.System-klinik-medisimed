@@ -1,0 +1,113 @@
+$(document).ready(function () {
+    $('#idKelurahan').keypress(function (e) {
+        // e.preventDefault();
+        e.stopImmediatePropagation();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#idKelurahan").val() != '') {
+                    getDataKelurahan($("#idKelurahan").val());
+                } else {
+                    // $('#tempat_lahir').focus()
+                }
+            }
+        }
+
+    })
+
+    $('#btnFindKelurahan').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if ($("#idKecamatan").val() != '') {
+            $('#dxGridModalKelurahan').modal('show');
+            cariKelurahan(event)
+        }
+    })
+
+});
+
+function getDataKelurahan(e) {
+    $.ajax({
+        url: host + "/getDataKelurahan",
+        method: "GET",
+        data: {
+            "idKelurahan": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#idKelurahan').val(datas[0].KD_KELURAHAN);
+                $('#namaKelurahan').val(datas[0].KELURAHAN);
+                $('#email').focus()
+            } else {
+                if ($("#idKecamatan").val() != '') {
+                    $('#dxGridModalKelurahan').modal('show');
+                    cariKelurahan()
+                }
+            }
+
+        }
+    })
+}
+
+function cariKelurahan() {
+    $("#dxGridDataKelurahan").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        // searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var Kelurahan_id = $('#search_kode_Kelurahan').val();
+                var nama_Kelurahan = $('#search_nama_Kelurahan').val();
+                var Kecamatan_id = $('#idKecamatan').val();
+
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getKelurahan",
+                    method: "GET",
+                    data: {
+                        "Kecamatan_id": Kecamatan_id,
+                        "id_Kelurahan": Kelurahan_id,
+                        "nama_Kelurahan": nama_Kelurahan,
+                    },
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KD_KELURAHAN",
+                caption: "Kode Kelurahan",
+            },
+            {
+                dataField: "KELURAHAN",
+                caption: "Nama Kelurahan",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#idKelurahan").val(e.data.KD_KELURAHAN);
+            $("#namaKelurahan").val(e.data.KELURAHAN);
+            $('#dxGridModalKelurahan').modal('hide');
+            $('#email').focus()
+        }
+    });
+}

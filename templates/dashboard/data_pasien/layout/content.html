@@ -1,0 +1,491 @@
+<div class="wrapper wrapper-content animated fadeInRight p-1">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header text-center h6 bg-secondary font-bold text-white">Data Pasien</div>
+
+			<div class="card-body"
+				style="background: linear-gradient(to right, #0f2027, #203a43, #2c5364);border-radius: 5px;padding-bottom:5px;padding-top:5px;">
+				<div class="text-white font-bold justify-content-between">
+					<div class="ibox"
+						style="background-color:#7a7ab4;border-radius: 5px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
+						<div class="form-inline">
+							<label for="" class="col-md-2 ">No Rekam Medik</label>
+							<input type="text" class="col-md-2 form-control input-md font-weight-bold text-black-50"
+								id="idPasien">
+							<label for="" class="col-md-1 ">Nama</label>
+							<input type="text"
+								class="col-md-3 form-control input-md font-weight-bold text-black-50 p-0 text-center"
+								id="nama_pasien">
+							<label for="" class="col-md-1">Nama Klg : </label>
+							<input type="text"
+								class="col-md-3 form-control input-md font-weight-bold text-black-50 p-0 text-center"
+								id="nama_keluarga">
+						</div>
+					</div>
+					<div class="col-lg-12">
+						<div class="tabs-container">
+							<ul class="nav nav-tabs" role="tablist">
+								<li><a class="nav-link active" data-toggle="tab" href="#tab-1">Data Pasien</a></li>
+								<li><a class="nav-link" data-toggle="tab" href="#tab-2">Surveillance</a></li>
+							</ul>
+							<div class="tab-content" id='form'>
+								<div role="tabpanel" id="tab-1" class="tab-pane active">
+									<div class="panel-body"
+										style="color:#181717;background-color: rgb(105, 170, 148);padding:5px;margin: 5px;">
+										<div class="form-row"
+											style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
+											<div class="form-group col-md-2">
+												<label class="control-label col-md-12">Jenis Kelamin</label>
+												<div class="row">
+													<div class="col-md-3">
+														<input id="idKelamin" name="idKelamin" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-6">
+														<input id="namaKelamin" name="namaKelamin" type="text"
+															class="form-control input-md " readonly>
+													</div>
+
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs" id="btnFindKelamin">cari
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="form-group col-md-2">
+												<label class="col-md-12 control-label" style="margin-left:10px;">Tempat
+													Lahir</label>
+												<div class="row">
+													<input id="tempat_lahir" name="tempat_lahir" type="text"
+														class="form-control input-md ">
+												</div>
+											</div>
+											<div class="form-group col-md-2">
+
+												<label class="col-md-8 control-label" style="">Tgl Lahir</label>
+												<div class="col-md-12">
+													<input id="tgl_lahir" name="tgl_lahir" type="date"
+														class="form-control input-md ">
+												</div>
+											</div>
+											<div class="form-group col-md-2">
+												<div class="form-row">
+													<div class="form-group col-md-4">
+														<label class="col-md-12 control-label"
+															style="margin-left:10px;">Tahun </label>
+														<input id="usia_thn" name="usia_thn" type="text"
+															class="form-control input-md number">
+													</div>
+													<div class="form-group col-md-4">
+														<label class="col-md-12 control-label"
+															style="margin-left:10px;">Bulan </label>
+														<input id="usia_bln" name="usia_bln" type="text"
+															class="form-control input-md number">
+													</div>
+													<div class="form-group col-md-4">
+														<label class="col-md-12 control-label"
+															style="margin-left:10px;">Hari </label>
+														<input id="usia_hari" name="usia_hari" type="text"
+															class="form-control input-md number">
+													</div>
+												</div>
+
+											</div>
+											<div class="col-md-2 col-md-offset-1">
+
+												<div class="well well-sm" id="rm_terakhir"
+													style="background-color: #e3be97;text-align: center;padding: 3px;">
+													<strong style="font-size: 18px;">{{lastnorm.no_rm}}</strong>
+												</div>
+											</div>
+										</div>
+										<div class="form-row"
+											style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
+											<div class="col-md-4">
+												<div class="row">
+													<label class="col-md-3 control-label" style="">Alamat <br>Tinggal
+													</label>
+													<div class="col-md-9 " style="margin-left:-30px;;">
+														<textarea rows="3" id='alamat' name="alamat" cols="60"
+															class="form-control input-md"
+															style="font-size: 11px;"></textarea>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Telepon </label>
+													<div class="col-md-7">
+														<input id="telepon" name="telepon" type="text"
+															class="form-control input-md">
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-3 control-label" style="padding-top:5px">Kode
+														Pos </label>
+													<div class="col-md-5">
+														<input id="kd_pos" name="kd_pos" type="text"
+															class="form-control input-md">
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class=" row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Provinsi</label>
+													<div class="col-md-2">
+														<input id="idProvinsi" name="idProvinsi" type="text"
+															class="form-control input-md" style="" readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaProvinsi" name="namaProvinsi" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-2">
+														<button id="btnFindProvinsi"
+															class="btn  btn-success btn-xs">cari </button>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Kodya/Kab </label>
+													<div class="col-md-2">
+														<input id="idKabupaten" name="idKabupaten" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaKabupaten" name="namaKabupaten" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-2">
+														<button id="btnFindKabupaten"
+															class="btn  btn-success btn-xs">cari </button>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Kecamatan </label>
+													<div class="col-md-2">
+														<input id="idKecamatan" name="idKecamatan" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaKecamatan" name="namaKecamatan" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs"
+															id="btnFindKecamatan">cari </button>
+													</div>
+												</div>
+												<div class="row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Kelurahan </label>
+													<div class="col-md-2">
+														<input id="idKelurahan" name="idKelurahan" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaKelurahan" name="namaKelurahan" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs"
+															id="btnFindKelurahan">cari </button>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<div class="row">
+													<center><label class="control-label"
+															style="background:#ED5666;border-radius:5px;padding:4px;margin-top:-2px;">Jenis
+															Tarif</label>
+													</center>
+													<div class="col-md-4" style="margin-top:2px;">
+														<input id="jenisTarif" name="jenis_tarif" type="text"
+															class="form-control input-md" disabled>
+													</div>
+													<div class="col-md-3">
+														<label style="">
+															<div class="icheckbox_square-green"
+																style="position: relative;">
+																<input type="checkbox" class="i-checks"
+																	style="position: absolute; opacity: 0;" id="wni"
+																	name="wni" value="0">
+
+															</div>
+															WNA
+														</label>
+													</div>
+												</div>
+												<div class="row">
+													<center><label class="col-md-12 control-label"
+															style="">Email</label>
+													</center>
+													<div class="col-md-6" style="margin-top:2px;">
+														<input id="email" name="email" type="email"
+															class="form-control input-md">
+													</div>
+												</div>
+												<div class="row">
+													<div class="col-md-3">
+														<label class="control-label" style="">Keterangan </label>
+													</div>
+													<div class="col-md-9">
+														<input id="keterangan" name="keterangan" type="text"
+															class="form-control input-md ">
+													</div>
+												</div>
+
+												<div class="row">
+													<div class="col-md-5">
+														<div class="col-md-5">
+															<label class="control-label" style="">Identitas </label>
+														</div>
+														<div class="col-md-9">
+															<select class="form-control input-md" id="identitas"
+																name="identitas">
+																<option value="1">E-KTP</option>
+																<option value="2">SIM</option>
+																<option value="3">KTM</option>
+																<option value="4">Passport</option>
+																<option value="5">lain-lain</option>
+															</select>
+														</div>
+													</div>
+
+													<div class="col-md-7">
+														<div class="col-md-4">
+															<label class="control-label" style="">No.Identitas </label>
+														</div>
+														<div class="col-md-8">
+															<input id="noEKTP" name="noEKTP" type="text"
+																class="form-control input-md"
+																style="background-color:#F8AC5A">
+														</div>
+
+
+													</div>
+												</div>
+
+
+											</div>
+
+										</div>
+										<div class="form-row"
+											style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
+											<div class="col-md-6">
+												<div class="row">
+													<div class="col-md-3">
+														<label class="control-label" style="">Kelompok Pasien
+														</label>
+													</div>
+													<div class="col-md-2">
+														<input id="idKlpPasien" name="kdAsuransi" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaKlpPasien" name="namaKlpPasien" type="text"
+															class="form-control input-md " readonly>
+													</div>
+
+													<div class="col-md-2">
+														<button id="btnFindKlpPasien" class="btn btn-success btn-xs"
+															id=" ">
+															Cari
+														</button>
+													</div>
+
+												</div>
+												<div class="row">
+													<div class=" col-md-3">
+														<label class="control-label" style="">Nama Perusahaan </label>
+													</div>
+													<div class="col-md-2">
+														<input id="customerId" name="customerId" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaPerusahaan" name="" type="text"
+															class="form-control input-md " readonly>
+													</div>
+
+													<div class="col-md-2">
+														<button class="btn btn-success btn-xs" id="btnFindcustomerId">
+															Cari
+														</button>
+													</div>
+												</div>
+
+												<div class="row" style="margin-right:-20px">
+													<div class="col-md-3">
+														<label class="control-label" style="">Nama Asuransi </label>
+													</div>
+													<div class="col-md-8">
+														<input id="namaAsuransi" name="namaAsuransi" type="text"
+															class="form-control input-sm ">
+													</div>
+												</div>
+
+												<div class="row" style="margin-right:-20px">
+													<div class="col-md-3">
+														<label class="control-label" style="">No. Kartu Asuransi
+														</label>
+													</div>
+													<div class="col-md-8">
+														<input id="noAsuransi" name="noAsuransi" type="text"
+															class="form-control input-sm ">
+													</div>
+												</div>
+
+
+											</div>
+										</div>
+									</div>
+								</div>
+								<div role="tabpanel" id="tab-2" class="tab-pane">
+									<div class="panel-body"
+										style="color:#181717;background-color: rgb(86, 87, 149);padding:5px;margin: 5px;">
+										<div class="form-row"
+											style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
+											<div class="col-md-4">
+												<label class="control-label col-md-12">Agama</label>
+												<div class="row">
+													<div class="col-md-3">
+														<input id="idAgama" name="idAgama" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaAgama" name="" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button id="btnFindAgama" class="btn btn-success btn-xs">
+															Cari
+														</button>
+													</div>
+												</div>
+												<label class="control-label col-md-12">Status Marital</label>
+												<div class="row">
+													<div class="col-md-3">
+														<input id="idMarital" name="idMarital" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaMarital" name="" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn btn-success btn-xs" id="btnFindMarital">
+															Cari
+														</button>
+													</div>
+												</div>
+												<label class="col-md-12 control-label" style="margin-left:10px;">Bahasa
+												</label>
+												<div class="row">
+
+													<div class="col-md-3">
+														<input id="idBahasa" name="idBahasa" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaBahasa" name="namaBahasa" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs" id="btnFindBahasa">cari
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<label class="control-label mleft50" style="">Pendidikan </label>
+												<div class="row">
+													<div class="col-md-3">
+														<input id="idPendidikan" name="idPendidikan" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaPendidikan" name="" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn btn-success btn-xs" id="btnFindPendidikan">
+															Cari
+														</button>
+													</div>
+												</div>
+												<label class="control-label mleft50" style="">Pekerjaan </label>
+												<div class="row">
+													<div class="col-md-3">
+														<input id="idPekerjaan" name="idPekerjaan" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaPekerjaan" name="" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn btn-success btn-xs" id="btnFindPekerjaan">
+															Cari
+														</button>
+													</div>
+												</div>
+											</div>
+											<div class="col-md-4">
+												<label class="control-label mleft50" style="">Gol Darah </label>
+												<div class="row">
+													<div class="col-md-3">
+														<input id="idGolDarah" name="idGolDarah" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaGolDarah" name="" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn btn-success btn-xs" id="btnFindGolDarah">
+															Cari
+														</button>
+													</div>
+												</div>
+												<label class="control-label" style="margin-left:10px;">Suku
+												</label>
+												<div class="row">
+
+													<div class="col-md-3">
+														<input id="idSuku" name="idSuku" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaSuku" name="namaSuku" type="text"
+															class="form-control input-md " readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs" id="btnFindSuku">cari
+														</button>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>

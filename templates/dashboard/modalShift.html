@@ -1,0 +1,43 @@
+<div id="modalShift" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Shift</h4>
+            </div>
+            <div class="modal-body" style="padding: 20px 30px 20px 30px;">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="shift_tanggal">Tanggal Shift</label>
+                            <input style="padding: 0px 6px 0px 6px; background-color: white;" class="form-control" type="date" id="shift_tanggal" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="div_shift_pagi" class="row" style="margin-top: 0.5rem;">
+                    <div class="col-md-12">
+                        <input class="i-checks" type="radio" id="shift_pagi" name="shift_aktif" disabled>
+                        <label for="shift_pagi" style="margin-left: 0.5rem;"> Pagi</label>
+                    </div>
+                </div>
+                <div id="div_shift_siang" class="row" style="margin-top: 0.5rem;">
+                    <div class="col-md-12">
+                        <input class="i-checks" type="radio" id="shift_siang" name="shift_aktif" disabled>
+                        <label for="shift_siang" style="margin-left: 0.5rem;"> Siang</label>
+                    </div>
+                </div>
+                <div id="div_shift_malam" class="row" style="margin-top: 0.5rem;">
+                    <div class="col-md-12">
+                        <input class="i-checks" type="radio" id="shift_malam" name="shift_aktif" disabled>
+                        <label for="shift_malam" style="margin-left: 0.5rem;"> Malam</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn_shift_ok">Ok</button>
+                <button type="button" class="btn btn-warning" id="btn_shift_tutup">Tutup Shift</button>
+                <button type="button" class="btn btn-danger" id="btn_shift_keluar">Keluar</button>
+            </div>
+        </div>
+    </div>
+</div>

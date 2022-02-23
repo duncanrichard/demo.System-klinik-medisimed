@@ -1,0 +1,57 @@
+
+    <div class="col-lg-12">
+        <div class="tabs-container">
+            <!-- <ul class="nav nav-tabs"> -->
+                <!-- <li class=""><a data-toggle="tab" href="#tab-1"> Kasir Radiologi</a></li> -->
+                <!-- <li class="active"><a data-toggle="tab" href="#tab-1">Kasir Radiologi</a></li>                 -->
+            <!-- </ul> -->
+            <div class="tab-content">
+
+                <!-- <div id="tab-1" class="tab-pane">
+                    <div class="panel-body" style="background:#f0f0f0">
+                        {% comment %} Nama Keluarga - ASURANSI {% endcomment %}
+                        <div class="col-md-12">
+                            {% include 'radiologi/kasir_radiologi/row/tab1/row1.html' %}
+                        </div>
+                        {% comment %} ALAMAT & TEMPAT KERJA {% endcomment %}
+                        <div class="col-md-12">
+                            {% include 'radiologi/kasir_radiologi/row/tab1/row2.html' %}
+                        </div>
+                        {% comment %} DATA KELUARGA {% endcomment %}
+                        <div class="col-md-12">
+                            {% include 'radiologi/kasir_radiologi/row/tab1/row3.html' %}
+                        </div>
+                                         
+                                                
+                    </div>
+                </div> -->
+
+                <div id="tab-1" class="tab-pane active">
+                    <div class="panel-body">      
+                        <div class="col-md-12">                  
+                            {% include 'radiologi/kasir_radiologi/row/tab2/row1.html' %}
+                        </div>
+
+                        <div class="col-md-12" style="padding-top:20px;">                  
+                            {% include 'radiologi/kasir_radiologi/row/tab2/row2.html' %}                        
+                        </div>
+
+                        <div class="col-md-12">
+                            {% include 'radiologi/kasir_radiologi/row/tab2/row3.html' %}                        
+                        </div>
+
+                        <div class="col-md-12">
+                            {% include 'radiologi/kasir_radiologi/row/tab2/row4.html' %}
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div> 
+            {% comment %} END TAB CONTENT {% endcomment %}
+
+        </div>
+    </div>    
+
+    
+

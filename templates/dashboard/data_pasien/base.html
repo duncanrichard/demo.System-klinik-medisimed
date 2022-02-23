@@ -1,0 +1,68 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Data Pasien 
+{% endblock %} 
+
+
+{% block head %}
+<style>
+  .swal2-container {
+  z-index: 1000006;
+}
+  div#dxGridDatasupplier.dx-widget {
+    font-size: 12px;
+    line-height: 0.95;
+    height: 240px;
+  }
+  div#DxgridDatasupplier2.dx-widget {
+    font-size: 12px;
+    line-height: 0.8;
+    height: 240px;
+  }
+  div#DxgridDataarea.dx-widget {
+    font-size: 12px;
+    line-height: 0.8;
+    height: 240px;
+  }
+
+ 
+</style>
+{% endblock %} 
+
+
+{% block content %} 
+{% csrf_token %} 
+
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalCustomer.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelcustomer.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelurahan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKecamatan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKabupaten.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalProvinsi.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelamin.html'%} 
+{% include 'dashboard/data_pasien/layout/content.html'%} 
+
+
+{% endblock %} 
+
+
+{% block script %}
+
+{% load static %}
+
+<script type="text/javascript">
+  
+  {% include 'dashboard/data_pasien/js/getPasien.html' %}
+  {% include 'dashboard/data_pasien/js/getCustomer.html' %}
+  {% include 'dashboard/data_pasien/js/getKelcustomer.html' %}
+  {% include 'dashboard/data_pasien/js/getKelurahan.html' %}
+  {% include 'dashboard/data_pasien/js/getKecamatan.html' %}
+  {% include 'dashboard/data_pasien/js/getKabupaten.html' %}
+  {% include 'dashboard/data_pasien/js/getProvinsi.html' %}
+  {% include 'dashboard/data_pasien/js/getKelamin.html' %}
+  {% include 'dashboard/data_pasien/js/init.html' %}
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,392 @@
+<div class="modal inmodal" id='modalPembayaranKasir' tabindex="-1" style="z-index: 5;" role="dialog"
+  aria-labelledby="editModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content  animated bounceInRight entry">
+      <div class="modal-header" style="padding: 10px;">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="modal_pembayaran_label"> Pembayaran</h4>
+      </div>
+
+      <div class="modal-body" id='modal_pembayaran_body' style="background-color: #f3f3f3">
+        <div class="row">
+          <div class="col-md-6">
+
+            <div class="row">
+              <label class="col-md-3">No.Kwitansi</label>
+              <div class="col-md-9">
+                <input readonly type="text" name="no_kwitansi_pembayaran" id="no_kwitansi_pembayaran"
+                  class="no_kwitansi form-control input-sm">
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-3">Pasien</label>
+              <div class="col-md-3">
+                <input readonly type="text" name="id_pasien_pembayaran" id="id_pasien_pembayaran" class="form-control input-sm">
+              </div>
+              <div class="col-md-6">
+                <input readonly type="text" name="nama_pasien_pembayaran" id="nama_pasien_pembayaran"
+                  class="form-control input-sm">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <label class="col-md-3">Tanggal</label>
+              <div class="col-md-5">
+                <input type="date" style="padding: 0px;" name="tanggal_trans" id="tanggal_trans"
+                  class="form-control input-sm">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+                <input type="text" name="id_tpay_pembayaran" id="id_tpay_pembayaran" class="form-control input-sm">
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr style="margin: 10px 0px; border-top: 1px solid #cfcfcf;">
+        <div class="row">
+          <label class="col-md-2">Grand Total</label>
+          <div class="col-md-2">
+            <input readonly type="text" name="grand_total_pembayaran" id="grand_total_pembayaran"
+              class="form-control input-sm text-right input-rupiah">
+          </div>
+          <label class="col-md-2">Beban Pasien</label>
+          <div class="col-md-2">
+            <input readonly type="text" name="beban_pasien_pembayaran" id="beban_pasien_pembayaran"
+              class="form-control input-sm text-right input-rupiah">
+          </div>
+          <label class="col-md-2">Total Dijamin</label>
+          <div class="col-md-2">
+            <input type="text" name="total_dijamin_pembayaran" id="total_dijamin_pembayaran"
+              class="form-control input-sm text-right input-rupiah">
+          </div>
+        </div>
+        <hr style="margin: 10px 0px;border-top: 1px solid #cfcfcf;">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-3">
+                <label class="control-label">bayar Kredit/Debit</label>
+              </div>
+              <div class="col-md-3">
+                <label class="control-label">Jumlah (Rp)</label>
+              </div>
+              <div class="col-md-4">
+                <label class="control-label">Bank EDC:</label>
+              </div>
+              <div class="col-md-2">
+                <label class="control-label">No Kartu</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <fieldset>
+                  <div class="switch-toggle switch-candy switch-candy-custom">
+                    <input id="kasir_debit_1" class="kasir_debit_kredit_1" name="pembayaran_debet[0]" value="1"
+                      type="radio" checked>
+                    <label for="kasir_debit_1">Debit</label>
+                    <input id="kasir_kredit_1" class="kasir_debit_kredit_1" name="pembayaran_debet[0]" value="0"
+                      type="radio">
+                    <label for="kasir_kredit_1">Kredit</label>
+                    <a></a>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="jumlah_pembayaran_1" class="form-control input-sm text-right input-rupiah">
+              </div>
+
+              <div class="col-md-5">
+                <div class="row">
+                  <div class="col-md-4">
+                    <input type="text" id="id_edc_1" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" id="nama_edc_1" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-default btn-xs" id="gridFindPay_1"><span
+                        class="fa fa-search"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="no_kartu_1" class="form-control input-sm">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <fieldset>
+                  <div class="switch-toggle switch-candy switch-candy-custom">
+                    <input id="kasir_debit_2" class="kasir_debit_kredit_2" name="pembayaran_debet[1]" value="1"
+                      type="radio" checked>
+                    <label for="kasir_debit_2">Debit</label>
+                    <input id="kasir_kredit_2" class="kasir_debit_kredit_2" name="pembayaran_debet[1]" value="0"
+                      type="radio">
+                    <label for="kasir_kredit_2">Kredit</label>
+                    <a></a>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="jumlah_pembayaran_2" class="form-control input-sm text-right input-rupiah">
+              </div>
+              <div class="col-md-5">
+                <div class="row">
+
+                  <div class="col-md-4">
+                    <input type="text" id="id_edc_2" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" id="nama_edc_2" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-default btn-xs" id="gridFindPay_2"><span
+                        class="fa fa-search"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="no_kartu_2" class="form-control input-sm">
+              </div>
+            </div>
+            <div class="row" id="bank">
+              <div class="col-md-3">
+                <fieldset>
+                  <div class="switch-toggle switch-candy switch-candy-custom">
+                    <input id="kasir_debit_3" class="kasir_debit_kredit_3" name="pembayaran_debet[2]" value="1"
+                      type="radio" checked>
+                    <label for="kasir_debit_3">Debit</label>
+                    <input id="kasir_kredit_3" class="kasir_debit_kredit_3" name="pembayaran_debet[2]" value="0"
+                      type="radio">
+                    <label for="kasir_kredit_3">Kredit</label>
+                    <a></a>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="jumlah_pembayaran_3" class="form-control input-sm text-right input-rupiah">
+              </div>
+
+              <div class="col-md-5">
+                <div class="row">
+
+                  <div class="col-md-4">
+                    <input type="text" id="id_edc_3" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" id="nama_edc_3" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-default btn-xs" id="gridFindPay_3"><span
+                        class="fa fa-search"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="no_kartu_3" class="form-control input-sm">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <fieldset>
+                  <div class="switch-toggle switch-candy switch-candy-custom">
+                    <input id="kasir_debit_4" class="kasir_debit_kredit_4" name="pembayaran_debet[3]" value="1"
+                      type="radio" checked>
+                    <label for="kasir_debit_4">Debit</label>
+                    <input id="kasir_kredit_4" class="kasir_debit_kredit_4" name="pembayaran_debet[3]" value="0"
+                      type="radio">
+                    <label for="kasir_kredit_4">Kredit</label>
+                    <a></a>
+                  </div>
+                </fieldset>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="jumlah_pembayaran_4"
+                  class="jumlah_kartu form-control input-sm text-right input-rupiah">
+              </div>
+
+              <div class="col-md-5">
+                <div class="row">
+
+                  <div class="col-md-4">
+                    <input type="text" id="id_edc_4" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-6">
+                    <input type="text" id="nama_edc_4" class="form-control input-sm">
+                  </div>
+                  <div class="col-md-2">
+                    <button class="btn btn-default btn-xs" id="gridFindPay_4"><span
+                        class="fa fa-search"></span></button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <input type="text" id="no_kartu_4" class="form-control input-sm">
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-3" style="border-left: 1px solid #ccc">
+            <div class="row">
+              <div class="col-md-6">
+                <label class="control-label">voucher</label>
+              </div>
+              <div class="col-md-6">
+                <label class="control-label">kd voucher</label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <input readonly type="text" id="voucher_pembayaran_1" class="form-control input-sm input-rupiah">
+              </div>
+              <div class="col-md-4">
+                <input type="text" id="no_voucher_1" class="form-control input-sm">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-default btn-xs" id="gridFindVoucher1">
+                  <span class="fa fa-search"></span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <input readonly type="text" id="voucher_pembayaran_2" class="form-control input-sm input-rupiah">
+              </div>
+              <div class="col-md-4">
+                <input type="text" id="no_voucher_2" class="form-control input-sm">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-default btn-xs" id="gridFindVoucher2">
+                  <span class="fa fa-search"></span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <input readonly type="text" id="voucher_pembayaran_3" class="form-control input-sm input-rupiah">
+              </div>
+              <div class="col-md-4">
+                <input type="text" id="no_voucher_3" class="form-control input-sm">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-default btn-xs" id="gridFindVoucher3">
+                  <span class="fa fa-search"></span>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <input readonly type="text" id="voucher_pembayaran_4" class="form-control input-sm input-rupiah">
+              </div>
+              <div class="col-md-4">
+                <input type="text" id="no_voucher_4" class="form-control input-sm">
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-default btn-xs" id="gridFindVoucher4">
+                  <span class="fa fa-search"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-3">
+                <label> Total Bank </label>
+              </div>
+              <div class="col-md-3">
+                <input readonly type="text" name="jumlah_kartu" id="jumlah_kartu_total"
+                  class="jumlah_kartu_total form-control input-sm text-right input-rupiah">
+              </div>
+            </div>
+
+
+          </div>
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-md-4">
+                <label>total</label>
+              </div>
+              <div class="col-md-8">
+                <input readonly type="text" name="total_voucher" id="total_voucher"
+                  class="form-control input-sm text-right input-rupiah">
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr style="margin: 10px 0px;border-top: 1px solid #cfcfcf;">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="control-label">Sudah diterima di</label>
+              <input type="text" id="nama_diterima" class="form-control input-sm">
+            </div>
+            <div class="row form-group">
+              <div class="pull-right">
+                <button class="btn btn-primary" id="kwitansi_pembayaran">KWITANSI</button>
+                <button class="btn btn-primary" id='simpanBayar'>SIMPAN</button>
+                <button class="btn btn-primary" id="keluar_pembayaran">KELUAR</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <label class="col-md-5">
+                Piutang Pasien Perorangan
+              </label>
+              <div class="col-md-7">
+                <input type="text" id="nominal_piutang" class="form-control input-sm text-right input-rupiah">
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-5">
+
+              </label>
+              <div class="col-md-7">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="date" name="tanggal_piutang" id="tanggal_piutang" class="form-control input-sm"
+                      style="padding: 0">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-inline"><input type="checkbox" id="status_piutang"
+                        class="form-control input-sm" value="1" id="doPiutang"> Piutang?
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-5">
+                Jumlah Bayar Tunai
+              </label>
+              <div class="col-md-7">
+                <input readonly type="text" id="nominal_tunai" class="form-control input-sm text-right input-rupiah">
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-5">
+                Jumlah fisik Uang Tunai
+              </label>
+              <div class="col-md-7">
+                <input type="text" id="nominal_fisik" class="form-control input-sm text-right input-rupiah">
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-5">
+                Kembali
+              </label>
+              <div class="col-md-7">
+                <input type="text" id="nominal_kembali" class="form-control input-sm text-right input-rupiah">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="modal_pembayaran_footer">
+      </div>
+    </div>
+  </div>
+</div>

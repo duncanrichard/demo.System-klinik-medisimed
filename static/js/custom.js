@@ -1,7 +1,7 @@
-$(document).ready(function() {
+$(document).ready(function () {
     $('[data-toggle="tooltip"]').tooltip();
 
-    $('.modal').on('hidden.bs.modal', function(e) {
+    $('.modal').on('hidden.bs.modal', function (e) {
         $('body').removeAttr("style");
     })
 });
@@ -81,7 +81,7 @@ function format_tanggal(date) {
 function convertToRupiah(angka, separator = null) {
     let is_negative = false;
 
-    if(angka < 0){
+    if (angka < 0) {
         is_negative = true
         angka = angka * -1;
     }
@@ -98,7 +98,7 @@ function convertToRupiah(angka, separator = null) {
         }
     }
 
-    if(is_negative == false){
+    if (is_negative == false) {
         return rupiah.split('', rupiah.length - 1).reverse().join('');
     } else {
         return '-' + rupiah.split('', rupiah.length - 1).reverse().join('');
@@ -106,15 +106,15 @@ function convertToRupiah(angka, separator = null) {
 }
 
 function convertToAngka(rupiah) {
-    if(rupiah != undefined){
+    if (rupiah != undefined) {
         let is_negative = false;
 
-        if(rupiah.charAt(0) == '-'){
+        if (rupiah.charAt(0) == '-') {
             is_negative = true
             rupiah = rupiah.substring(1);
         }
 
-        if(is_negative == false){
+        if (is_negative == false) {
             return checkIsNaN(parseInt(rupiah.replace(/,/g, '').replace(/,.*|[^0-9]/g, ''), 10));
         } else {
             return checkIsNaN(parseInt(rupiah.replace(/,/g, '').replace(/,.*|[^0-9]/g, ''), 10)) * -1;
@@ -126,7 +126,7 @@ function convertToAngka(rupiah) {
 
 function inputRupiah(e, func = null) {
     if (e != null) {
-        e.addEventListener('keyup', function(f) {
+        e.addEventListener('keyup', function (f) {
             var rp = formatRupiah(e.value);
             e.value = rp
         });
@@ -137,33 +137,84 @@ function inputRupiah(e, func = null) {
     }
 }
 
-function formatRupiah(angka, prefix) {
-    var number_string = angka.toString().replace(/[^,\d]/g, '').toString(),
-        split = number_string.split(','),
-        sisa = split[0].length % 3,
-        rupiah = split[0].substr(0, sisa),
-        ribuan = split[0].substr(sisa).match(/\d{1,3}/gi);
-
-    if (ribuan) {
-        separator = sisa ? '.' : '';
-        rupiah += separator + ribuan.join('.');
+function desimal2(string_uang, separator_ribuan = ',') {
+    let separator_desimal = '.'
+    if (separator_ribuan != ',') {
+        separator_ribuan = '.'
+        separator_desimal = ','
+    }
+    if (string_uang == '') {
+        return 0;
     }
 
-    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-    return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+    let array_desimal = string_uang.split(separator_desimal)
+    let array_nominal = array_desimal[0].split(separator_ribuan);
+
+
+    let nominal = array_nominal.join('')
+    let hasil
+    if (array_desimal.length > 1) {
+        hasil = parseFloat(nominal + '.' + array_desimal[1])
+    } else {
+        hasil = parseFloat(nominal)
+    }
+
+    return hasil;
 }
+
+
+function rupiah2(number_uang, separator_ribuan = ',') {
+    var separator_desimal = '.'
+    let array_desimal = number_uang.toString().split(separator_desimal)
+    if (separator_ribuan != ',') {
+        separator_ribuan = '.'
+        separator_desimal = ','
+    }
+    var numberDesimal = ''
+
+
+    if (array_desimal.length > 1) {
+        numberDesimal = array_desimal[1]
+    } else {
+        separator_desimal = ''
+    }
+    number_uang = parseFloat(number_uang)
+    numberInt = parseInt(number_uang)
+
+    let array_nominal = []
+    while (parseInt(numberInt / 1000) >= 1) {
+        let remainder = numberInt % 1000
+        numberInt = parseInt(numberInt / 1000)
+        // console.log(numberInt)
+        array_nominal.push(remainder.toString().padStart(3, 0))
+    }
+
+    if (numberInt > 0) {
+        array_nominal.push(numberInt.toString())
+    }
+
+    if (array_nominal.length == 0) {
+        array_nominal.push('0');
+    }
+
+    var array_satuan = array_nominal.reverse()
+
+    return array_satuan.join(separator_ribuan) + separator_desimal + numberDesimal.toString()
+}
+
+
 
 function checkIsNaN(value) {
     return isNaN(value) == true ? 0 : value;
 }
 
-function showBatch(data) {  
+function showBatch(data) {
     data.forEach(e => {
         $("#" + e).show();
     });
 }
 
-function hideBatch(data) {  
+function hideBatch(data) {
     data.forEach(e => {
         $("#" + e).hide();
     });

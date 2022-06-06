@@ -1,0 +1,344 @@
+// Get Produk
+var selectedProduk = ''
+var JMLselectedProduk = ''
+var counterSelectedProduk = 0
+var selectedDR = ''
+var selectedAN = ''
+var selectedPR = ''
+var arrDataProduk = []
+var TEMPbatch = []
+var TEMPProduk = []
+var TEMPComponent = []
+load_barang = 'unlock'
+$(document).ready(function () {
+    $("#entry_pos_produk2").prop('checked', true)
+    deathtext2()
+    ClearText2()
+    ClearText()
+
+    $('#jenis_tarif').change(function () {
+        getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+    })
+
+    $('#add_btn').click(function (e) {
+
+        LiveText2()
+        ClearText2()
+        if ($("#Parent").val() == '') {
+            $("#Parent").val('0')
+            $("#level").val('0')
+        } else {
+            $("#Parent").val($("#kode_Induk").val())
+            $("#level").val('1')
+            $("#kode_Induk").val('')
+
+        }
+
+
+    })
+    $('#edit_btn').click(function (e) {
+        if ($("#kode_Induk").val() == '') {
+            alert('Pilih Data kode Induk Dahulu')
+        } else {
+            LiveText2()
+        }
+    })
+    $('#save_btn').click(function (e) {
+        error_in_field2()
+        if (Cekeror == true) {
+            $.ajax({
+                url: host + "save_produk_kelas",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode_Induk': $("#kode_Induk").val(),
+                    'nama_Induk': $("#nama_Induk").val(),
+                    'Parent': $("#Parent").val(),
+                    'pos_produk': $("[name=pos_produk]:checked").val(),
+                    'level': $("#level").val(),
+                    'kode_tarip': $("#jenis_tarif").val(),
+                    'kode_gol_tarip': $("#entry_kd_gol_klas").val(),
+                    "FMKGOLOK": 0,
+                    "status_aud": 'A',
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    deathtext2()
+                    getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+                    getProdukDetail('dataProdukDetail')
+                }
+            })
+        }
+    })
+    $('#cancel_btn').click(function (e) {
+        ClearText2()
+        deathtext2()
+    })
+    $('#remove_btn').click(function (e) {
+        if ($("#kode_Induk").val() == '') {
+            alert('Pilih Data kode Induk Dahulu')
+        } else {
+            $.ajax({
+                url: host + "save_produk_kelas",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode_Induk': $("#kode_Induk").val(),
+                    'nama_Induk': $("#nama_Induk").val(),
+                    'Parent': $("#Parent").val(),
+                    'level': $("#level").val(),
+                    "status_aud": 'D',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    if (datas.status == 'sukses') {
+                        alert('Data berhasil dihapus ' + datas.data)
+                        deathtext2()
+                        ClearText2()
+                        $("#kode_Induk").val('')
+                        getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+                        getProdukDetail('dataProdukDetail')
+
+                    } else {
+                        alert('gagal ' + datas.data)
+                    }
+
+                }
+            })
+        }
+    })
+
+
+})
+
+function checkHaveChild(data, id) {
+    var isExist = 0
+
+    data.forEach(element => {
+        if (element.hasOwnProperty('PARENT') && element.PARENT == id) {
+            isExist = 1
+        }
+    });
+
+    return isExist == 1 ? true : false
+}
+
+function dxTreeView(id, id_dataGrid, data) {
+    $("#" + id).dxTreeView({
+        items: data,
+        dataStructure: "plain",
+        parentIdExpr: "PARENT",
+        keyExpr: "FMKKLAS_ID",
+        displayExpr: function (item) {
+            return '' + item.FMKKLAS_ID + ', ' + item.FMKKLASN;
+        },
+        expandEvent: 'click',
+        searchEnabled: true,
+        scrollDirection: 'both',
+        onItemClick: function (e) {
+            $("#kode_Induk").val(e.itemData.FMKKLAS_ID)
+            $("#nama_Induk").val(e.itemData.FMKKLASN)
+            $("#entry_kd_gol_klas").val(e.itemData.FMKGOLTARIP)
+            $("#entry_nama_gol_klas").val(e.itemData.KPGNAMA)
+            var status2 = parseInt(e.itemData.FMPPOSFLAG)
+            if (status2 == 0) {
+                $("#entry_pos_produk1").prop('checked', true)
+            } else {
+                $("#entry_pos_produk2").prop('checked', true)
+            }
+            console.log('t')
+            console.log(e)
+            if (e.itemData.PARENT == undefined) {
+                $("#Parent").val('0')
+                $("#NamaParent").val('Root')
+            } else {
+                $("#Parent").val(e.itemData.PARENT)
+                $("#NamaParent").val(e.itemData.induk)
+
+            }
+            $("#level").val(e.itemData.LEVEL)
+            getProdukDetail(id_dataGrid, e.itemData.FMKKLAS_ID)
+            getproduk()
+        },
+        onItemExpanded: function (e) {
+            e.itemElement[0].firstChild.innerHTML = "<i class='fa fa-folder-open' style='margin-top: 4px;font-size: 18px;margin-right: 2px;color:#fcc838'></i> " + e.itemData.FMKKLAS_ID + ', ' + e.itemData.FMKKLASN
+        },
+        onItemCollapsed: function (e) {
+            e.itemElement[0].firstChild.innerHTML = "<i class='fa fa-folder' style='margin-top: 4px;font-size: 18px;margin-right: 2px;color:#fcc838'></i> " + e.itemData.FMKKLAS_ID + ', ' + e.itemData.FMKKLASN
+        },
+        itemTemplate: function (itemData, itemIndex, itemElement) {
+            if (checkHaveChild(data, itemData.FMKKLAS_ID)) {
+                itemElement.append("<i class='fa fa-folder' style='margin-top: 4px;font-size: 18px;margin-right: 2px;color:#fcc838'></i> " + itemData.FMKKLAS_ID + ', ' + itemData.FMKKLASN);
+            } else {
+                itemElement.append("<i class='fa fa-medkit' style='margin-top: 4px;font-size: 18px;margin-right: 2px;color:#ff8f00'></i> " + itemData.FMKKLAS_ID + ', ' + itemData.FMKKLASN);
+            }
+        },
+    });
+}
+
+function getProdukHeader(idDxTreeView, idGridProduk) {
+    var jenis_tarip = $("#jenis_tarif").val()
+    $.ajax({
+        url: host + "getProdukHeader",
+        method: "GET",
+        data: {
+            "jenis_tarip": jenis_tarip,
+        },
+        success: function (e) {
+            dxTreeView(idDxTreeView, idGridProduk, e)
+        }
+    })
+}
+
+function getProdukDetail(idGridProduk, id = null) {
+    var gridDataProduk = []
+    var jenis_tarip = $("#jenis_tarif").val()
+    if (id != null) {
+        gridDataProduk = new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "getProdukDetail",
+                    method: "GET",
+                    data: {
+                        "id_produk": id,
+                        "jenis_tarip": jenis_tarip,
+                    }
+                })
+            }
+        });
+    }
+
+    $("#" + idGridProduk).dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        // filterRow: {
+        //     visible: true
+        // },
+
+        searchPanel: {
+            visible: true
+        },
+        dataSource: gridDataProduk,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // selection: {
+        //     mode: "multiple"
+        // },
+        columns: [{
+                dataField: "FMKKLAS_ID",
+                caption: "kode Induk Produk",
+                width: "120"
+            },
+            {
+                dataField: "FMKKLASN",
+                caption: " Nama Induk Produk",
+            },
+            {
+                dataField: "PARENT",
+                caption: "PARENT",
+            }
+        ],
+        onSelectionChanged: function (selectedItems) {
+            selectedProduk = selectedItems.selectedRowsData
+        },
+
+        onRowClick: function (e) {
+            if (load_barang == 'unlock') {
+                Tampilkandata(e)
+            }
+        }
+    });
+}
+
+function Tampilkandata(e) {
+
+    $("#kode_Induk").val(e.data.FMKKLAS_ID)
+    $("#nama_Induk").val(e.data.FMKKLASN)
+    $("#entry_kd_gol_klas").val(e.data.FMKGOLTARIP)
+    $("#entry_nama_gol_klas").val(e.data.KPGNAMA)
+    var status2 = parseInt(e.data.FMPPOSFLAG)
+    if (status2 == 0) {
+        $("#entry_pos_produk1").prop('checked', true)
+    } else {
+        $("#entry_pos_produk2").prop('checked', true)
+    }
+    if (e.data.PARENT == undefined) {
+        $("#Parent").val('0')
+        $("#NamaParent").val('Root')
+    } else {
+        $("#Parent").val(e.data.PARENT)
+        $("#NamaParent").val(e.data.induk)
+    }
+    $("#level").val(e.data.LEVEL)
+
+
+    getproduk()
+}
+
+function deathtext2() {
+    setDisabled('add_btn', 1)
+    setDisabled('edit_btn', 1)
+    setDisabled('save_btn', 0)
+    setDisabled('cancel_btn', 0)
+    setDisabled('remove_btn', 1)
+    setReadOnly('kode_Induk', 1)
+    setReadOnly('nama_Induk', 1)
+    setReadOnly('entry_kd_gol_klas', 1)
+    setReadOnly('entry_nama_gol_klas', 1)
+    setDisabled('findGolKlasProduk', 0)
+    setDisabled('entry_pos_produk1', 0)
+    setDisabled('entry_pos_produk2', 0)
+
+}
+
+function LiveText2() {
+    setDisabled('add_btn', 0)
+    setDisabled('edit_btn', 0)
+    setDisabled('save_btn', 1)
+    setDisabled('cancel_btn', 1)
+    setDisabled('remove_btn', 0)
+    setReadOnly('kode_Induk', 0)
+    setReadOnly('nama_Induk', 0)
+    setReadOnly('entry_kd_gol_klas', 0)
+    setReadOnly('entry_nama_gol_klas', 1)
+    setDisabled('findGolKlasProduk', 1)
+    setDisabled('entry_pos_produk1', 1)
+    setDisabled('entry_pos_produk2', 1)
+}
+
+function ClearText2() {
+    // $("#kode_Induk").val('')
+    $("#nama_Induk").val('')
+    $("#entry_kd_gol_klas").val()
+    $("#entry_nama_gol_klas").val()
+}
+
+function error_in_field2() {
+    Cekeror = true;
+    if ($("#kode_Induk").val() == '') {
+        alert('kode Induk tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#nama Induk").val() == '') {
+        alert('nama Induk tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#entry_kd_gol_klas Induk").val() == '') {
+        alert('nama kelompok tarif tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#Parent").val() == '') {
+        alert('Parent tidak boleh kosong')
+        Cekeror = false;
+    }
+    return Cekeror;
+}

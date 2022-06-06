@@ -98,3 +98,9 @@ function enterFocusTo(id, nextId, callback = null) {
 
     })
 }
+
+function exitBack(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    window.history.back();
+}

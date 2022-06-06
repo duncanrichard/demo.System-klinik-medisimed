@@ -1,0 +1,95 @@
+$(document).ready(function () {
+
+    $('#btn_cari_mutasi').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        cariDaftarPasien()
+    })
+
+    $("#mutasi_tanggal").change(function () {
+        cariDaftarPasien()
+    })
+
+    $("#select_mutasi").change(function () {
+        cariDaftarPasien()
+    })
+
+
+
+});
+
+function cariDaftarPasien() {
+    $("#DataDaftarPasien").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        // searchPanel: {
+        //     visible: true
+        // },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getDaftarPasien",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'pasien': $('#mutasi_pasien').val(),
+                        'nama_pasien': $('#mutasi_nama').val(),
+                        'idAsal_cabang': "{{request.session.kdCabang}}",
+                    },
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KPKD_PASIEN",
+                caption: "Kode Pasien",
+            },
+            {
+                dataField: "NAMAPASIEN",
+                caption: "Nama Pasien",
+            },
+            {
+                dataField: "ALAMAT",
+                caption: "Alamat Pasien",
+            },
+            {
+                dataField: "KPNO_TRANSAKSI",
+                caption: "No Transaksi",
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "Tanggal",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#idPasien").val(e.data.KPKD_PASIEN);
+            $("#no_transaksi").val(e.data.KPNO_TRANSAKSI);
+            $('#tgl_periksa').val(e.data.TANGGAL.substr(0, 10));
+            getDataPasien($("#idPasien").val());
+            $('#ModalDaftarRJ').modal('hide');
+            $('#nama_pasien').focus()
+        }
+    });
+}

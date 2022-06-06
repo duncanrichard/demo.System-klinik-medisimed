@@ -117,24 +117,9 @@ class Globals:
 			cursor = connections['epublic'].cursor()
 
 		cursor.execute(query, params)
+
+		result = self.fetchResult(cursor,setIndex)
 		
-		result = None
-		i = 0
-
-		while result is None :
-			try:
-				result = self.dictfetchall(cursor)
-				
-				i+= 1
-				if(i == setIndex):
-					break
-				else :
-					result = None
-					cursor.nextset()
-				
-			except ProgrammingError as e:
-				cursor.nextset()
-
 		cursor.close()
 		return result
 
@@ -222,6 +207,27 @@ class Globals:
 		f.write('==============================================' + "\r\n")
 
 		f.close()
+
+	def generateData(self, data):
+		result = []
+		jsonData = []
+
+		for x in data:
+			cursor = connection.cursor()
+			cursor.execute(x['query'])
+			result.append(self.dictfetchall(cursor))
+
+		i = 0
+		for y in data:
+			jsonData.append({
+				"query": y['query'],
+				"data": result[i]
+			})
+
+			i+=1
+
+		return jsonData
+
 
 	def tanggalIndo(self, date):
 		tgl = date.split("-")
@@ -318,3 +324,30 @@ class Globals:
 					os.rmdir(os.path.join(root, directory))
 		
 		os.chdir(root_path)
+
+	
+	def fetchResult(self,cursor,setIndex = 1):
+		i = 0
+		results = self.dictfetchall(cursor)
+		# pprint(results)
+		if results is None:
+			return None
+		else :
+			i+= 1
+			# print(i)
+			# print(setIndex)
+			if (i >= setIndex):
+				return results
+			else:
+
+				while i < setIndex :
+					try:
+						cursor.nextset()	
+						results = self.dictfetchall(cursor)
+						i+= 1
+					except ProgrammingError as e:
+						i+= 1
+					except DatabaseError as e:
+						i+= 1
+					
+				return results

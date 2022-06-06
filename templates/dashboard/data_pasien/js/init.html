@@ -17,6 +17,9 @@ todays = today
 $(".today").val(today)
 
 $(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+
     setupAwal()
     enterFocusTo('tempat_lahir', 'tgl_lahir');
     $('#tgl_lahir').change(function (e) {
@@ -98,6 +101,8 @@ $(document).ready(function () {
         $('#tgl_lahir').val(newDate);
     })
 
+
+
     enterFocusTo('usia_thn', 'usia_bln');
     enterFocusTo('usia_bln', 'usia_hari');
     enterFocusTo('usia_hari', 'alamat');
@@ -107,27 +112,156 @@ $(document).ready(function () {
     enterFocusTo('email', 'keterangan');
     enterFocusTo('keterangan', 'noEKTP');
     enterFocusTo('noEKTP', 'idKlpPasien');
-    enterFocusTo('namaAsuransi', 'noAsuransi');
 
     $("#menu_tambah").click(function () {
         Livetext()
         Cleartext()
         canAdd = 1
     })
-    $("#menu_simpan").click(function () {
 
+    $('#menu_edit').click(function () {
+        if ($('#idPasien').val() == '') {
+            alert('Pilih ID Pasien Dulu!')
+        } else {
+            Livetext()
+            setReadOnly('idPasien');
+        }
+    })
+
+    $('#menu_hapus').click(function () {
+        if ($('#idPasien').val() == '') {
+            alert('Pilih Pasien Dulu!')
+        } else {
+            var result = confirm('Yakin data akan dihapus?')
+            var status_aud = "D"
+            if (result) {
+                $.ajax({
+                    url: host + "/GUD_PASIEN",
+                    method: "POST",
+                    data: {
+                        KD_PASIEN: $("#idPasien").val(),
+                        KD_KELURAHAN: $("#idKelurahan").val(),
+                        KD_PENDIDIKAN: $("#idPendidikan").val(),
+                        KD_PEKERJAAN: $("#idPekerjaan").val(),
+                        KD_PERUSAHAAN: $("#customerId").val(),
+                        NAMAPASIEN: $("#nama_pasien").val(),
+                        TGL_LAHIR: $("#tgl_lahir").val(),
+                        GOL_DARAH: $("#idGolDarah").val(),
+                        JENIS_KELAMIN: $("#idKelamin").val(),
+                        STATUS_MARITA: $("#idMarital").val(),
+                        AGAMA: $("#idAgama").val(),
+                        ALAMAT: $("#alamat").val(),
+                        TELEPON: $("#telepon").val(),
+                        KD_POS: $("#kd_pos").val(),
+                        NO_ASURANSI: $("#noAsuransi").val(),
+                        KETERANGAN: $("#keterangan").val(),
+                        NAMA_KELUARGA: $("#nama_keluarga").val(),
+                        TEMPAT_LAHIR: $("#tempat_lahir").val(),
+                        BAHASA: $("#idBahasa").val(),
+                        SUKU: $("#idSuku").val(),
+                        EMAIL: $("#email").val(),
+                        KD_RESELER: $("#idReseler").val(),
+                        status_aud: status_aud,
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        setupAwal()
+                    }
+                });
+            }
+        }
+    })
+
+    $("#menu_simpan").click(function () {
+        checkError()
+        if (cekError == true) {
+            var result = confirm('Yakin data ingin disimpan?')
+            var status_aud = "A"
+            if (result) {
+                $.ajax({
+                    url: host + "/GUD_PASIEN",
+                    method: "POST",
+                    data: {
+                        KD_PASIEN: $("#idPasien").val(),
+                        KD_KELURAHAN: $("#idKelurahan").val(),
+                        KD_PENDIDIKAN: $("#idPendidikan").val(),
+                        KD_PEKERJAAN: $("#idPekerjaan").val(),
+                        KD_PERUSAHAAN: $("#customerId").val(),
+                        NAMAPASIEN: $("#nama_pasien").val(),
+                        TGL_LAHIR: $("#tgl_lahir").val(),
+                        GOL_DARAH: $("#idGolDarah").val(),
+                        JENIS_KELAMIN: $("#idKelamin").val(),
+                        STATUS_MARITA: $("#idMarital").val(),
+                        AGAMA: $("#idAgama").val(),
+                        ALAMAT: $("#alamat").val(),
+                        TELEPON: $("#telepon").val(),
+                        KD_POS: $("#kd_pos").val(),
+                        NO_ASURANSI: $("#noAsuransi").val(),
+                        KETERANGAN: $("#keterangan").val(),
+                        NAMA_KELUARGA: $("#nama_keluarga").val(),
+                        TEMPAT_LAHIR: $("#tempat_lahir").val(),
+                        BAHASA: $("#idBahasa").val(),
+                        SUKU: $("#idSuku").val(),
+                        EMAIL: $("#email").val(),
+                        KD_RESELER: $("#idReseler").val(),
+                        status_aud: status_aud,
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        Deathtext()
+                    }
+                });
+            }
+        }
+
+    })
+
+    $('#menu_cancel').click(function () {
+        setupAwal()
     })
 
     $("#menu_find").click(function () {
         $('#DxGridModalPasien').modal('show')
         cariPasien()
-
-
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
     })
 
 
 
 })
+
+function checkError() {
+    cekError = true;
+    if ($('#idPasien').val() == '') {
+        cekError = false;
+        alert('Isi Id Pasien!')
+    }
+    if ($('#nama_pasien').val() == '') {
+        cekError = false;
+        alert('Isi Nama Pasien!')
+    }
+    if ($('#idKelamin').val() == '') {
+        cekError = false;
+        alert('Isi Jenis Kelamin!')
+    }
+    if ($('#telepon').val() == '') {
+        cekError = false;
+        alert('Isi Telepon!')
+    }
+    if ($('#idKelurahan').val() == '') {
+        cekError = false;
+        alert('Isi Kelurahan!')
+    }
+    if ($('#alamat').val() == '') {
+        cekError = false;
+        alert('Isi Alamat!')
+    }
+    return cekError;
+}
 
 function setupAwal() {
     Deathtext()
@@ -155,7 +289,11 @@ function Cleartext() {
     $('#namaKecamatan').val('');
     $('#idKelurahan').val('');
     $('#namaKelurahan').val('');
+    $('#idReseler').val('');
+    $('#namaReseler').val('');
+
     $('#jenisTarif').val('');
+    $('#telepon').val('');
     $('#email').val('');
     $('#keterangan').val('');
     $('#noEKTP').val('');
@@ -163,7 +301,6 @@ function Cleartext() {
     $('#namaKlpPasien').val('');
     $('#customerId').val('');
     $('#namaPerusahaan').val('');
-    $('#namaAsuransi').val('');
     $('#noAsuransi').val('');
 
     $('#idAgama').val('');
@@ -188,7 +325,7 @@ function Deathtext() {
     menuEnable('menu_hapus');
     menuDisable('menu_simpan');
     menuDisable('menu_cancel');
-    menuEnable('menu_cari');
+    menuEnable('menu_find');
     menuEnable('menu_cetak');
 
     // $('#form .btn').prop('disabled', true);
@@ -230,6 +367,12 @@ function Deathtext() {
     setReadOnly('namaKelurahan')
     btnDisable('btnFindKelurahan')
 
+    setReadOnly('idReseler')
+    setReadOnly('namaReseler')
+    btnDisable('btnFindReseler')
+
+
+
     btnDisable('wni')
     setReadOnly('email')
     setReadOnly('keterangan')
@@ -243,7 +386,6 @@ function Deathtext() {
     setReadOnly('customerId')
     setReadOnly('namaPerusahaan')
     btnDisable('btnFindcustomerId')
-    setReadOnly('namaAsuransi')
     setReadOnly('noAsuransi')
 
     setReadOnly('idAgama')
@@ -282,7 +424,7 @@ function Livetext() {
     menuDisable('menu_hapus');
     menuEnable('menu_simpan');
     menuEnable('menu_cancel');
-    menuEnable('menu_cari');
+    menuDisable('menu_find');
     menuDisable('menu_cetak');
 
     setUnReadOnly('idPasien');
@@ -317,6 +459,10 @@ function Livetext() {
     setReadOnly('namaKelurahan')
     btnEnable('btnFindKelurahan')
 
+    setUnReadOnly('idReseler')
+    setReadOnly('namaReseler')
+    btnEnable('btnFindReseler')
+
     btnEnable('wni')
     setUnReadOnly('email')
     setUnReadOnly('keterangan')
@@ -330,7 +476,6 @@ function Livetext() {
     setReadOnly('customerId')
     setReadOnly('namaPerusahaan')
     btnEnable('btnFindcustomerId')
-    setUnReadOnly('namaAsuransi')
     setUnReadOnly('noAsuransi')
 
     setReadOnly('idAgama')

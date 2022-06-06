@@ -3,6 +3,8 @@
         <span class="navbar-toggler-icon text-white"></span>
     </button>
     <a class="navbar-brand text-white px-4" href="http://{{ request.get_host }}/">IMMODERMA</a>
+    <span class="blinking" style="color:rgb(151, 85, 153);font-weight:bold;font-size: 13pt ">Cabang 
+            {{request.session.kota_cabang}}</span>
     <div class="collapse navbar-collapse" id="main_nav">
         <ul class="navbar-nav mr-auto font-bold">
         {% for navbar in navbars %}

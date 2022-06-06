@@ -2,6 +2,7 @@
 <!doctype html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,22 +23,24 @@
     <link rel="stylesheet" href="{% static 'css/plugins/iCheck/custom.css' %}">
 
     <title>{% block title %}{% endblock %}</title>
-    
+
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    {% csrf_token %} 
+    {% csrf_token %}
 
-    {% include 'layout/navbar.html' %} 
+    {% include 'layout/navbar.html' %}
     {% include 'layout/menubar.html' %}
-    
+
 
     <div class="container-fluid mt-2 mb-2" style="margin: 0 auto;">
         {% block content %}{% endblock %}
     </div>
 
-    <div class="mt-auto bg-white px-3 py-2 font-bold">
+    <div class="mt-auto bg-white px-3 py-2 font-bold ">
         Medisimed © {% now "Y" %} Copyright.
+        <span class="blinking" style="color:rgb(151, 85, 153);font-weight:bold;font-size: 13pt ">Cabang
+            {{request.session.kdCabang}} : {{request.session.nama_cabang}} - {{request.session.kota_cabang}}</span>
     </div>
 
     <script src="{% static 'js/jquery.min.js' %}"></script>
@@ -60,7 +63,7 @@
             radioClass: 'iradio_square-green',
         });
     </script>
-    
+
 </body>
 
 

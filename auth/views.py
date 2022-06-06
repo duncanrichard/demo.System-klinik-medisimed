@@ -18,9 +18,11 @@ def login(request):
     # print("==========================")
     # print(createHashPass("BUDI"))
     # print("==========================")
-    q = "select * from CABANG"
-    cabang = Globals().getDataQuery(q)
-    kdCabang = cabang[0]['CABANG_ID']
+    # q = "select * from CABANG"
+    # cabang = Globals().getDataQuery(q)
+    # kdCabang = cabang[0]['CABANG_ID']
+
+
     response = render(request, 'login.html', {'invalid': False })
 
     # Check Session
@@ -30,6 +32,23 @@ def login(request):
     if request.POST:
         user = checkLogin(str(request.POST['username']), str(request.POST['password']))
         if user != None:
+            # cek cabang dulu lebih dari 1 apa tidak
+            q = "select * from CABANG"
+            cabang = Globals().getDataQuery(q)
+            home = ''
+            if len(cabang) > 1:
+                request.session['kd_cabangpri'] = 1
+                home = '/cabang'
+                kdCabang = cabang[0]['CABANG_ID']
+            else:
+                request.session['kd_cabangpri'] = 0
+                home = '/'
+                kdCabang = cabang[0]['CABANG_ID']
+                request.session['kdCabang'] = kdCabang
+                request.session['kota_cabang'] = cabang[0]['KOTA']
+                request.session['nama_cabang'] = cabang[0]['PERUSAHAAN']
+                request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
+
             # cek gudang
             q = "select a.USER_ID, a.USER_PRIV, b.GUDANG, c.NAME_WH, c.BRANCH from USERSPRIV as a left join PRIVILEGE as b on a.USER_PRIV = b.USER_PRIV left join WAREHOUSE as c on b.GUDANG = c.WH_ID where a.USER_ID = %s"
             rows = Globals().getDataQuery(q, [user['USER_ID']])
@@ -44,6 +63,9 @@ def login(request):
             # DELETE STATIC FILES
             Globals().deleteFiles()
             Globals().deleteFiles("/DEBUG/")
+
+
+            
 
             if rows[0]['USER_PRIV'] == None or rows[0]['GUDANG'] == None:
                 qgudang = "select top 1 * from WAREHOUSE"
@@ -60,9 +82,7 @@ def login(request):
                 request.session['nama_gudang'] = rows[0]['NAME_WH'].strip()
                 request.session['branch'] = kdCabang
 
-            request.session['kota_cabang'] = cabang[0]['KOTA']
-            request.session['nama_cabang'] = cabang[0]['PERUSAHAAN']
-            request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
+            
 
             qprivilege = 'SELECT TOP 1 * FROM PRIVILEGE WHERE USER_PRIV = %s'
             dataprivilege = Globals().getDataQuery(qprivilege, [request.session['user_priv']])
@@ -88,7 +108,7 @@ def login(request):
                     request.session['shift_next'] = x['SHIFT_NEW'].strip()
 
             request.session.modified = True
-            return redirect('/')
+            return redirect(home)
 
         else:
             response = render(request, 'login.html', {'invalid': True, 'message': 'Username atau password Anda salah'})
@@ -103,6 +123,16 @@ def logout(request):
 	for cookie in request.COOKIES:
 		response.delete_cookie(cookie)
 	return response
+
+def getCabang(request):
+    user_id = request.GET['user_id']
+    q = " select A.CABANG_ID,A.PERUSAHAAN,A.ALAMAT1,A.TELEPON from CABANG A INNER JOIN USER_CABANG B  "
+    q += " ON A.CABANG_ID=B.CABANG_ID WHERE B.USER_ID =%s  order by A.CABANG_ID "
+
+    # pprint(proc_param)
+    result = Globals().getDataQuery(q, [user_id])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
 
 def checkLogin(username, password):
     q = "select top 1 * from USERSPRIV where USER_ID=%s"

@@ -63,7 +63,8 @@ function cariCustomer() {
             visible: false
         },
         searchPanel: {
-            visible: true
+            visible: true,
+            text: ''
         },
         dataSource: new DevExpress.data.DataSource({
             load: function (e) {
@@ -103,6 +104,11 @@ function cariCustomer() {
             $("#namaKlpPasien").val(e.data.FMKCUSTN);
             $('#dxGridModalCustomer').modal('hide');
             $('#namaAsuransi').focus()
-        }
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
     });
 }

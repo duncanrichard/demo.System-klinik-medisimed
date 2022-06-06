@@ -1,0 +1,125 @@
+$(document).ready(function () {
+    $('#gridFindPay_1').click(function (e) {
+        $('#dxGridModaltpay').modal('show');
+        caritpay(e, 1)
+    })
+    $('#gridFindPay_2').click(function (e) {
+        $('#dxGridModaltpay').modal('show');
+        caritpay(e, 2)
+    })
+    $('#gridFindPay_3').click(function (e) {
+        $('#dxGridModaltpay').modal('show');
+        caritpay(e, 3)
+    })
+    $('#gridFindPay_4').click(function (e) {
+        $('#dxGridModaltpay').modal('show');
+        caritpay(e, 4)
+    })
+
+})
+
+
+var gridDatatpay = new DevExpress.data.DataSource({
+    load: function (values) {
+        return $.ajax({
+            url: host + "/getTpay",
+            method: "GET",
+            data: {
+                'kode': '',
+                'tipe': ''
+            },
+            success: function (datas) {
+                $('#DxGridModaltpay').modal('show');
+            }
+        })
+    }
+});
+
+function openModaltpay(e) {
+    caritpayid(e)
+}
+
+function caritpayid(e) {
+    $.ajax({
+        url: host + "/getidtpay",
+        method: "GET",
+        data: {
+            "kode": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.status == 'ok') {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, 'NAME_BAYAR', datas.data.NAMA)
+                setFocussisahutang()
+            } else {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, 'KODE_BAYAR', '')
+                dataGrid.cellValue(rowIndex, 'NAME_BAYAR', '')
+                $('#Findtpay').attr('onclick', 'caritpay(event,1)')
+                $('#DxGridModaltpay').modal('show');
+                caritpay(e, 1)
+            }
+        }
+    })
+}
+
+function caritpay(e, param = null) {
+    $("#DxgridDatatpay2").dxDataGrid({
+        dataSource: gridDatatpay,
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        scrolling: {
+            mode: "virtual"
+        },
+        filterRow: {
+            visible: false
+        },
+
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KODE",
+                caption: "KODE",
+                width: 150,
+            },
+            {
+                dataField: "NAMA",
+                caption: "NAMA",
+                width: 420,
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == 1) {
+                $("#id_edc_1").val(e.data.KODE)
+                $("#nama_edc_1").val(e.data.NAMA)
+            } else if (param == 2) {
+                $("#id_edc_2").val(e.data.KODE)
+                $("#nama_edc_2").val(e.data.NAMA)
+            } else if (param == 3) {
+                $("#id_edc_3").val(e.data.KODE)
+                $("#nama_edc_3").val(e.data.NAMA)
+            } else if (param == 4) {
+                $("#id_edc_4").val(e.data.KODE)
+                $("#nama_edc_4").val(e.data.NAMA)
+            }
+            $('#DxGridModaltpay').modal('hide');
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

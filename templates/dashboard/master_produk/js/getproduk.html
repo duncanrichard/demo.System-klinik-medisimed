@@ -1,0 +1,615 @@
+$(document).ready(function () {
+    getproduk()
+    deathtext()
+
+    $('#tgl_berlaku_tarif').change(function (e) {
+        getTarifDetail($('#jenis_tarif').val(), $('#id_produk').val())
+    })
+
+    $('.prosentase-komponen').keyup(function (e) {
+        var comp = $(this).data('comp')
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            // $('#tarif_komponen_' + comp).val(rupiah2(parseFloat(convertToAngka(($('#entry_total_netto').val()))) * (parseFloat(convertToAngka($(this).val())) / 100)))
+            perhitungan()
+            comp++
+            $('#prosentase_komponen_' + comp).focus()
+        }
+    })
+
+    $('#entry_total_tarif').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+        }
+    })
+    $('#disc_konsumenpersen').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+        }
+    })
+    $('#fee_reselerpersen').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+        }
+    })
+
+    $('#save_tarif').click(function (e) {
+        error_in_field()
+        if (Cekeror == true) {
+            var array_tarif = []
+            $('.trf-komponen').each(function (i, obj) {
+                var nilai = convertToAngka($(obj).val())
+                var id_element = obj.id
+                var comp = id_element.substring(15, obj.id.length)
+                array_tarif.push({
+                    kd_component: comp,
+                    tarif: nilai,
+                    prosentase: $('#prosentase_komponen_' + comp).val()
+                })
+                $(obj).val(nilai)
+
+            });
+            // console.log(array_tarif)
+
+            $('#entry_total_tarif').val(convertToAngka($('#entry_total_tarif').val()))
+
+            $.ajax({
+                url: host + "save_produk_tarif",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kd_produk': $("#kd_produk").val(),
+                    'kd_klas_produk': $("#kd_klas_produk").val(),
+                    'tgl_berlaku': $("#entry_tgl_berlaku").val(),
+                    "FMPJENISTARIP": $("#jenis_tarif").val(),
+                    "total_tarif": parseInt($("#entry_total_tarif").val()),
+                    "disc_konsumenpersen": parseInt($("#disc_konsumenpersen").val()),
+                    "fee_reselerpersen": parseInt($("#fee_reselerpersen").val()),
+                    'data_tarif': JSON.stringify(array_tarif),
+                    "status_aud": 'A',
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    $('#modalProduk').modal('hide');
+                    deathtext()
+                    ClearText()
+                    getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+                    getProdukDetail('dataProdukDetail')
+                }
+            })
+        }
+    })
+    $('#delete_tarif').click(function (e) {
+        error_in_field()
+        if (Cekeror == true) {
+            var array_tarif = []
+            $('.trf-komponen').each(function (i, obj) {
+                var nilai = convertToAngka($(obj).val())
+                var id_element = obj.id
+                var comp = id_element.substring(15, obj.id.length)
+                array_tarif.push({
+                    kd_component: comp,
+                    tarif: nilai,
+                    prosentase: $('#prosentase_komponen_' + comp).val()
+                })
+                $(obj).val(nilai)
+
+            });
+            // console.log(array_tarif)
+
+            $('#entry_total_tarif').val(convertToAngka($('#entry_total_tarif').val()))
+
+            $.ajax({
+                url: host + "save_produk_tarif",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kd_produk': $("#kd_produk").val(),
+                    'kd_klas_produk': $("#kd_klas_produk").val(),
+                    'tgl_berlaku': $("#entry_tgl_berlaku").val(),
+                    "FMPJENISTARIP": $("#jenis_tarif").val(),
+                    "total_tarif": parseInt($("#entry_total_tarif").val()),
+                    "disc_konsumenpersen": parseInt($("#disc_konsumenpersen").val()),
+                    "fee_reselerpersen": parseInt($("#fee_reselerpersen").val()),
+                    'data_tarif': JSON.stringify(array_tarif),
+                    "status_aud": 'D',
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    $('#modalProduk').modal('hide');
+                    deathtext()
+                    ClearText()
+                    getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+                    getProdukDetail('dataProdukDetail')
+                }
+            })
+        }
+    })
+
+    $('#entry_total_tarif').focus()
+
+
+
+    $('#add_btnicd').click(function (e) {
+        if ($("#kode_Induk").val() != '') {
+            LiveText()
+            ClearText()
+            $("#kd_klas_produk").val($("#kode_Induk").val())
+            $("#nama_klas_produk").val($("#nama_Induk").val())
+            $("#kd_produk_induk").val($("#kode_Induk").val())
+            $("#nama_produk_induk").val($("#NamaParent").val())
+        }
+    })
+    $('#edit_btnicd').click(function (e) {
+        if ($("#kd_produk").val() == '') {
+            alert('Pilih Data kode Produk Dahulu')
+        } else {
+            LiveText()
+        }
+    })
+    $('#save_btnicd').click(function (e) {
+        error_in_field()
+        if (Cekeror == true) {
+            var adm_rs = '0'
+            if ($("#adm_rs").prop('checked') == true) {
+                adm_rs = '1'
+            }
+            var pos_posting = '0'
+            if ($("#pos_posting").prop('checked') == true) {
+                pos_posting = '1'
+            }
+
+            var jasa_dokter = '0'
+            if ($("#jasa_dokter").prop('checked') == true) {
+                jasa_dokter = '1'
+            }
+            var produk_hidden = '0'
+            if ($("#produk_hidden").prop('checked') == true) {
+                produk_hidden = '1'
+            }
+            var pos_paket = '0'
+            if ($("#pos_paket").prop('checked') == true) {
+                pos_paket = '1'
+            }
+
+            $.ajax({
+                url: host + "getdataProduk_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kd_produk': $("#kd_produk").val(),
+                    'nama_produk': $("#nama_produk").val(),
+                    'kd_klas_produk': $("#kd_klas_produk").val(),
+                    'kd_klas_tarif': $("#kd_klas_tarif").val(),
+                    'kd_unit_produk': $("#kd_unit_produk").val(),
+                    'kd_no_akun': $("#kd_no_akun").val(),
+                    'adm_rs': adm_rs,
+                    'pos_posting': pos_posting,
+                    'jasa_dokter': jasa_dokter,
+                    'pos_paket': pos_paket,
+                    'produk_hidden': produk_hidden,
+                    "FMPPOSFLAG": '0',
+                    "FMPJENISTARIP": $("#jenis_tarif").val(),
+                    "status_aud": 'A',
+
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    deathtext()
+                    ClearText()
+                    getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+                    getProdukDetail('dataProdukDetail')
+                }
+            })
+        }
+    })
+    $('#cancel_btnicd').click(function (e) {
+        ClearText()
+        deathtext()
+    })
+    $('#remove_btnicd').click(function (e) {
+        if ($("#kd_produk").val() == '') {
+            alert('Pilih Data kode produk Dahulu')
+        } else {
+            var adm_rs = '0'
+            if ($("#adm_rs").prop('checked') == true) {
+                adm_rs = '1'
+            }
+            var pos_posting = '0'
+            if ($("#pos_posting").prop('checked') == true) {
+                pos_posting = '1'
+            }
+
+            var jasa_dokter = '0'
+            if ($("#jasa_dokter").prop('checked') == true) {
+                jasa_dokter = '1'
+            }
+            var produk_hidden = '0'
+            if ($("#produk_hidden").prop('checked') == true) {
+                produk_hidden = '1'
+            }
+            var pos_paket = '0'
+            if ($("#pos_paket").prop('checked') == true) {
+                pos_paket = '1'
+            }
+
+            $.ajax({
+                url: host + "getdataProduk_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kd_produk': $("#kd_produk").val(),
+                    'nama_produk': $("#nama_produk").val(),
+                    'kd_klas_produk': $("#kd_klas_produk").val(),
+                    'kd_klas_tarif': $("#kd_klas_tarif").val(),
+                    'kd_unit_produk': $("#kd_unit_produk").val(),
+                    'kd_no_akun': $("#kd_no_akun").val(),
+                    'adm_rs': adm_rs,
+                    'pos_posting': pos_posting,
+                    'jasa_dokter': jasa_dokter,
+                    'pos_paket': pos_paket,
+                    'produk_hidden': produk_hidden,
+                    "FMPPOSFLAG": '0',
+                    "FMPJENISTARIP": $("#jenis_tarif").val(),
+                    "status_aud": 'D',
+
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    deathtext()
+                    ClearText()
+                    getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+                    getProdukDetail('dataProdukDetail')
+                }
+            })
+        }
+    })
+    $('#tarif_btnicd').click(function (e) {
+        if ($("#kd_produk").val() != '') {
+            $('#modalProduk').modal('show');
+        }
+    })
+
+
+
+
+})
+
+function perhitungan() {
+    $('#entry_total_tarif').val(rupiah2(desimal2($('#entry_total_tarif').val())));
+    var disc_konsumen = Math.round(desimal2($('#entry_total_tarif').val()) * (desimal2(($("#disc_konsumenpersen").val())) / 100))
+    $("#disc_konsumen").val(rupiah2(disc_konsumen))
+    var fee_reseler = Math.round((desimal2($('#entry_total_tarif').val()) - parseFloat(disc_konsumen)) * (desimal2($("#fee_reselerpersen").val()) / 100))
+    $("#fee_reseler").val(rupiah2(parseFloat(fee_reseler)))
+    var total_netto = Math.round((desimal2($('#entry_total_tarif').val()) - disc_konsumen - fee_reseler))
+    $("#entry_total_netto").val(rupiah2(total_netto))
+    $('.prosentase-komponen').each(function (index) {
+        var comp = $(this).data('comp')
+        var ts = parseFloat(total_netto) * (Math.round(parseFloat($(this).val()) * 100) / 100) / 100;
+        // $('#tarif_komponen_' + comp).val(ts.toFixed());
+        $('#tarif_komponen_' + comp).val(rupiah2(ts));
+    })
+}
+
+
+function getproduk() {
+    var kode_induk = $('#kode_Induk').val();
+    var jenis_tarip = $("#jenis_tarif").val()
+    var gridDatapenyakit = new DevExpress.data.DataSource({
+        load: function (values) {
+            return $.ajax({
+                url: host + "getdataProduk",
+                method: "GET",
+                data: {
+                    'kode_induk': kode_induk,
+                    "jenis_tarip": jenis_tarip,
+                },
+            })
+        }
+    });
+    $("#dataProduk").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        // filterRow: {
+        //     visible: true
+        // },
+
+        searchPanel: {
+            visible: true
+        },
+        dataSource: gridDatapenyakit,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMPPRODUK_ID",
+                caption: "kode  Produk",
+                width: "100"
+            },
+            {
+                dataField: "FMPPRODUKN",
+                caption: " Nama Produk",
+            },
+            {
+                dataField: "FMKKLASN",
+                caption: "Jenis Produk",
+                width: 100,
+            },
+            {
+                dataField: "FMTTARIF",
+                caption: "Tarif",
+                dataType: "number",
+                format: {
+                    type: "fixedPoint",
+                    precision: 0
+                },
+                width: 100,
+            },
+            {
+                dataField: "TGL_BERLAKU",
+                caption: "Tgl Berlaku",
+                dataType: 'date',
+                width: 75,
+                format: 'dd/MM/yyyy',
+            },
+        ],
+        onSelectionChanged: function (selectedItems) {
+            selectedProduk = selectedItems.selectedRowsData
+        },
+
+        onRowClick: function (e) {
+            if (load_barang == 'unlock') {
+                Tampilkandataproduk(e)
+            }
+        }
+    });
+}
+
+function deathtext() {
+    setDisabled('add_btnicd', 1)
+    setDisabled('edit_btnicd', 1)
+    setDisabled('save_btnicd', 0)
+    setDisabled('cancel_btnicd', 0)
+    setDisabled('remove_btnicd', 1)
+
+    setDisabled('tarif_btnicd', 1)
+    setDisabled('discount_btnicd', 1)
+
+    setReadOnly('kd_produk', 1)
+    setReadOnly('nama_produk', 1)
+    setReadOnly('kd_klas_produk', 1)
+    setReadOnly('nama_klas_produk', 1)
+    setReadOnly('kd_produk_induk', 1)
+    setReadOnly('nama_produk_induk', 1)
+    setReadOnly('kd_klas_tarif', 1)
+    setReadOnly('nama_klas_tarif', 1)
+
+    setReadOnly('kd_unit_produk', 1)
+    setReadOnly('nama_unit_produk', 1)
+    setReadOnly('kd_no_akun', 1)
+    setReadOnly('no_akun', 1)
+
+    setDisabled('search_klas_produk', 0)
+    setDisabled('search_klas_tarif', 0)
+    setDisabled('search_unit_produk', 0)
+    setDisabled('search_no_akun', 0)
+
+    setDisabled('adm_rs', 0)
+    setDisabled('pos_posting', 0)
+    setDisabled('jasa_dokter', 0)
+    setDisabled('produk_hidden', 0)
+    setDisabled('pos_paket', 0)
+
+
+}
+
+function LiveText() {
+    setDisabled('add_btnicd', 0)
+    setDisabled('edit_btnicd', 0)
+    setDisabled('save_btnicd', 1)
+    setDisabled('cancel_btnicd', 1)
+    setDisabled('remove_btnicd', 0)
+
+    setDisabled('tarif_btnicd', 0)
+    setDisabled('discount_btnicd', 0)
+
+    setReadOnly('kd_produk', 0)
+    setReadOnly('nama_produk', 0)
+    setReadOnly('kd_klas_produk', 1)
+    setReadOnly('nama_klas_produk', 1)
+    setReadOnly('kd_produk_induk', 1)
+    setReadOnly('nama_produk_induk', 1)
+    setReadOnly('kd_klas_tarif', 1)
+    setReadOnly('nama_klas_tarif', 1)
+
+    setReadOnly('kd_unit_produk', 1)
+    setReadOnly('nama_unit_produk', 1)
+    setReadOnly('kd_no_akun', 1)
+    setReadOnly('no_akun', 1)
+
+    // setDisabled('search_klas_produk', 1)
+    setDisabled('search_klas_tarif', 1)
+    setDisabled('search_unit_produk', 1)
+    setDisabled('search_no_akun', 1)
+
+    setDisabled('adm_rs', 1)
+    setDisabled('pos_posting', 1)
+    setDisabled('jasa_dokter', 1)
+    setDisabled('produk_hidden', 1)
+    setDisabled('pos_paket', 1)
+
+
+    $('input[id=inlineCheckboxaktif]').iCheck('check');
+    // $('input[id=inlineCheckboxmessage]').iCheck('check');
+}
+
+function ClearText() {
+    $("#kd_produk").val('')
+    $("#nama_produk").val('')
+    // $("#kd_klas_produk").val('')
+    // $("#nama_klas_produk").val('')
+    // $("#kd_produk_induk").val('')
+    // $("#nama_produk_induk").val('')
+
+    $("#kd_klas_tarif").val('')
+    $("#nama_klas_tarif").val('')
+    $("#kd_unit_produk").val('')
+    $("#nama_unit_produk").val('')
+    $("#kd_no_akun").val('')
+    $("#no_akun").val('')
+
+
+}
+
+function error_in_field() {
+    Cekeror = true;
+    if ($("#kd_produk").val() == '') {
+        alert('kode produk tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#nama_produk").val() == '') {
+        alert('nama produk tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#kd_klas_produk").val() == '') {
+        alert('Parent  tidak boleh kosong')
+        Cekeror = false;
+    }
+    return Cekeror;
+}
+
+function Tampilkandataproduk(e) {
+    if (e.length != 0) {
+        $("#kd_produk").val(e.data.FMPPRODUK_ID)
+        $("#nama_produk").val(e.data.FMPPRODUKN)
+        $("#kd_klas_produk").val(e.data.FMPKLAS_ID)
+        $("#nama_klas_produk").val(e.data.FMKKLASN)
+        $("#kd_produk_induk").val(e.data.kd_induk)
+        $("#nama_produk_induk").val(e.data.induk)
+        $("#kd_klas_tarif").val(e.data.FTGKODE)
+        $("#nama_klas_tarif").val(e.data.FTGNAMA)
+
+        $("#kd_unit_produk").val(e.data.FTUKODE)
+        $("#nama_unit_produk").val(e.data.FTUNAMA)
+        $("#kd_no_akun").val(e.data.FMPNOACC)
+        $("#no_akun").val(e.data.FMNOACCKETERANGAN)
+
+        $("#entry_total_tarif").val(rupiah2(e.data.FMTTARIF))
+
+        $("#disc_konsumenpersen").val(e.data.FMTDISC_KONSUMEN)
+        var disc_konsumen = Math.round(e.data.FMTTARIF * (e.data.FMTDISC_KONSUMEN / 100))
+        $("#disc_konsumen").val(rupiah2(disc_konsumen))
+
+        $("#fee_reselerpersen").val(e.data.FMTFEE_RESELER)
+        var fee_reseler = Math.round((e.data.FMTTARIF - parseFloat(disc_konsumen)) * (e.data.FMTFEE_RESELER / 100))
+        $("#fee_reseler").val(rupiah2(parseFloat(fee_reseler)))
+        var total_netto = Math.round((e.data.FMTTARIF - disc_konsumen - fee_reseler))
+        $("#entry_total_netto").val(rupiah2(total_netto))
+
+        $("#entry_tgl_berlaku").val(e.data.TGL_BERLAKU.substring(0, 10))
+
+        if (parseInt(e.data.FMPADMINISTRASI) == 1) {
+            $("#adm_rs").prop('checked', true)
+        } else {
+            $("#adm_rs").prop('checked', false)
+        }
+
+        if (parseInt(e.data.FMPPOSTMANUAL) == 1) {
+            $("#pos_posting").prop('checked', true)
+        } else {
+            $("#pos_posting").prop('checked', false)
+        }
+        if (parseInt(e.data.FMPJASADOKTER) == 1) {
+            $("#jasa_dokter").prop('checked', true)
+        } else {
+            $("#jasa_dokter").prop('checked', false)
+        }
+        if (parseInt(e.data.FMPHIDDEN) == 1) {
+            $("#produk_hidden").prop('checked', true)
+        } else {
+            $("#produk_hidden").prop('checked', false)
+        }
+        if (parseInt(e.data.FMPPOSTPAKET) == 1) {
+            $("#pos_paket").prop('checked', true)
+        } else {
+            $("#pos_paket").prop('checked', false)
+        }
+
+        getTglTarif()
+        getTarifDetail()
+    }
+
+
+
+}
+
+function getTglTarif() {
+    $.ajax({
+        url: host + "tgl_produk_tarif",
+        method: "GET",
+        data: {
+            "id_produk": $('#kd_produk').val(),
+            "jenis_tarip": $("#jenis_tarif").val()
+        },
+        success: function (dt) {
+            $('#tgl_berlaku_tarif').html('')
+            var format_tgl;
+            for (var i = 0; i <= dt.length - 1; i++) {
+                format_tgl = dt[i].cl.substring(0, 10)
+                $('#tgl_berlaku_tarif').append('<option>' + format_tgl + '</option>')
+            }
+        }
+    })
+}
+
+function getTarifDetail() {
+    for (var i = 11 - 1; i >= 0; i--) {
+        $('#tarif_komponen_' + [i]).val(' ');
+        $('#prosentase_komponen_' + [i]).val(' ');
+    }
+    $.ajax({
+        url: host + "get_produk_tarif",
+        method: "GET",
+        data: {
+            "id_produk": $('#kd_produk').val(),
+            "jenis_tarip": $("#jenis_tarif").val(),
+            "tgl_berlaku": $("#tgl_berlaku_tarif").val()
+        },
+        success: function (e) {
+            var kom = e.tarif_komponen;
+            var totalpersen = 0;
+            $('#entry_kode_produk').val($('#kd_produk').val());
+            $('#entry_nama_produk').val($('#nama_produk').val());
+            $('#entry_kode_klas_produk').val($('#kd_klas_produk').val());
+            if (e.tarif_komponen.length != 0) {
+                for (var i = 11 - 1; i >= 0; i--) {
+                    $('#tarif_komponen_' + [i]).val(' ');
+                    $('#prosentase_komponen_' + [i]).val(' ');
+                }
+                for (var i = kom.length - 1; i >= 0; i--) {
+                    $('#prosentase_komponen_' + kom[i].FMTCKD_COMPONENT).val((kom[i].FMTCTARIFPROSEN))
+                    $('#entry_total_netto').val(convertToAngka($('#entry_total_netto').val()))
+                    var tarif_komponen = Math.round($('#entry_total_netto').val() * parseFloat($('#prosentase_komponen_' + kom[i].FMTCKD_COMPONENT).val() / 100))
+                    $('#tarif_komponen_' + kom[i].FMTCKD_COMPONENT).val(rupiah2(tarif_komponen))
+                    totalpersen += parseFloat($('#prosentase_komponen_' + kom[i].FMTCKD_COMPONENT).val())
+                }
+                $('#persen_total_tarif').val(totalpersen);
+            } else {
+                for (var i = 11 - 1; i >= 0; i--) {
+                    $('#tarif_komponen_' + [i]).val(' ');
+                    $('#prosentase_komponen_' + [i]).val(' ');
+                }
+
+            }
+        }
+    })
+}

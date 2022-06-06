@@ -5,6 +5,7 @@ console.log(host)
 
 $(document).ready(function () {
     console.log('tes33')
+     $('#Modalcabang').modal('hide');
     user = "{{request.session.user_id}}";
     if (user == 'IT') {
         setMenu('Findjenis', 1)

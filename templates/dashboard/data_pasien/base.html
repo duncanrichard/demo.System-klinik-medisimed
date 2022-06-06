@@ -41,6 +41,14 @@ Data Pasien
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalKabupaten.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalProvinsi.html'%} 
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalKelamin.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalReseler.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalAgama.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPendidikan.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalGoldarah.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalMarital.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPekerjaan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalSuku.html'%}  
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalBahasa.html'%} 
 {% include 'dashboard/data_pasien/layout/content.html'%} 
 
 
@@ -50,6 +58,9 @@ Data Pasien
 {% block script %}
 
 {% load static %}
+<script src="{% static 'js/MainProc.js'%}"></script>
+<script src="{% static 'js/terbilang.js'%}"></script>
+
 
 <script type="text/javascript">
   
@@ -61,6 +72,14 @@ Data Pasien
   {% include 'dashboard/data_pasien/js/getKabupaten.html' %}
   {% include 'dashboard/data_pasien/js/getProvinsi.html' %}
   {% include 'dashboard/data_pasien/js/getKelamin.html' %}
+  {% include 'dashboard/data_pasien/js/getReseler.html' %}
+  {% include 'dashboard/data_pasien/js/getAgama.html' %}
+  {% include 'dashboard/data_pasien/js/getPendidikan.html' %}
+  {% include 'dashboard/data_pasien/js/getGoldarah.html' %}
+  {% include 'dashboard/data_pasien/js/getMarital.html' %}
+  {% include 'dashboard/data_pasien/js/getPekerjaan.html' %}
+  {% include 'dashboard/data_pasien/js/getSuku.html' %}
+  {% include 'dashboard/data_pasien/js/getBahasa.html' %}
   {% include 'dashboard/data_pasien/js/init.html' %}
 </script>
 {% endblock %}

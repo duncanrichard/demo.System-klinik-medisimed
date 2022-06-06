@@ -65,11 +65,13 @@ function cariKelurahan() {
         filterRow: {
             visible: false
         },
-        // searchPanel : { visible: true },
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
         dataSource: new DevExpress.data.DataSource({
             load: function (e) {
-                var Kelurahan_id = $('#search_kode_Kelurahan').val();
-                var nama_Kelurahan = $('#search_nama_Kelurahan').val();
                 var Kecamatan_id = $('#idKecamatan').val();
 
                 var deferred = $.Deferred();
@@ -78,8 +80,6 @@ function cariKelurahan() {
                     method: "GET",
                     data: {
                         "Kecamatan_id": Kecamatan_id,
-                        "id_Kelurahan": Kelurahan_id,
-                        "nama_Kelurahan": nama_Kelurahan,
                     },
                     success: function (result) {
                         deferred.resolve(result, {
@@ -108,6 +108,11 @@ function cariKelurahan() {
             $("#namaKelurahan").val(e.data.KELURAHAN);
             $('#dxGridModalKelurahan').modal('hide');
             $('#email').focus()
-        }
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
     });
 }

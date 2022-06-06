@@ -96,6 +96,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+SESSION_COOKIE_NAME = 'Immoderma_Session_ID'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),

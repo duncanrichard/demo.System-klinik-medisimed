@@ -1,0 +1,760 @@
+var host_main = window.location.href.split("/");
+var host_root = host_main[0] + "//" + host_main[2];
+var host = host_main[0] + "//" + host_main[2] + "/" + host_main[3];
+var canAdd = 0
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var qtyIndex = ''
+var data = ''
+var tempId = ''
+var tempNama = ''
+var tempHjual = ''
+var temppqty = 0
+var tempdisc = 0
+var tempdisc2 = 0
+var tempdisc3 = 0
+var tempdisc4 = 0
+var tempdisckonsumen = 0
+var tempdiscreseler = 0
+var tempfeedokter = 0
+var tempfeebc = 0
+var tempfeeperawat = 0
+
+let status_aud = null;
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+todays = today
+$(".today").val(today)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    setupAwal()
+
+    $("#menu_tambah").click(function () {
+        livetext()
+        Cleartext()
+        setGridEmpty()
+        $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
+        $('#btnfar_tambah_produk').css("display", 'block');
+        canAdd = 1
+        Cekeror = true;
+    })
+    $("#menu_edit").click(function () {
+        if ($("#no_trans").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            livetext()
+            $('#btnfar_tambah_produk').css("display", 'block');
+            canAdd = 1
+            Cekeror = true;
+        }
+    })
+    $('#menu_hapus').click(function () {
+        if ($("#no_trans").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                var FD_NO = []
+                var FD_ID_PRODUK = []
+                var FD_NAMA_PRODUK = []
+                var FD_HARGA = []
+                var FD_QTY = []
+                var FD_DISC = []
+                var FD_DISC2 = []
+                var FD_DISC3 = []
+                var FD_DISC4 = []
+                var FD_DISCKONSUMEN = []
+                var FD_DISCRESELER = []
+                var FD_FEEDOKTER = []
+                var FD_FEEBC = []
+                var FD_FEEPERAWAT = []
+                var FD_BUKTI_ID = []
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
+                        FD_NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                        FD_ID_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                        FD_NAMA_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.NAMA_PRODUK)
+                        FD_HARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA)
+                        FD_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                        FD_DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
+                        FD_DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
+                        FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
+                        FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
+                        FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
+                        FD_DISCRESELER.push("" + dataGrid.getVisibleRows()[i].data.DISCRESELER)
+                        FD_FEEDOKTER.push("" + dataGrid.getVisibleRows()[i].data.FEEDOKTER)
+                        FD_FEEBC.push("" + dataGrid.getVisibleRows()[i].data.FEEBC)
+                        FD_FEEPERAWAT.push("" + dataGrid.getVisibleRows()[i].data.FEEPERAWAT)
+                        FD_BUKTI_ID.push($("#No_faktur").val())
+                    }
+                }
+
+                var dataGrid2 = $("#dxGridDatadokter").dxDataGrid("instance");
+                var FHD_NO = []
+                var FHD_ID_DOKTER = []
+                var FHD_NAMA_DOKTER = []
+                for (let i = 0; i < dataGrid2.getVisibleRows().length; i++) {
+                    if (dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER != '') {
+                        FHD_NO.push("" + dataGrid2.getVisibleRows()[i].data.NO)
+                        FHD_ID_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.ID_DOKTER)
+                        FHD_NAMA_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER)
+                    }
+                }
+
+                var dataGrid3 = $("#dxGridDataBC").dxDataGrid("instance");
+                var FHB_NO = []
+                var FHB_ID_BC = []
+                var FHB_NAMA_BC = []
+                for (let i = 0; i < dataGrid3.getVisibleRows().length; i++) {
+                    if (dataGrid3.getVisibleRows()[i].data.NAMA_BC != '') {
+                        FHB_NO.push("" + dataGrid3.getVisibleRows()[i].data.NO)
+                        FHB_ID_BC.push("" + dataGrid3.getVisibleRows()[i].data.ID_BC)
+                        FHB_NAMA_BC.push("" + dataGrid3.getVisibleRows()[i].data.NAMA_BC)
+                    }
+                }
+                var dataGrid4 = $("#dxGridDataperawat").dxDataGrid("instance");
+                var FHP_NO = []
+                var FHP_ID_PERAWAT = []
+                var FHP_NAMA_PERAWAT = []
+                for (let i = 0; i < dataGrid4.getVisibleRows().length; i++) {
+                    if (dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT != '') {
+                        FHP_NO.push("" + dataGrid4.getVisibleRows()[i].data.NO)
+                        FHP_ID_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.ID_PERAWAT)
+                        FHP_NAMA_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT)
+                    }
+                }
+                status_aud = 'D'
+                $.ajax({
+                    url: host + "/SP_AUD_TRANSAKSI",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "FD_NO": JSON.stringify(FD_NO),
+                        "FD_ID_PRODUK": JSON.stringify(FD_ID_PRODUK),
+                        "FD_NAMA_PRODUK": JSON.stringify(FD_NAMA_PRODUK),
+                        "FD_HARGA": JSON.stringify(FD_HARGA),
+                        "FD_QTY": JSON.stringify(FD_QTY),
+                        "FD_DISC": JSON.stringify(FD_DISC),
+                        "FD_DISC2": JSON.stringify(FD_DISC2),
+                        "FD_DISC3": JSON.stringify(FD_DISC3),
+                        "FD_DISC4": JSON.stringify(FD_DISC4),
+                        "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
+                        "FD_DISCRESELER": JSON.stringify(FD_DISCRESELER),
+                        "FD_FEEDOKTER": JSON.stringify(FD_FEEDOKTER),
+                        "FD_FEEBC": JSON.stringify(FD_FEEBC),
+                        "FD_FEEPERAWAT": JSON.stringify(FD_FEEPERAWAT),
+                        "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
+
+                        "FHD_NO": JSON.stringify(FHD_NO),
+                        "FHD_ID_DOKTER": JSON.stringify(FHD_ID_DOKTER),
+                        "FHD_NAMA_DOKTER": JSON.stringify(FHD_NAMA_DOKTER),
+
+                        "FHB_NO": JSON.stringify(FHB_NO),
+                        "FHB_ID_BC": JSON.stringify(FHB_ID_BC),
+                        "FHB_NAMA_BC": JSON.stringify(FHB_NAMA_BC),
+
+                        "FHP_NO": JSON.stringify(FHP_NO),
+                        "FHP_ID_PERAWAT": JSON.stringify(FHP_ID_PERAWAT),
+                        "FHP_NAMA_PERAWAT": JSON.stringify(FHP_NAMA_PERAWAT),
+
+
+
+                        "FH_BUKTI_ID": $("#no_trans").val(),
+                        "FH_REGISTER_ID": $("#no_regis").val(),
+                        "FH_DATE": $("#tanggal").val(),
+                        "FH_PASIEN_ID": $("#idPasien").val(),
+                        "FH_RESELER_ID": $("#idReseler").val(),
+                        "StatusAUD": status_aud,
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
+                        Deathtext()
+                        $('#btnfar_tambah_produk').css("display", 'none');
+                        canAdd = 0
+                        Cleartext()
+                        setGridEmpty()
+
+                    }
+                })
+            }
+
+
+        }
+    })
+    $('#menu_simpan').click(function () {
+        canAdd = 0
+        error_in_field()
+        if (Cekeror == true) {
+            error_in_simpan()
+            if (Cekeror == true) {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                if (dataGrid.getVisibleRows().length == 0) {
+                    alert('Data produk Masih Kosong')
+                } else {
+                    var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+                    if (c) {
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        var FD_NO = []
+                        var FD_ID_PRODUK = []
+                        var FD_NAMA_PRODUK = []
+                        var FD_HARGA = []
+                        var FD_QTY = []
+                        var FD_DISC = []
+                        var FD_DISC2 = []
+                        var FD_DISC3 = []
+                        var FD_DISC4 = []
+                        var FD_DISCKONSUMEN = []
+                        var FD_DISCRESELER = []
+                        var FD_FEEDOKTER = []
+                        var FD_FEEBC = []
+                        var FD_FEEPERAWAT = []
+                        var FD_BUKTI_ID = []
+                        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                            if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
+                                FD_NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                                FD_ID_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                                FD_NAMA_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.NAMA_PRODUK)
+                                FD_HARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA)
+                                FD_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                                FD_DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
+                                FD_DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
+                                FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
+                                FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
+                                FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
+                                FD_DISCRESELER.push("" + dataGrid.getVisibleRows()[i].data.DISCRESELER)
+                                FD_FEEDOKTER.push("" + dataGrid.getVisibleRows()[i].data.FEEDOKTER)
+                                FD_FEEBC.push("" + dataGrid.getVisibleRows()[i].data.FEEBC)
+                                FD_FEEPERAWAT.push("" + dataGrid.getVisibleRows()[i].data.FEEPERAWAT)
+                                FD_BUKTI_ID.push($("#No_faktur").val())
+                            }
+                        }
+
+                        var dataGrid2 = $("#dxGridDatadokter").dxDataGrid("instance");
+                        var FHD_NO = []
+                        var FHD_ID_DOKTER = []
+                        var FHD_NAMA_DOKTER = []
+                        for (let i = 0; i < dataGrid2.getVisibleRows().length; i++) {
+                            if (dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER != '') {
+                                FHD_NO.push("" + dataGrid2.getVisibleRows()[i].data.NO)
+                                FHD_ID_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.ID_DOKTER)
+                                FHD_NAMA_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER)
+                            }
+                        }
+
+                        var dataGrid3 = $("#dxGridDataBC").dxDataGrid("instance");
+                        var FHB_NO = []
+                        var FHB_ID_BC = []
+                        var FHB_NAMA_BC = []
+                        for (let i = 0; i < dataGrid3.getVisibleRows().length; i++) {
+                            if (dataGrid3.getVisibleRows()[i].data.NAMA_BC != '') {
+                                FHB_NO.push("" + dataGrid3.getVisibleRows()[i].data.NO)
+                                FHB_ID_BC.push("" + dataGrid3.getVisibleRows()[i].data.ID_BC)
+                                FHB_NAMA_BC.push("" + dataGrid3.getVisibleRows()[i].data.NAMA_BC)
+                            }
+                        }
+                        var dataGrid4 = $("#dxGridDataperawat").dxDataGrid("instance");
+                        var FHP_NO = []
+                        var FHP_ID_PERAWAT = []
+                        var FHP_NAMA_PERAWAT = []
+                        for (let i = 0; i < dataGrid4.getVisibleRows().length; i++) {
+                            if (dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT != '') {
+                                FHP_NO.push("" + dataGrid4.getVisibleRows()[i].data.NO)
+                                FHP_ID_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.ID_PERAWAT)
+                                FHP_NAMA_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT)
+                            }
+                        }
+                        status_aud = 'A'
+                        $.ajax({
+                            url: host + "/SP_AUD_TRANSAKSI",
+                            method: "POST",
+                            data: {
+                                "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                                "FD_NO": JSON.stringify(FD_NO),
+                                "FD_ID_PRODUK": JSON.stringify(FD_ID_PRODUK),
+                                "FD_NAMA_PRODUK": JSON.stringify(FD_NAMA_PRODUK),
+                                "FD_HARGA": JSON.stringify(FD_HARGA),
+                                "FD_QTY": JSON.stringify(FD_QTY),
+                                "FD_DISC": JSON.stringify(FD_DISC),
+                                "FD_DISC2": JSON.stringify(FD_DISC2),
+                                "FD_DISC3": JSON.stringify(FD_DISC3),
+                                "FD_DISC4": JSON.stringify(FD_DISC4),
+                                "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
+                                "FD_DISCRESELER": JSON.stringify(FD_DISCRESELER),
+                                "FD_FEEDOKTER": JSON.stringify(FD_FEEDOKTER),
+                                "FD_FEEBC": JSON.stringify(FD_FEEBC),
+                                "FD_FEEPERAWAT": JSON.stringify(FD_FEEPERAWAT),
+                                "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
+
+                                "FHD_NO": JSON.stringify(FHD_NO),
+                                "FHD_ID_DOKTER": JSON.stringify(FHD_ID_DOKTER),
+                                "FHD_NAMA_DOKTER": JSON.stringify(FHD_NAMA_DOKTER),
+
+                                "FHB_NO": JSON.stringify(FHB_NO),
+                                "FHB_ID_BC": JSON.stringify(FHB_ID_BC),
+                                "FHB_NAMA_BC": JSON.stringify(FHB_NAMA_BC),
+
+                                "FHP_NO": JSON.stringify(FHP_NO),
+                                "FHP_ID_PERAWAT": JSON.stringify(FHP_ID_PERAWAT),
+                                "FHP_NAMA_PERAWAT": JSON.stringify(FHP_NAMA_PERAWAT),
+
+
+
+                                "FH_BUKTI_ID": $("#no_trans").val(),
+                                "FH_REGISTER_ID": $("#no_regis").val(),
+                                "FH_DATE": $("#tanggal").val(),
+                                "FH_PASIEN_ID": $("#idPasien").val(),
+                                "FH_RESELER_ID": $("#idReseler").val(),
+                                "StatusAUD": status_aud,
+                            },
+                            success: function (e) {
+                                alert(e[0].STATUS + ' - ' + e[0].STATE)
+                                $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
+                                Deathtext()
+                                $('#btnfar_tambah_produk').css("display", 'none');
+                                canAdd = 0
+
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    })
+    $("#menu_cancel").click(function () {
+        setupAwal()
+    })
+    $("#menu_find").click(function () {
+        $('#ModalTransaksi').modal('show')
+        $('#mutasi_tanggal').val(todays);
+        $("#select_mutasi").val('mutasi_by_tanggal');
+        $('#mutasi_bukti').val('');
+        $('#mutasi_pasien').val('');
+        $('#mutasi_nama').val('');
+        cari_transaksi()
+    })
+    $("#menu_kasir").click(function () {
+        if ($("#no_trans").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            $('#no_kwitansi_pembayaran').val($('#no_trans').val());
+            $('#tanggal_trans').val($('#tanggal').val());
+            $('#tanggal_piutang').val($('#tanggal').val());
+            $('#id_pasien_pembayaran').val($('#idPasien').val());
+            $('#nama_pasien_pembayaran').val($('#nama_pasien').val());
+            $('#nama_diterima').val($('#nama_pasien').val());
+            $('#grand_total_pembayaran').val($('#total').val());
+            $('#beban_pasien_pembayaran').val($('#total').val());
+            perhitungan()
+            $('#modalPembayaranKasir').modal('show')
+            $('#total_dijamin_pembayaran').focus()
+        }
+    })
+    $("#simpanBayar").click(function () {
+        var c = confirm('Yakin Ingin Menyimpan Pembayaran Ini ?')
+        if (c) {
+            status_aud = 'A'
+            $.ajax({
+                url: host + "/SP_AUD_BAYAR_TRANSAKSI",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    "FH_BUKTI_ID": $("#no_kwitansi_pembayaran").val(),
+                    "FH_NAMA_PEMBAYAR": $("#nama_diterima").val(),
+                    "FH_DATE": $("#tanggal_trans").val(),
+                    "FH_DATE_PIUTANG": $("#tanggal_piutang").val(),
+                    "FH_TUNAI": parseFloat(convertToAngka($("#nominal_tunai").val())),
+                    "FH_TUNAI_PHISIK": parseInt(convertToAngka($("#nominal_fisik").val())),
+                    "FH_TOTAL_BANK1": parseInt(convertToAngka($("#jumlah_pembayaran_1").val())),
+                    "FH_TOTAL_BANK2": parseInt(convertToAngka($("#jumlah_pembayaran_2").val())),
+                    "FH_TOTAL_BANK3": parseInt(convertToAngka($("#jumlah_pembayaran_3").val())),
+                    "FH_TOTAL_BANK4": parseInt(convertToAngka($("#jumlah_pembayaran_4").val())),
+                    "FH_ID_EDC1": $("#id_edc_1").val(),
+                    "FH_ID_EDC2": $("#id_edc_2").val(),
+                    "FH_ID_EDC3": $("#id_edc_3").val(),
+                    "FH_ID_EDC4": $("#id_edc_4").val(),
+                    "FH_NO_KARTU1": $("#no_kartu_1").val(),
+                    "FH_NO_KARTU2": $("#no_kartu_2").val(),
+                    "FH_NO_KARTU3": $("#no_kartu_3").val(),
+                    "FH_NO_KARTU4": $("#no_kartu_4").val(),
+                    "FH_JENIS_KARTU1": $(".kasir_debit_kredit_1:checked").val(),
+                    "FH_JENIS_KARTU2": $(".kasir_debit_kredit_2:checked").val(),
+                    "FH_JENIS_KARTU3": $(".kasir_debit_kredit_3:checked").val(),
+                    "FH_JENIS_KARTU4": $(".kasir_debit_kredit_4:checked").val(),
+                    "FH_TOTAL_VOUCHER1": parseInt(convertToAngka($("#voucher_pembayaran_1").val())),
+                    "FH_TOTAL_VOUCHER2": parseInt(convertToAngka($("#voucher_pembayaran_2").val())),
+                    "FH_TOTAL_VOUCHER3": parseInt(convertToAngka($("#voucher_pembayaran_3").val())),
+                    "FH_TOTAL_VOUCHER4": parseInt(convertToAngka($("#voucher_pembayaran_4").val())),
+                    "FH_NO_VOUCHER1": $("#no_voucher_1").val(),
+                    "FH_NO_VOUCHER2": $("#no_voucher_2").val(),
+                    "FH_NO_VOUCHER3": $("#no_voucher_3").val(),
+                    "FH_NO_VOUCHER4": $("#no_voucher_4").val(),
+                    "FH_TOTAL_DIJAMIN": parseInt(convertToAngka($("#total_dijamin_pembayaran").val())),
+                    "FH_TOTAL_PIUTANG": parseInt(convertToAngka($("#nominal_piutang").val())),
+                    "StatusAUD": status_aud,
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
+                    getGridTabletransaksi($('#no_trans').val())
+                    Deathtext()
+                    $('#btnfar_tambah_produk').css("display", 'none');
+                    canAdd = 0
+                    $('#modalPembayaranKasir').modal('hide')
+
+                }
+            })
+
+        }
+    })
+    $('#total_dijamin_pembayaran').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_1').focus()
+        }
+    })
+    $('#jumlah_pembayaran_1').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_2').focus()
+        }
+    })
+    $('#jumlah_pembayaran_2').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_3').focus()
+        }
+    })
+    $('#jumlah_pembayaran_3').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_4').focus()
+        }
+    })
+    $('#jumlah_pembayaran_4').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#nominal_fisik').focus()
+        }
+    })
+
+
+    $("#menu_cetak").click(function () {
+        if ($("#no_trans").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            Prosescetak()
+        }
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+    $('#btn_cari_mutasi').click(function () {
+        cari_transaksi()
+    })
+    $("#mutasi_tanggal").change(function () {
+        cari_transaksi()
+    })
+    $("#select_mutasi").change(function () {
+        cari_transaksi()
+    })
+    $('#btnfar_tambah_produk').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            tambahrow()
+        }
+    })
+
+
+})
+
+function perhitungan() {
+    $('#grand_total_pembayaran').val(rupiah2(desimal2($('#grand_total_pembayaran').val())));
+    $('#total_dijamin_pembayaran').val(rupiah2(desimal2($('#total_dijamin_pembayaran').val())));
+    var beban_pasien_pembayaran = Math.round(desimal2($('#grand_total_pembayaran').val())) - Math.round(desimal2($('#total_dijamin_pembayaran').val()))
+    $("#beban_pasien_pembayaran").val(rupiah2(beban_pasien_pembayaran))
+    $('#jumlah_pembayaran_1').val(rupiah2(desimal2($('#jumlah_pembayaran_1').val())));
+    $('#jumlah_pembayaran_2').val(rupiah2(desimal2($('#jumlah_pembayaran_2').val())));
+    $('#jumlah_pembayaran_3').val(rupiah2(desimal2($('#jumlah_pembayaran_3').val())));
+    $('#jumlah_pembayaran_4').val(rupiah2(desimal2($('#jumlah_pembayaran_4').val())));
+    var jumlah_kartu_total = Math.round(desimal2($('#jumlah_pembayaran_1').val())) + Math.round(desimal2($('#jumlah_pembayaran_2').val())) + Math.round(desimal2($('#jumlah_pembayaran_3').val())) + Math.round(desimal2($('#jumlah_pembayaran_4').val()))
+    $("#jumlah_kartu_total").val(rupiah2(jumlah_kartu_total))
+    $('#voucher_pembayaran_1').val(rupiah2(desimal2($('#voucher_pembayaran_1').val())));
+    $('#voucher_pembayaran_2').val(rupiah2(desimal2($('#voucher_pembayaran_2').val())));
+    $('#voucher_pembayaran_3').val(rupiah2(desimal2($('#voucher_pembayaran_3').val())));
+    $('#voucher_pembayaran_4').val(rupiah2(desimal2($('#voucher_pembayaran_4').val())));
+    var total_voucher = Math.round(desimal2($('#voucher_pembayaran_1').val())) + Math.round(desimal2($('#voucher_pembayaran_2').val())) + Math.round(desimal2($('#voucher_pembayaran_3').val())) + Math.round(desimal2($('#voucher_pembayaran_4').val()))
+    $("#total_voucher").val(rupiah2(total_voucher))
+    $('#nominal_piutang').val(rupiah2(desimal2($('#nominal_piutang').val())));
+    var nominal_tunai = Math.round((beban_pasien_pembayaran)) - Math.round((jumlah_kartu_total)) - Math.round((total_voucher)) - Math.round(desimal2($('#nominal_piutang').val()))
+    $("#nominal_tunai").val(rupiah2(nominal_tunai))
+
+
+}
+
+function Prosescetak() {
+    var terbilang = (angkaTerbilang(String(desimal2($('#total').val()))).toUpperCase() + " RUPIAH ")
+    $.ajax({
+        url: host + "/cetakBilling",
+        method: "GET",
+        data: {
+            'no_bukti': $("#no_trans").val(),
+            'terbilang': terbilang,
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf);
+        },
+    })
+}
+
+function cari_transaksi() {
+    $("#Datatransaksi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/getTransaksi",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'pasien': $('#mutasi_pasien').val(),
+                        'nama_pasien': $('#mutasi_nama').val(),
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FTNO_TRANSAKSI",
+                caption: "NO BUKTI",
+                // width: 100,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "KPKD_PASIEN",
+                caption: "PASIEN",
+                width: 100,
+            },
+            {
+                dataField: "NAMAPASIEN",
+                caption: "Nama Pasien",
+                // width: 200,
+            },
+
+        ],
+        onRowClick: function (e) {
+            getGridTabletransaksi(e.data.FTNO_TRANSAKSI)
+            $('#ModalTransaksi').modal('hide')
+        }
+    });
+}
+
+function error_in_field() {
+    Cekeror = true;
+    if ($('#no_regis').val() == '') {
+        alert('Silahkan isi registrasi ')
+        Cekeror = false;
+    }
+
+    if ($('#idPasien').val() == '') {
+        alert('Silahkan Pilih pasien')
+        Cekeror = false;
+    }
+
+    if ($('#tanggal').val() == '') {
+        alert('Silahkan Pilih Tanggal')
+        Cekeror = false;
+    }
+    if (canAdd == 1) {
+        var dataGrid = $("#datagrid").dxDataGrid("instance");
+        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+            if (dataGrid.getVisibleRows()[i].data.ID_PRODUK == '') {
+                alert('Silahkan isi kode produk ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK == '') {
+                alert('Silahkan isi nama produk ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.QTY == 0) {
+                alert('Silahkan isi QTY ')
+                Cekeror = false;
+            };
+        }
+    }
+
+    return Cekeror;
+
+}
+
+function error_in_simpan() {
+    Cekeror = true;
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK != '' && dataGrid.getVisibleRows()[i].data.FEEDOKTER != 0 && Cekeror == true) {
+            // cek display komponent dokter
+            var dataGriddokter = $("#dxGridDatadokter").dxDataGrid("instance");
+            if (dataGriddokter.getVisibleRows().length == 0) {
+                Cekeror = false;
+                alert('Silahkan isi dokter')
+            }
+        };
+        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK != '' && dataGrid.getVisibleRows()[i].data.FEEBC != 0 && Cekeror == true) {
+            // cek display komponent dokter
+            var dataGridbc = $("#dxGridDataBC").dxDataGrid("instance");
+            if (dataGridbc.getVisibleRows().length == 0) {
+                Cekeror = false;
+                alert('Silahkan isi BC')
+            }
+        };
+        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK != '' && dataGrid.getVisibleRows()[i].data.FEEPERAWAT != 0 && Cekeror == true) {
+            // cek display komponent dokter
+            var dataGridperawat = $("#dxGridDataperawat").dxDataGrid("instance");
+            if (dataGridperawat.getVisibleRows().length == 0) {
+                Cekeror = false;
+                alert('Silahkan isi perawat')
+            }
+        };
+    }
+    return Cekeror;
+
+}
+
+function setupAwal() {
+    Deathtext()
+    Cleartext()
+    $('#btnfar_tambah_produk').css("display", 'none');
+    canAdd = 0
+    setGridEmpty()
+
+}
+
+function Cleartext() {
+
+    $('#tgl_periksa').val(todays);
+    $('#no_transaksi').val('');
+    $('#idPasien').val('');
+    $('#nama_pasien').val('');
+
+    $('#idReseler').val('');
+    $('#namaReseler').val('');
+
+    $('#jenisTarif').val('');
+    $('#nopaket').val('');
+
+    $("#inlineCheckboxclose").prop('checked', false)
+}
+
+function Deathtext() {
+    menuEnable('menu_tambah');
+    menuEnable('menu_edit');
+    menuEnable('menu_hapus');
+    menuDisable('menu_simpan');
+    menuDisable('menu_cancel');
+    menuEnable('menu_find');
+    menuEnable('menu_kasir');
+    menuEnable('menu_farmasi');
+    menuEnable('menu_cetak');
+
+    setReadOnly('idPasien');
+    setReadOnly('nama_pasien')
+    setReadOnly('nama_keluarga')
+    btnDisable('btnFindPasien')
+
+    setReadOnly('idReseler')
+    setReadOnly('namaReseler')
+    btnDisable('btnFindReseler')
+
+
+    setReadOnly('tgl_periksa')
+
+    btnDisable('add_btn')
+    btnDisable('add_btnBC')
+    btnDisable('add_btnprw')
+    // btnDisable('tambah_paket')
+
+
+
+}
+
+function livetext() {
+    menuDisable('menu_tambah');
+    menuDisable('menu_edit');
+    menuDisable('menu_hapus');
+    menuEnable('menu_simpan');
+    menuEnable('menu_cancel');
+    menuDisable('menu_find');
+    menuDisable('menu_kasir');
+    menuDisable('menu_farmasi');
+    menuDisable('menu_cetak');
+
+    btnEnable('btnFindPasien')
+    btnEnable('btnFindReseler')
+    setUnReadOnly('tgl_periksa')
+
+    btnEnable('add_btn')
+    btnEnable('add_btnBC')
+    btnEnable('add_btnprw')
+    btnEnable('tambah_paket')
+
+}

@@ -1,0 +1,136 @@
+<div class="modal fade " id="modalProduk" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h5 class="modal-title">Entry Produk Tarip</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="ibox-content">
+        <form id="form_entry_produk">
+
+          <div class="row">
+            <label class="col-md-4">Kode Kelas Produk</label>
+            <div class="col-md-3">
+              <input readonly type="text" class="form-control input-sm" name="kode_klas_produk" id="entry_kode_klas_produk">
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-md-4">Kode Produk</label>
+            <div class="col-md-3">
+              <input readonly type="text" class="form-control input-sm" name="kode_produk" id="entry_kode_produk">
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-md-4">Nama Produk</label>
+            <div class="col-md-7">
+              <input readonly type="text" class="form-control input-sm" name="nama_produk" id="entry_nama_produk">
+            </div>
+          </div>
+          {% for kom in komponen %}
+          <div class=" row">
+            <label class="col-md-4 control-label ">{{ kom.COMPONENT }}</label>
+            <div class="col-md-4">
+              <input type="text" style="display: none;" class="kode_komponen" name="kode_komponen[]"
+                value="{{ kom.KD_COMPONENT }}">
+              <input type="text" style="display: none;" class="nama_komponen" name="nama_komponen[]"
+                value="{{ kom.COMPONENT }}">
+              <input readonly type="text" class="form-control input-sm trf-komponen"
+                id="tarif_komponen_{{ kom.KD_COMPONENT }}" name="tarif_komponen[]" style="text-align: right;">
+            </div>
+
+            <div class="col-md-2">
+              <input type="text" class="form-control input-sm prosentase-komponen"
+                id="prosentase_komponen_{{ kom.KD_COMPONENT }}" name="prosentase_komponen[]" style="text-align: right;"
+                data-comp="{{ kom.KD_COMPONENT }}">
+            </div>
+          </div>
+          {% endfor %}
+          <div class=" row">
+            <div class="col-md-8" style="padding: 4px; background-image: linear-gradient(#9bfbd2, white)">
+              <div class="row">
+                <label class="col-md-3">
+                  HARGA JUAL
+                </label>
+                <div class="col-md-3">
+                  <input type="text" name="total_tarif" id="entry_total_tarif" class="form-control input-sm"
+                    style="text-align: right;">
+                </div>
+                <label class="col-md-3">
+                  N E T T O
+                </label>
+                <div class="col-md-3">
+                  <input readonly type="text" name="total_netto" id="entry_total_netto" class="form-control input-sm"
+                    style="text-align: right;">
+                </div>
+
+              </div>
+            </div>
+            <div class="col-md-4" style="padding: 4px; background-image: linear-gradient(#9bfbd2, white)">
+              <div class="col-md-6">
+                <input readonly type="text" name="persen_total_tarif" id="persen_total_tarif"
+                  class="form-control input-sm" style="text-align: right;">
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="row" style="padding: 4px; background-image: linear-gradient(#92b9e3, rgb(224, 214, 214))">
+          <div class="form-group col-md-8">
+            <div class="row">
+              <label class="control-label col-md-6">
+                Discount Konsumen
+              </label>
+              <div class="col-md-6">
+                <input readonly type="text" name="disc_konsumen" id="disc_konsumen" class="form-control input-sm"
+                  style="text-align: right;">
+              </div>
+            </div>
+            <div class="row">
+              <label class="col-md-6">
+                Fee Reseller
+              </label>
+              <div class="col-md-6">
+                <input readonly type="text" name="fee_reseler" id="fee_reseler" class="form-control input-sm"
+                  style="text-align: right;" ">
+              </div>
+            </div>    
+          </div>
+          <div class=" form-group col-md-4">
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="text" name="disc_konsumenpersen" id="disc_konsumenpersen" class="form-control input-sm"
+                      style="text-align: right;">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <input type="text" name="fee_reselerpersen" id="fee_reselerpersen" class="form-control input-sm"
+                      style="text-align: right;">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class=" col-md-4"
+              style="padding: 10px; background-image: linear-gradient(#fbf29b, rgb(125, 96, 96)); ">
+              <div class="row">
+                <label class="control-label">Tanggal Berlaku</label>
+                <input type="date" name="tgl_berlaku" id="entry_tgl_berlaku" class="form-control input-sm">
+              </div>
+            </div>
+
+
+          </div>
+          <div class="modal-footer py-1">
+            <button type="button" id="delete_tarif" class="btn btn-warning">Hapus</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+            <button type="button" id="save_tarif" class="btn btn-primary">Simpan</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+
+    </script>

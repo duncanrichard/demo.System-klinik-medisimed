@@ -1,0 +1,130 @@
+var selectedperawat = ''
+
+$(document).ready(function () {
+    $("#add_btnprw").click(function () {
+        $('#ModalPerawat').modal('show')
+        cari_perawat()
+    })
+
+    $('#btn_simpan_perawat').click(function (e) {
+        if (selectedperawat.length != 0) {
+            SPVpilihperawat(selectedperawat, function () {})
+            $('#ModalPerawat').modal('hide')
+        } else {
+            e.preventDefault()
+            alert('Anda belum memilih perawat')
+        }
+    })
+})
+
+
+function cari_perawat() {
+    $("#Dataperawat").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        selection: {
+            mode: "multiple"
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getperawat",
+                    method: "GET",
+                    data: {},
+                    success: function (datas) {}
+                })
+            }
+        }),
+
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "ID_PERAWAT",
+                caption: "KODE PERAWAT",
+            },
+            {
+                dataField: "NAMA_PERAWAT",
+                caption: "NAMA PERAWAT",
+            },
+        ],
+        onSelectionChanged: function (selectedItems) {
+            selectedperawat = selectedItems.selectedRowsData
+        }
+    });
+
+}
+var arrIdxStoreProduk = 0;
+var i = 0;
+
+function SPVpilihperawat(arrData, callback = null) {
+    $("#dxGridDataperawat").dxDataGrid({
+        dataSource: arrData,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_PERAWAT",
+                caption: "KODE PERAWAT",
+                alignment: 'left',
+                allowEditing: true,
+                width: 100,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_PERAWAT",
+                caption: "NAMA PERAWAT",
+                alignment: 'left',
+                width: 200,
+                allowEditing: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+    });
+}

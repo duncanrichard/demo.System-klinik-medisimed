@@ -1,0 +1,1546 @@
+function setGridEmpty() {
+    $("#dxGridDatadokter").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_DOKTER",
+                caption: "KODE DOKTER",
+                alignment: 'left',
+                allowEditing: true,
+                width: 90,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_DOKTER",
+                caption: "NAMA DOKTER",
+                alignment: 'left',
+                // width: 270,
+                allowEditing: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 1) {
+                colIndex = "ID_DOKTER"
+            }
+        },
+
+
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf  Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+    });
+    $("#dxGridDataBC").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_BC",
+                caption: "KODE BC",
+                alignment: 'left',
+                allowEditing: true,
+                width: 90,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_BC",
+                caption: "NAMA BC",
+                alignment: 'left',
+                // width: 270,
+                allowEditing: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 1) {
+                colIndex = "ID_BC"
+            }
+        },
+
+
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf  Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+    });
+    $("#dxGridDataperawat").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_PERAWAT",
+                caption: "KODE PERAWAT",
+                alignment: 'left',
+                allowEditing: true,
+                width: 90,
+                // allowSorting: false
+            },
+            {
+                dataField: "NAMA_PERAWAT",
+                caption: "NAMA PERAWAT",
+                alignment: 'left',
+                // width: 270,
+                allowEditing: false
+            },
+        ],
+
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 1) {
+                colIndex = "ID_PERAWAT"
+            }
+        },
+
+
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf  Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+    });
+    $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10000
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                type: "buttons",
+                buttons: [{
+                    name: "delete",
+                    text: "hapus"
+                }],
+                width: 60
+            },
+            {
+                dataField: "NOFAKTUR",
+                caption: "REFFERENSI",
+                alignment: 'left',
+                allowEditing: false,
+                width: 100,
+                allowSorting: false
+            },
+            {
+                dataField: "ID_PRODUK",
+                caption: "KODE PRODUK",
+                alignment: 'left',
+                allowEditing: true,
+                width: 120,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_PRODUK",
+                caption: "NAMA PRODUK",
+                alignment: 'left',
+                width: 270,
+                allowEditing: false
+            },
+            {
+                dataField: "HARGA",
+                alignment: 'right',
+                caption: "HARGA/UNIT",
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 100
+            },
+            {
+                dataField: "QTY",
+                caption: "QTY",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 50
+            },
+            {
+                dataField: "DISCKONSUMEN",
+                alignment: 'center',
+                caption: "KONSUMEN %",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 100,
+                allowEditing: false,
+
+            },
+            {
+                dataField: "DISC",
+                caption: "DISC %",
+                alignment: 'right',
+                dataType: "number",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "DISC2",
+                caption: "DISC 2 %",
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "DISC3",
+                caption: "DISC 3 %",
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "DISC4",
+                caption: "DISC Rp.",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 100
+            },
+            {
+                dataField: "TOTAL",
+                caption: "TOTAL",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 130,
+                calculateCellValue: function (rowData) {
+                    var hjual = ''
+                    var qty = ''
+                    var disckonsumen = ''
+                    var disc = ''
+                    var disc2 = ''
+                    var disc3 = ''
+                    var disc4 = ''
+
+                    if (rowData.HARGA == '') {
+                        hjual = 0
+                    } else {
+                        hjual = parseInt(rowData.HARGA)
+                    }
+
+                    if (!rowData.QTY) {
+                        qty = 0
+                    } else {
+                        qty = parseInt(rowData.QTY)
+                    }
+                    if (!rowData.DISCKONSUMEN) {
+                        disckonsumen = 0
+                    } else {
+                        disckonsumen = parseFloat(rowData.DISCKONSUMEN)
+                    }
+                    if (!rowData.DISC) {
+                        disc = 0
+                    } else {
+                        disc = parseFloat(rowData.DISC)
+                    }
+
+                    if (!rowData.DISC2) {
+                        disc2 = 0
+                    } else {
+                        disc2 = parseFloat(rowData.DISC2)
+                    }
+                    if (!rowData.DISC3) {
+                        disc3 = 0
+                    } else {
+                        disc3 = parseFloat(rowData.DISC3)
+                    }
+                    if (!rowData.DISC4) {
+                        disc4 = 0
+                    } else {
+                        disc4 = parseInt(rowData.DISC4)
+                    }
+                    var amount = (hjual * qty)
+                    var totdisckonsumen = amount * (disckonsumen / 100)
+                    var totdisc = (amount - totdisckonsumen) * (disc / 100)
+                    var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+                    var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+                    var res = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+                    return parseInt(Math.ceil(res))
+                }
+            },
+
+            {
+                dataField: "DISCRESELER",
+                alignment: 'center',
+                caption: "DISCRESELER",
+                width: 0,
+                allowEditing: false
+            },
+            {
+                dataField: "FEEDOKTER",
+                alignment: 'center',
+                caption: "FEEDOKTER",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 100,
+                allowEditing: false
+            },
+            {
+                dataField: "FEEBC",
+                alignment: 'center',
+                caption: "FEEBC",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 100,
+                allowEditing: false
+            },
+            {
+                dataField: "FEEPERAWAT",
+                alignment: 'center',
+                caption: "FEEPERAWAT",
+                width: 100,
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                allowEditing: false
+            },
+
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 3) {
+                colIndex = "ID_PRODUK"
+            } else if (colIndex == 6) {
+                colIndex = "QTY"
+            } else if (colIndex == 11) {
+                colIndex = "DISC4"
+            }
+
+        },
+        onRowUpdated: function (e) {
+            if (e.data.hasOwnProperty("QTY")) {
+                if (e.data.QTY < 0) {
+                    alert('QTY Tidak Boleh Kurang Dari 1');
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    dataGrid.cellValue(rowIndex, "QTY", '1');
+                    dataGrid.saveEditData();
+                }
+                setTotal()
+            }
+        },
+        onRowRemoved: function (e) {
+            setTotal()
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+            if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                console.log(e)
+                e.cancel = true
+                alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih hapus dari produk farmasi')
+            } else {
+                setTotal()
+            }
+        },
+        onKeyDown: function (d) {
+            if (colIndex == 'ID_PRODUK' && d.event.originalEvent.which == 13) {
+                if (canAdd == 1) {
+                    var dataGrid = d.component
+                    var baris = dataGrid.getVisibleRows().length
+                    var ID_PRODUKKODE = d.event.target.value
+                    carikodeprodukid(ID_PRODUKKODE)
+
+                }
+            }
+            if (colIndex == 'DISC4' && d.event.originalEvent.which == 13) {
+                // kalo enter tambah row otomatis
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.saveEditData();
+                if (canAdd == 1) {
+                    if (Cekeror == true) {
+                        error_in_field()
+                        if (Cekeror == true) {
+                            tambahrow()
+                        }
+                    }
+                }
+            }
+        },
+    });
+    $("#datagridbayar").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10000
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                type: "buttons",
+                buttons: [{
+                    name: "delete",
+                    text: "hapus"
+                }],
+                width: 60
+            },
+            {
+                dataField: "NOFAKTUR",
+                caption: "REFFERENSI",
+                alignment: 'left',
+                allowEditing: false,
+                width: 100,
+                allowSorting: false
+            },
+            {
+                dataField: "ID_PRODUK",
+                caption: "KODE PRODUK",
+                alignment: 'left',
+                allowEditing: true,
+                width: 120,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_PRODUK",
+                caption: "NAMA PRODUK",
+                alignment: 'left',
+                allowEditing: false
+            },
+            {
+                dataField: "TOTAL",
+                caption: "TOTAL",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 130,
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 3) {
+                colIndex = "ID_PRODUK"
+            } else if (colIndex == 6) {
+                colIndex = "QTY"
+            } else if (colIndex == 11) {
+                colIndex = "DISC4"
+            }
+
+        },
+
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+            if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                console.log(e)
+                e.cancel = true
+                alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih hapus dari produk farmasi')
+            } else {
+                setTotal()
+            }
+        },
+    });
+}
+
+function getGridTabletransaksi(no_bukti) {
+    $.ajax({
+        url: host + "/getTransaksiByBukti",
+        method: "GET",
+        data: {
+            "no_bukti": no_bukti,
+        },
+        success: function (datas) {
+            $('#no_trans').val(datas.data1[0].FTNO_TRANSAKSI);
+            $('#no_regis').val(datas.data1[0].FTNO_KUNJUNGAN);
+            $('#tanggal').val(datas.data1[0].TANGGAL.substr(0, 10));
+            $('#idPasien').val(datas.data1[0].KPKD_PASIEN);
+            $('#nama_pasien').val(datas.data1[0].NAMAPASIEN);
+            $('#idReseler').val(datas.data1[0].KD_RESELER);
+            $('#namaReseler').val(datas.data1[0].NAMA_RESELER);
+            if (datas.data1[0].FKUNCI == 1) {
+                $('input[name=inlineCheckboxclose]').iCheck('check');
+            } else {
+                $('input[name=inlineCheckboxclose]').iCheck('uncheck');
+            }
+
+            $('#userrs').val(datas.data1[0].USERRS);
+            $('#updaters').val(datas.data1[0].UPDATERS.substr(0, 20));
+
+
+            $("#dxGridDatadokter").dxDataGrid({
+                dataSource: datas.data2,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        dataField: "ID_DOKTER",
+                        caption: "KODE DOKTER",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 90,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_DOKTER",
+                        caption: "NAMA DOKTER",
+                        alignment: 'left',
+                        // width: 270,
+                        allowEditing: false
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 1) {
+                        colIndex = "ID_DOKTER"
+                    }
+                },
+
+
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf  Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                },
+            });
+            $("#dxGridDataBC").dxDataGrid({
+                dataSource: datas.data3,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        dataField: "ID_BC",
+                        caption: "KODE BC",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 90,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_BC",
+                        caption: "NAMA BC",
+                        alignment: 'left',
+                        // width: 270,
+                        allowEditing: false
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 1) {
+                        colIndex = "ID_BC"
+                    }
+                },
+
+
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf  Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                },
+            });
+            $("#dxGridDataperawat").dxDataGrid({
+                dataSource: datas.data4,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        dataField: "ID_PERAWAT",
+                        caption: "KODE PERAWAT",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 90,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_PERAWAT",
+                        caption: "NAMA PERAWAT",
+                        alignment: 'left',
+                        // width: 270,
+                        allowEditing: false
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 1) {
+                        colIndex = "ID_PERAWAT"
+                    }
+                },
+
+
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf  Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                },
+            });
+            $("#datagrid").dxDataGrid({
+                dataSource: datas.data1,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10000
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        type: "buttons",
+                        buttons: [{
+                            name: "delete",
+                            text: "hapus"
+                        }],
+                        width: 60
+                    },
+                    {
+                        dataField: "NOFAKTUR",
+                        caption: "REFFERENSI",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 100,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "ID_PRODUK",
+                        caption: "KODE PRODUK",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 120,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_PRODUK",
+                        caption: "NAMA PRODUK",
+                        alignment: 'left',
+                        width: 270,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "HARGA",
+                        alignment: 'right',
+                        caption: "HARGA/UNIT",
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "QTY",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 50
+                    },
+                    {
+                        dataField: "DISCKONSUMEN",
+                        alignment: 'center',
+                        caption: "KONSUMEN %",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false,
+
+                    },
+                    {
+                        dataField: "DISC",
+                        caption: "DISC %",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC2",
+                        caption: "DISC 2 %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC3",
+                        caption: "DISC 3 %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC4",
+                        caption: "DISC Rp.",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+                            var disckonsumen = ''
+                            var disc = ''
+                            var disc2 = ''
+                            var disc3 = ''
+                            var disc4 = ''
+
+                            if (rowData.HARGA == '') {
+                                hjual = 0
+                            } else {
+                                hjual = parseInt(rowData.HARGA)
+                            }
+
+                            if (!rowData.QTY) {
+                                qty = 0
+                            } else {
+                                qty = parseInt(rowData.QTY)
+                            }
+                            if (!rowData.DISCKONSUMEN) {
+                                disckonsumen = 0
+                            } else {
+                                disckonsumen = parseFloat(rowData.DISCKONSUMEN)
+                            }
+                            if (!rowData.DISC) {
+                                disc = 0
+                            } else {
+                                disc = parseFloat(rowData.DISC)
+                            }
+
+                            if (!rowData.DISC2) {
+                                disc2 = 0
+                            } else {
+                                disc2 = parseFloat(rowData.DISC2)
+                            }
+                            if (!rowData.DISC3) {
+                                disc3 = 0
+                            } else {
+                                disc3 = parseFloat(rowData.DISC3)
+                            }
+                            if (!rowData.DISC4) {
+                                disc4 = 0
+                            } else {
+                                disc4 = parseInt(rowData.DISC4)
+                            }
+                            var amount = (hjual * qty)
+                            var totdisckonsumen = amount * (disckonsumen / 100)
+                            var totdisc = (amount - totdisckonsumen) * (disc / 100)
+                            var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+                            var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+                            var res = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+
+                    {
+                        dataField: "DISCRESELER",
+                        alignment: 'center',
+                        caption: "DISCRESELER",
+                        width: 0,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEEDOKTER",
+                        alignment: 'center',
+                        caption: "FEEDOKTER",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEEBC",
+                        alignment: 'center',
+                        caption: "FEEBC",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEEPERAWAT",
+                        alignment: 'center',
+                        caption: "FEEPERAWAT",
+                        width: 100,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        allowEditing: false
+                    },
+
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 3) {
+                        colIndex = "ID_PRODUK"
+                    } else if (colIndex == 6) {
+                        colIndex = "QTY"
+                    } else if (colIndex == 11) {
+                        colIndex = "DISC4"
+                    }
+
+                },
+                onRowUpdated: function (e) {
+                    if (e.data.hasOwnProperty("QTY")) {
+                        if (e.data.QTY < 0) {
+                            alert('QTY Tidak Boleh Kurang Dari 1');
+                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                            dataGrid.cellValue(rowIndex, "QTY", '1');
+                            dataGrid.saveEditData();
+                        }
+                        setTotal()
+                    }
+                },
+                onRowRemoved: function (e) {
+                    setTotal()
+                },
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                    if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                        console.log(e)
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih hapus dari produk farmasi')
+                    } else {
+                        setTotal()
+                    }
+                },
+                onKeyDown: function (d) {
+                    if (colIndex == 'ID_PRODUK' && d.event.originalEvent.which == 13) {
+                        if (canAdd == 1) {
+                            var dataGrid = d.component
+                            var baris = dataGrid.getVisibleRows().length
+                            var ID_PRODUKKODE = d.event.target.value
+                            carikodeprodukid(ID_PRODUKKODE)
+
+                        }
+                    }
+                    if (colIndex == 'DISC4' && d.event.originalEvent.which == 13) {
+                        // kalo enter tambah row otomatis
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        dataGrid.saveEditData();
+                        if (canAdd == 1) {
+                            if (Cekeror == true) {
+                                error_in_field()
+                                if (Cekeror == true) {
+                                    tambahrow()
+                                }
+                            }
+                        }
+                    }
+                },
+                onContentReady: function (d) {
+                    setTotal()
+                }
+            });
+            $("#datagridbayar").dxDataGrid({
+                dataSource: datas.data5,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10000
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        type: "buttons",
+                        buttons: [{
+                            name: "delete",
+                            text: "hapus"
+                        }],
+                        width: 60
+                    },
+                    {
+                        dataField: "NOFAKTUR",
+                        caption: "REFFERENSI",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 100,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "TUNAI",
+                        caption: "TUNAI",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "BANK",
+                        caption: "BANK",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "PIUTANG",
+                        caption: "PIUTANG",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "JAMINAN",
+                        caption: "JAMINAN",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "VOUCHER",
+                        caption: "VOUCHER",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                        calculateCellValue: function (rowData) {
+                            var tunai = ''
+                            var piutang = ''
+                            var bank = ''
+                            var voucher = ''
+                            var jaminan = ''
+
+                            if (rowData.TUNAI == '') {
+                                tunai = 0
+                            } else {
+                                tunai = parseInt(rowData.TUNAI)
+                            }
+
+                            if (!rowData.BANK) {
+                                bank = 0
+                            } else {
+                                bank = parseInt(rowData.BANK)
+                            }
+                            if (!rowData.PIUTANG) {
+                                piutang = 0
+                            } else {
+                                piutang = parseFloat(rowData.PIUTANG)
+                            }
+                            if (!rowData.VOUCHER) {
+                                voucher = 0
+                            } else {
+                                voucher = parseFloat(rowData.VOUCHER)
+                            }
+
+                            if (!rowData.JAMINAN) {
+                                jaminan = 0
+                            } else {
+                                jaminan = parseFloat(rowData.JAMINAN)
+                            }
+                            var res = tunai + piutang + bank + voucher + jaminan
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+
+
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                    if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                        console.log(e)
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih hapus dari paket')
+                    } else {
+                        setTotalbayar()
+                    }
+                },
+                onContentReady: function (d) {
+                    setTotalbayar()
+                }
+            });
+
+        }
+    })
+}
+
+function tambahrow() {
+    tempId = ''
+    tempNama = ''
+    tempHjual = 0
+    temppqty = 1
+    tempdisc = 0
+    tempdisc2 = 0
+    tempdisc3 = 0
+    tempdisc4 = 0
+    tempdisckonsumen = 0
+    tempdiscreseler = 0
+    tempfeedokter = 0
+    tempfeebc = 0
+    tempfeeperawat = 0
+
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    dataGrid.addRow();
+    dataGrid.cellValue(0, "NO", generateNo());
+    dataGrid.cellValue(0, "ID_PRODUK", tempId);
+    dataGrid.cellValue(0, "NAMA_PRODUK", tempNama);
+    dataGrid.cellValue(0, "HARGA", tempHjual);
+    dataGrid.cellValue(0, "QTY", temppqty);
+    dataGrid.cellValue(0, "DISC", tempdisc);
+    dataGrid.cellValue(0, "DISC2", tempdisc2);
+    dataGrid.cellValue(0, "DISC3", tempdisc3);
+    dataGrid.cellValue(0, "DISC4", tempdisc4);
+    dataGrid.cellValue(0, "DISCKONSUMEN", tempdisckonsumen);
+    dataGrid.cellValue(0, "DISCRESELER", tempdiscreseler);
+    dataGrid.cellValue(0, "FEEDOKTER", tempfeedokter);
+    dataGrid.cellValue(0, "FEEBC", tempfeebc);
+    dataGrid.cellValue(0, "FEEPERAWAT", tempfeeperawat);
+    $.when(dataGrid.saveEditData()).done(function () {
+        colIndex = 'ID_PRODUK'
+        setFocusID_PRODUK()
+    })
+}
+
+function setFocusID_PRODUK() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    dataGrid.editCell(qtyIndex, 'ID_PRODUK')
+}
+
+function generateNo() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var last_number = parseInt(dataGrid.cellValue((dataGrid.getVisibleRows().length - 1), "NO"))
+
+    if (!last_number) {
+        return 1
+    } else {
+        return (last_number + 1)
+    }
+}
+
+function cekDataSudahAda(kode) {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length - 1; i++) {
+        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK == kode) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function setTotal() {
+    $('#total').val(rupiah2(getTotal()))
+}
+
+function setTotalbayar() {
+    $('#totalbayar').val(rupiah2(getTotalbayar()))
+}
+
+function getTotal() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var result = 0;
+    var harga = 0;
+    var qty = 0;
+    var disckonsumen = 0;
+    var disc = 0;
+    var disc2 = 0;
+    var disc3 = 0;
+    var disc4 = 0;
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.HARGA))) {
+            harga = 0
+        } else {
+            harga = parseInt(dataGrid.getVisibleRows()[i].data.HARGA)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.QTY))) {
+            qty = 0
+        } else {
+            qty = parseInt(dataGrid.getVisibleRows()[i].data.QTY)
+        }
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.DISCKONSUMEN))) {
+            disckonsumen = 0
+        } else {
+            disckonsumen = parseFloat(dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
+        }
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.DISC))) {
+            disc = 0
+        } else {
+            disc = parseFloat(dataGrid.getVisibleRows()[i].data.DISC)
+        }
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.DISC2))) {
+            disc2 = 0
+        } else {
+            disc2 = parseFloat(dataGrid.getVisibleRows()[i].data.DISC2)
+        }
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.DISC3))) {
+            disc3 = 0
+        } else {
+            disc3 = parseFloat(dataGrid.getVisibleRows()[i].data.DISC3)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.DISC4))) {
+            disc4 = 0
+        } else {
+            disc4 = parseInt(dataGrid.getVisibleRows()[i].data.DISC4)
+        }
+        var amount = (harga * qty)
+        var totdisckonsumen = amount * (disckonsumen / 100)
+        var totdisc = (amount - totdisckonsumen) * (disc / 100)
+        var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+        var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+        var jumlah = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+
+
+        result += (jumlah);
+    }
+    return result
+}
+
+function getTotalbayar() {
+
+    var dataGrid = $("#datagridbayar").dxDataGrid("instance");
+    var result = 0;
+    var tunai = 0;
+    var piutang = 0;
+    var bank = 0;
+    var voucher = 0;
+    var jaminan = 0;
+
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.TUNAI))) {
+            tunai = 0
+        } else {
+            tunai = parseInt(dataGrid.getVisibleRows()[i].data.TUNAI)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.PIUTANG))) {
+            piutang = 0
+        } else {
+            piutang = parseInt(dataGrid.getVisibleRows()[i].data.PIUTANG)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.BANK))) {
+            bank = 0
+        } else {
+            bank = parseInt(dataGrid.getVisibleRows()[i].data.BANK)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.VOUCHER))) {
+            voucher = 0
+        } else {
+            voucher = parseInt(dataGrid.getVisibleRows()[i].data.VOUCHER)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.JAMINAN))) {
+            jaminan = 0
+        } else {
+            jaminan = parseInt(dataGrid.getVisibleRows()[i].data.JAMINAN)
+        }
+
+        var jumlah = tunai + piutang + bank + voucher + jaminan
+
+        result += (jumlah);
+    }
+    return result
+}

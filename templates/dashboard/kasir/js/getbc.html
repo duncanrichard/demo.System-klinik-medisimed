@@ -1,0 +1,130 @@
+var selectedbc = ''
+
+$(document).ready(function () {
+    $("#add_btnBC").click(function () {
+        $('#ModalBC').modal('show')
+        cari_bc()
+    })
+
+    $('#btn_simpan_bc').click(function (e) {
+        if (selectedbc.length != 0) {
+            SPVpilihbc(selectedbc, function () {})
+            $('#ModalBC').modal('hide')
+        } else {
+            e.preventDefault()
+            alert('Anda belum memilih bc')
+        }
+    })
+})
+
+
+function cari_bc() {
+    $("#Databc").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        selection: {
+            mode: "multiple"
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getBC",
+                    method: "GET",
+                    data: {},
+                    success: function (datas) {}
+                })
+            }
+        }),
+
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "ID_BC",
+                caption: "KODE BC",
+            },
+            {
+                dataField: "NAMA_BC",
+                caption: "NAMA BC",
+            },
+        ],
+        onSelectionChanged: function (selectedItems) {
+            selectedbc = selectedItems.selectedRowsData
+        }
+    });
+
+}
+var arrIdxStoreProduk = 0;
+var i = 0;
+
+function SPVpilihbc(arrData, callback = null) {
+    $("#dxGridDataBC").dxDataGrid({
+        dataSource: arrData,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_BC",
+                caption: "KODE BC",
+                alignment: 'left',
+                allowEditing: true,
+                width: 100,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_BC",
+                caption: "NAMA BC",
+                alignment: 'left',
+                width: 200,
+                allowEditing: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf BC Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+    });
+}

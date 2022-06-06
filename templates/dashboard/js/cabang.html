@@ -1,0 +1,80 @@
+var host = window.location.href;
+
+var host2 = window.location.href.split("/");
+var host2 = host2[0] + "//" + host2[2]
+$(document).ready(function () {
+
+    var kd_cabangpri = '{{ request.session.kd_cabangpri }}'
+
+    if (kd_cabangpri == '1') {
+        cariCabang(event)
+    } else {
+        cariCabang(event)
+    }
+
+
+    $("#btn_Cabang_keluar").click(function (e) {
+        window.location.href = "/logout";
+    });
+});
+
+var gridDataCabang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var user_id = '{{ request.session.user_id }}'
+        return $.ajax({
+            url: host2 + "/getCabang",
+            method: "GET",
+            data: {
+                "user_id": user_id,
+            },
+            success: function (datas) {
+                $('#Modalcabang').modal('show');
+            }
+        })
+    }
+});
+
+function cariCabang() {
+    console.log('da')
+    $("#datagrid").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDataCabang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "CABANG_ID",
+                caption: "Kode  Cabang",
+            },
+            {
+                dataField: "PERUSAHAAN",
+                caption: "Nama Cabang",
+            },
+            {
+                dataField: "ALAMAT1",
+                caption: "Alamat Cabang",
+            },
+            {
+                dataField: "TELEPON",
+                caption: "TELEPON",
+            },
+
+        ],
+        onRowClick: function (e) {
+            // getDataPasien(e.data.KODE_PASIEN);
+            window.location.href = 'http://{{ request.get_host }}/?kdCabang=' + e.data.CABANG_ID;
+            $('#Modalcabang').modal('hide');
+        }
+    });
+}

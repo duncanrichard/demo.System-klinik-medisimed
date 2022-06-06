@@ -57,10 +57,8 @@ def getDataProvinsi(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def getProvinsi(request):
-    id_Provinsi = '%' + request.GET['id_Provinsi'] + '%'
-    nama_Provinsi = '%' + request.GET['nama_Provinsi'] + '%'
-    q = "select KD_PROPINSI,PROPINSIN from PROPINSI  where KD_PROPINSI like %s and PROPINSIN like %s"
-    result = Globals().getDataQuery(q, [id_Provinsi, nama_Provinsi])
+    q = "select KD_PROPINSI,PROPINSIN from PROPINSI order by KD_PROPINSI "
+    result = Globals().getDataQuery(q)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -73,10 +71,8 @@ def getDataKabupaten(request):
 
 def getKabupaten(request):
     Provinsi_id = request.GET['Provinsi_id'] 
-    id_Kabupaten = '%' + request.GET['id_Kabupaten'] + '%'
-    nama_Kabupaten = '%' + request.GET['nama_Kabupaten'] + '%'
-    q = "select KD_KABUPATEN,KABUPATEN from KABUPATEN  where KD_KABUPATEN like %s and KABUPATEN like %s and KD_PROPINSI= %s "
-    result = Globals().getDataQuery(q, [id_Kabupaten, nama_Kabupaten,Provinsi_id])
+    q = "select KD_KABUPATEN,KABUPATEN from KABUPATEN  where  KD_PROPINSI= %s order by KD_KABUPATEN "
+    result = Globals().getDataQuery(q, [Provinsi_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -89,10 +85,8 @@ def getDataKecamatan(request):
 
 def getKecamatan(request):
     Kabupaten_id = request.GET['Kabupaten_id'] 
-    id_Kecamatan = '%' + request.GET['id_Kecamatan'] + '%'
-    nama_Kecamatan = '%' + request.GET['nama_Kecamatan'] + '%'
-    q = "select  KD_KECAMATAN,KECAMATAN,KD_KABUPATEN from KECAMATAN  where KD_KECAMATAN like %s and KECAMATAN like %s and KD_KABUPATEN= %s "
-    result = Globals().getDataQuery(q, [id_Kecamatan, nama_Kecamatan,Kabupaten_id])
+    q = "select  KD_KECAMATAN,KECAMATAN,KD_KABUPATEN from KECAMATAN  where  KD_KABUPATEN= %s order by KD_KECAMATAN"
+    result = Globals().getDataQuery(q, [Kabupaten_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -105,10 +99,21 @@ def getDataKelurahan(request):
 
 def getKelurahan(request):
     Kecamatan_id = request.GET['Kecamatan_id'] 
-    id_Kelurahan = '%' + request.GET['id_Kelurahan'] + '%'
-    nama_Kelurahan = '%' + request.GET['nama_Kelurahan'] + '%'
-    q = "select KD_KELURAHAN,KELURAHAN,KD_KECAMATAN from KELURAHAN  where KD_KELURAHAN like %s and KELURAHAN like %s and KD_KECAMATAN= %s "
-    result = Globals().getDataQuery(q, [id_Kelurahan, nama_Kelurahan,Kecamatan_id])
+    q = "select KD_KELURAHAN,KELURAHAN,KD_KECAMATAN from KELURAHAN  where  KD_KECAMATAN= %s  order by KD_KELURAHAN "
+    result = Globals().getDataQuery(q, [Kecamatan_id])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getDataReseler(request):
+    idReseler = request.GET['idReseler']
+    q = "select KD_RESELER, NAMA_RESELER from RESELER where KD_RESELER= %s "
+    result = Globals().getDataQuery(q, [idReseler])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getReseler(request):
+    q = "select KD_RESELER, NAMA_RESELER from RESELER   order by KD_RESELER "
+    result = Globals().getDataQuery(q)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -139,15 +144,108 @@ def getCustomer(request):
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
+def getDataAgama(request):
+    idAgama = request.GET['idAgama']
+    q = "select KD_AGAMA, AGAMA from AGAMA where KD_AGAMA= %s "
+    result = Globals().getDataQuery(q, [idAgama])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getAgama(request):
+    q = "select KD_AGAMA, AGAMA from AGAMA   order by KD_AGAMA "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")  
+
+def getDataPendidikan(request):
+    idPendidikan = request.GET['idPendidikan']
+    q = "select KD_PENDIDIKAN, PENDIDIKAN from PENDIDIKAN where KD_PENDIDIKAN= %s "
+    result = Globals().getDataQuery(q, [idPendidikan])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getPendidikan(request):
+    q = "select KD_PENDIDIKAN, PENDIDIKAN from PENDIDIKAN   order by KD_PENDIDIKAN "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json") 
+
+def getDataGoldarah(request):
+    idGoldarah = request.GET['idGoldarah']
+    q = "select KD_DARAH,DARAH from GOL_DARAH where KD_DARAH= %s "
+    result = Globals().getDataQuery(q, [idGoldarah])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getGoldarah(request):
+    q = "select KD_DARAH,DARAH from GOL_DARAH   order by KD_DARAH "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getDataMarital(request):
+    idMarital = request.GET['idMarital']
+    q = "select KD_MARITAL,MARITAL from STATUSMARITAL where KD_MARITAL= %s "
+    result = Globals().getDataQuery(q, [idMarital])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getMarital(request):
+    q = "select KD_MARITAL,MARITAL from STATUSMARITAL   order by KD_MARITAL "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getDataPekerjaan(request):
+    idPekerjaan = request.GET['idPekerjaan']
+    q = "select KD_PEKERJAAN,PEKERJAAN from PEKERJAAN where KD_PEKERJAAN= %s "
+    result = Globals().getDataQuery(q, [idPekerjaan])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getPekerjaan(request):
+    q = "select KD_PEKERJAAN,PEKERJAAN from PEKERJAAN   order by KD_PEKERJAAN "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getDataSuku(request):
+    idSuku = request.GET['idSuku']
+    q = "select FMSKETERANGAN,FMSKODE from SUKU  where FMSKODE= %s "
+    result = Globals().getDataQuery(q, [idSuku])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getSuku(request):
+    q = "select FMSKETERANGAN,FMSKODE from SUKU    order by FMSKODE "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getDataBahasa(request):
+    idBahasa = request.GET['idBahasa']
+    q = "select BAHASA_ID,BAHASA from BAHASA   where BAHASA_ID= %s "
+    result = Globals().getDataQuery(q, [idBahasa])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getBahasa(request):
+    q = "select BAHASA_ID,BAHASA from BAHASA    order by BAHASA_ID "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+
 def getPasien(request):
     search_name = '%'+request.GET['search_name']+'%'
     search_almt = '%'+request.GET['search_almt']+'%'
     search_kdpas = '%'+request.GET['search_kdpas']+'%'
     search_telp = '%'+request.GET['search_telp']+'%'
+    cabang_id = request.session['kdCabang']
     q = " select TOP 200 a.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
-    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s  order by a.NAMAPASIEN "
+    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s and KD_ASAL_CABANG= %s  order by a.NAMAPASIEN "
 
-    proc_param = [search_name,search_almt,search_kdpas,search_telp]
+    proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
     # pprint(proc_param)
     result = Globals().getDataQuery(q, proc_param)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -155,22 +253,73 @@ def getPasien(request):
 
 
 def getDataPasien(request):
-    kdpas = request.GET['KD_PASIEN']
-    q = "select TOP 5 A.*,B.AGAMA as NAMA_AGAMA,C.KELURAHAN AS NAMA_KELURAHAN, D.PENDIDIKAN AS NAMA_PENDIDIKAN, E.PEKERJAAN AS NAMA_PEKERJAAN, "
-    q += " F.NAME as NAMA_PERUSAHAAN, G.KELAMIN AS JK, H.MARITAL, I.DARAH, J.FMKCUSTN AS NAMA_ASURANSI, J.FMKJENIS_TARIP AS JENIS_TARIF,K.BAHASA,L.FMSKETERANGAN  from  PASIEN as A "
+    kdpas = request.GET['PasienId']
+    q = "select  A.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, A.TELEPON,A.EMAIL,KD_POS,JENIS_KELAMIN,TEMPAT_LAHIR,TGL_LAHIR, "
+    q += " A.KD_KELURAHAN,C.KELURAHAN AS NAMA_KELURAHAN,C.KD_KECAMATAN,C2.KECAMATAN AS NAMA_KECAMATAN, "
+    q += " C2.KD_KABUPATEN,C3.KABUPATEN AS NAMA_KABUPATEN,C3.KD_PROPINSI,C4.PROPINSIN AS NAMA_PROPINSI, "
+    q += " A.KETERANGAN,A.KD_RESELER,A.KD_ASAL_CABANG,M.NAMA_RESELER,N.PERUSAHAAN,A.KD_PERUSAHAAN,F.KELOMPOK_ID, "
+    q += " A.AGAMA,A.KD_PENDIDIKAN,A.GOL_DARAH,A.STATUS_MARITA,A.KD_PEKERJAAN,A.SUKU,A.BAHASA,A.NO_ASURANSI, "
+    q += " B.AGAMA as NAMA_AGAMA, D.PENDIDIKAN AS NAMA_PENDIDIKAN, E.PEKERJAAN AS NAMA_PEKERJAAN, "
+    q += " F.NAME as NAMA_PERUSAHAAN, G.KELAMIN , H.MARITAL, I.DARAH, J.FMKCUSTN AS NAMA_ASURANSI, J.FMKJENIS_TARIP AS JENIS_TARIF,K.BAHASA as NAMA_BAHASA,L.FMSKETERANGAN  from  PASIEN as A "
     q += " LEFT JOIN AGAMA as B ON A.AGAMA = B.KD_AGAMA "
     q += " LEFT JOIN KELURAHAN as C ON A.KD_KELURAHAN = C.KD_KELURAHAN "
+    q += " LEFT JOIN KECAMATAN as C2 ON C2.KD_KECAMATAN = C.KD_KECAMATAN "
+    q += " LEFT JOIN KABUPATEN as C3 ON C3.KD_KABUPATEN = C2.KD_KABUPATEN "
+    q += " LEFT JOIN PROPINSI as C4 ON C4.KD_PROPINSI = C3.KD_PROPINSI "
     q += " LEFT JOIN PENDIDIKAN as D ON A.KD_PENDIDIKAN = D.KD_PENDIDIKAN "
     q += " LEFT JOIN PEKERJAAN as E ON A.KD_PEKERJAAN = E.KD_PEKERJAAN "
     q += " LEFT JOIN CUSTOMER as F ON A.KD_PERUSAHAAN = F.CUSID "
     q += " LEFT JOIN JENIS_KELAMIN as G ON A.JENIS_KELAMIN  = G.KD_KELAMIN "
     q += " LEFT JOIN STATUSMARITAL as H ON A.STATUS_MARITA = H.KD_MARITAL "
     q += " LEFT JOIN GOL_DARAH as I ON A.GOL_DARAH = I.KD_DARAH "
-    q += " LEFT JOIN KELOMPOKCUSTOMER as J ON A.KD_ASURANSI = J.FMKCUST_ID "
+    q += " LEFT JOIN KELOMPOKCUSTOMER as J ON F.KELOMPOK_ID = J.FMKCUST_ID "
     q += " LEFT JOIN BAHASA as K ON A.BAHASA = K.BAHASA_ID "
     q += " LEFT JOIN SUKU as L ON A.SUKU = L.FMSKODE "
+    q += " LEFT JOIN RESELER as M ON A.KD_RESELER = M.KD_RESELER "
+    q += " LEFT JOIN CABANG as N ON A.KD_ASAL_CABANG = N.CABANG_ID "
     q += " where KD_PASIEN = %s order by NAMAPASIEN "
 
     result = Globals().getDataQuery(q,[kdpas])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
+
+def GUD_PASIEN(request):
+    KD_PASIEN = request.POST['KD_PASIEN']
+    KD_KELURAHAN = request.POST['KD_KELURAHAN']
+    KD_PENDIDIKAN = request.POST['KD_PENDIDIKAN']
+    KD_PEKERJAAN = request.POST['KD_PEKERJAAN']
+    KD_PERUSAHAAN = request.POST['KD_PERUSAHAAN']
+    NAMAPASIEN = request.POST['NAMAPASIEN']
+    TGL_LAHIR = request.POST['TGL_LAHIR']
+    GOL_DARAH = request.POST['GOL_DARAH']
+    JENIS_KELAMIN = request.POST['JENIS_KELAMIN']
+    STATUS_MARITA = request.POST['STATUS_MARITA']
+
+    AGAMA = request.POST['AGAMA']
+    ALAMAT = request.POST['ALAMAT']
+    TELEPON = request.POST['TELEPON']
+    KD_POS = request.POST['KD_POS']
+    NO_ASURANSI = request.POST['NO_ASURANSI']
+    KETERANGAN = request.POST['KETERANGAN']
+    NAMA_KELUARGA = request.POST['NAMA_KELUARGA']
+    TEMPAT_LAHIR = request.POST['TEMPAT_LAHIR']
+    BAHASA = request.POST['BAHASA']
+    SUKU = request.POST['SUKU']
+    EMAIL = request.POST['EMAIL']
+
+    KD_RESELER = request.POST['KD_RESELER']
+    USERRS = request.session['user_id']
+    status_aud = request.POST['status_aud']
+
+    try:
+        q = "EXEC GUD_PASIEN  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
+        result = Globals().getDataSP(
+            q, [KD_PASIEN, KD_KELURAHAN, KD_PENDIDIKAN,KD_PEKERJAAN, KD_PERUSAHAAN, NAMAPASIEN, TGL_LAHIR, GOL_DARAH, JENIS_KELAMIN, STATUS_MARITA, 
+                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI, KETERANGAN, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
+                KD_RESELER, USERRS,status_aud])
+        json_data = json.dumps(result, cls=DjangoJSONEncoder)
+        
+        return HttpResponse(json_data, content_type="application/json")
+
+    except ValueError:
+        print('coba')

@@ -1,5 +1,6 @@
-var host = window.location.href.split("/");
-var host = host[0] + "//" + host[2] + "/" + host[3]
+
+var hostShift = "http://{{ request.get_host }}/";
+//var hostShift = hostShift[0] + "//" + hostShift[2] + "/" + hostShift[3]
 
 $(document).ready(function() {
     var shift_isset = '{{ request.session.shift_isset }}'
@@ -38,7 +39,7 @@ $(document).ready(function() {
 
     $("#btn_shift_ok").click(function(e) {
         $.ajax({
-            url: host + "shift/setShift",
+            url: hostShift + "shift/setShift",
             method: "GET",
             data: {},
             success: function(e) {
@@ -49,7 +50,7 @@ $(document).ready(function() {
 
     $("#btn_shift_tutup").click(function(e) {
         $.ajax({
-            url: host + "shift/tutupShift",
+            url: hostShift + "shift/tutupShift",
             method: "GET",
             data: {},
             success: function(e) {

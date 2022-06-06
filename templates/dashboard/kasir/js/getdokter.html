@@ -1,0 +1,133 @@
+var selectedDokter = ''
+$(document).ready(function () {
+    $("#add_btn").click(function () {
+        $('#ModalDokter').modal('show')
+        cari_dokter()
+    })
+
+    $('#btn_simpan_dokter').click(function (e) {
+        if (selectedDokter.length != 0) {
+            SPVpilihdokter(selectedDokter, function () {})
+            $('#ModalDokter').modal('hide')
+        } else {
+            e.preventDefault()
+            alert('Anda belum memilih dokter')
+        }
+    })
+})
+
+
+function cari_dokter() {
+    $("#Datadokter").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        selection: {
+            mode: "multiple"
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getdokter",
+                    method: "GET",
+                    data: {},
+                    success: function (datas) {}
+                })
+            }
+        }),
+
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "ID_DOKTER",
+                caption: "KODE DOKTER",
+            },
+            {
+                dataField: "NAMA_DOKTER",
+                caption: "NAMA DOKTER",
+            },
+        ],
+        onSelectionChanged: function (selectedItems) {
+            selectedDokter = selectedItems.selectedRowsData
+        }
+    });
+
+}
+var arrIdxStoreProduk = 0;
+var i = 0;
+
+function SPVpilihdokter(arrData, callback = null) {
+    // console.log(arrData)
+    // console.log('jml : ' + arrData.length)
+    // console.log('counter : ' + i)
+    // console.log('produk : ' + arrData[i].FMDDOKTER_ID)
+    $("#dxGridDatadokter").dxDataGrid({
+        dataSource: arrData,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_DOKTER",
+                caption: "KODE DOKTER",
+                alignment: 'left',
+                allowEditing: true,
+                width: 100,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_DOKTER",
+                caption: "NAMA DOKTER",
+                alignment: 'left',
+                width: 200,
+                allowEditing: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+    });
+}

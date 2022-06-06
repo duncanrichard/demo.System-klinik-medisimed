@@ -35,8 +35,63 @@ function getDataPasien(e) {
             if (datas.length != 0) {
                 $('#idPasien').val(datas[0].KD_PASIEN);
                 $('#nama_pasien').val(datas[0].NAMAPASIEN);
-                $('#nama_keluarga').val(datas[0].FMKCUST_ID);
-                $('#idKelamin').val(datas[0].FMKCUSTN);
+                $('#nama_keluarga').val(datas[0].NAMA_KELUARGA);
+                $('#idKelamin').val(datas[0].JENIS_KELAMIN);
+                $('#namaKelamin').val(datas[0].KELAMIN);
+                $('#tempat_lahir').val(datas[0].TEMPAT_LAHIR);
+                $('#tgl_lahir').val(datas[0].TGL_LAHIR.substr(0, 10));
+
+                var usia = checkUmur($('#tgl_lahir').val())
+                $('#usia_thn').val(usia.tahun)
+                $('#usia_bln').val(usia.bulan)
+                $('#usia_hari').val(usia.hari)
+
+                $('#alamat').val(datas[0].ALAMAT);
+                $('#telepon').val(datas[0].TELEPON);
+                $('#kd_pos').val(datas[0].KD_POS);
+                $('#idProvinsi').val(datas[0].KD_PROPINSI);
+                $('#namaProvinsi').val(datas[0].NAMA_PROPINSI);
+                $('#idKabupaten').val(datas[0].KD_KABUPATEN);
+                $('#namaKabupaten').val(datas[0].NAMA_KABUPATEN);
+                $('#idKecamatan').val(datas[0].KD_KECAMATAN);
+                $('#namaKecamatan').val(datas[0].NAMA_KECAMATAN);
+                $('#idKelurahan').val(datas[0].KD_KELURAHAN);
+                $('#namaKelurahan').val(datas[0].NAMA_KELURAHAN);
+                $('#email').val(datas[0].EMAIL);
+                $('#keterangan').val(datas[0].KETERANGAN);
+                $('#idReseler').val(datas[0].KD_RESELER);
+                $('#namaReseler').val(datas[0].NAMA_RESELER);
+                $('#idAsal_cabang').val(datas[0].KD_ASAL_CABANG);
+                $('#namaAsal_cabang').val(datas[0].PERUSAHAAN);
+
+                $('#idAgama').val(datas[0].AGAMA);
+                $('#namaAgama').val(datas[0].NAMA_AGAMA);
+                $('#idPendidikan').val(datas[0].KD_PENDIDIKAN);
+                $('#namaPendidikan').val(datas[0].NAMA_PENDIDIKAN);
+                $('#idGolDarah').val(datas[0].GOL_DARAH);
+                $('#namaGolDarah').val(datas[0].DARAH);
+                $('#idMarital').val(datas[0].STATUS_MARITA);
+                $('#namaMarital').val(datas[0].MARITAL);
+                $('#idPekerjaan').val(datas[0].KD_PEKERJAAN);
+                $('#namaPekerjaan').val(datas[0].NAMA_PEKERJAAN);
+                $('#idSuku').val(datas[0].SUKU);
+                $('#namaSuku').val(datas[0].FMSKETERANGAN);
+                $('#idBahasa').val(datas[0].BAHASA);
+                $('#namaBahasa').val(datas[0].NAMA_BAHASA);
+
+                $('#idKlpPasien').val(datas[0].KELOMPOK_ID);
+                $('#namaKlpPasien').val(datas[0].NAMA_ASURANSI);
+                $('#customerId').val(datas[0].KD_PERUSAHAAN);
+                $('#namaPerusahaan').val(datas[0].NAMA_PERUSAHAAN);
+                $('#noAsuransi').val(datas[0].NO_ASURANSI);
+
+                if ($('#idAsal_cabang').val() == '') {
+                    $('#idAsal_cabang').val("{{request.session.kdCabang}}");
+                    $('#namaAsal_cabang').val("{{request.session.nama_cabang}}");
+                }
+
+
+
 
 
                 $('#nama_pasien').focus()
@@ -115,10 +170,9 @@ function cariPasien() {
         ],
         onRowClick: function (e) {
             $("#idPasien").val(e.data.KD_PASIEN);
-            $("#nama_pasien").val(e.data.NAMAPASIEN);
-            $("#nama_keluarga").val(e.data.NAMA_KELUARGA);
+            getDataPasien($("#idPasien").val());
             $('#DxGridModalPasien').modal('hide');
-            $('#namaAsuransi').focus()
+            $('#nama_pasien').focus()
         }
     });
 }

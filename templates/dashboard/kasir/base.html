@@ -1,0 +1,118 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Kasir        I M M O D E R M A
+{% endblock %} 
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+    .input-xs {
+        height: 2rem;
+    }
+
+    .input-date-xs {
+        height: 2rem;
+        padding: 0 5px !important;
+        line-height: 15px !important;
+    }
+
+    .btn-group-xs > .btn, .btn-xs {
+        line-height: 1.4 !important;
+    }
+    div#datagrid.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        div#Datadokter.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 327px;
+        }
+        div#Dataperawat.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 327px;
+        }
+        div#Databc.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 327px;
+        }
+        div#dxGridDatadokter.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        div#dxGridDataBC.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        div#dxGridDataperawat.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        div#datagridbayar.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        .form-group {
+        margin-bottom: 0.2rem;
+        }
+
+        .switch-toggle label, .switch-toggle > span{
+            line-height: inherit;
+        }
+
+        .switch-candy input:checked + label {
+            color : #fff;
+            text-shadow: 0 1px 0 rgba(108, 96, 96, 0.5);
+        }
+
+        .switch-toggle.switch-candy label{
+            color: rgb(93, 97, 100);
+            text-shadow: 1px 1px 1px #b3b9bf;   
+        }
+        .switch-candy-custom {
+            background-color: #efefef !important
+        }
+        #bank .btn-group-xs > .btn, .btn-xs {
+            line-height: 1 !important;
+        }
+
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+
+{% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}
+{% include 'dashboard/kasir/dxgrid/DxGridModalVoucher.html'%}
+{% include 'dashboard/kasir/dxgrid/DxGridModaltpay.html'%}
+{% include 'dashboard/kasir/modal/ModalTransaksi.html'%}
+{% include 'dashboard/kasir/modal/ModalBC.html'%}
+{% include 'dashboard/kasir/modal/ModalPerawat.html'%}
+{% include 'dashboard/kasir/modal/ModalDokter.html'%}
+{% include 'dashboard/kasir/modal/ModalProduk.html'%}
+{% include 'dashboard/kasir/modal/ModalDaftarRJ.html'%}
+{% include 'dashboard/kasir/form.html' %}
+{% include 'dashboard/modal/modalLoading.html' %}
+
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script src="{% static 'js/terbilang.js'%}"></script>
+<script type="text/javascript">
+    
+    {% include 'dashboard/kasir/js/getvoucher.html' %}
+    {% include 'dashboard/kasir/js/getTpay.html' %}
+    {% include 'dashboard/kasir/js/getbc.html' %}
+    {% include 'dashboard/kasir/js/getperawat.html' %}
+    {% include 'dashboard/kasir/js/getdokter.html' %}
+    {% include 'dashboard/kasir/js/getProduk.html' %}
+    {% include 'dashboard/kasir/js/getdaftarpasien.html' %}
+    {% include 'dashboard/kasir/js/getDxGrid.html' %}
+    {% include 'dashboard/kasir/js/init.html' %}
+</script>
+{% endblock %}

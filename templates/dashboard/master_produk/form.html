@@ -1,0 +1,328 @@
+<div class="wrapper wrapper-content entry" style="padding: 8px 8px 0px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                <div class="ibox-title">
+                    <h3 style="text-align: center;">Data Master Produk</h3>
+                </div>
+
+                <div class="ibox-content">
+
+                    <div class="form-row">
+                        <div class="form-group col-md-3">
+                            <div class="row">
+                                <div class="col-md-11" style="margin-left: 13px">
+                                    <select id="jenis_tarif" class="form-control input-sm">
+                                        {% for jns in jenis_tarip %}
+                                        <option value="{{ jns.kd_tarip}}">{{ jns.Jenistarip}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 10px">
+                                <div class="DivListProduk">
+                                    <div id="dataProdukHeader" style="padding-left: 7px;padding-right: 5px;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4" style="background:#936ebd9c;padding:5px;">
+                            <div class="row">
+                                <div class="pull-right col-md-2 col-xs-2 ">
+                                    <button class="btn btn-primary btn-block" id="add_btn" title="Tambah">
+                                        <span class="fa fa-plus"></span>
+                                    </button>
+                                </div>
+                                <div class="pull-right col-md-2 col-xs-2">
+                                    <button class="btn btn-success  btn-block" id="edit_btn" title="Edit">
+                                        <span class="fa fa-edit"></span>
+                                    </button>
+                                </div>
+                                <div class="pull-right col-md-2 col-xs-2 ">
+                                    <button class="btn btn-primary btn-block" id="save_btn" title="Simpan">
+                                        <span class="fa fa-save"></span>
+                                    </button>
+                                </div>
+                                <div class="pull-right col-md-2 col-xs-2 ">
+                                    <button class="btn btn-warning btn-block" id="cancel_btn" title="Batal">
+                                        <span class="fa fa-undo"></span>
+                                    </button>
+                                </div>
+
+                                <div class="pull-right col-md-2 col-xs-2">
+                                    <button class="btn btn-danger btn-block" id="remove_btn" title="Hapus">
+                                        <span class="fa fa-remove"></span>
+                                    </button>
+                                    <!-- btn-xs  iki rodi cilik -->
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Kode Induk </label>
+                                <div class="col-md-4">
+                                    <input id="kode_Induk" type="text" class="form-control input-sm">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label">Nama Induk </label>
+                                <div class="col-md-9">
+                                    <input id="nama_Induk" type="text" class="form-control input-sm">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-3">POS Produk</label>
+                                <div class="col-md-2">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="pos_produk" id="entry_pos_produk1" value="1"> Ya
+                                    </label>
+
+                                </div>
+                                <div class="col-md-7">
+                                    <label class="radio-inline">
+                                        <input type="radio" name="pos_produk" id="entry_pos_produk2" value="0"> Tidak
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4">Kelompok Tarip</label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm" name="kode_gol_tarip"
+                                        id="entry_kd_gol_klas">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control input-sm" name="nama_gol_tarip"
+                                        id="entry_nama_gol_klas">
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-success btn-xs" id="findGolKlasProduk"><span
+                                            class="fa fa-search"></span></button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label">Parent </label>
+                                <div class="col-md-3">
+                                    <input id="Parent" type="text" class="form-control input-sm" readonly>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <input id="NamaParent" type="text" class="form-control input-sm" readonly>
+                                </div>
+
+                                <label class="col-md-1 control-label">level </label>
+                                <div class="col-md-1">
+                                    <input id="level" type="text" class="form-control input-sm" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-12" style="margin-top: 5px;">
+                                <div id="dataProdukDetail"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-5" style="background:#409cb89c;padding:5px;">
+                            <div class="form-row">
+                                <div class="form-group col-md-9">
+                                    <div class="row">
+                                        <div class="pull-right col-md-2 col-xs-2 ">
+                                            <button class="btn btn-primary btn-block" id="add_btnicd" title="Tambah">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-2 col-xs-2">
+                                            <button class="btn btn-success  btn-block" id="edit_btnicd" title="Edit">
+                                                <span class="fa fa-edit"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-2 col-xs-2 ">
+                                            <button class="btn btn-primary btn-block" id="save_btnicd" title="Simpan">
+                                                <span class="fa fa-save"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-2 col-xs-2 ">
+                                            <button class="btn btn-warning btn-block" id="cancel_btnicd" title="Batal">
+                                                <span class="fa fa-undo"></span>
+                                            </button>
+                                        </div>
+
+                                        <div class="pull-right col-md-2 col-xs-2">
+                                            <button class="btn btn-danger btn-block" id="remove_btnicd" title="Hapus">
+                                                <span class="fa fa-remove"></span>
+                                            </button>
+                                            <!-- btn-xs  iki rodi cilik -->
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <div class="row">
+                                        <div class="pull-right col-md-6 col-xs-2 ">
+                                            <button class="btn btn-primary btn-block" id="tarif_btnicd" title="Tarip">
+                                                <span class="fa fa-recycle"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-6 col-xs-2 ">
+                                            <button class="btn btn-success btn-block" id="discount_btnicd"
+                                                title="Discount">
+                                                <span class="fa fa-ribbon"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                            <div class="form-group row" style="padding-top: 5px;">
+                                <label class="control-label col-md-4">
+                                    Kode Produk
+                                </label>
+                                <div class="col-md-7">
+                                    <input class="form-control input-sm" type="text" name="kd_produk" id="kd_produk">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">
+                                    Nama Produk
+                                </label>
+                                <div class="col-md-7">
+                                    <input class="form-control input-sm" type="text" name="nama_produk"
+                                        id="nama_produk">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">
+                                    Klas Produk
+                                </label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm" name="kd_klas_produk"
+                                        id="kd_klas_produk">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control input-sm" name="nama_klas_produk"
+                                        id="nama_klas_produk">
+                                </div>
+                                <div class="col-md-1">
+                                    <button Hidden class="btn btn-primary btn-xs" id="search_klas_produk"><span
+                                            class="fa fa-search"></span></button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">
+                                    Produk Induk
+                                </label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm" name="kd_produk_induk"
+                                        id="kd_produk_induk">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control input-sm" name="nama_produk_induk"
+                                        id="nama_produk_induk">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">
+                                    Klas Tarif
+                                </label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm" name="kd_klas_tarif"
+                                        id="kd_klas_tarif">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control input-sm" name="nama_klas_tarif"
+                                        id="nama_klas_tarif">
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-primary btn-xs" id="search_klas_tarif"><span
+                                            class="fa fa-search"></span></button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">
+                                    Unit Produk
+                                </label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm" name="kd_unit_produk"
+                                        id="kd_unit_produk">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control input-sm" name="nama_unit_produk"
+                                        id="nama_unit_produk">
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-primary btn-xs" id="search_unit_produk"><span
+                                            class="fa fa-search"></span></button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-4">
+                                    No Account
+                                </label>
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control input-sm" name="kd_no_akun" id="kd_no_akun">
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="text" class="form-control input-sm" name="no_akun" id="no_akun">
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-primary btn-xs" id="search_no_akun"><span
+                                            class="fa fa-search"></span></button>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <label class="label-inline">
+                                        <input type="checkbox" name="adm_rs" id="adm_rs" value="1">
+                                        Administrasi RS
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="label-inline">
+                                        <input type="checkbox" name="jasa_dokter" id="jasa_dokter" value="1">
+                                        Jasa Dokter
+                                    </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="label-inline">
+                                        <input type="checkbox" name="pos_paket" id="pos_paket" value="1">
+                                        Pos Paket inv
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <label class="label-inline">
+                                        <input type="checkbox" name="pos_posting" id="pos_posting" value="1">
+                                        Pos Postng Mnl
+                                    </label>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="label-inline">
+                                        <input type="checkbox" name="produk_hidden" id="produk_hidden" value="1">
+                                        Produk Hidden
+                                    </label>
+                                </div>
+                                <label class="col-md-2">
+                                    Tgl Berlaku
+                                </label>
+                                <div class="col-md-3">
+                                    <select name="" class="form-control input-sm" id="tgl_berlaku_tarif">
+
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-12" style="margin-top: 5px;">
+                                <div id="dataProduk"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

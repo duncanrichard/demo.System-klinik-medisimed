@@ -1,0 +1,228 @@
+<div class="wrapper wrapper-content animated fadeInRight p-1">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header text-center h6 bg-danger font-bold text-white" style="border-radius: 25px;">K A S I
+                R ------- I M M O D E R M A
+            </div>
+            <div class="card-body"
+                style="background: linear-gradient(to right, #0f2027, #203a43, #2c5364);border-radius: 5px;padding-bottom:5px;padding-top:5px;">
+                <div class="font-bold justify-content-between">
+                    <div class="row" style="background-color:#8898eb;padding-top:10px;border-radius: 15px">
+                        <div class="form-group col-md-4">
+                            <div class="row">
+                                <label class="col-md-4 control-label" style="color:white;">Nomor Transaksi : </label>
+                                <div class="col-md-8" style="margin-left:-15px;">
+                                    <input id="no_trans" name="no_trans" type="text" class="form-control input-md"
+                                        readonly style="background-color: white">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="row">
+                                <label class="col-md-4 control-label" style="color:white;">Nomor Register : </label>
+                                <div class="col-md-8" style="margin-left:-25px;">
+                                    <input readonly id="no_regis" name="no_regis" type="text"
+                                        class="form-control input-md" style="background-color: white">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <div class="row">
+                                <label class="col-md-6 control-label" style="color:white;">Tanggal : </label>
+                                <div class="col-md-6" style="margin-left:-75px;">
+                                    <input id="tanggal" name="tanggal" type="date" class="form-control input-md today"
+                                        readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-1">
+                            <div class="row">
+                                <input id="jenis_tarif" name="jenis_tarif" type="text" class="form-control input-md"
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ibox"
+                        style="background-color:#42636b;border-radius: 25px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
+                        <div class="form-inline">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label for="" class="col-md-3 text-white">ID PASIEN</label>
+                                    <input type="text"
+                                        class="col-md-2 form-control input-md font-weight-bold text-black-50"
+                                        id="idPasien">
+                                    <input type="text"
+                                        class="col-md-5 form-control input-md font-weight-bold text-black-50 p-0 text-center"
+                                        id="nama_pasien">
+                                    <div class="col-md-2">
+                                        <button class="btn  btn-success btn-xs" id="btnFindPasien">cari
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class=" row">
+                                    <div class="col-md-4">
+                                        <div class="class row">
+
+                                            <label style="background:#ed55657a;"
+                                                class="col-md-12 checkbox-inline text-white">
+                                                <input type="checkbox" id="inlineCheckboxclose"
+                                                    name="inlineCheckboxclose" value="0">Close
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <button class="btn btn-primary btn-xs" id="tambah_paket"
+                                            style="margin-left: 3px">
+                                            <span class="fa fa-plus"></span> Tambah paket
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <label class="col-md-3 control-label text-white" style="padding-top:5px">Reseler
+                                    </label>
+                                    <div class="col-md-2">
+                                        <input id="idReseler" name="idReseler" type="text" class="form-control input-md"
+                                            readonly>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input id="namaReseler" name="namaReseler" type="text"
+                                            class="form-control input-md" readonly>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn  btn-success btn-xs" id="btnFindReseler">cari
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" style="background: linear-gradient(to right, #397d9b, #131515, #61b3d6);border-radius:
+                25px;padding-bottom:5px;padding-top:5px;">
+                <div class="row text-white" style="background-color:#589292;padding-top:10px;border-radius: 5px">
+                    <div class="form-group col-md-4">
+                        <div class="row">
+                            <div class="col-md-2 col-xs-3 ">
+                                <button class="btn btn-primary btn-block" id="add_btn" title="Tambah">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </div>
+                            <label for="" class="col-md-3 ">Dokter</label>
+                        </div>
+                        <div class="row" style="background:#ec91967a;padding:10px;">
+                            <div style="height: 80px;overflow-y: auto;" class="mt-7">
+                                <div id="dxGridDatadokter"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="row">
+                            <div class="col-md-2 col-xs-3 ">
+                                <button class="btn btn-primary btn-block" id="add_btnBC" title="Tambah">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </div>
+                            <label for="" class="col-md-3 ">BC</label>
+                        </div>
+                        <div class="row" style="background:#ec91967a;padding:10px;">
+                            <div style="height: 80px;overflow-y: auto;" class="mt-7">
+                                <div id="dxGridDataBC"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <div class="row">
+                            <div class="col-md-2 col-xs-3 ">
+                                <button class="btn btn-primary btn-block" id="add_btnprw" title="Tambah">
+                                    <span class="fa fa-plus"></span>
+                                </button>
+                            </div>
+                            <label for="" class="col-md-3 ">Perawat</label>
+
+                        </div>
+                        <div class="row" style="background:#ec91967a;padding:10px;">
+                            <div style="height: 80px;overflow-y: auto;" class="mt-7">
+                                <div id="dxGridDataperawat"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row" style="margin-top:5px;margin-bottom: 5px;">
+                <div class="col-md-12">
+                    <button class="btn btn-xs btn-primary" id="btnfar_tambah_produk" style="display: none;">Tambah
+                        Produk</button>
+                    <div style="height: 200px;overflow-y: auto;" class="mt-7">
+                        <div id="datagrid"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <div class="row" style="margin-top:5px;margin-bottom: 5px;">
+                        <div class="col-md-12">
+                            <div style="height: 100px;overflow-y: auto;" class="mt-7">
+                                <div id="datagridbayar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <div class="row" style="background-color: #ca98a0;padding-top: 10px;">
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label class="col-md-6 control-label text-center">User: </label>
+                                <div class="col-md-6">
+                                    <input id="userrs" name="userrs" class="form-control input-sm" readonly
+                                        style="background-color: #9093c2;font-size: 12px;font: bold;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="row">
+                                <label class="col-md-5 control-label text-center">Update:
+                                </label>
+                                <div class="col-md-7">
+                                    <input id="updaters" name="updaters" class="form-control input-sm" readonly
+                                        style="background-color: #93a8c7;font-size: 12px;font: bold;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <div class="row">
+                        <label class="col-md-4 control-label">TOTAL DEBET</label>
+                        <div class="col-md-2">: Rp
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="total" value="0" class="form-control input-md inputText" readonly
+                                style="background-color: white;text-align: right">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label class="col-md-4 control-label" style="margin-top: 5px">TOTAL BAYAR</label>
+                        <div class="col-md-2" style="margin-top: 5px">: Rp
+                        </div>
+
+                        <div class="col-md-6">
+                            <input type="text" id="totalbayar" value="0" class="form-control input-md inputText"
+                                readonly style="background-color: white;text-align: right ;margin-top: 5px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

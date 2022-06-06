@@ -1,0 +1,49 @@
+var host = window.location.href.split("/");
+host = host[0] + "//" + host[2] + "/" + host[3] + "/" + host[4]
+$(document).ready(function () {
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    setAwal()
+    getProdukHeader('dataProdukHeader', 'dataProdukDetail')
+    getProdukDetail('dataProdukDetail')
+
+
+})
+
+function setAwal() {
+    deathtext2()
+    ClearText2()
+
+}
+
+function setMenu(id, enable = 1) {
+    if (enable == 0) {
+        $('#' + id).addClass('disabled')
+    } else {
+        $('#' + id).removeClass('disabled')
+    }
+}
+
+function setDisabled(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("disabled", false);
+    } else {
+        $('#' + id).attr("disabled", true);
+    }
+}
+
+function setReadOnly(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("readonly", true);
+        $('#' + id).css("background-color", 'white');
+    } else {
+        $('#' + id).attr("readonly", false);
+    }
+}

@@ -1,0 +1,113 @@
+$(document).ready(function () {
+    $('#idReseler').keypress(function (e) {
+        // e.preventDefault();
+        e.stopImmediatePropagation();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#idReseler").val() != '') {
+                    getDataReseler($("#idReseler").val());
+                } else {
+                    // $('#tempat_lahir').focus()
+                }
+            }
+        }
+
+    })
+
+    $('#btnFindReseler').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalReseler').modal('show');
+        cariReseler(event)
+    })
+
+});
+
+function getDataReseler(e) {
+    $.ajax({
+        url: host + "/getDataReseler",
+        method: "GET",
+        data: {
+            "idReseler": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#idReseler').val(datas[0].KD_RESELER);
+                $('#namaReseler').val(datas[0].NAMA_RESELER);
+                $('#email').focus()
+            } else {
+                $('#dxGridModalReseler').modal('show');
+                cariReseler()
+            }
+
+        }
+    })
+}
+
+function cariReseler() {
+    $("#dxGridDataReseler").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
+
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var Kecamatan_id = $('#idKecamatan').val();
+
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getReseler",
+                    method: "GET",
+                    data: {},
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KD_RESELER",
+                caption: "Kode Reseler",
+            },
+            {
+                dataField: "NAMA_RESELER",
+                caption: "Nama Reseler",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#idReseler").val(e.data.KD_RESELER);
+            $("#namaReseler").val(e.data.NAMA_RESELER);
+            $('#dxGridModalReseler').modal('hide');
+            $('#email').focus()
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

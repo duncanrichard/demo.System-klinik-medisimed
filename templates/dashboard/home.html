@@ -19,15 +19,19 @@ IMMODERMA
         background-size: cover !important;
         padding-right: 0 !important
     }
+
+    
 </style>
 {% endblock %}
 
 {% block content %}
+  
     {% include 'dashboard/modalShift.html' %}
 {% endblock content %}
 
 {% block script %}
     <script type="text/javascript">
+        
         {% include 'dashboard/js/init.html' %}
         {% include 'dashboard/js/shift.html' %}
     </script>

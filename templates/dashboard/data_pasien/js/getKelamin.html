@@ -59,7 +59,8 @@ function cariKelamin() {
             pageSize: 1000
         },
         filterRow: {
-            visible: false
+            visible: false,
+            text: ''
         },
         // searchPanel : { visible: true },
         dataSource: new DevExpress.data.DataSource({
@@ -101,6 +102,11 @@ function cariKelamin() {
             $("#idKelamin").val(e.data.KD_KELAMIN);
             $("#namaKelamin").val(e.data.KELAMIN);
             $('#dxGridModalKelamin').modal('hide');
-        }
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
     });
 }

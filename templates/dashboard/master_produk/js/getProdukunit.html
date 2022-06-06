@@ -1,0 +1,71 @@
+$(document).ready(function () {
+    $('#search_unit_produk').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalProdukunit').modal('show');
+        cari_produk_unit(event)
+    })
+
+});
+
+function cari_produk_unit() {
+    $("#dxGridDatamodalProdukunit").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "get_produk_unit",
+                    method: "GET",
+                    data: {},
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "FTUKODE",
+                caption: "Kode ",
+            },
+            {
+                dataField: "FTUNAMA",
+                caption: "Nama ",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#kd_unit_produk").val(e.data.FTUKODE);
+            $("#nama_unit_produk").val(e.data.FTUNAMA);
+            $('#dxGridModalProdukunit').modal('hide');
+            $('#kd_unit_produk').focus()
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

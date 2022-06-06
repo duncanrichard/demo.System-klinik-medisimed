@@ -1,0 +1,79 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Master Produk
+{% endblock %} 
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+    .input-xs {
+        height: 2rem;
+    }
+
+    .input-date-xs {
+        height: 2rem;
+        padding: 0 5px !important;
+        line-height: 15px !important;
+    }
+
+    .btn-group-xs > .btn, .btn-xs {
+        line-height: 1.4 !important;
+    }
+    div#dataProdukHeader.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 507px;
+        }
+        div#dataProdukDetail.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 327px;
+        }
+        div#dataProduk.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 257px;
+        }
+        .form-group {
+        margin-bottom: 0.2rem;
+        }
+        /* .dx-treeview-item {
+            padding : 1px 1px;
+            min-height: 25px;
+        }
+        .dx-scrollable-content{
+            width : max-content;
+        } */
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+{% include 'dashboard/master_produk/modal/modalProduk.html'%}
+{% include 'dashboard/master_produk/dxgrid/dxGridModalNoAcc.html'%}
+{% include 'dashboard/master_produk/dxgrid/dxGridModalGolTarip.html'%}
+{% include 'dashboard/master_produk/dxgrid/dxGridModalKlasTarip.html'%}
+{% include 'dashboard/master_produk/dxgrid/dxGridModalProdukunit.html'%}
+{% include 'dashboard/master_produk/form.html' %}
+{% include 'dashboard/modal/modalLoading.html' %}
+
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+
+<script type="text/javascript">
+
+    
+    {% include 'dashboard/master_produk/js/getProdukacc.html'%}
+    {% include 'dashboard/master_produk/js/getProdukunit.html'%}
+    {% include 'dashboard/master_produk/js/getKlastarip.html'%}
+    {% include 'dashboard/master_produk/js/getGoltarip.html'%}
+    {% include 'dashboard/master_produk/js/getproduk.html' %}
+    {% include 'dashboard/master_produk/js/getproduk_kelas.html' %}
+    
+    {% include 'dashboard/master_produk/js/init.html' %}
+</script>
+{% endblock %}

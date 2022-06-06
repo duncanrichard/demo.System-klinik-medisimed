@@ -1,0 +1,561 @@
+var host_main = window.location.href.split("/");
+var host_root = host_main[0] + "//" + host_main[2];
+var host = host_main[0] + "//" + host_main[2] + "/" + host_main[3];
+var canAdd = 0
+let status_aud = null;
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+todays = today
+$(".today").val(today)
+
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+
+    setupAwal()
+    enterFocusTo('nama_pasien', 'nama_keluarga')
+    enterFocusTo('nama_keluarga', 'idKelamin')
+    enterFocusTo('tempat_lahir', 'tgl_lahir');
+
+
+    $('#tgl_lahir').change(function (e) {
+        // var keycode = event.key;;
+        if (canAdd == 1) {
+            // if (keycode == '13') {
+            if ($("#tgl_lahir").val() != '') {
+                // console.log('cccccc')
+                // console.log(keycode)
+                var usia = checkUmur($('#tgl_lahir').val())
+                $('#usia_thn').val(usia.tahun)
+                $('#usia_bln').val(usia.bulan)
+                $('#usia_hari').val(usia.hari)
+                // if (keycode == '13') {
+                //     $('#usia_thn').focus()
+                // }
+            }
+        }
+
+    })
+
+    $('#usia_thn').focusout(function () {
+
+        var today = new Date();
+        var ageDifMs = today.getTime();
+        // var ageDate = new Date(ageDifMs); 
+        var thn = parseInt($('#usia_thn').val());
+        var bln = parseInt($('#usia_bln').val());
+        var hari = $('#usia_hari').val();
+        var yearInMs = 365.24 * 24 * 60 * 60 * 1000 * thn;
+        var MonthInMs = 30.4 * 24 * 60 * 60 * 1000 * bln;
+        var DayInMs = 24 * 60 * 60 * 1000 * hari;
+        var newTime = ageDifMs - yearInMs - MonthInMs - DayInMs;
+        today.setTime(newTime);
+        var newDate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0")
+        console.log(newDate)
+        $('#tgl_lahir').val(newDate);
+    })
+
+    $('#usia_bln').focusout(function () {
+        var today = new Date();
+        var ageDifMs = today.getTime();
+        // var ageDate = new Date(ageDifMs); 
+        var bln = parseInt($('#usia_bln').val());
+        var thn = parseInt($('#usia_thn').val());
+        var hari = $('#usia_hari').val();
+        if (bln > 11) {
+            thn = thn + Math.floor(bln / 12);
+            // console.log(bln);
+            bln = bln % 12;
+            // console.log(bln);
+        }
+
+        var yearInMs = 365.24 * 24 * 60 * 60 * 1000 * thn;
+        var MonthInMs = 30.4 * 24 * 60 * 60 * 1000 * bln;
+        var DayInMs = 24 * 60 * 60 * 1000 * hari;
+        var newTime = ageDifMs - yearInMs - MonthInMs - DayInMs;
+        today.setTime(newTime);
+        var newDate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0")
+        console.log(newDate)
+        $('#usia_bln').val(bln);
+        $('#usia_thn').val(thn);
+        $('#tgl_lahir').val(newDate);
+    })
+
+    $('#usia_hari').focusout(function () {
+        var today = new Date();
+        var ageDifMs = today.getTime();
+        // var ageDate = new Date(ageDifMs);
+        var bln = parseInt($('#usia_bln').val());
+        var thn = parseInt($('#usia_thn').val());
+        var hari = $('#usia_hari').val();
+        var yearInMs = 365.24 * 24 * 60 * 60 * 1000 * thn;
+        var MonthInMs = 30.4 * 24 * 60 * 60 * 1000 * bln;
+        var DayInMs = 24 * 60 * 60 * 1000 * hari;
+        var newTime = ageDifMs - yearInMs - MonthInMs - DayInMs;
+        today.setTime(newTime);
+        var newDate = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0")
+        $('#tgl_lahir').val(newDate);
+    })
+
+    enterFocusTo('usia_thn', 'usia_bln');
+    enterFocusTo('usia_bln', 'usia_hari');
+    enterFocusTo('usia_hari', 'alamat');
+    enterFocusTo('alamat', 'telepon');
+    enterFocusTo('telepon', 'kd_pos');
+    enterFocusTo('kd_pos', 'idProvinsi');
+    enterFocusTo('email', 'keterangan');
+    enterFocusTo('keterangan', 'noEKTP');
+    enterFocusTo('noEKTP', 'idKlpPasien');
+
+    $("#btnFindPasien").click(function () {
+        $('#DxGridModalPasien').modal('show')
+        cariPasien()
+    })
+
+    $("#menu_tambah").click(function () {
+        Livetext()
+        Cleartext()
+        canAdd = 1
+        if ($('#idAsal_cabang').val() == '') {
+            $('#idAsal_cabang').val("{{request.session.kdCabang}}");
+            $('#namaAsal_cabang').val("{{request.session.nama_cabang}}");
+        }
+    })
+
+    $('#menu_edit').click(function () {
+        if ($('#idPasien').val() == '') {
+            alert('Pilih ID Pasien Dulu!')
+        } else if ($('#no_transaksi').val() == '') {
+            alert('Pilih Transaksi  Dulu!')
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            Livetext()
+            setReadOnly('idPasien');
+            btnDisable('btnFindPasien')
+        }
+    })
+
+    $('#menu_hapus').click(function () {
+        if ($('#idPasien').val() == '') {
+            alert('Pilih Pasien Dulu!')
+        } else if ($('#no_transaksi').val() == '') {
+            alert('Pilih Transaksi  Dulu!')
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            var result = confirm('Yakin data akan dihapus?')
+            var status_aud = "D"
+            if (result) {
+                $.ajax({
+                    url: host + "/AUD_PASIENRJ",
+                    method: "POST",
+                    data: {
+                        KD_PASIEN: $("#idPasien").val(),
+                        KD_KELURAHAN: $("#idKelurahan").val(),
+                        KD_PENDIDIKAN: $("#idPendidikan").val(),
+                        KD_PEKERJAAN: $("#idPekerjaan").val(),
+                        KD_PERUSAHAAN: $("#customerId").val(),
+                        NAMAPASIEN: $("#nama_pasien").val(),
+                        TGL_LAHIR: $("#tgl_lahir").val(),
+                        GOL_DARAH: $("#idGolDarah").val(),
+                        JENIS_KELAMIN: $("#idKelamin").val(),
+                        STATUS_MARITA: $("#idMarital").val(),
+                        AGAMA: $("#idAgama").val(),
+                        ALAMAT: $("#alamat").val(),
+                        TELEPON: $("#telepon").val(),
+                        KD_POS: $("#kd_pos").val(),
+                        NO_ASURANSI: $("#noAsuransi").val(),
+                        KETERANGAN: $("#keterangan").val(),
+                        NAMA_KELUARGA: $("#nama_keluarga").val(),
+                        TEMPAT_LAHIR: $("#tempat_lahir").val(),
+                        BAHASA: $("#idBahasa").val(),
+                        SUKU: $("#idSuku").val(),
+                        EMAIL: $("#email").val(),
+                        KD_RESELER: $("#idReseler").val(),
+                        KD_ASAL_CABANG: "{{request.session.kdCabang}}",
+                        TGL_PERIKSA: $("#tgl_periksa").val(),
+                        NO_TRANSAKSI: $("#no_transaksi").val(),
+                        status_aud: status_aud,
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        $("#idPasien").val(e[0].KD_PASIEN)
+                        $('#no_transaksi').val(e[0].NOMOR_TRANSAKSI);
+
+
+                        Deathtext()
+                        cekRMTerakhir()
+                    }
+                });
+            }
+        }
+    })
+
+    $("#menu_simpan").click(function () {
+        checkError()
+        if (cekError == true) {
+            var result = confirm('Yakin data ingin disimpan?')
+            var status_aud = "A"
+            if (result) {
+                $.ajax({
+                    url: host + "/AUD_PASIENRJ",
+                    method: "POST",
+                    data: {
+                        KD_PASIEN: $("#idPasien").val(),
+                        KD_KELURAHAN: $("#idKelurahan").val(),
+                        KD_PENDIDIKAN: $("#idPendidikan").val(),
+                        KD_PEKERJAAN: $("#idPekerjaan").val(),
+                        KD_PERUSAHAAN: $("#customerId").val(),
+                        NAMAPASIEN: $("#nama_pasien").val(),
+                        TGL_LAHIR: $("#tgl_lahir").val(),
+                        GOL_DARAH: $("#idGolDarah").val(),
+                        JENIS_KELAMIN: $("#idKelamin").val(),
+                        STATUS_MARITA: $("#idMarital").val(),
+                        AGAMA: $("#idAgama").val(),
+                        ALAMAT: $("#alamat").val(),
+                        TELEPON: $("#telepon").val(),
+                        KD_POS: $("#kd_pos").val(),
+                        NO_ASURANSI: $("#noAsuransi").val(),
+                        KETERANGAN: $("#keterangan").val(),
+                        NAMA_KELUARGA: $("#nama_keluarga").val(),
+                        TEMPAT_LAHIR: $("#tempat_lahir").val(),
+                        BAHASA: $("#idBahasa").val(),
+                        SUKU: $("#idSuku").val(),
+                        EMAIL: $("#email").val(),
+                        KD_RESELER: $("#idReseler").val(),
+                        KD_ASAL_CABANG: "{{request.session.kdCabang}}",
+                        TGL_PERIKSA: $("#tgl_periksa").val(),
+                        NO_TRANSAKSI: $("#no_transaksi").val(),
+                        status_aud: status_aud,
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        $("#idPasien").val(e[0].KD_PASIEN)
+                        $('#no_transaksi').val(e[0].NOMOR_TRANSAKSI);
+
+
+                        Deathtext()
+                        cekRMTerakhir()
+                    }
+                });
+            }
+        }
+
+    })
+
+    $('#menu_cancel').click(function () {
+        setupAwal()
+    })
+
+    $("#menu_find").click(function () {
+        $('#ModalDaftarRJ').modal('show')
+        cariDaftarPasien()
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+
+})
+
+function cekRMTerakhir() {
+    $.ajax({
+        url: host + "/cekRMterakhir",
+        method: 'get',
+        success: function (dt) {
+            $('#rm_terakhir').html(dt.no_rm)
+        }
+    })
+}
+
+function checkError() {
+    cekError = true;
+
+    if ($('#nama_pasien').val() == '') {
+        cekError = false;
+        alert('Isi Nama Pasien!')
+    }
+    if ($('#idKelamin').val() == '') {
+        cekError = false;
+        alert('Isi Jenis Kelamin!')
+    }
+    if ($('#telepon').val() == '') {
+        cekError = false;
+        alert('Isi Telepon!')
+    }
+    if ($('#idKelurahan').val() == '') {
+        cekError = false;
+        alert('Isi Kelurahan!')
+    }
+    if ($('#alamat').val() == '') {
+        cekError = false;
+        alert('Isi Alamat!')
+    }
+    return cekError;
+}
+
+function setupAwal() {
+    Deathtext()
+    Cleartext()
+    cekRMTerakhir()
+
+}
+
+function Cleartext() {
+    $('#tgl_lahir').val(todays);
+    $('#tgl_periksa').val(todays);
+    $('#no_transaksi').val('');
+    $('#idPasien').val('');
+    $('#nama_pasien').val('');
+    $('#nama_keluarga').val('');
+    $('#idKelamin').val('');
+    $('#namaKelamin').val('');
+    $('#tempat_lahir').val('');
+    $('#usia_thn').val('');
+    $('#usia_bln').val('');
+    $('#usia_hari').val('');
+    $('#alamat').val('');
+    $('#idProvinsi').val('');
+    $('#namaProvinsi').val('');
+    $('#idKabupaten').val('');
+    $('#namaKabupaten').val('');
+    $('#idKecamatan').val('');
+    $('#namaKecamatan').val('');
+    $('#idKelurahan').val('');
+    $('#namaKelurahan').val('');
+    $('#idReseler').val('');
+    $('#namaReseler').val('');
+
+    $('#jenisTarif').val('');
+    $('#telepon').val('');
+    $('#email').val('');
+    $('#keterangan').val('');
+    $('#noEKTP').val('');
+    $('#idKlpPasien').val('');
+    $('#namaKlpPasien').val('');
+    $('#customerId').val('');
+    $('#namaPerusahaan').val('');
+    $('#noAsuransi').val('');
+
+    $('#idAgama').val('');
+    $('#namaAgama').val('');
+    $('#idMarital').val('');
+    $('#namaMarital').val('');
+    $('#idBahasa').val('');
+    $('#namaBahasa').val('');
+    $('#idPendidikan').val('');
+    $('#namaPendidikan').val('');
+    $('#idPekerjaan').val('');
+    $('#namaPekerjaan').val('');
+    $('#idGolDarah').val('');
+    $('#namaGolDarah').val('');
+    $('#idSuku').val('');
+    $('#namaSuku').val('');
+    $("#inlineCheckboxclose").prop('checked', false)
+}
+
+function Deathtext() {
+    menuEnable('menu_tambah');
+    menuEnable('menu_edit');
+    menuEnable('menu_hapus');
+    menuDisable('menu_simpan');
+    menuDisable('menu_cancel');
+    menuEnable('menu_find');
+    menuEnable('menu_cetak');
+
+    // $('#form .btn').prop('disabled', true);
+    // VERSI SIMPEL
+    // $('#form .btn').attr("disabled", true);
+    // $('#form input').prop('readonly', true);
+    // $('#form .input-md').prop('readonly', true);
+    // $('#form .form-control').prop('readonly', true);
+    setReadOnly('idPasien');
+    setReadOnly('nama_pasien')
+    setReadOnly('nama_keluarga')
+    btnDisable('btnFindPasien')
+
+    setReadOnly('idKelamin')
+    setReadOnly('namaKelamin')
+    btnDisable('btnFindKelamin')
+
+    setReadOnly('tempat_lahir')
+    setReadOnly('tgl_lahir')
+    setReadOnly('usia_thn')
+    setReadOnly('usia_bln')
+    setReadOnly('usia_hari')
+    setReadOnly('alamat')
+    setReadOnly('telepon')
+    setReadOnly('kd_pos')
+
+    setReadOnly('idProvinsi')
+    setReadOnly('namaProvinsi')
+    btnDisable('btnFindProvinsi')
+
+    setReadOnly('idKabupaten')
+    setReadOnly('namaKabupaten')
+    btnDisable('btnFindKabupaten')
+
+    setReadOnly('idKecamatan')
+    setReadOnly('namaKecamatan')
+    btnDisable('btnFindKecamatan')
+
+    setReadOnly('idKelurahan')
+    setReadOnly('namaKelurahan')
+    btnDisable('btnFindKelurahan')
+
+    setReadOnly('idReseler')
+    setReadOnly('namaReseler')
+    btnDisable('btnFindReseler')
+
+
+
+    btnDisable('wni')
+    setReadOnly('email')
+    setReadOnly('keterangan')
+    btnDisable('identitas')
+    setReadOnly('noEKTP')
+
+    setReadOnly('idKlpPasien')
+    setReadOnly('namaKlpPasien')
+    btnDisable('btnFindKlpPasien')
+
+    setReadOnly('customerId')
+    setReadOnly('namaPerusahaan')
+    btnDisable('btnFindcustomerId')
+    setReadOnly('noAsuransi')
+
+    setReadOnly('idAgama')
+    setReadOnly('namaAgama')
+    btnDisable('btnFindAgama')
+
+    setReadOnly('idMarital')
+    setReadOnly('namaMarital')
+    btnDisable('btnFindMarital')
+
+    setReadOnly('idBahasa')
+    setReadOnly('namaBahasa')
+    btnDisable('btnFindBahasa')
+
+    setReadOnly('idPendidikan')
+    setReadOnly('namaPendidikan')
+    btnDisable('btnFindPendidikan')
+
+    setReadOnly('idPekerjaan')
+    setReadOnly('namaPekerjaan')
+    btnDisable('btnFindPekerjaan')
+
+    setReadOnly('idGolDarah')
+    setReadOnly('namaGolDarah')
+    btnDisable('btnFindGolDarah')
+
+    setReadOnly('idSuku')
+    setReadOnly('namaSuku')
+    btnDisable('btnFindSuku')
+
+    setReadOnly('tgl_periksa')
+    btnDisable('inlineCheckboxclose')
+
+}
+
+function Livetext() {
+    menuDisable('menu_tambah');
+    menuDisable('menu_edit');
+    menuDisable('menu_hapus');
+    menuEnable('menu_simpan');
+    menuEnable('menu_cancel');
+    menuDisable('menu_find');
+    menuDisable('menu_cetak');
+
+    setUnReadOnly('idPasien');
+    setUnReadOnly('nama_pasien')
+    setUnReadOnly('nama_keluarga')
+    btnEnable('btnFindPasien')
+
+    setUnReadOnly('idKelamin')
+    btnEnable('btnFindKelamin')
+
+    setUnReadOnly('tempat_lahir')
+    setUnReadOnly('tgl_lahir')
+    setUnReadOnly('usia_thn')
+    setUnReadOnly('usia_bln')
+    setUnReadOnly('usia_hari')
+    setUnReadOnly('alamat')
+    setUnReadOnly('telepon')
+    setUnReadOnly('kd_pos')
+
+    setUnReadOnly('idProvinsi')
+    setReadOnly('namaProvinsi')
+    btnEnable('btnFindProvinsi')
+
+    setUnReadOnly('idKabupaten')
+    setReadOnly('namaKabupaten')
+    btnEnable('btnFindKabupaten')
+
+    setUnReadOnly('idKecamatan')
+    setReadOnly('namaKecamatan')
+    btnEnable('btnFindKecamatan')
+
+    setUnReadOnly('idKelurahan')
+    setReadOnly('namaKelurahan')
+    btnEnable('btnFindKelurahan')
+
+    setUnReadOnly('idReseler')
+    setReadOnly('namaReseler')
+    btnEnable('btnFindReseler')
+
+    btnEnable('wni')
+    setUnReadOnly('email')
+    setUnReadOnly('keterangan')
+    btnEnable('identitas')
+    setReadOnly('noEKTP')
+
+    setReadOnly('idKlpPasien')
+    setReadOnly('namaKlpPasien')
+    btnEnable('btnFindKlpPasien')
+
+    setReadOnly('customerId')
+    setReadOnly('namaPerusahaan')
+    btnEnable('btnFindcustomerId')
+    setUnReadOnly('noAsuransi')
+
+    setReadOnly('idAgama')
+    setReadOnly('namaAgama')
+    btnEnable('btnFindAgama')
+
+    setReadOnly('idMarital')
+    setReadOnly('namaMarital')
+    btnEnable('btnFindMarital')
+
+    setReadOnly('idBahasa')
+    setReadOnly('namaBahasa')
+    btnEnable('btnFindBahasa')
+
+    setReadOnly('idPendidikan')
+    setReadOnly('namaPendidikan')
+    btnEnable('btnFindPendidikan')
+
+    setReadOnly('idPekerjaan')
+    setReadOnly('namaPekerjaan')
+    btnEnable('btnFindPekerjaan')
+
+    setReadOnly('idGolDarah')
+    setReadOnly('namaGolDarah')
+    btnEnable('btnFindGolDarah')
+
+    setReadOnly('idSuku')
+    setReadOnly('namaSuku')
+    btnEnable('btnFindSuku')
+
+    setUnReadOnly('tgl_periksa')
+
+}

@@ -1,0 +1,91 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Pendaftaran Pasien 
+{% endblock %} 
+
+
+{% block head %}
+<style>
+  .swal2-container {
+  z-index: 1000006;
+}
+  div#dxGridDatasupplier.dx-widget {
+    font-size: 12px;
+    line-height: 0.95;
+    height: 240px;
+  }
+  div#DxgridDatasupplier2.dx-widget {
+    font-size: 12px;
+    line-height: 0.8;
+    height: 240px;
+  }
+  div#DxgridDataarea.dx-widget {
+    font-size: 12px;
+    line-height: 0.8;
+    height: 240px;
+  }
+  .form-control{
+        font-size : 12px;
+    }
+ 
+</style>
+{% endblock %} 
+
+
+{% block content %} 
+{% csrf_token %} 
+
+{% include 'dashboard/pasien_rj/modal/ModalDaftarRJ.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalCustomer.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelcustomer.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelurahan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKecamatan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKabupaten.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalProvinsi.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelamin.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalReseler.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalAgama.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPendidikan.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalGoldarah.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalMarital.html'%} 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPekerjaan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalSuku.html'%}  
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalBahasa.html'%} 
+{% include 'dashboard/pasien_rj/layout/content.html'%} 
+
+
+{% endblock %} 
+
+
+{% block script %}
+
+{% load static %}
+<script src="{% static 'js/MainProc.js'%}"></script>
+<script src="{% static 'js/terbilang.js'%}"></script>
+
+
+<script type="text/javascript">
+  
+  {% include 'dashboard/pasien_rj/js/getdaftarpasien.html' %}
+  {% include 'dashboard/data_pasien/js/getPasien.html' %}
+  {% include 'dashboard/data_pasien/js/getCustomer.html' %}
+  {% include 'dashboard/data_pasien/js/getKelcustomer.html' %}
+  {% include 'dashboard/data_pasien/js/getKelurahan.html' %}
+  {% include 'dashboard/data_pasien/js/getKecamatan.html' %}
+  {% include 'dashboard/data_pasien/js/getKabupaten.html' %}
+  {% include 'dashboard/data_pasien/js/getProvinsi.html' %}
+  {% include 'dashboard/data_pasien/js/getKelamin.html' %}
+  {% include 'dashboard/data_pasien/js/getReseler.html' %}
+  {% include 'dashboard/data_pasien/js/getAgama.html' %}
+  {% include 'dashboard/data_pasien/js/getPendidikan.html' %}
+  {% include 'dashboard/data_pasien/js/getGoldarah.html' %}
+  {% include 'dashboard/data_pasien/js/getMarital.html' %}
+  {% include 'dashboard/data_pasien/js/getPekerjaan.html' %}
+  {% include 'dashboard/data_pasien/js/getSuku.html' %}
+  {% include 'dashboard/data_pasien/js/getBahasa.html' %}
+  {% include 'dashboard/pasien_rj/js/init.html' %}
+</script>
+{% endblock %}
+
+

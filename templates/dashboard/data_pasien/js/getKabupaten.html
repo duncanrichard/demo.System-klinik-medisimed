@@ -70,11 +70,13 @@ function cariKabupaten() {
         filterRow: {
             visible: false
         },
-        // searchPanel : { visible: true },
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
         dataSource: new DevExpress.data.DataSource({
             load: function (e) {
-                var Kabupaten_id = $('#search_kode_Kabupaten').val();
-                var nama_Kabupaten = $('#search_nama_Kabupaten').val();
                 var Provinsi_id = $('#idProvinsi').val();
 
                 var deferred = $.Deferred();
@@ -83,8 +85,6 @@ function cariKabupaten() {
                     method: "GET",
                     data: {
                         "Provinsi_id": Provinsi_id,
-                        "id_Kabupaten": Kabupaten_id,
-                        "nama_Kabupaten": nama_Kabupaten,
                     },
                     success: function (result) {
                         deferred.resolve(result, {
@@ -117,6 +117,11 @@ function cariKabupaten() {
             $("#namaKelurahan").val('');
             $('#dxGridModalKabupaten').modal('hide');
             $('#idKecamatan').focus()
-        }
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
     });
 }

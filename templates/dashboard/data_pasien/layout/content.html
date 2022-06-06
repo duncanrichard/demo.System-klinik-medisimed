@@ -26,7 +26,8 @@
 						<div class="tabs-container">
 							<ul class="nav nav-tabs" role="tablist">
 								<li><a class="nav-link active" data-toggle="tab" href="#tab-1">Data Pasien</a></li>
-								<li><a class="nav-link" data-toggle="tab" href="#tab-2">Surveillance</a></li>
+								<li><a class="nav-link" data-toggle="tab" href="#tab-2">Surveillance</a>
+								</li> 
 							</ul>
 							<div class="tab-content" id='form'>
 								<div role="tabpanel" id="tab-1" class="tab-pane active">
@@ -195,7 +196,7 @@
 												</div>
 											</div>
 											<div class="col-md-4">
-												<div class="row">
+												<div hidden class="row">
 													<center><label class="control-label"
 															style="background:#ED5666;border-radius:5px;padding:4px;margin-top:-2px;">Jenis
 															Tarif</label>
@@ -218,28 +219,60 @@
 													</div>
 												</div>
 												<div class="row">
-													<center><label class="col-md-12 control-label"
-															style="">Email</label>
-													</center>
-													<div class="col-md-6" style="margin-top:2px;">
+													<div class="col-md-3">
+														<left><label class="col-md-12 control-label"
+																style="padding-top:5px">Email</label>
+														</left>
+													</div>	
+													<div class="col-md-6" style="padding-top:5px">
 														<input id="email" name="email" type="email"
 															class="form-control input-md">
 													</div>
 												</div>
 												<div class="row">
 													<div class="col-md-3">
-														<label class="control-label" style="">Keterangan </label>
+														<label class="control-label" style="padding-top:5px">Keterangan </label>
 													</div>
 													<div class="col-md-9">
-														<input id="keterangan" name="keterangan" type="text"
+														<input id="keterangan" name="keterangan" type="text" style="padding-top:5px"
 															class="form-control input-md ">
 													</div>
 												</div>
 
 												<div class="row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Reseler </label>
+													<div class="col-md-2">
+														<input id="idReseler" name="idReseler" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-5">
+														<input id="namaReseler" name="namaReseler" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs"
+															id="btnFindReseler">cari </button>
+													</div>
+												</div>
+
+												<div class="row">
+													<label class="col-md-3 control-label"
+														style="padding-top:5px">Asal Cabang </label>
+													<div class="col-md-2">
+														<input id="idAsal_cabang" name="idAsal_cabang" type="text"
+															class="form-control input-md" readonly>
+													</div>
+													<div class="col-md-7">
+														<input id="namaAsal_cabang" name="namaAsal_cabang" type="text"
+															class="form-control input-md" readonly>
+													</div>
+												</div>
+
+												<div hidden class="row">
 													<div class="col-md-5">
 														<div class="col-md-5">
-															<label class="control-label" style="">Identitas </label>
+															<label class="control-label" style="padding-top:5px">Identitas </label>
 														</div>
 														<div class="col-md-9">
 															<select class="form-control input-md" id="identitas"
@@ -255,7 +288,7 @@
 
 													<div class="col-md-7">
 														<div class="col-md-4">
-															<label class="control-label" style="">No.Identitas </label>
+															<label class="control-label" style="padding-top:5px;">No.Identitas </label>
 														</div>
 														<div class="col-md-8">
 															<input id="noEKTP" name="noEKTP" type="text"
@@ -271,8 +304,7 @@
 											</div>
 
 										</div>
-										<div class="form-row"
-											style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
+										<div  class="form-row" style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
 											<div class="col-md-6">
 												<div class="row">
 													<div class="col-md-3">
@@ -318,16 +350,6 @@
 
 												<div class="row" style="margin-right:-20px">
 													<div class="col-md-3">
-														<label class="control-label" style="">Nama Asuransi </label>
-													</div>
-													<div class="col-md-8">
-														<input id="namaAsuransi" name="namaAsuransi" type="text"
-															class="form-control input-sm ">
-													</div>
-												</div>
-
-												<div class="row" style="margin-right:-20px">
-													<div class="col-md-3">
 														<label class="control-label" style="">No. Kartu Asuransi
 														</label>
 													</div>
@@ -339,7 +361,7 @@
 
 
 											</div>
-										</div>
+										</div> 
 									</div>
 								</div>
 								<div role="tabpanel" id="tab-2" class="tab-pane">
@@ -473,7 +495,7 @@
 
 
 									</div>
-								</div>
+								</div> 
 							</div>
 						</div>
 

@@ -63,8 +63,11 @@ function cariKlpPasien() {
             visible: false
         },
         searchPanel: {
-            visible: true
+            visible: true,
+            text: ''
         },
+
+
         dataSource: new DevExpress.data.DataSource({
             load: function (e) {
                 var deferred = $.Deferred();
@@ -101,6 +104,11 @@ function cariKlpPasien() {
             $('#namaPerusahaan').val('');
             $('#dxGridModalKelcustomer').modal('hide');
             $('#customerId').focus()
-        }
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
     });
 }

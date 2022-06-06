@@ -1,0 +1,312 @@
+$(document).ready(function () {
+    $("#cari_Produk").keydown(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#dataModalProduk").dxDataGrid("instance");
+
+        if (code == 27 || code == 13) {
+            if (canEnterProduk == 1) {
+                if (dataGrid.getVisibleRows().length != 0) {
+                    e.preventDefault()
+                    $(this).blur()
+                    dataGrid.focus(dataGrid.getCellElement(0, 'NAMA_PRODUK'))
+                    dataGrid.selectRowsByIndexes(0)
+                }
+            }
+        } else {
+            if ($("#cari_Produk").val().length > 2) {
+                searchProdukByName($("#cari_Produk").val())
+            } else {
+                searchProdukByName('nullnone0')
+            }
+        }
+    });
+
+    $('#btn_ok_data_Produk').click(function () {
+        if (data) {
+            pilihProduk()
+        }
+    })
+})
+
+function carikodeprodukid(e) {
+
+    $("#cari_Produk").val(e)
+    $.ajax({
+        url: host + "/getIdDataProduk",
+        method: "GET",
+        data: {
+            "kode": e,
+            "jenis_tarip": $("#jenis_tarif").val()
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.status == 'ok') {
+                tempId = datas.data.ID_PRODUK
+                tempNama = datas.data.NAMA_PRODUK
+                tempHjual = datas.data.HJUAL
+                tempdisckonsumen = datas.data.FMTDISC_KONSUMEN
+                tempdiscreseler = datas.data.FMTFEE_RESELER
+                tempfeedokter = datas.data.FEE_DOKTER
+                tempfeebc = datas.data.FEE_BC
+                tempfeeperawat = datas.data.FEE_PERAWAT
+                pilihProduk()
+            } else {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, 'ID_PRODUK', '')
+                dataGrid.cellValue(rowIndex, "NAMA_PRODUK", '');
+                dataGrid.cellValue(rowIndex, "HARGA", '');
+                dataGrid.cellValue(rowIndex, "QTY", '');
+                dataGrid.cellValue(rowIndex, "DISC", '');
+                dataGrid.cellValue(rowIndex, "DISC2", '');
+                dataGrid.cellValue(rowIndex, "DISC3", '');
+                dataGrid.cellValue(rowIndex, "DISC4", '');
+                dataGrid.cellValue(rowIndex, "TOTAL", '');
+                dataGrid.cellValue(rowIndex, "DISCKONSUMEN", '');
+                dataGrid.cellValue(rowIndex, "DISCRESELER", '');
+                dataGrid.cellValue(rowIndex, "FEEDOKTER", '');
+                dataGrid.cellValue(rowIndex, "FEEBC", '');
+                dataGrid.cellValue(rowIndex, "FEEPERAWAT", '');
+                openModalProduk()
+                if ($("#cari_Produk").val().length > 2) {
+                    searchProdukByName($("#cari_Produk").val())
+                } else {
+                    searchProdukByName('nullnone0')
+                }
+            }
+        }
+    })
+}
+
+function openModalProduk() {
+
+    try {
+        var dxgridProduk = $("#dataModalProduk").dxDataGrid('instance');
+        dxgridProduk.clearSelection();
+    } catch (err) {}
+    if (canAdd == 1) {
+        tempId = ''
+        tempNama = ''
+        tempHjual = ''
+
+        $('#ModalProduk').modal('show')
+        $('#cari_Produk').val()
+        $('#ModalProduk').on('shown.bs.modal', function () {
+            $('#cari_Produk').focus()
+        })
+        $("#dataModalProduk").dxDataGrid({
+            dataSource: [],
+            keyExpr: 'ID_PRODUK',
+            selection: {
+                mode: "single"
+            },
+            paging: {
+                pageSize: 10000
+            },
+            rowAlternationEnabled: true,
+            hoverStateEnabled: true,
+            showBorders: true,
+            columns: [{
+                dataField: "ID_PRODUK",
+                caption: "ID Produk",
+                alignment: 'center',
+                width: 80
+            }, {
+                dataField: "NAMA_PRODUK",
+                caption: "NAMA Produk",
+            }, {
+                dataField: "HJUAL",
+                caption: "HARGA",
+                width: 80,
+                alignment: 'right',
+            }, ],
+        });
+    }
+}
+
+
+function searchProdukByName(nama) {
+
+    $.ajax({
+        url: host + "/getdataProduk",
+        method: "GET",
+        data: {
+            'nama': nama,
+            "jenis_tarip": $("#jenis_tarif").val(),
+        },
+        beforeSend: function () {
+            canEnterProduk = 0
+            if (nama != 'nullnone0') {
+                $('#loadDataText').css("display", 'block');
+            }
+        },
+        complete: function () {
+            $('#loadDataText').css("display", 'none');
+            canEnterProduk = 1
+        },
+        success: function (datas) {
+            canEnterProduk = 1
+
+            $("#dataModalProduk").dxDataGrid({
+                dataSource: datas,
+                keyExpr: 'ID_PRODUK',
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 10000
+                },
+                focusedRowEnabled: true,
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                columns: [{
+                    dataField: "ID_PRODUK",
+                    caption: "ID Produk",
+                    alignment: 'left',
+                    width: 90,
+                    allowSorting: false
+                }, {
+                    dataField: "NAMA_PRODUK",
+                    caption: "NAMA Produk",
+                    allowSorting: false
+                }, {
+                    dataField: "HJUAL",
+                    caption: "HARGA JUAL",
+                    allowEditing: true,
+                    width: 120,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                }, ],
+
+                onFocusedCellChanged: function (e) {
+                    if (e.row.data) {
+                        tempId = e.row.data.ID_PRODUK
+                        tempNama = e.row.data.NAMA_PRODUK
+                        tempHjual = e.row.data.HJUAL
+                        tempdisckonsumen = e.row.data.FMTDISC_KONSUMEN
+                        tempdiscreseler = e.row.data.FMTFEE_RESELER
+                        tempfeedokter = e.row.data.FEE_DOKTER
+                        tempfeebc = e.row.data.FEE_BC
+                        tempfeeperawat = e.row.data.FEE_PERAWAT
+                    }
+                },
+                onSelectionChanged: function (r) {
+                    if (r.selectedRowsData.length > 0) {
+                        tempId = r.selectedRowsData[0].ID_PRODUK
+                        tempNama = r.selectedRowsData[0].NAMA_PRODUK
+                        tempHjual = r.selectedRowsData[0].HJUAL
+                        tempdisckonsumen = r.selectedRowsData[0].FMTDISC_KONSUMEN
+                        tempdiscreseler = r.selectedRowsData[0].FMTFEE_RESELER
+                        tempfeedokter = r.selectedRowsData[0].FEE_DOKTER
+                        tempfeebc = r.selectedRowsData[0].FEE_BC
+                        tempfeeperawat = r.selectedRowsData[0].FEE_PERAWAT
+
+                    }
+                },
+                onKeyDown: function (e) {
+                    if (e.event.originalEvent.which == 13) {
+                        pilihProduk()
+                    }
+                },
+                onContentReady: function (e) {
+                    setTimeout(() => {
+                        $('#cari_Produk').focus()
+                    }, 200);
+                }
+            });
+        }
+    })
+}
+
+function pilihProduk() {
+    if (tempId != '') {
+        if (!cekDataSudahAda(tempId)) {
+            alert('Maaf Produk ' + tempNama + ' Sudah Ada')
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            dataGrid.cellValue(rowIndex, 'ID_PRODUK', '')
+            dataGrid.cellValue(rowIndex, "NAMA_PRODUK", '');
+            dataGrid.cellValue(rowIndex, "HARGA", '');
+            dataGrid.cellValue(rowIndex, "QTY", '');
+            dataGrid.cellValue(rowIndex, "DISC", '');
+            dataGrid.cellValue(rowIndex, "DISC2", '');
+            dataGrid.cellValue(rowIndex, "DISC3", '');
+            dataGrid.cellValue(rowIndex, "DISC4", '');
+            dataGrid.cellValue(rowIndex, "TOTAL", '');
+            dataGrid.cellValue(rowIndex, "DISCKONSUMEN", '');
+            dataGrid.cellValue(rowIndex, "DISCRESELER", '');
+            dataGrid.cellValue(rowIndex, "FEEDOKTER", '');
+            dataGrid.cellValue(rowIndex, "FEEBC", '');
+            dataGrid.cellValue(rowIndex, "FEEPERAWAT", '');
+            openModalProduk()
+            searchProdukByName(tempNama)
+        } else {
+            $('#cari_Produk').val('')
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            dataGrid.cellValue(rowIndex, "ID_PRODUK", tempId);
+            dataGrid.cellValue(rowIndex, "NAMA_PRODUK", tempNama);
+            dataGrid.cellValue(rowIndex, "HARGA", tempHjual);
+            dataGrid.cellValue(rowIndex, "QTY", temppqty);
+            dataGrid.cellValue(rowIndex, "DISCKONSUMEN", tempdisckonsumen);
+            // cek discount promosi
+            Cari_discount(tempId, function (dt) {
+                dataGrid.cellValue(rowIndex, "DISC", tempdisc);
+                dataGrid.cellValue(rowIndex, "DISC2", tempdisc2);
+                dataGrid.cellValue(rowIndex, "DISC3", tempdisc3);
+                dataGrid.cellValue(rowIndex, "DISC4", tempdisc4);
+            })
+            // dataGrid.cellValue(rowIndex, "TOTAL", tempHjual);
+            dataGrid.cellValue(rowIndex, "DISCRESELER", tempdiscreseler);
+            dataGrid.cellValue(rowIndex, "FEEDOKTER", tempfeedokter);
+            dataGrid.cellValue(rowIndex, "FEEBC", tempfeebc);
+            dataGrid.cellValue(rowIndex, "FEEPERAWAT", tempfeeperawat);
+            dataGrid.saveEditData();
+            $.when(dataGrid.saveEditData()).done(function () {
+                setFocusQTY()
+            })
+            $('#ModalProduk').modal('hide')
+        }
+    } else {
+        alert('Silahkan Pilih Produk')
+    }
+}
+
+function Cari_discount(tempId = null, callback = null) {
+    if (tempId != null) {
+        $.ajax({
+            url: host + "/getDiscCustomer",
+            method: "GET",
+            data: {
+                'kode_produk': tempId,
+                'tgl_berlaku': $('#tanggal').val(),
+            },
+            success: function (datas) {
+                if (datas.length > 0) {
+                    tempdisc = datas[0].DISC1;
+                    tempdisc2 = datas[0].DISC2;
+                    tempdisc3 = datas[0].DISC3;
+                    tempdisc4 = datas[0].DISC4;
+                } else {
+                    tempdisc = 0;
+                    tempdisc2 = 0;
+                    tempdisc3 = 0;
+                    tempdisc4 = 0;
+                }
+
+                if (callback != null) {
+                    callback(datas)
+                }
+
+            }
+        })
+    }
+
+}
+
+function setFocusQTY() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    $(dataGrid.focus(dataGrid.getCellElement(qtyIndex, 'QTY'))).promise().done(function () {
+        dataGrid.editCell(qtyIndex, 'QTY')
+    })
+}

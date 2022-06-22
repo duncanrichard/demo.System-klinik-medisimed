@@ -1,0 +1,65 @@
+<div class="modal fade" id="DxGridModalPaket" tabindex="-1" role="dialog" aria-labelledby="myModal" style="z-index: 10;">
+
+  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-content">
+  
+    <div class="modal-header">
+    <a type="button" class="close" data-toggle='modal' aria-label="Close" href="#DxGridModalPaket">
+      <span aria-hidden="true">&times;</span></a>
+    <h4 class="modal-title" id="DxGridLabelPaket"></h4>
+    </div>
+    
+    <div class="modal-body">
+      <div class="card" style="overflow-x: visible;">
+      <div class="card-body">
+          <div class="row" style="margin-bottom: 5px;">
+            <div class="col-md-1">
+              <button class="btn btn-primary" id="dxGridBtnAddPaket"><span class="fa fa-plus"></span></button>
+              
+            </div>
+            <div class="col-md-1"> 
+              <button class="btn btn-success" id="dxGridBtnRefreshPaket"><span class="fa fa-refresh"></span></button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <div id="DxGridDataPaket">  
+              </div>  
+            </div>
+            <div class="col-md-12 form-group">
+              <div class="col-md-4 form-group">
+                <div class="switch-toggle switch-candy" style="background-color: #666">
+                  <input id="deposit_produk_paket" name="option_produk_paket" type="radio" value="1" checked>
+                  <label for="deposit_produk_paket" class="input-sm" onclick="$('#deposit_produk_paket').change()">Produk</label>
+
+                  <input id="deposit_nominal_paket" name="option_produk_paket" type="radio" value="2">
+                  <label for="deposit_nominal_paket" class="input-sm" onclick="$('#deposit_nominal_paket').change()">Nominal</label>
+
+                  <a></a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12" id="formGridPaket">
+              <div id="DxGridDataPaketD">  
+              </div>  
+            </div >
+            <div class="col-md-12" id="formNominalDepositPaket" style="display: none">
+              
+              <label class="col-md-6"> Nominal Deposit yang ingin digunakan </label>
+              <div class="col-md-4 col-md-offset-2">
+                <input type="text" class="form-control " name="nominalDepositPaket" id="nominalDepositPaket" style="text-align: right;">
+              </div>
+            </div>
+          </div>
+          
+      </div>
+      </div>
+    
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-default" id="btn_ok_produk_paket">OK</button>
+    <button type="button" class="btn btn-primary" data-dismiss="modal">Tutup</button>
+    </div>
+  </div>
+  </div>
+</div>

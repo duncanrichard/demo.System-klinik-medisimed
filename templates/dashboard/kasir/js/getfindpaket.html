@@ -1,0 +1,198 @@
+$(document).ready(function () {
+    $("#kd_paket").change(function () {
+        kode_paket = $('#kd_paket').val()
+    })
+    $('#tambah_paket').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            if ($('#no_trans').val() == '') {
+
+                $('#formGridNominal').hide();
+                $('#ModalDaftarPaketTransaksi').modal('show')
+                cari_paketpasien()
+            }
+        }
+    })
+    $('#deposit_produk_paket').change(function (e) {
+        if ($(this).prop('checked') == true) {
+            $('#formGridPaket').show();
+            $('#formGridNominal').hide();
+            $('#formNominalDepositPaket').hide();
+        } else {
+            $('#formGridPaket').hide();
+            $('#formGridNominal').show();
+            $('#formNominalDepositPaket').show();
+        }
+    })
+
+    $('#deposit_nominal_paket').change(function (e) {
+        if ($(this).prop('checked') == true) {
+            $('#formGridPaket').hide();
+            $('#formGridNominal').show();
+            $('#formNominalDepositPaket').show();
+        } else {
+            $('#formGridPaket').show();
+            $('#formGridNominal').hide();
+            $('#formNominalDepositPaket').hide();
+        }
+    })
+})
+
+function cari_paketpasien() {
+    $("#Datadaftarpakettransaksi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/findDepositPaket",
+                    method: "GET",
+                    data: {
+                        'kd_pasien': $('#idPasien').val(),
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FDPNO_DEPOSIT",
+                caption: "NO BUKTI",
+                // width: 100,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "FDPKD_PASIEN",
+                caption: "PASIEN",
+                width: 100,
+            },
+            {
+                dataField: "NAMAPASIEN",
+                caption: "Nama Pasien",
+                // width: 200,
+            },
+            {
+                dataField: "FDPNOMINAL",
+                caption: "FDPNOMINAL",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "FDPNOMINAL_SISA",
+                caption: "Pemakaian",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "Sisasaldo",
+                caption: "Sisasaldo",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+
+        ],
+        onRowClick: function (e) {
+            getGridDaftarPakettransaksi(e.data.FDPNO_DEPOSIT)
+            $('#ModalDaftarPaketTransaksi').modal('hide')
+        }
+    });
+    $("#Dataditailpakettransaksi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/findDepositPaketD",
+                    method: "GET",
+                    data: {
+                        'kd_pasien': $('#idPasien').val(),
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FDPNO_DEPOSIT",
+                caption: "NO BUKTI",
+                width: 150,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "FDPKD_PAKET",
+                caption: "FDPKD_PAKET",
+                width: 100,
+            },
+            {
+                dataField: "FMPKPAKETN",
+                caption: "Nama Paket",
+                width: 200,
+            },
+            {
+                dataField: "FDPKETERANGAN",
+                caption: "Keterangan",
+            },
+        ],
+        onRowClick: function (e) {
+            getGridPaketprodukpasien(e.data.FDPNO_DEPOSIT)
+            $('#ModalDaftarPaketTransaksi').modal('hide')
+        }
+    });
+
+}

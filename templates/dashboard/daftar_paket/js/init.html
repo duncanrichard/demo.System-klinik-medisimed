@@ -16,10 +16,6 @@ var tempdisc2 = 0
 var tempdisc3 = 0
 var tempdisc4 = 0
 var tempdisckonsumen = 0
-var tempdiscreseler = 0
-var tempfeedokter = 0
-var tempfeebc = 0
-var tempfeeperawat = 0
 var kode_paket = ''
 
 let status_aud = null;
@@ -39,14 +35,13 @@ $(document).ready(function () {
     $('#Findjenis').hide()
     $('#Findjenis2').hide()
     setupAwal()
-
     $("#menu_tambah").click(function () {
         kode_paket = ''
         livetext()
         Cleartext()
         setGridEmpty()
-        $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
-        $('#btnfar_tambah_produk').css("display", 'block');
+        $('input[name=inlineCheckboxclose]').iCheck('uncheck');
+        $('#tambah_produk').css("display", 'block');
         canAdd = 1
         Cekeror = true;
     })
@@ -57,7 +52,7 @@ $(document).ready(function () {
             alert("Transaksi sudah ditutup")
         } else {
             livetext()
-            $('#btnfar_tambah_produk').css("display", 'block');
+            $('#tambah_produk').css("display", 'block');
             canAdd = 1
             Cekeror = true;
         }
@@ -81,10 +76,6 @@ $(document).ready(function () {
                 var FD_DISC3 = []
                 var FD_DISC4 = []
                 var FD_DISCKONSUMEN = []
-                var FD_DISCRESELER = []
-                var FD_FEEDOKTER = []
-                var FD_FEEBC = []
-                var FD_FEEPERAWAT = []
                 var FD_BUKTI_ID = []
                 for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
                     if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
@@ -98,51 +89,12 @@ $(document).ready(function () {
                         FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
                         FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
                         FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
-                        FD_DISCRESELER.push("" + dataGrid.getVisibleRows()[i].data.DISCRESELER)
-                        FD_FEEDOKTER.push("" + dataGrid.getVisibleRows()[i].data.FEEDOKTER)
-                        FD_FEEBC.push("" + dataGrid.getVisibleRows()[i].data.FEEBC)
-                        FD_FEEPERAWAT.push("" + dataGrid.getVisibleRows()[i].data.FEEPERAWAT)
                         FD_BUKTI_ID.push($("#No_faktur").val())
-                    }
-                }
-
-                var dataGrid2 = $("#dxGridDatadokter").dxDataGrid("instance");
-                var FHD_NO = []
-                var FHD_ID_DOKTER = []
-                var FHD_NAMA_DOKTER = []
-                for (let i = 0; i < dataGrid2.getVisibleRows().length; i++) {
-                    if (dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER != '') {
-                        FHD_NO.push("" + dataGrid2.getVisibleRows()[i].data.NO)
-                        FHD_ID_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.ID_DOKTER)
-                        FHD_NAMA_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER)
-                    }
-                }
-
-                var dataGrid3 = $("#dxGridDataBC").dxDataGrid("instance");
-                var FHB_NO = []
-                var FHB_ID_BC = []
-                var FHB_NAMA_BC = []
-                for (let i = 0; i < dataGrid3.getVisibleRows().length; i++) {
-                    if (dataGrid3.getVisibleRows()[i].data.NAMA_BC != '') {
-                        FHB_NO.push("" + dataGrid3.getVisibleRows()[i].data.NO)
-                        FHB_ID_BC.push("" + dataGrid3.getVisibleRows()[i].data.ID_BC)
-                        FHB_NAMA_BC.push("" + dataGrid3.getVisibleRows()[i].data.NAMA_BC)
-                    }
-                }
-                var dataGrid4 = $("#dxGridDataperawat").dxDataGrid("instance");
-                var FHP_NO = []
-                var FHP_ID_PERAWAT = []
-                var FHP_NAMA_PERAWAT = []
-                for (let i = 0; i < dataGrid4.getVisibleRows().length; i++) {
-                    if (dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT != '') {
-                        FHP_NO.push("" + dataGrid4.getVisibleRows()[i].data.NO)
-                        FHP_ID_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.ID_PERAWAT)
-                        FHP_NAMA_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT)
                     }
                 }
                 status_aud = 'D'
                 $.ajax({
-                    url: host + "/SP_AUD_TRANSAKSI",
+                    url: host + "/SP_AUD_DAFTAR_PAKET",
                     method: "POST",
                     data: {
                         "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
@@ -156,38 +108,22 @@ $(document).ready(function () {
                         "FD_DISC3": JSON.stringify(FD_DISC3),
                         "FD_DISC4": JSON.stringify(FD_DISC4),
                         "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
-                        "FD_DISCRESELER": JSON.stringify(FD_DISCRESELER),
-                        "FD_FEEDOKTER": JSON.stringify(FD_FEEDOKTER),
-                        "FD_FEEBC": JSON.stringify(FD_FEEBC),
-                        "FD_FEEPERAWAT": JSON.stringify(FD_FEEPERAWAT),
                         "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
 
-                        "FHD_NO": JSON.stringify(FHD_NO),
-                        "FHD_ID_DOKTER": JSON.stringify(FHD_ID_DOKTER),
-                        "FHD_NAMA_DOKTER": JSON.stringify(FHD_NAMA_DOKTER),
-
-                        "FHB_NO": JSON.stringify(FHB_NO),
-                        "FHB_ID_BC": JSON.stringify(FHB_ID_BC),
-                        "FHB_NAMA_BC": JSON.stringify(FHB_NAMA_BC),
-
-                        "FHP_NO": JSON.stringify(FHP_NO),
-                        "FHP_ID_PERAWAT": JSON.stringify(FHP_ID_PERAWAT),
-                        "FHP_NAMA_PERAWAT": JSON.stringify(FHP_NAMA_PERAWAT),
-
-
-
                         "FH_BUKTI_ID": $("#no_trans").val(),
-                        "FH_REGISTER_ID": $("#no_regis").val(),
                         "FH_DATE": $("#tanggal").val(),
-                        "FH_PASIEN_ID": $("#idPasien").val(),
-                        "FH_RESELER_ID": $("#idReseler").val(),
+                        "FH_ID_PASIEN": $("#idPasien").val(),
+                        "FH_JENIS_DEPOSITO": $(".deposit_tunai_toggle:checked").val(),
+                        "FH_DEPOSITO_TUNAI": parseInt(convertToAngka($("#deposit_tunai_nom").val())),
+                        "FH_KD_PAKET": $("#kd_paket").val(),
+                        "FH_KETERANGAN": $("#keterangan").val(),
                         "StatusAUD": status_aud,
                     },
                     success: function (e) {
                         alert(e[0].STATUS + ' - ' + e[0].STATE)
                         $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
                         Deathtext()
-                        $('#btnfar_tambah_produk').css("display", 'none');
+                        $('#tambah_produk').css("display", 'none');
                         canAdd = 0
                         Cleartext()
                         setGridEmpty()
@@ -199,156 +135,147 @@ $(document).ready(function () {
 
         }
     })
+
+    $("#deposit_tunai_off").change(function () {
+        if ($('#deposit_tunai_off').val() == '0') {
+            setUnReadOnly('deposit_tunai_nom')
+        } else {
+            setReadOnly('deposit_tunai_nom')
+            $('#deposit_tunai_nom').val('')
+        }
+    })
+    $("#deposit_tunai_on").change(function () {
+        if ($('#deposit_tunai_on').val() == '1') {
+            setReadOnly('deposit_tunai_nom')
+            $('#deposit_tunai_nom').val('')
+        } else {
+            setUnReadOnly('deposit_tunai_nom')
+
+        }
+    })
+
+    $('#deposit_tunai_nom').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#deposit_tunai_nom').val(rupiah2(desimal2($('#deposit_tunai_nom').val())));
+            $('#keterangan').focus()
+        }
+    })
+
+    $("#kd_paket").change(function () {
+        kode_paket = $('#kd_paket').val()
+    })
+    $('#tambah_paket').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            if ($('#no_trans').val() == '') {
+                $('#ModalTransaksi').modal('show')
+                $('#mutasi_tanggal').val(todays);
+                $("#select_mutasi").val('mutasi_by_tanggal');
+                $('#mutasi_bukti').val('');
+                $('#mutasi_nama').val('');
+                cari_transaksi()
+            }
+        }
+    })
+    $('#btn_cari_mutasi').click(function () {
+        cari_transaksi()
+    })
+    $("#mutasi_tanggal").change(function () {
+        cari_transaksi()
+    })
+    $("#select_mutasi").change(function () {
+        cari_transaksi()
+    })
     $('#menu_simpan').click(function () {
         canAdd = 0
         error_in_field()
+        if (parseInt(convertToAngka($("#deposit_tunai_nom").val())) + parseInt(convertToAngka($("#total").val())) == 0) {
+            alert('Silahkan isi  Deposito dulu')
+            Cekeror = false;
+        }
         if (Cekeror == true) {
-            error_in_simpan()
-            if (Cekeror == true) {
+
+            var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+            if (c) {
                 var dataGrid = $("#datagrid").dxDataGrid("instance");
-                if (dataGrid.getVisibleRows().length == 0) {
-                    alert('Data produk Masih Kosong')
-                } else {
-                    var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
-                    if (c) {
-                        var dataGrid = $("#datagrid").dxDataGrid("instance");
-                        var FD_NO = []
-                        var FD_ID_PRODUK = []
-                        var FD_NAMA_PRODUK = []
-                        var FD_HARGA = []
-                        var FD_QTY = []
-                        var FD_DISC = []
-                        var FD_DISC2 = []
-                        var FD_DISC3 = []
-                        var FD_DISC4 = []
-                        var FD_DISCKONSUMEN = []
-                        var FD_DISCRESELER = []
-                        var FD_FEEDOKTER = []
-                        var FD_FEEBC = []
-                        var FD_FEEPERAWAT = []
-                        var FD_BUKTI_ID = []
-                        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
-                            if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
-                                FD_NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
-                                FD_ID_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
-                                FD_NAMA_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.NAMA_PRODUK)
-                                FD_HARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA)
-                                FD_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
-                                FD_DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
-                                FD_DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
-                                FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
-                                FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
-                                FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
-                                FD_DISCRESELER.push("" + dataGrid.getVisibleRows()[i].data.DISCRESELER)
-                                FD_FEEDOKTER.push("" + dataGrid.getVisibleRows()[i].data.FEEDOKTER)
-                                FD_FEEBC.push("" + dataGrid.getVisibleRows()[i].data.FEEBC)
-                                FD_FEEPERAWAT.push("" + dataGrid.getVisibleRows()[i].data.FEEPERAWAT)
-                                FD_BUKTI_ID.push($("#No_faktur").val())
-                            }
-                        }
-
-                        var dataGrid2 = $("#dxGridDatadokter").dxDataGrid("instance");
-                        var FHD_NO = []
-                        var FHD_ID_DOKTER = []
-                        var FHD_NAMA_DOKTER = []
-                        for (let i = 0; i < dataGrid2.getVisibleRows().length; i++) {
-                            if (dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER != '') {
-                                FHD_NO.push("" + dataGrid2.getVisibleRows()[i].data.NO)
-                                FHD_ID_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.ID_DOKTER)
-                                FHD_NAMA_DOKTER.push("" + dataGrid2.getVisibleRows()[i].data.NAMA_DOKTER)
-                            }
-                        }
-
-                        var dataGrid3 = $("#dxGridDataBC").dxDataGrid("instance");
-                        var FHB_NO = []
-                        var FHB_ID_BC = []
-                        var FHB_NAMA_BC = []
-                        for (let i = 0; i < dataGrid3.getVisibleRows().length; i++) {
-                            if (dataGrid3.getVisibleRows()[i].data.NAMA_BC != '') {
-                                FHB_NO.push("" + dataGrid3.getVisibleRows()[i].data.NO)
-                                FHB_ID_BC.push("" + dataGrid3.getVisibleRows()[i].data.ID_BC)
-                                FHB_NAMA_BC.push("" + dataGrid3.getVisibleRows()[i].data.NAMA_BC)
-                            }
-                        }
-                        var dataGrid4 = $("#dxGridDataperawat").dxDataGrid("instance");
-                        var FHP_NO = []
-                        var FHP_ID_PERAWAT = []
-                        var FHP_NAMA_PERAWAT = []
-                        for (let i = 0; i < dataGrid4.getVisibleRows().length; i++) {
-                            if (dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT != '') {
-                                FHP_NO.push("" + dataGrid4.getVisibleRows()[i].data.NO)
-                                FHP_ID_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.ID_PERAWAT)
-                                FHP_NAMA_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT)
-                            }
-                        }
-                        status_aud = 'A'
-                        $.ajax({
-                            url: host + "/SP_AUD_TRANSAKSI",
-                            method: "POST",
-                            data: {
-                                "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
-                                "FD_NO": JSON.stringify(FD_NO),
-                                "FD_ID_PRODUK": JSON.stringify(FD_ID_PRODUK),
-                                "FD_NAMA_PRODUK": JSON.stringify(FD_NAMA_PRODUK),
-                                "FD_HARGA": JSON.stringify(FD_HARGA),
-                                "FD_QTY": JSON.stringify(FD_QTY),
-                                "FD_DISC": JSON.stringify(FD_DISC),
-                                "FD_DISC2": JSON.stringify(FD_DISC2),
-                                "FD_DISC3": JSON.stringify(FD_DISC3),
-                                "FD_DISC4": JSON.stringify(FD_DISC4),
-                                "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
-                                "FD_DISCRESELER": JSON.stringify(FD_DISCRESELER),
-                                "FD_FEEDOKTER": JSON.stringify(FD_FEEDOKTER),
-                                "FD_FEEBC": JSON.stringify(FD_FEEBC),
-                                "FD_FEEPERAWAT": JSON.stringify(FD_FEEPERAWAT),
-                                "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
-
-                                "FHD_NO": JSON.stringify(FHD_NO),
-                                "FHD_ID_DOKTER": JSON.stringify(FHD_ID_DOKTER),
-                                "FHD_NAMA_DOKTER": JSON.stringify(FHD_NAMA_DOKTER),
-
-                                "FHB_NO": JSON.stringify(FHB_NO),
-                                "FHB_ID_BC": JSON.stringify(FHB_ID_BC),
-                                "FHB_NAMA_BC": JSON.stringify(FHB_NAMA_BC),
-
-                                "FHP_NO": JSON.stringify(FHP_NO),
-                                "FHP_ID_PERAWAT": JSON.stringify(FHP_ID_PERAWAT),
-                                "FHP_NAMA_PERAWAT": JSON.stringify(FHP_NAMA_PERAWAT),
-
-
-
-                                "FH_BUKTI_ID": $("#no_trans").val(),
-                                "FH_REGISTER_ID": $("#no_regis").val(),
-                                "FH_DATE": $("#tanggal").val(),
-                                "FH_PASIEN_ID": $("#idPasien").val(),
-                                "FH_RESELER_ID": $("#idReseler").val(),
-                                "StatusAUD": status_aud,
-                            },
-                            success: function (e) {
-                                alert(e[0].STATUS + ' - ' + e[0].STATE)
-                                $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
-                                Deathtext()
-                                $('#btnfar_tambah_produk').css("display", 'none');
-                                canAdd = 0
-
-                            }
-                        })
+                var FD_NO = []
+                var FD_ID_PRODUK = []
+                var FD_NAMA_PRODUK = []
+                var FD_HARGA = []
+                var FD_QTY = []
+                var FD_DISC = []
+                var FD_DISC2 = []
+                var FD_DISC3 = []
+                var FD_DISC4 = []
+                var FD_DISCKONSUMEN = []
+                var FD_BUKTI_ID = []
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
+                        FD_NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                        FD_ID_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                        FD_NAMA_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.NAMA_PRODUK)
+                        FD_HARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA)
+                        FD_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                        FD_DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
+                        FD_DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
+                        FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
+                        FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
+                        FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
+                        FD_BUKTI_ID.push($("#No_faktur").val())
                     }
                 }
+                status_aud = 'A'
+                $.ajax({
+                    url: host + "/SP_AUD_DAFTAR_PAKET",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "FD_NO": JSON.stringify(FD_NO),
+                        "FD_ID_PRODUK": JSON.stringify(FD_ID_PRODUK),
+                        "FD_NAMA_PRODUK": JSON.stringify(FD_NAMA_PRODUK),
+                        "FD_HARGA": JSON.stringify(FD_HARGA),
+                        "FD_QTY": JSON.stringify(FD_QTY),
+                        "FD_DISC": JSON.stringify(FD_DISC),
+                        "FD_DISC2": JSON.stringify(FD_DISC2),
+                        "FD_DISC3": JSON.stringify(FD_DISC3),
+                        "FD_DISC4": JSON.stringify(FD_DISC4),
+                        "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
+                        "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
+
+                        "FH_BUKTI_ID": $("#no_trans").val(),
+                        "FH_DATE": $("#tanggal").val(),
+                        "FH_ID_PASIEN": $("#idPasien").val(),
+                        "FH_JENIS_DEPOSITO": $(".deposit_tunai_toggle:checked").val(),
+                        "FH_DEPOSITO_TUNAI": parseInt(convertToAngka($("#deposit_tunai_nom").val())),
+                        "FH_KD_PAKET": $("#kd_paket").val(),
+                        "FH_KETERANGAN": $("#keterangan").val(),
+                        "StatusAUD": status_aud,
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
+                        Deathtext()
+                        $('#tambah_produk').css("display", 'none');
+                        canAdd = 0
+
+                    }
+                })
             }
+
         }
     })
     $("#menu_cancel").click(function () {
         setupAwal()
     })
     $("#menu_find").click(function () {
-        $('#ModalTransaksi').modal('show')
-        $('#mutasi_tanggal').val(todays);
-        $("#select_mutasi").val('mutasi_by_tanggal');
-        $('#mutasi_bukti').val('');
-        $('#mutasi_pasien').val('');
-        $('#mutasi_nama').val('');
-        cari_transaksi()
+        $('#ModalDaftarPaketTransaksi').modal('show')
+        $('#daftar_paket_tanggal').val(todays);
+        $("#select_daftar_paket").val('daftar_paket_by_tanggal');
+        $('#daftar_paket_bukti').val('');
+        $('#daftar_paket_pasien').val('');
+        $('#daftar_paket_nama').val('');
+        cari_daftarpakettransaksi()
     })
     $("#menu_kasir").click(function () {
         if ($("#no_trans").val() == '') {
@@ -362,8 +289,9 @@ $(document).ready(function () {
             $('#id_pasien_pembayaran').val($('#idPasien').val());
             $('#nama_pasien_pembayaran').val($('#nama_pasien').val());
             $('#nama_diterima').val($('#nama_pasien').val());
-            $('#grand_total_pembayaran').val($('#total').val());
-            $('#beban_pasien_pembayaran').val($('#total').val());
+            var total_bayar = Math.round(desimal2($('#total').val())) + Math.round(desimal2($('#deposit_tunai_nom').val()))
+            $('#grand_total_pembayaran').val(rupiah2(total_bayar));
+            $('#beban_pasien_pembayaran').val(rupiah2(total_bayar));
             perhitungan()
             $('#modalPembayaranKasir').modal('show')
             $('#total_dijamin_pembayaran').focus()
@@ -415,9 +343,9 @@ $(document).ready(function () {
                 success: function (e) {
                     alert(e[0].STATUS + ' - ' + e[0].STATE)
                     $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
-                    getGridTabletransaksi($('#no_trans').val())
+                    getGridDaftarPakettransaksi($('#no_trans').val())
                     Deathtext()
-                    $('#btnfar_tambah_produk').css("display", 'none');
+                    $('#tambah_produk').css("display", 'none');
                     canAdd = 0
                     $('#modalPembayaranKasir').modal('hide')
 
@@ -461,33 +389,25 @@ $(document).ready(function () {
             $('#nominal_fisik').focus()
         }
     })
-    $("#menu_cetak").click(function () {
-        if ($("#no_trans").val() == '') {
-            alert('Nomor Masih Kosong')
-        } else {
-            Prosescetak()
-        }
+    $('#btn_cari_daftar_paket').click(function () {
+        cari_daftarpakettransaksi()
     })
-    $('#menu_keluar').click(function () {
-        window.open('/', "_self");
+    $("#daftar_paket_tanggal").change(function () {
+        cari_daftarpakettransaksi()
     })
-    $('#btn_cari_mutasi').click(function () {
-        cari_transaksi()
+    $("#select_daftar_paket").change(function () {
+        cari_daftarpakettransaksi()
     })
-    $("#mutasi_tanggal").change(function () {
-        cari_transaksi()
-    })
-    $("#select_mutasi").change(function () {
-        cari_transaksi()
-    })
-    $('#btnfar_tambah_produk').click(function () {
+
+    $('#tambah_produk').click(function () {
         error_in_field()
         if (Cekeror == true) {
             tambahrow()
         }
     })
-
-
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
 })
 
 function perhitungan() {
@@ -510,29 +430,6 @@ function perhitungan() {
     $('#nominal_piutang').val(rupiah2(desimal2($('#nominal_piutang').val())));
     var nominal_tunai = Math.round((beban_pasien_pembayaran)) - Math.round((jumlah_kartu_total)) - Math.round((total_voucher)) - Math.round(desimal2($('#nominal_piutang').val()))
     $("#nominal_tunai").val(rupiah2(nominal_tunai))
-}
-
-function Prosescetak() {
-    var terbilang = (angkaTerbilang(String(desimal2($('#total').val()))).toUpperCase() + " RUPIAH ")
-    $.ajax({
-        url: host + "/cetakBilling",
-        method: "GET",
-        data: {
-            'no_bukti': $("#no_trans").val(),
-            'terbilang': terbilang,
-        },
-        beforeSend: function () {
-            $('#ModalLoading').modal('show');
-            $('#loading_title').html('Proses Cetak..');
-            $('#loading_text').html('Tunggu Sebentar');
-        },
-        complete: function () {
-            $('#ModalLoading').modal('hide');
-        },
-        success: function (datas) {
-            window.open(datas.pdf);
-        },
-    })
 }
 
 function cari_transaksi() {
@@ -559,8 +456,7 @@ function cari_transaksi() {
                         'tanggal': $('#mutasi_tanggal').val(),
                         'tipe': $('#select_mutasi').val(),
                         'no_bukti': $('#mutasi_bukti').val(),
-                        'pasien': $('#mutasi_pasien').val(),
-                        'nama_pasien': $('#mutasi_nama').val(),
+                        'nama_produk': $('#mutasi_nama').val(),
                     },
                     success: function (datas) {
                         deferred.resolve(datas, {
@@ -576,7 +472,72 @@ function cari_transaksi() {
         },
         hoverStateEnabled: true,
         columns: [{
-                dataField: "FTNO_TRANSAKSI",
+                dataField: "FMPKKD_PAKET",
+                caption: "NO PAKET",
+                // width: 100,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "FMPKPAKETN",
+                caption: "Nama Paket",
+            },
+
+        ],
+        onRowClick: function (e) {
+            getGridTabletransaksi(e.data.FMPKKD_PAKET)
+            $('#ModalTransaksi').modal('hide')
+        }
+    });
+}
+
+function cari_daftarpakettransaksi() {
+    $("#Datadaftarpakettransaksi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/getDaftarPaketTransaksi",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#daftar_paket_tanggal').val(),
+                        'tipe': $('#select_daftar_paket').val(),
+                        'no_bukti': $('#daftar_paket_bukti').val(),
+                        'pasien': $('#daftar_paket_pasien').val(),
+                        'nama_pasien': $('#daftar_paket_nama').val(),
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FDPNO_DEPOSIT",
                 caption: "NO BUKTI",
                 // width: 100,
             },
@@ -588,7 +549,7 @@ function cari_transaksi() {
                 format: 'dd/MM/yyyy',
             },
             {
-                dataField: "KPKD_PASIEN",
+                dataField: "FDPKD_PASIEN",
                 caption: "PASIEN",
                 width: 100,
             },
@@ -600,19 +561,15 @@ function cari_transaksi() {
 
         ],
         onRowClick: function (e) {
-            getGridTabletransaksi(e.data.FTNO_TRANSAKSI)
-            $('#ModalTransaksi').modal('hide')
+            getGridDaftarPakettransaksi(e.data.FDPNO_DEPOSIT)
+            $('#ModalDaftarPaketTransaksi').modal('hide')
         }
     });
 }
 
+
 function error_in_field() {
     Cekeror = true;
-    if ($('#no_regis').val() == '') {
-        alert('Silahkan isi registrasi ')
-        Cekeror = false;
-    }
-
     if ($('#idPasien').val() == '') {
         alert('Silahkan Pilih pasien')
         Cekeror = false;
@@ -644,43 +601,10 @@ function error_in_field() {
 
 }
 
-function error_in_simpan() {
-    Cekeror = true;
-    var dataGrid = $("#datagrid").dxDataGrid("instance");
-    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
-        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK != '' && dataGrid.getVisibleRows()[i].data.FEEDOKTER != 0 && Cekeror == true) {
-            // cek display komponent dokter
-            var dataGriddokter = $("#dxGridDatadokter").dxDataGrid("instance");
-            if (dataGriddokter.getVisibleRows().length == 0) {
-                Cekeror = false;
-                alert('Silahkan isi dokter')
-            }
-        };
-        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK != '' && dataGrid.getVisibleRows()[i].data.FEEBC != 0 && Cekeror == true) {
-            // cek display komponent dokter
-            var dataGridbc = $("#dxGridDataBC").dxDataGrid("instance");
-            if (dataGridbc.getVisibleRows().length == 0) {
-                Cekeror = false;
-                alert('Silahkan isi BC')
-            }
-        };
-        if (dataGrid.getVisibleRows()[i].data.ID_PRODUK != '' && dataGrid.getVisibleRows()[i].data.FEEPERAWAT != 0 && Cekeror == true) {
-            // cek display komponent dokter
-            var dataGridperawat = $("#dxGridDataperawat").dxDataGrid("instance");
-            if (dataGridperawat.getVisibleRows().length == 0) {
-                Cekeror = false;
-                alert('Silahkan isi perawat')
-            }
-        };
-    }
-    return Cekeror;
-
-}
-
 function setupAwal() {
     Deathtext()
     Cleartext()
-    $('#btnfar_tambah_produk').css("display", 'none');
+    $('#tambah_produk').css("display", 'none');
     canAdd = 0
     setGridEmpty()
 
@@ -688,16 +612,13 @@ function setupAwal() {
 
 function Cleartext() {
 
-    $('#tgl_periksa').val(todays);
+    $('#tanggal').val(todays);
     $('#no_trans').val('');
-    $('#no_regis').val('');
     $('#idPasien').val('');
     $('#nama_pasien').val('');
-
-    $('#idReseler').val('');
-    $('#namaReseler').val('');
-
-    $('#jenisTarif').val('');
+    $('#alamat').val('');
+    $('#keterangan').val('');
+    $('#deposit_tunai_nom').val('');
     $('#kd_paket').val('');
 
     $("#inlineCheckboxclose").prop('checked', false)
@@ -711,25 +632,18 @@ function Deathtext() {
     menuDisable('menu_cancel');
     menuEnable('menu_find');
     menuEnable('menu_kasir');
-    menuEnable('menu_farmasi');
     menuEnable('menu_cetak');
 
     setReadOnly('idPasien');
     setReadOnly('nama_pasien')
-    setReadOnly('nama_keluarga')
+    setReadOnly('alamat')
     btnDisable('btnFindPasien')
+    setReadOnly('tanggal')
+    setReadOnly('deposit_tunai_nom')
+    setReadOnly('keterangan')
+    btnDisable('deposit_tunai_on')
+    btnDisable('deposit_tunai_off')
 
-    setReadOnly('idReseler')
-    setReadOnly('namaReseler')
-    btnDisable('btnFindReseler')
-
-
-    setReadOnly('tgl_periksa')
-
-    btnDisable('add_btn')
-    btnDisable('add_btnBC')
-    btnDisable('add_btnprw')
-    setReadOnly('kd_paket')
 }
 
 function livetext() {
@@ -740,16 +654,13 @@ function livetext() {
     menuEnable('menu_cancel');
     menuDisable('menu_find');
     menuDisable('menu_kasir');
-    menuDisable('menu_farmasi');
     menuDisable('menu_cetak');
-
     btnEnable('btnFindPasien')
-    btnEnable('btnFindReseler')
-    setUnReadOnly('tgl_periksa')
-
-    btnEnable('add_btn')
-    btnEnable('add_btnBC')
-    btnEnable('add_btnprw')
-    btnEnable('tambah_paket')
+    setUnReadOnly('tanggal')
+    // setUnReadOnly('deposit_tunai_nom')
+    setUnReadOnly('keterangan')
+    btnEnable('tambah_produk')
+    btnEnable('deposit_tunai_on')
+    btnEnable('deposit_tunai_off')
 
 }

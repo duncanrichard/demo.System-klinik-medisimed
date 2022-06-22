@@ -1,0 +1,133 @@
+<div class="wrapper wrapper-content animated fadeInRight p-1">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header text-center h6 bg-secondary font-bold text-white">Paket produk </div>
+            <div class="card-body"
+                style="background: linear-gradient(to right, #0f2027, #203a43, #2c5364);border-radius: 5px;padding-bottom:5px;padding-top:5px;">
+                <div class="font-bold justify-content-center"
+                    style="background-color:#143e4c;padding-top:10px;border-radius: 15px">
+                    <div class="row">
+                        <div class="form-group col-md-9" style="padding-top: 5px;">
+                            <div class="row form-group">
+                                <label class="control-label col-md-4">
+                                    Kode Paket
+                                </label>
+                                <div class="col-md-3">
+                                    <input class="form-control input-sm" type="text" name="kd_paket" id="kd_paket">
+                                </div>
+                                <label class="col-md-2 control-label" style="color:white;">Tanggal : </label>
+                                <div class="col-md-3">
+                                    <input id="tanggal" name="tanggal" type="date" class="form-control input-md today"
+                                        readonly>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <div class="row form-group">
+
+                                <label class="control-label col-md-4">
+                                    Nama Paket
+                                </label>
+                                <div class="col-md-8">
+                                    <input class="form-control input-sm" type="text" name="nama_paket" id="nama_paket">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <div class="row form-group">
+
+                                <label class="control-label col-md-4">
+                                    Jumlah Kunjungan
+                                </label>
+                                <div class="col-md-5">
+                                    <input class="form-control input-sm" type="text" name="num_kunjungan"
+                                        id="num_kunjungan">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <div class="row form-group">
+
+                                <label class="control-label col-md-4">
+                                    Status
+                                </label>
+                                <div class="col-md-3">
+                                    <div class="row"
+                                        style="background-image: linear-gradient(rgba(66,254,198,1), rgba(255,255,255,0)) ">
+                                        <label class="col-md-6 label-inline">
+                                            <input type="radio" class="status_paket_1" name="paket_aktif"
+                                                id="paket_aktif_1" value="0" checked data-readonly='true'> Aktif
+                                        </label>
+                                        <label class="col-md-6 label-inline">
+                                            <input type="radio" class="status_paket_1" name="paket_aktif" value="1"
+                                                id="paket_aktif_2" data-readonly='true'> Tidak Aktif
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-9">
+                            <div class="row">
+                                <div class=" col-md-12 offset-md-2">
+                                    <div id="tambah_produk">
+                                        <button class="btn btn-primary " id="btn_tambah_produk">
+                                            <span class="fa fa-plus"></span>
+                                            Tambah
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:5px;margin-bottom: 5px;">
+                            <div class="col-md-12">
+                                <div style="height: 200px;overflow-y: auto;" class="">
+                                    <div id="datagrid"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="form-group col-md-6  ">
+                                <div class="row" style="background-color: #ca98a0;padding-top: 10px;">
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <label class="col-md-6 control-label text-center">User: </label>
+                                            <div class="col-md-6">
+                                                <input id="userrs" name="userrs" class="form-control input-sm" readonly
+                                                    style="background-color: #9093c2;font-size: 12px;font: bold;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="row">
+                                            <label class="col-md-5 control-label text-center">Update:
+                                            </label>
+                                            <div class="col-md-7">
+                                                <input id="updaters" name="updaters" class="form-control input-sm"
+                                                    readonly
+                                                    style="background-color: #93a8c7;font-size: 12px;font: bold;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6 ">
+                                <div class="row">
+                                    <label class="col-md-4 control-label">TOTAL PAKET</label>
+                                    <div class="col-md-2">: Rp
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" id="total" value="0" class="form-control input-md inputText"
+                                            readonly style="background-color: white;text-align: right">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

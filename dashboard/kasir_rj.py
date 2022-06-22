@@ -175,6 +175,8 @@ def SP_AUD_TRANSAKSI(request):
     FHP_ID_PERAWAT = json.loads(request.POST['FHP_ID_PERAWAT'])
     FHP_NAMA_PERAWAT = json.loads(request.POST['FHP_NAMA_PERAWAT'])
 
+    
+
     # header
     FH_BUKTI_ID = request.POST['FH_BUKTI_ID']
     FH_REGISTER_ID = request.POST['FH_REGISTER_ID']
@@ -503,3 +505,77 @@ def SP_AUD_BAYAR_TRANSAKSI(request):
     except ValueError:
         print(q)
 
+def findDepositPaket(request):
+    kd_pasien = request.GET['kd_pasien']
+    KD_CABANG= request.session['kdCabang']
+    q = "select  top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as Sisasaldo  "
+    q +="from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN "
+    q +="WHERE FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s AND a.FDPKD_CABANG= %s "
+    result = Globals().getDataQuery(q , [kd_pasien,KD_CABANG])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")	
+
+def findDepositPaketD(request):
+    kd_pasien = request.GET['kd_pasien']
+    KD_CABANG= request.session['kdCabang']
+    q = "select DISTINCT A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,C.ALAMAT, "
+    q += "a.FDPKD_PAKET,a.FDPKETERANGAN,isnull(a.FDPSTATUS,0) as FDPSTATUS,a.USERRS,a.UPDATERS,d.FMPKPAKETN  "
+    q += "from DEPOSIT_PAKET a inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT   "
+    q += "inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN  "
+    q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET "
+    q += "where FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s AND a.FDPKD_CABANG= %s "
+    result = Globals().getDataQuery(q , [kd_pasien,KD_CABANG])
+
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")	
+
+def getGridPaketprodukpasien(request):
+    no_bukti = request.GET['no_bukti']
+    databukti=no_bukti.split(',')
+    KD_CABANG= request.session['kdCabang']
+    q = "select A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,C.ALAMAT, "
+    q += "a.FDPKD_PAKET,a.FDPKETERANGAN,isnull(a.FDPSTATUS,0) as FDPSTATUS,a.USERRS,a.UPDATERS,d.FMPKPAKETN,  "
+    q += "ROW_NUMBER() OVER (ORDER BY FMPPRODUKN) AS NO,b.FDPDKD_PRODUK as ID_PRODUK, 1 as QTY, FDPDTARIF as HARGA,  "
+    q += "FDPD_DISCKONSUMEN as DISCKONSUMEN, FDPD_DISC1 as DISC, FDPD_DISC2 as DISC2, FDPD_DISC3 as DISC3, FDPD_DISC4 as DISC4,e.FMPPRODUKN as NAMA_PRODUK,G.FMTFEE_RESELER AS DISCRESELER, "
+    q += "ISNULL((SELECT H.FMTCTARIFPROSEN FROM TARIF_KOMPONENT AS H INNER JOIN PRODUK_COMPONENT AS I ON H.FMTCKD_COMPONENT=I.KD_COMPONENT WHERE b.FDPDKD_PRODUK=H.FMTCKD_PRODUK  AND I.JASAKOMPONENT='2') ,0) AS FEEDOKTER, "
+    q += "ISNULL((SELECT H.FMTCTARIFPROSEN FROM TARIF_KOMPONENT AS H INNER JOIN PRODUK_COMPONENT AS I ON H.FMTCKD_COMPONENT=I.KD_COMPONENT WHERE b.FDPDKD_PRODUK=H.FMTCKD_PRODUK  AND I.JASAKOMPONENT='5') ,0) AS FEEBC, "
+    q += "ISNULL((SELECT H.FMTCTARIFPROSEN FROM TARIF_KOMPONENT AS H INNER JOIN PRODUK_COMPONENT AS I ON H.FMTCKD_COMPONENT=I.KD_COMPONENT WHERE b.FDPDKD_PRODUK=H.FMTCKD_PRODUK  AND I.JASAKOMPONENT='7') ,0) AS FEEPERAWAT "
+    q += "from DEPOSIT_PAKET a inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT   "
+    q += "inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN  "
+    q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET "
+    q += "left join PRODUK e on b.FDPDKD_PRODUK=e.FMPPRODUK_ID "
+    q += "left join TARIF AS G ON b.FDPDKD_PRODUK=G.FMTKD_PRODUK AND G.FMTTGL_BERLAKU in (SELECT MAX(FMTTGL_BERLAKU) AS TGL_AKHIR FROM TARIF WHERE FMTKD_PRODUK =b.FDPDKD_PRODUK) "
+    q += "where A.FDPNO_DEPOSIT in( "
+    i=0
+    for x in databukti:
+        if i==0:
+            q +="'"+ x +"'"
+        else :
+            q +=",'"+ x +"'"
+        i+=1
+
+    q += ")  "
+    q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s order by NO "
+    result = Globals().getDataQuery(q , [KD_CABANG])
+
+
+    q = "select A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
+    q += "(select sum(dbo.fungsiCalculasiDeposit(FDPDTARIF,1,FDPD_DISCKONSUMEN,FDPD_DISC1,FDPD_DISC2,FDPD_DISC3,FDPD_DISC4))   "
+    q += "FROM DEPOSIT_PAKETD b where b.FDPDNO_DEPOSIT=a.FDPNO_DEPOSIT) AS TUNAI   "
+    q += "from DEPOSIT_PAKET a   "
+    q += "where A.FDPNO_DEPOSIT in( "
+    i=0
+    for x in databukti:
+        if i==0:
+            q +="'"+ x +"'"
+        else :
+            q +=",'"+ x +"'"
+        i+=1
+    q += ")  "
+    q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s order by FDPNO_DEPOSIT "
+    result5 = Globals().getDataQuery(q , [KD_CABANG])
+
+    json_data = json.dumps({
+		'data1':result,'data5':result5
+	}, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")

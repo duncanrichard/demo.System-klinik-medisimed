@@ -1,0 +1,53 @@
+<div class="modal fade" id="ModalDaftarPaketTransaksi" data-keyboard="false" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Data Transaksi Paket Pasien</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-3 ">
+                <div class="row mb-1">
+                    <div class="container-fluid">
+                        <div class="row mb-1">
+                            <div class="col-md-2">
+                                <input type="date" id="daftar_paket_tanggal"
+                                    class="form-control input-md today formdate2">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control input-md" id="select_daftar_paket">
+                                    <option value="daftar_paket_by_tanggal">daftar_paket Per Tanggal</option>
+                                    <option value="daftar_paket_by_bulan">daftar_paket Per Bulan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="daftar_paket_bukti" class="form-control input-md enter-cari-mutasi"
+                                    placeholder="No Bukti">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="daftar_paket_pasien"
+                                    class="form-control input-md enter-cari-mutasi" placeholder="Pasien Id">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="daftar_paket_nama"
+                                    class="form-control input-md enter-cari-mutasi" placeholder="Nama Pasien">
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-md btn-primary btn-block" id="btn_cari_daftar_paket">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-10">
+                            <div id="Datadaftarpakettransaksi"style="height: 340px;font-size: 12px;line-height: 0.8;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

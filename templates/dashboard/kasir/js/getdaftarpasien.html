@@ -3,17 +3,17 @@ $(document).ready(function () {
         $('#ModalDaftarRJ').modal('show')
         cariDaftarPasien()
     })
-    $('#btn_cari_mutasi').click(function (e) {
+    $('#btn_cari_daftar').click(function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
         cariDaftarPasien()
     })
 
-    $("#mutasi_tanggal").change(function () {
+    $("#daftar_tanggal").change(function () {
         cariDaftarPasien()
     })
 
-    $("#select_mutasi").change(function () {
+    $("#select_daftar").change(function () {
         cariDaftarPasien()
     })
 
@@ -45,11 +45,11 @@ function cariDaftarPasien() {
                     url: host + "/getDaftarPasien",
                     method: "GET",
                     data: {
-                        'tanggal': $('#mutasi_tanggal').val(),
-                        'tipe': $('#select_mutasi').val(),
-                        'no_bukti': $('#mutasi_bukti').val(),
-                        'pasien': $('#mutasi_pasien').val(),
-                        'nama_pasien': $('#mutasi_nama').val(),
+                        'tanggal': $('#daftar_tanggal').val(),
+                        'tipe': $('#select_daftar').val(),
+                        'no_bukti': $('#daftar_bukti').val(),
+                        'pasien': $('#daftar_pasien').val(),
+                        'nama_pasien': $('#daftar_nama').val(),
                         'idAsal_cabang': "{{request.session.kdCabang}}",
                     },
                     success: function (result) {
@@ -111,6 +111,10 @@ function getDataPasien(e) {
                 $('#idReseler').val(datas[0].KD_RESELER);
                 $('#namaReseler').val(datas[0].NAMA_RESELER);
                 $('#jenis_tarif').val(datas[0].JENIS_TARIF);
+
+                if ($('#jenis_tarif').val().trim() == '') {
+                    $('#jenis_tarif').val('TU')
+                }
             }
         }
     })

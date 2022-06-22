@@ -297,7 +297,11 @@ function perhitungan() {
 
 function getproduk() {
     var kode_induk = $('#kode_Induk').val();
+    if ($('#jenis_tarif').val().trim() == '') {
+        $('#jenis_tarif').val('TU')
+    }
     var jenis_tarip = $("#jenis_tarif").val()
+
     var gridDatapenyakit = new DevExpress.data.DataSource({
         load: function (values) {
             return $.ajax({

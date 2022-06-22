@@ -1,0 +1,385 @@
+var host_main = window.location.href.split("/");
+var host_root = host_main[0] + "//" + host_main[2];
+var host = host_main[0] + "//" + host_main[2] + "/" + host_main[3];
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var qtyIndex = ''
+var data = ''
+var tempId = ''
+var tempNama = ''
+var tempHjual = ''
+var temppqty = 0
+var tempdisc = 0
+var tempdisc2 = 0
+var tempdisc3 = 0
+var tempdisc4 = 0
+var tempdisckonsumen = 0
+
+let status_aud = null;
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+todays = today
+$(".today").val(today)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+
+    setupAwal()
+    $('#tambah_produk').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            tambahrow()
+        }
+    })
+    $("#menu_tambah").click(function () {
+        livetext()
+        Cleartext()
+        setGridEmpty()
+        $('#tambah_produk').css("display", 'block');
+        canAdd = 1
+        Cekeror = true;
+    })
+    $("#menu_edit").click(function () {
+        if ($("#kd_paket").val() == '') {
+            alert("kode paket Masih Kosong")
+        } else {
+            livetext()
+            $('#tambah_produk').css("display", 'block');
+            canAdd = 1
+            Cekeror = true;
+        }
+    })
+    $('#menu_hapus').click(function () {
+        if ($("#kd_paket").val() == '') {
+            alert("kode paket Masih Kosong")
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                var FD_NO = []
+                var FD_ID_PRODUK = []
+                var FD_NAMA_PRODUK = []
+                var FD_HARGA = []
+                var FD_QTY = []
+                var FD_DISC = []
+                var FD_DISC2 = []
+                var FD_DISC3 = []
+                var FD_DISC4 = []
+                var FD_DISCKONSUMEN = []
+                var FD_BUKTI_ID = []
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
+                        FD_NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                        FD_ID_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                        FD_NAMA_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.NAMA_PRODUK)
+                        FD_HARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA)
+                        FD_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                        FD_DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
+                        FD_DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
+                        FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
+                        FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
+                        FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
+                        FD_BUKTI_ID.push($("#No_faktur").val())
+                    }
+                }
+                status_aud = 'D'
+                $.ajax({
+                    url: host + "/SP_AUD_PAKET",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "FD_NO": JSON.stringify(FD_NO),
+                        "FD_ID_PRODUK": JSON.stringify(FD_ID_PRODUK),
+                        "FD_NAMA_PRODUK": JSON.stringify(FD_NAMA_PRODUK),
+                        "FD_HARGA": JSON.stringify(FD_HARGA),
+                        "FD_QTY": JSON.stringify(FD_QTY),
+                        "FD_DISC": JSON.stringify(FD_DISC),
+                        "FD_DISC2": JSON.stringify(FD_DISC2),
+                        "FD_DISC3": JSON.stringify(FD_DISC3),
+                        "FD_DISC4": JSON.stringify(FD_DISC4),
+                        "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
+                        "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
+
+                        "FH_BUKTI_ID": $("#kd_paket").val(),
+                        "FH_DATE": $("#tanggal").val(),
+                        "FH_NAMA_PAKET": $("#nama_paket").val(),
+                        "FH_NUM_KUNJUNGAN": $("#num_kunjungan").val(),
+                        "FH_PAKET_AKTIF": $('input[name="paket_aktif"]:checked').val(),
+                        "StatusAUD": status_aud,
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        $('#kd_paket').val(e[0].NOMOR_TRANSAKSI);
+                        Deathtext()
+                        $('#tambah_produk').css("display", 'none');
+                        canAdd = 0
+                        Cleartext()
+                        setGridEmpty()
+                    }
+                })
+            }
+        }
+    })
+    $('#menu_simpan').click(function () {
+        canAdd = 0
+        error_in_field()
+        if (Cekeror == true) {
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            if (dataGrid.getVisibleRows().length == 0) {
+                alert('Data produk Masih Kosong')
+            } else {
+                var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+                if (c) {
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    var FD_NO = []
+                    var FD_ID_PRODUK = []
+                    var FD_NAMA_PRODUK = []
+                    var FD_HARGA = []
+                    var FD_QTY = []
+                    var FD_DISC = []
+                    var FD_DISC2 = []
+                    var FD_DISC3 = []
+                    var FD_DISC4 = []
+                    var FD_DISCKONSUMEN = []
+                    var FD_BUKTI_ID = []
+                    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                        if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK != '') {
+                            FD_NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                            FD_ID_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                            FD_NAMA_PRODUK.push("" + dataGrid.getVisibleRows()[i].data.NAMA_PRODUK)
+                            FD_HARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA)
+                            FD_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                            FD_DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
+                            FD_DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
+                            FD_DISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC3)
+                            FD_DISC4.push("" + dataGrid.getVisibleRows()[i].data.DISC4)
+                            FD_DISCKONSUMEN.push("" + dataGrid.getVisibleRows()[i].data.DISCKONSUMEN)
+                            FD_BUKTI_ID.push($("#No_faktur").val())
+                        }
+                    }
+                    status_aud = 'A'
+                    $.ajax({
+                        url: host + "/SP_AUD_PAKET",
+                        method: "POST",
+                        data: {
+                            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                            "FD_NO": JSON.stringify(FD_NO),
+                            "FD_ID_PRODUK": JSON.stringify(FD_ID_PRODUK),
+                            "FD_NAMA_PRODUK": JSON.stringify(FD_NAMA_PRODUK),
+                            "FD_HARGA": JSON.stringify(FD_HARGA),
+                            "FD_QTY": JSON.stringify(FD_QTY),
+                            "FD_DISC": JSON.stringify(FD_DISC),
+                            "FD_DISC2": JSON.stringify(FD_DISC2),
+                            "FD_DISC3": JSON.stringify(FD_DISC3),
+                            "FD_DISC4": JSON.stringify(FD_DISC4),
+                            "FD_DISCKONSUMEN": JSON.stringify(FD_DISCKONSUMEN),
+                            "FD_BUKTI_ID": JSON.stringify(FD_BUKTI_ID),
+
+
+                            "FH_BUKTI_ID": $("#kd_paket").val(),
+                            "FH_DATE": $("#tanggal").val(),
+                            "FH_NAMA_PAKET": $("#nama_paket").val(),
+                            "FH_NUM_KUNJUNGAN": $("#num_kunjungan").val(),
+                            "FH_PAKET_AKTIF": $('input[name="paket_aktif"]:checked').val(),
+                            "StatusAUD": status_aud,
+                        },
+                        success: function (e) {
+                            alert(e[0].STATUS + ' - ' + e[0].STATE)
+                            $('#kd_paket').val(e[0].NOMOR_TRANSAKSI);
+                            Deathtext()
+                            $('#tambah_produk').css("display", 'none');
+                            canAdd = 0
+
+                        }
+                    })
+                }
+            }
+        }
+    })
+    $("#menu_cancel").click(function () {
+        setupAwal()
+    })
+    $("#menu_find").click(function () {
+        $('#ModalTransaksi').modal('show')
+        $('#mutasi_tanggal').val(todays);
+        $("#select_mutasi").val('mutasi_by_tanggal');
+        $('#mutasi_bukti').val('');
+        $('#mutasi_nama').val('');
+        cari_transaksi()
+    })
+    $('#btn_cari_mutasi').click(function () {
+        cari_transaksi()
+    })
+    $("#mutasi_tanggal").change(function () {
+        cari_transaksi()
+    })
+    $("#select_mutasi").change(function () {
+        cari_transaksi()
+    })
+
+
+
+
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+
+})
+
+function cari_transaksi() {
+    $("#Datatransaksi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/getTransaksi",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'nama_produk': $('#mutasi_nama').val(),
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMPKKD_PAKET",
+                caption: "NO PAKET",
+                // width: 100,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "FMPKPAKETN",
+                caption: "Nama Paket",
+            },
+
+        ],
+        onRowClick: function (e) {
+            getGridTabletransaksi(e.data.FMPKKD_PAKET)
+            $('#ModalTransaksi').modal('hide')
+        }
+    });
+}
+
+function error_in_field() {
+    Cekeror = true;
+    if ($('#nama_paket').val() == '') {
+        alert('Silahkan isi nama paket ')
+        Cekeror = false;
+    }
+
+    if (canAdd == 1) {
+        var dataGrid = $("#datagrid").dxDataGrid("instance");
+        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+            if (dataGrid.getVisibleRows()[i].data.ID_PRODUK == '') {
+                alert('Silahkan isi kode produk ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.NAMA_PRODUK == '') {
+                alert('Silahkan isi nama produk ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.QTY == 0) {
+                alert('Silahkan isi QTY ')
+                Cekeror = false;
+            };
+        }
+    }
+
+    return Cekeror;
+
+}
+
+function setupAwal() {
+    Deathtext()
+    Cleartext()
+    $('#tambah_produk').css("display", 'none');
+    canAdd = 0
+    setGridEmpty()
+
+}
+
+function Cleartext() {
+    $('#kd_paket').val('');
+    $('#nama_paket').val('');
+    $('#num_kunjungan').val('');
+    $('#tanggal').val(todays);
+
+}
+
+function Deathtext() {
+    menuEnable('menu_tambah');
+    menuEnable('menu_edit');
+    menuEnable('menu_hapus');
+    menuDisable('menu_simpan');
+    menuDisable('menu_cancel');
+    menuEnable('menu_find');
+    menuEnable('menu_kasir');
+    menuEnable('menu_cetak');
+
+    setReadOnly('kd_paket');
+    setReadOnly('nama_paket')
+    setReadOnly('num_kunjungan')
+
+    btnDisable('paket_aktif_1', 0)
+    btnDisable('paket_aktif_2', 0)
+
+}
+
+function livetext() {
+    menuDisable('menu_tambah');
+    menuDisable('menu_edit');
+    menuDisable('menu_hapus');
+    menuEnable('menu_simpan');
+    menuEnable('menu_cancel');
+    menuDisable('menu_find');
+    menuDisable('menu_kasir');
+    menuDisable('menu_cetak');
+    setUnReadOnly('nama_paket')
+    setUnReadOnly('num_kunjungan')
+    setUnReadOnly('kd_paket')
+    btnEnable('tambah_produk')
+
+    btnEnable('paket_aktif_1', 0)
+    btnEnable('paket_aktif_2', 0)
+
+}

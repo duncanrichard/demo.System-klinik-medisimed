@@ -1,0 +1,52 @@
+<div class="modal fade" id="ModalDaftarPaketTransaksi" data-keyboard="false" tabindex="-1" role="dialog"
+    data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Data Transaksi Paket Pasien</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-3 ">
+                <div class="row mb-1">
+                    <div class="container-fluid">
+                        <div class="row mt-10" id="formGridNominal">
+                            <div id="Datadaftarpakettransaksi" style="height: 200px;font-size: 12px;line-height: 0.8;">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <fieldset>
+                                <div class="switch-toggle switch-candy switch-candy-custom">
+                                    <input id="deposit_produk_paket" class="input-sm" name="option_produk_paket"
+                                        value="1" type="radio">
+                                    <label for="deposit_produk_paket"
+                                        onclick="$('#deposit_produk_paket').change()">Produk</label>
+                                    <input id="deposit_nominal_paket" class="input-sm" name="option_produk_paket"
+                                        value="0" type="radio" checked>
+                                    <label for="deposit_nominal_paket"
+                                        onclick="$('#deposit_nominal_paket').change()">Nominal</label>
+                                    <a></a>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="row mt-10" id="formGridPaket">
+                            <div id="Dataditailpakettransaksi" style="height: 200px;font-size: 12px;line-height: 0.8;">
+                            </div>
+                        </div>
+                        <div class="row" id="formNominalDepositPaket" style="display: none">
+                            <label class="col-md-6"> Nominal Deposit yang ingin digunakan </label>
+                            <div class="col-md-4 col-md-offset-2">
+                                <input type="text" class="form-control " name="nominalDepositPaket"
+                                    id="nominalDepositPaket" style="text-align: right;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

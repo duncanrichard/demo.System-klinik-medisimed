@@ -1,0 +1,82 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+DAFTAR PAKET  
+{% endblock %} 
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+    .input-xs {
+        height: 2rem;
+    }
+
+    .input-date-xs {
+        height: 2rem;
+        padding: 0 5px !important;
+        line-height: 15px !important;
+    }
+    .form-group {
+    margin-bottom: 0.25rem;
+    }
+
+    .btn-group-xs > .btn, .btn-xs {
+        line-height: 1.4 !important;
+    }
+    div#datagrid.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        div#datagridbayar.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
+        
+        .switch-toggle label, .switch-toggle > span{
+            line-height: inherit;
+        }
+
+        .switch-candy input:checked + label {
+            color : #fff;
+            text-shadow: 0 1px 0 rgba(108, 96, 96, 0.5);
+        }
+
+        .switch-toggle.switch-candy label{
+            color: rgb(93, 97, 100);
+            text-shadow: 1px 1px 1px #b3b9bf;   
+        }
+        .switch-candy-custom {
+            background-color: #efefef !important
+        }
+        #bank .btn-group-xs > .btn, .btn-xs {
+            line-height: 1 !important;
+        }
+
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+{% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}
+{% include 'dashboard/daftar_paket/modal/ModalDaftarPaketTransaksi.html'%}
+{% include 'dashboard/paket_produk/modal/ModalTransaksi.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
+{% include 'dashboard/kasir/modal/ModalProduk.html'%}
+{% include 'dashboard/daftar_paket/form.html' %}
+{% include 'dashboard/modal/modalLoading.html' %}
+
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script src="{% static 'js/terbilang.js'%}"></script>
+<script type="text/javascript">
+    
+    
+    {% include 'dashboard/daftar_paket/js/getPasien.html' %}
+    {% include 'dashboard/daftar_paket/js/getProduk.html' %}
+    {% include 'dashboard/daftar_paket/js/getDxGrid.html' %}
+    {% include 'dashboard/daftar_paket/js/init.html' %}
+</script>
+{% endblock %}

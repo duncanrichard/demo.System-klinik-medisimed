@@ -6,6 +6,8 @@ from . import data_pasien
 from . import pasien_rj
 from . import master_produk
 from . import kasir_rj
+from . import daftar_paket
+from . import paket_produk
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
@@ -154,6 +156,36 @@ urlpatterns = [
         url(r'^getTpay', kasir_rj.getTpay),
         url(r'^getVoucherPay', kasir_rj.getVoucherPay),
         url(r'^SP_AUD_BAYAR_TRANSAKSI', kasir_rj.SP_AUD_BAYAR_TRANSAKSI),
+        url(r'^findDepositPaketD', kasir_rj.findDepositPaketD),
+        url(r'^findDepositPaket', kasir_rj.findDepositPaket),
+        url(r'^getGridPaketprodukpasien',kasir_rj.getGridPaketprodukpasien),
+        
+    ])),
+    url(r'^daftar_paket/', include ([
+        url(r'^$',daftar_paket.daftar_paket, name='daftar_paket'),
+        url(r'^getPasien', data_pasien.getPasien),
+        url(r'^getDataPasien', data_pasien.getDataPasien),
+        url(r'^getIdDataProduk', daftar_paket.getIdDataProduk),
+        url(r'^getdataProduk', daftar_paket.getdataProduk),
+        url(r'^getDiscCustomer', daftar_paket.getDiscCustomer),
+        url(r'^getTransaksi', paket_produk.getTransaksi),
+        url(r'^getpaketprodukByBukti', daftar_paket.getpaketprodukByBukti),
+        url(r'^SP_AUD_DAFTAR_PAKET', daftar_paket.SP_AUD_DAFTAR_PAKET),
+        url(r'^getDaftarPaketTransaksiByBukti', daftar_paket.getDaftarPaketTransaksiByBukti),
+        url(r'^getDaftarPaketTransaksi', daftar_paket.getDaftarPaketTransaksi),
+        url(r'^SP_AUD_BAYAR_TRANSAKSI', kasir_rj.SP_AUD_BAYAR_TRANSAKSI),
+        
+        
+    ])),
+
+    url(r'^paket_produk/', include ([
+        url(r'^$',paket_produk.paket_produk, name='paket_produk'),
+        url(r'^getIdDataProduk', daftar_paket.getIdDataProduk),
+        url(r'^getdataProduk', daftar_paket.getdataProduk),
+        url(r'^getDiscCustomer', daftar_paket.getDiscCustomer),
+        url(r'^SP_AUD_PAKET', paket_produk.SP_AUD_PAKET),
+        url(r'^getTransaksi', paket_produk.getTransaksi),
+        url(r'^getpaketprodukByBukti', paket_produk.getpaketprodukByBukti),
     ])),
 
 

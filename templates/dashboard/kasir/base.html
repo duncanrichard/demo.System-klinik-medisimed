@@ -84,10 +84,11 @@ Kasir        I M M O D E R M A
 {% block content %}
 {% csrf_token %}
 
-
+{% include 'dashboard/kasir/modal/ModalDaftarPaketTransaksi.html'%}
 {% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}
 {% include 'dashboard/kasir/dxgrid/DxGridModalVoucher.html'%}
 {% include 'dashboard/kasir/dxgrid/DxGridModaltpay.html'%}
+{% include 'dashboard/kasir/dxgrid/DxGridModalPaket.html'%}
 {% include 'dashboard/kasir/modal/ModalTransaksi.html'%}
 {% include 'dashboard/kasir/modal/ModalBC.html'%}
 {% include 'dashboard/kasir/modal/ModalPerawat.html'%}
@@ -105,10 +106,12 @@ Kasir        I M M O D E R M A
 <script src="{% static 'js/terbilang.js'%}"></script>
 <script type="text/javascript">
     
+    
     {% include 'dashboard/kasir/js/getvoucher.html' %}
     {% include 'dashboard/kasir/js/getTpay.html' %}
     {% include 'dashboard/kasir/js/getbc.html' %}
     {% include 'dashboard/kasir/js/getperawat.html' %}
+    {% include 'dashboard/kasir/js/getfindpaket.html' %}
     {% include 'dashboard/kasir/js/getdokter.html' %}
     {% include 'dashboard/kasir/js/getProduk.html' %}
     {% include 'dashboard/kasir/js/getdaftarpasien.html' %}

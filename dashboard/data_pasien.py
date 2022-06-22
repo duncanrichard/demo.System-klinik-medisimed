@@ -106,13 +106,13 @@ def getKelurahan(request):
 
 def getDataReseler(request):
     idReseler = request.GET['idReseler']
-    q = "select KD_RESELER, NAMA_RESELER from RESELER where KD_RESELER= %s "
+    q = "select KD_RESELER, NAMA_RESELER, IDSPONSOR, NAMA_SPONSOR from RESELER where KD_RESELER= %s "
     result = Globals().getDataQuery(q, [idReseler])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
 def getReseler(request):
-    q = "select KD_RESELER, NAMA_RESELER from RESELER   order by KD_RESELER "
+    q = "select KD_RESELER, NAMA_RESELER, IDSPONSOR, NAMA_SPONSOR from RESELER  order by KD_RESELER "
     result = Globals().getDataQuery(q)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
@@ -243,9 +243,9 @@ def getPasien(request):
     search_telp = '%'+request.GET['search_telp']+'%'
     cabang_id = request.session['kdCabang']
     q = " select TOP 200 a.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
-    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s and KD_ASAL_CABANG= %s  order by a.NAMAPASIEN "
+    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s   order by a.NAMAPASIEN "
 
-    proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
+    proc_param = [search_name,search_almt,search_kdpas,search_telp]
     # pprint(proc_param)
     result = Globals().getDataQuery(q, proc_param)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -260,7 +260,7 @@ def getDataPasien(request):
     q += " A.KETERANGAN,A.KD_RESELER,A.KD_ASAL_CABANG,M.NAMA_RESELER,N.PERUSAHAAN,A.KD_PERUSAHAAN,F.KELOMPOK_ID, "
     q += " A.AGAMA,A.KD_PENDIDIKAN,A.GOL_DARAH,A.STATUS_MARITA,A.KD_PEKERJAAN,A.SUKU,A.BAHASA,A.NO_ASURANSI, "
     q += " B.AGAMA as NAMA_AGAMA, D.PENDIDIKAN AS NAMA_PENDIDIKAN, E.PEKERJAAN AS NAMA_PEKERJAAN, "
-    q += " F.NAME as NAMA_PERUSAHAAN, G.KELAMIN , H.MARITAL, I.DARAH, J.FMKCUSTN AS NAMA_ASURANSI, J.FMKJENIS_TARIP AS JENIS_TARIF,K.BAHASA as NAMA_BAHASA,L.FMSKETERANGAN  from  PASIEN as A "
+    q += " F.NAME as NAMA_PERUSAHAAN, G.KELAMIN , H.MARITAL, I.DARAH, J.FMKCUSTN AS NAMA_ASURANSI, isnull(J.FMKJENIS_TARIP,'') AS JENIS_TARIF,K.BAHASA as NAMA_BAHASA,L.FMSKETERANGAN  from  PASIEN as A "
     q += " LEFT JOIN AGAMA as B ON A.AGAMA = B.KD_AGAMA "
     q += " LEFT JOIN KELURAHAN as C ON A.KD_KELURAHAN = C.KD_KELURAHAN "
     q += " LEFT JOIN KECAMATAN as C2 ON C2.KD_KECAMATAN = C.KD_KECAMATAN "

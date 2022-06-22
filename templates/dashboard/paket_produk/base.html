@@ -1,0 +1,54 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Produk Paket
+{% endblock %} 
+
+
+{% block head %}
+<style>
+  .swal2-container {
+  z-index: 1000006;
+}
+  div#datagrid.dx-widget {
+    font-size: 12px;
+    line-height: 0.95;
+    height: 240px;
+  }
+  .form-group {
+    margin-bottom: 0.25rem;
+    }
+
+  .form-control{
+        font-size : 12px;
+    }
+ 
+</style>
+{% endblock %} 
+
+
+{% block content %} 
+{% csrf_token %} 
+
+{% include 'dashboard/paket_produk/modal/ModalTransaksi.html'%}
+{% include 'dashboard/kasir/modal/ModalProduk.html'%}
+{% include 'dashboard/paket_produk/layout/content.html'%} 
+
+
+{% endblock %} 
+
+
+{% block script %}
+
+{% load static %}
+<script src="{% static 'js/MainProc.js'%}"></script>
+<script src="{% static 'js/terbilang.js'%}"></script>
+
+
+<script type="text/javascript">
+  {% include 'dashboard/daftar_paket/js/getProduk.html' %}
+  {% include 'dashboard/paket_produk/js/getDxGrid.html' %}
+  {% include 'dashboard/paket_produk/js/init.html' %}
+</script>
+{% endblock %}
+
+

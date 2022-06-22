@@ -29,7 +29,7 @@ $(document).ready(function () {
 })
 
 function carikodeprodukid(e) {
-    var jenis_tarip = $("#jenis_tarif").val()
+    var jenis_tarip = 'TU'
     if (jenis_tarip == '') {
         jenis_tarip = 'TU'
     }
@@ -48,10 +48,6 @@ function carikodeprodukid(e) {
                 tempNama = datas.data.NAMA_PRODUK
                 tempHjual = datas.data.HJUAL
                 tempdisckonsumen = datas.data.FMTDISC_KONSUMEN
-                tempdiscreseler = datas.data.FMTFEE_RESELER
-                tempfeedokter = datas.data.FEE_DOKTER
-                tempfeebc = datas.data.FEE_BC
-                tempfeeperawat = datas.data.FEE_PERAWAT
                 pilihProduk()
             } else {
                 var dataGrid = $("#datagrid").dxDataGrid("instance");
@@ -65,10 +61,6 @@ function carikodeprodukid(e) {
                 dataGrid.cellValue(rowIndex, "DISC4", '');
                 dataGrid.cellValue(rowIndex, "TOTAL", '');
                 dataGrid.cellValue(rowIndex, "DISCKONSUMEN", '');
-                dataGrid.cellValue(rowIndex, "DISCRESELER", '');
-                dataGrid.cellValue(rowIndex, "FEEDOKTER", '');
-                dataGrid.cellValue(rowIndex, "FEEBC", '');
-                dataGrid.cellValue(rowIndex, "FEEPERAWAT", '');
                 openModalProduk()
                 if ($("#cari_Produk").val().length > 2) {
                     searchProdukByName($("#cari_Produk").val())
@@ -128,11 +120,10 @@ function openModalProduk() {
 
 
 function searchProdukByName(nama) {
-    var jenis_tarip = $("#jenis_tarif").val()
+    var jenis_tarip = 'TU'
     if (jenis_tarip == '') {
         jenis_tarip = 'TU'
     }
-
     $.ajax({
         url: host + "/getdataProduk",
         method: "GET",
@@ -192,10 +183,7 @@ function searchProdukByName(nama) {
                         tempNama = e.row.data.NAMA_PRODUK
                         tempHjual = e.row.data.HJUAL
                         tempdisckonsumen = e.row.data.FMTDISC_KONSUMEN
-                        tempdiscreseler = e.row.data.FMTFEE_RESELER
-                        tempfeedokter = e.row.data.FEE_DOKTER
-                        tempfeebc = e.row.data.FEE_BC
-                        tempfeeperawat = e.row.data.FEE_PERAWAT
+
                     }
                 },
                 onSelectionChanged: function (r) {
@@ -204,11 +192,6 @@ function searchProdukByName(nama) {
                         tempNama = r.selectedRowsData[0].NAMA_PRODUK
                         tempHjual = r.selectedRowsData[0].HJUAL
                         tempdisckonsumen = r.selectedRowsData[0].FMTDISC_KONSUMEN
-                        tempdiscreseler = r.selectedRowsData[0].FMTFEE_RESELER
-                        tempfeedokter = r.selectedRowsData[0].FEE_DOKTER
-                        tempfeebc = r.selectedRowsData[0].FEE_BC
-                        tempfeeperawat = r.selectedRowsData[0].FEE_PERAWAT
-
                     }
                 },
                 onKeyDown: function (e) {
@@ -241,10 +224,6 @@ function pilihProduk() {
             dataGrid.cellValue(rowIndex, "DISC4", '');
             dataGrid.cellValue(rowIndex, "TOTAL", '');
             dataGrid.cellValue(rowIndex, "DISCKONSUMEN", '');
-            dataGrid.cellValue(rowIndex, "DISCRESELER", '');
-            dataGrid.cellValue(rowIndex, "FEEDOKTER", '');
-            dataGrid.cellValue(rowIndex, "FEEBC", '');
-            dataGrid.cellValue(rowIndex, "FEEPERAWAT", '');
             openModalProduk()
             searchProdukByName(tempNama)
         } else {
@@ -262,11 +241,6 @@ function pilihProduk() {
                 dataGrid.cellValue(rowIndex, "DISC3", tempdisc3);
                 dataGrid.cellValue(rowIndex, "DISC4", tempdisc4);
             })
-            // dataGrid.cellValue(rowIndex, "TOTAL", tempHjual);
-            dataGrid.cellValue(rowIndex, "DISCRESELER", tempdiscreseler);
-            dataGrid.cellValue(rowIndex, "FEEDOKTER", tempfeedokter);
-            dataGrid.cellValue(rowIndex, "FEEBC", tempfeebc);
-            dataGrid.cellValue(rowIndex, "FEEPERAWAT", tempfeeperawat);
             dataGrid.saveEditData();
             $.when(dataGrid.saveEditData()).done(function () {
                 setFocusQTY()
@@ -279,13 +253,14 @@ function pilihProduk() {
 }
 
 function Cari_discount(tempId = null, callback = null) {
+    var tgl_berlaku = $('#tanggal').val()
     if (tempId != null) {
         $.ajax({
             url: host + "/getDiscCustomer",
             method: "GET",
             data: {
                 'kode_produk': tempId,
-                'tgl_berlaku': $('#tanggal').val(),
+                'tgl_berlaku': tgl_berlaku,
             },
             success: function (datas) {
                 if (datas.length > 0) {

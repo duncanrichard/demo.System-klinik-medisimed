@@ -1,0 +1,1250 @@
+$(document).ready(function () {
+    setGridEmpty()
+})
+
+function setGridEmpty() {
+    $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 10000
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                type: "buttons",
+                buttons: [{
+                    name: "delete",
+                    text: "hapus"
+                }],
+                width: 50
+            },
+            {
+                dataField: "ID_BARANG",
+                caption: "ID BRG",
+                alignment: 'left',
+                allowEditing: true,
+                width: 60,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_BARANG",
+                caption: "NAMA BARANG",
+                alignment: 'left',
+                // width: 180,
+                allowEditing: false
+            },
+            {
+                dataField: "SATSTAND",
+                alignment: 'center',
+                caption: "SATUAN",
+                width: 60,
+                allowEditing: false
+            },
+            {
+                dataField: "HJUAL",
+                alignment: 'right',
+                caption: "HRG JUAL",
+                allowEditing: false,
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "QTY",
+                caption: "QTY",
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 60
+            },
+            {
+                dataField: "DISC",
+                caption: "DISC %",
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 55
+            },
+            {
+                dataField: "DISC2",
+                caption: "DISC Rp.",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 70
+            },
+            {
+                dataField: "RESEP",
+                caption: "/R",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 65
+            },
+
+            {
+                dataField: "TOTAL",
+                caption: "TOTAL",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 90,
+                calculateCellValue: function (rowData) {
+                    var hjual = ''
+                    var qty = ''
+                    var disc = ''
+                    var disc2 = ''
+                    var resep = ''
+
+                    if (rowData.HJUAL == '') {
+                        hjual = 0
+                    } else {
+                        hjual = parseFloat(rowData.HJUAL)
+                    }
+
+                    if (!rowData.QTY) {
+                        qty = 0
+                    } else {
+                        qty = parseFloat(rowData.QTY)
+                    }
+
+                    if (!rowData.DISC) {
+                        disc = 0
+                    } else {
+                        disc = parseFloat(rowData.DISC)
+                    }
+
+                    if (!rowData.DISC2) {
+                        disc2 = 0
+                    } else {
+                        disc2 = parseInt(rowData.DISC2)
+                    }
+
+                    if (!rowData.RESEP) {
+                        resep = 0
+                    } else {
+                        resep = parseInt(rowData.RESEP)
+                    }
+
+                    var res = (hjual * qty) - ((hjual * qty) * (disc / 100)) - disc2 + resep
+                    return parseInt(Math.ceil(res))
+                    // return rupiah2(Math.floor(res))
+                }
+            },
+            {
+                dataField: "STATUS",
+                alignment: 'center',
+                caption: "STATUS",
+                width: 50,
+                allowEditing: true
+            },
+
+            {
+                dataField: "TTYPEC",
+                alignment: 'center',
+                caption: "ID PRODUK",
+                width: 0,
+                allowEditing: false
+            },
+            {
+                dataField: "STATUSPRODUK",
+                alignment: 'center',
+                caption: "STATUSPRODUK",
+                width: 0,
+                allowEditing: false
+            },
+            {
+                dataField: "ID_BARANG2",
+                caption: "ID RESEP",
+                alignment: 'left',
+                allowEditing: true,
+                width: 0,
+                allowSorting: false
+            },
+
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+            if (d.column.dataField == "QTY") {
+                setGridStock(d.data.ID_BARANG)
+            }
+        },
+        onCellPrepared: function (e) {
+            if (e.rowType === "data" && e.column.dataField === "STATUS" && (e.value != undefined)) {
+                e.cellElement.css("color", "white");
+                if (e.value == 'Non') {
+                    e.cellElement.css("background-color", "red");
+                } else {
+                    e.cellElement.css("background-color", "blue");
+                }
+            }
+            if (e.rowType === "data" && (e.rowIndex % 2 == 0) && (e.rowIndex != 0)) {
+                e.cellElement.addClass('cell-grey');
+            }
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 2) {
+                colIndex = "ID_BARANG"
+            } else if (colIndex == 6) {
+                colIndex = "QTY"
+            } else if (colIndex == 9) {
+                colIndex = "RESEP"
+            }
+
+        },
+        onRowUpdated: function (e) {
+            if (e.data.hasOwnProperty("QTY")) {
+                if (e.data.QTY < 0) {
+                    alert('QTY Tidak Boleh Kurang Dari 1');
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    dataGrid.cellValue(rowIndex, "QTY", '0');
+                    dataGrid.saveEditData();
+                } else {
+                    if (e.data.ID_BARANG != '' && e.data.ID_BARANG != null && e.data.STATUSPRODUK == 0 && e.data.QTY > 0) {
+                        Cekeror = false;
+                        $.ajax({
+                            url: host + "/cekStokBarangFarmasi",
+                            method: "GET",
+                            data: {
+                                "kode": e.data.ID_BARANG,
+                                "kode_gudang": $('#far_kode_gudang').val(),
+                            },
+                            success: function (datas) {
+
+                                if (datas.status != "gagal") {
+                                    let stok = datas.item.STOK
+                                    if (stok <= 0) {
+                                        stok = 0
+                                    }
+                                    if (e.data.QTY > stok) {
+                                        alert('Maaf Stok Barang ' + tempNama + ' Hanya Tersedia ' + stok)
+                                        if (stok <= 0) {
+                                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                            dataGrid.cellValue(rowIndex, 'ID_BARANG', '')
+                                            dataGrid.cellValue(rowIndex, "NAMA_BARANG", '');
+                                            dataGrid.cellValue(rowIndex, "SATUAN", '');
+                                            dataGrid.cellValue(rowIndex, "HJUAL", '');
+                                            dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", 0);
+                                            dataGrid.cellValue(rowIndex, "STATUSPRODUK", '');
+                                            dataGrid.saveEditData();
+                                            colIndex = 'ID_BARANG'
+                                            setFocusID_BARANG()
+
+                                        } else {
+                                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                            dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", stok);
+                                            dataGrid.saveEditData();
+                                            Cekeror = true;
+                                        }
+                                    } else {
+                                        Cekeror = true;
+                                    }
+                                } else {
+                                    let stok = 0
+                                    if (stok <= 0) {
+                                        stok = 0
+                                    }
+                                    if (e.data.QTY > stok) {
+                                        alert('Maaf Stok Barang ' + tempNama + ' Hanya Tersedia ' + stok)
+                                        if (stok <= 0) {
+                                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                            dataGrid.cellValue(rowIndex, 'ID_BARANG', '')
+                                            dataGrid.cellValue(rowIndex, "NAMA_BARANG", '');
+                                            dataGrid.cellValue(rowIndex, "SATUAN", '');
+                                            dataGrid.cellValue(rowIndex, "HJUAL", '');
+                                            dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", 0);
+                                            dataGrid.cellValue(rowIndex, "STATUSPRODUK", '');
+                                            dataGrid.saveEditData();
+                                            colIndex = 'ID_BARANG'
+                                            setFocusID_BARANG()
+                                            Cekeror = false;
+                                        } else {
+                                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                            dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", stok);
+                                            dataGrid.saveEditData();
+                                            Cekeror = true;
+                                        }
+                                    } else {
+                                        Cekeror = true;
+                                    }
+                                }
+                            }
+                        })
+                    } else {
+                        Cekeror = true;
+                    }
+                }
+                setTotal()
+                setDiskon()
+                setResep()
+                setPembulatan()
+            }
+            // if (e.data.hasOwnProperty("STATUS")) {
+            //     console.log('tes')
+            //     console.log(e)
+            //     if (e.data.STATUS == 0) {
+            //         tempKRSM = 'Non'
+            //     } else {
+            //         tempKRSM = 'KRSM'
+            //     }
+            //     var dataGrid = $("#datagrid").dxDataGrid("instance");
+            //     dataGrid.cellValue(rowIndex, "STATUS", tempKRSM);
+            //     dataGrid.saveEditData();
+            // }
+        },
+        onRowClick: function (e) {
+            setGridStock(e.data.ID_BARANG)
+        },
+        onRowRemoved: function (e) {
+            // console.log(e)
+            setTotal()
+            setDiskon()
+            setResep()
+            setPembulatan()
+            // setNetto()
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Barang Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            } else {
+                setTotal()
+                setDiskon()
+                setResep()
+                setPembulatan()
+            }
+        },
+        onKeyDown: function (d) {
+            if (colIndex == 'ID_BARANG' && d.event.originalEvent.which == 13) {
+                if (canAdd == 1) {
+                    var dataGrid = d.component
+                    var baris = dataGrid.getVisibleRows().length
+                    var id_barangKODE = d.event.target.value
+                    carikodebrgid(id_barangKODE)
+
+                }
+            }
+            if (colIndex == 'RESEP' && d.event.originalEvent.which == 13) {
+                // kalo enter tambah row otomatis
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.saveEditData();
+                if (canAdd == 1) {
+                    if (Cekeror == true) {
+                        error_in_field()
+                        if (Cekeror == true) {
+                            tambahrow()
+                        }
+                    }
+                }
+            }
+        },
+    });
+}
+
+function tambahrow() {
+    tempId = ''
+    tempNama = ''
+    tempSatuan = ''
+    tempHjual = ''
+    temppqty = 0
+    tempdisc = 0
+    tempdisc2 = 0
+    tempresep = 0
+    tempttypec = ''
+    tempbrgId2 = ''
+    tempstatusproduk = ''
+
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    // var prevRow = dataGrid.getVisibleRows().length;
+    // var lastRow = dataGrid.getVisibleRows().length + 1;
+    dataGrid.addRow();
+    dataGrid.cellValue(0, "NO", generateNo());
+
+    // var current_no = dataGrid.getVisibleRows()[prevRow].values[0]
+    // if(prevRow == 0)
+    // {
+    //     dataGrid.cellValue(0, "NO", '');
+    // }else if( current_no =='' || current_no == undefined)
+    // {
+    //     dataGrid.cellValue(prevRow, "NO", generateNo());
+    // }
+
+    dataGrid.cellValue(0, "ID_BARANG", tempId);
+    dataGrid.cellValue(0, "NAMA_BARANG", tempNama);
+    dataGrid.cellValue(0, "SATUAN", tempSatuan);
+    dataGrid.cellValue(0, "HJUAL", tempHjual);
+    dataGrid.cellValue(0, "QTY", temppqty);
+    dataGrid.cellValue(0, "DISC", tempdisc);
+    dataGrid.cellValue(0, "DISC2", tempdisc2);
+    dataGrid.cellValue(0, "RESEP", tempresep);
+    dataGrid.cellValue(0, "TTYPEC", tempttypec);
+    dataGrid.cellValue(0, "ID_BARANG2", tempbrgId2);
+    dataGrid.cellValue(0, "STATUSPRODUK", tempstatusproduk);
+    $.when(dataGrid.saveEditData()).done(function () {
+        colIndex = 'ID_BARANG'
+        setFocusID_BARANG()
+    })
+}
+
+function setFocusID_BARANG() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    dataGrid.editCell(qtyIndex, 'ID_BARANG')
+}
+
+function generateNo() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var last_number = parseInt(dataGrid.cellValue((dataGrid.getVisibleRows().length - 1), "NO"))
+
+    if (!last_number) {
+        return 1
+    } else {
+        return (last_number + 1)
+    }
+}
+
+function cekDataSudahAda(kode) {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length - 1; i++) {
+        if (dataGrid.getVisibleRows()[i].data.ID_BARANG == kode) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function setGridStock(kode_barang = null) {
+    if (kode_barang != null) {
+        $.ajax({
+            url: host + "/getHistoryBarang",
+            method: "GET",
+            data: {
+                'kode_barang': kode_barang,
+                'gudang': $('#far_kode_gudang').val(),
+            },
+            success: function (datas) {
+                $("#dxGridStockBarang").dxDataGrid({
+                    dataSource: datas,
+                    selection: {
+                        mode: "single"
+                    },
+                    rowAlternationEnabled: true,
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    customizeColumns: function (columns) {
+                        columns[0].width = 70;
+                    },
+                    loadPanel: {
+                        enabled: false
+                    },
+                    paging: {
+                        pageSize: 5
+                    },
+                    scrolling: {
+                        mode: 'virtual'
+                    },
+                    columns: [{
+                        caption: "SALDO STOCK",
+                        alignment: 'center',
+                        columns: [{
+                                dataField: "NAME_WH",
+                                alignment: 'center',
+                                caption: "Gudang",
+                                width: 200,
+                                allowEditing: false,
+                                allowSorting: false
+                            },
+                            {
+                                dataField: "STOK",
+                                caption: "QTY",
+                                alignment: 'center',
+                                width: 60,
+                                allowSorting: false
+                            },
+                            {
+                                dataField: "SATSTAND",
+                                alignment: 'center',
+                                caption: "SATUAN",
+                                width: 100,
+                                allowEditing: false,
+                                allowSorting: false
+                            }
+                        ]
+                    }],
+                });
+            }
+        })
+    } else {
+        $("#dxGridStockBarang").dxDataGrid({
+            dataSource: [],
+            selection: {
+                mode: "single"
+            },
+            rowAlternationEnabled: true,
+            hoverStateEnabled: true,
+            showBorders: true,
+            loadPanel: {
+                enabled: false
+            },
+            scrolling: {
+                mode: 'virtual'
+            },
+            paging: {
+                pageSize: 5
+            },
+        });
+    }
+}
+
+function setGudangPasien() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    if (dataGrid.getVisibleRows().length != 0) {
+        setDisabled('cari_far_kode_gudang', 0)
+    } else {
+        setDisabled('cari_far_kode_gudang', 1)
+    }
+}
+
+function deleteAllRow() {
+    setGridEmpty()
+    setDisabled('cari_gudang', 1)
+    setDisabled('cari_pasien', 1)
+}
+
+function setFocusQTY() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    $(dataGrid.focus(dataGrid.getCellElement(qtyIndex, 'QTY'))).promise().done(function () {
+        dataGrid.editCell(qtyIndex, 'QTY')
+    })
+}
+
+function setTotal() {
+    $('#total').val(rupiah2(getTotal()))
+}
+
+function setDiskon() {
+    $('#discount').val(rupiah2(getDiskon()))
+}
+
+function setResep() {
+    $('#adm_resep').val(rupiah2(getResep()))
+}
+
+function getTotal() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+
+    var result = 0;
+    var harga = 0;
+    var jml = 0;
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.HJUAL))) {
+            harga = 0
+        } else {
+            harga = parseFloat(dataGrid.getVisibleRows()[i].data.HJUAL)
+        }
+
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.QTY))) {
+            jml = 0
+        } else {
+            jml = parseFloat(dataGrid.getVisibleRows()[i].data.QTY)
+        }
+
+        result += parseInt(harga * jml);
+    }
+    return result
+}
+
+function getDiskon() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+
+    var result = 0;
+    var harga = 0;
+    var jml = 0;
+    var diskon = 0;
+    var diskonAmount = 0;
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.HJUAL))) {
+            harga = 0
+        } else {
+            harga = parseFloat(dataGrid.getVisibleRows()[i].data.HJUAL)
+        }
+
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.QTY))) {
+            jml = 0
+        } else {
+            jml = parseFloat(dataGrid.getVisibleRows()[i].data.QTY)
+        }
+
+        if (isNaN(parseFloat(dataGrid.getVisibleRows()[i].data.DISC))) {
+            diskon = 0
+        } else {
+            diskon = parseFloat(dataGrid.getVisibleRows()[i].data.DISC)
+        }
+
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.DISC2))) {
+            diskonAmount = 0
+        } else {
+            diskonAmount = parseInt(dataGrid.getVisibleRows()[i].data.DISC2)
+        }
+
+        result += parseFloat(((harga * jml) * (diskon / 100)) + diskonAmount);
+    }
+    return Math.round(result)
+}
+
+function getResep() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+
+    var result = 0;
+    var resep = 0;
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.RESEP))) {
+            resep = 0
+        } else {
+            resep = parseInt(dataGrid.getVisibleRows()[i].data.RESEP)
+        }
+
+        result += resep
+    }
+    return result
+}
+
+function setPembulatan() {
+    $.ajax({
+        url: host + "/getParameter",
+        method: "GET",
+        success: function (datas) {
+            bulat_atas = datas.BULAT
+            bulat_bawah = datas.BULATBAWAH
+            digit = datas.DIGIT
+            var adm_racik = $('#adm_racik').val()
+
+            if (adm_racik == '') {
+                adm_racik = '0'
+            }
+
+            var hasil = 0
+
+            var selisih = String(desimal2($('#total').val()) - desimal2($('#discount').val()) + desimal2($(
+                    '#adm_resep')
+                .val()) + desimal2(adm_racik))
+
+            var sisa = parseInt(selisih.slice(-digit));
+
+            if (sisa > bulat_bawah) {
+                hasil = (bulat_atas - sisa)
+            } else if (sisa == 0) {
+                hasil = 0
+            } else {
+                hasil = (sisa * (-1))
+            }
+
+            $('#pembulatan').val(parseInt(hasil))
+            setNetto()
+        }
+    })
+
+}
+
+function desimal2(string_uang, separator_ribuan = ',') {
+    let separator_desimal = '.'
+    if (separator_ribuan != ',') {
+        separator_ribuan = '.'
+        separator_desimal = ','
+    }
+    if (string_uang == '') {
+        return 0;
+    }
+
+    let array_desimal = string_uang.split(separator_desimal)
+    let array_nominal = array_desimal[0].split(separator_ribuan);
+
+
+    let nominal = array_nominal.join('')
+    let hasil
+    if (array_desimal.length > 1) {
+        hasil = parseFloat(nominal + '.' + array_desimal[1])
+    } else {
+        hasil = parseFloat(nominal)
+    }
+
+    return hasil;
+}
+
+function setNetto() {
+    var adm_racik = $('#adm_racik').val()
+
+    if (adm_racik == '') {
+        adm_racik = '0'
+    }
+
+    $('#netto').val(rupiah2(desimal2($('#total').val()) - desimal2($('#discount').val()) + desimal2($('#adm_resep').val()) + desimal2(adm_racik) + parseInt($('#pembulatan').val())))
+    $('#iur_pasien').val($('#netto').val())
+    // $('#bayar').val($('#netto').val())
+}
+
+function rupiah2(number_uang, separator_ribuan = ',') {
+    var separator_desimal = '.'
+    let array_desimal = number_uang.toString().split(separator_desimal)
+    if (separator_ribuan != ',') {
+        separator_ribuan = '.'
+        separator_desimal = ','
+    }
+    var numberDesimal = ''
+
+
+    if (array_desimal.length > 1) {
+        numberDesimal = array_desimal[1]
+    } else {
+        separator_desimal = ''
+    }
+    number_uang = parseFloat(number_uang)
+    numberInt = parseInt(number_uang)
+
+    let array_nominal = []
+    while (parseInt(numberInt / 1000) >= 1) {
+        let remainder = numberInt % 1000
+        numberInt = parseInt(numberInt / 1000)
+        // console.log(numberInt)
+        array_nominal.push(remainder.toString().padStart(3, 0))
+    }
+
+    if (numberInt > 0) {
+        array_nominal.push(numberInt.toString())
+    }
+
+    if (array_nominal.length == 0) {
+        array_nominal.push('0');
+    }
+
+    var array_satuan = array_nominal.reverse()
+
+    return array_satuan.join(separator_ribuan) + separator_desimal + numberDesimal.toString()
+}
+
+function inputUang() {
+    if ($.isNumeric($("#kasir_jml_uang").val())) {
+        $('#kasir_kembalian').val(rupiah2(desimal2($('#kasir_jml_bayar').val()) - $("#kasir_jml_uang").val()))
+    } else {
+        $('#kasir_kembalian').val(rupiah2($('#kasir_jml_bayar').val()))
+    }
+}
+
+function getGridTableBarang(no_bukti) {
+    $.ajax({
+        url: host + "/getBarangByBukti",
+        method: "GET",
+        data: {
+            "no_bukti": no_bukti,
+        },
+        success: function (datas) {
+            $('#no_fakturid').val(datas[0].FHFJBUKTI_ID);
+            $('#no_fakturinap').val(datas[0].FHFJNO_TRANSAKSI);
+            $('#far_tanggal').val(datas[0].FHFJDATE.substr(0, 10));
+            $('#far_kode_pasien').val(datas[0].FHFJCUST_ID);
+            $('#far_nama_pasien').val(datas[0].FHFJCUSTN);
+            $('#far_tanggal_lhr').val(datas[0].TGL_LAHIR.substr(0, 10));
+            var usia = checkUmur($('#far_tanggal_lhr').val())
+            $('#far_usia_tahun_pasien').val(usia.tahun)
+            $('#far_usia_bulan_pasien').val(usia.bulan)
+            $('#far_usia_hari_pasien').val(usia.hari)
+            $('#far_alamat').val(datas[0].FHFJADDR1);
+            $('#far_kode_gudang').val(datas[0].FHFJWH_ID);
+            $('#far_nama_gudang').val(datas[0].FHFJWHN);
+            $('#far_keterangan').val(datas[0].FHFJREMARK);
+
+            getantrianDokter($('#no_fakturid').val())
+
+            $('#far_kode_klp_customer').val(datas[0].FMKCUST_ID);
+            $('#far_nama_klp_customer').val(datas[0].FMKCUSTN);
+            $('#far_kode_customer').val(datas[0].FHFJJENISCUST_ID);
+            $('#far_nama_customer').val(datas[0].NAME);
+            $('#far_kode_poly').val(datas[0].FHFJPOLY_ID);
+            $('#far_nama_poly').val(datas[0].FHFJPOLYN);
+            $('#far_kode_dokter').val(datas[0].FHFJdokter_ID);
+            $('#far_nama_dokter').val(datas[0].FHFJdokterN);
+            $('#far_no_resep').val(datas[0].FHFJNORESEP);
+            $('#far_jenis_tarifobat').val(datas[0].FMKTARIP_OBAT);
+            $('#far_jenis_tarif').val(datas[0].FMKJENIS_TARIP);
+            $('#far_message').val(datas[0].FMKMESSAGE);
+            var status2 = parseInt(datas[0].FHFJSTATUSOBAT)
+            if (status2 == 0) {
+                $("#opt_resep1").prop('checked', true)
+            } else {
+                $("#opt_resep2").prop('checked', true)
+            }
+
+            $('#kode_transfer_apt').val(datas[0].FHFJTPAY_ID);
+            $('#nama_transfer_apt').val(datas[0].FHFJTPAYN);
+            $('#iur_askes').val(rupiah2(parseInt(datas[0].FHFJIURASKES)));
+            var iur_pasien = parseInt(datas[0].FHFJTOTAL) - parseInt(datas[0].FHFJIURASKES)
+            $('#iur_pasien').val(rupiah2(iur_pasien));
+            $('#bayar').val(rupiah2(parseInt(datas[0].FHFJBAYAR)));
+            var sisa = parseInt(datas[0].FHFJBAYAR) - parseInt(datas[0].FHFJTOTAL)
+            $('#sisa').val(rupiah2(sisa));
+            setTotal()
+            setDiskon()
+            $('#adm_resep').val(rupiah2(parseInt(datas[0].FHFJRESEP)));
+            $('#adm_racik').val(rupiah2(parseInt(datas[0].FHFJRACIK)));
+            $('#pembulatan').val(rupiah2(parseInt(datas[0].FHFJBULAT)));
+            $('#netto').val(rupiah2(parseInt(datas[0].FHFJTOTAL)));
+            if (datas[0].FKUNCI == 1) {
+                $('input[name=inlineCheckboxclose]').iCheck('check');
+            } else {
+                $('input[name=inlineCheckboxclose]').iCheck('uncheck');
+            }
+            if (datas[0].FHFJKRONIS == 1) {
+                $('input[name=inlineCheckboxKronis]').iCheck('check');
+            } else {
+                $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
+            }
+            $('#userrs').val(datas[0].FHFJUSER);
+            $('#updaters').val(datas[0].FHFJUPDATE.substr(0, 20));
+
+
+            $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 10000
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                allowEditing: false,
+                allowUpdating: false,
+                rowAlternationEnabled: true,
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        type: "buttons",
+                        buttons: [{
+                            name: "delete",
+                            text: "hapus"
+                        }],
+                        width: 50
+                    },
+                    {
+                        dataField: "ID_BARANG",
+                        caption: "ID BRG",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 60,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_BARANG",
+                        caption: "NAMA BARANG",
+                        alignment: 'left',
+                        // width: 180,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "SATSTAND",
+                        alignment: 'center',
+                        caption: "SATUAN",
+                        width: 60,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "HJUAL",
+                        alignment: 'right',
+                        caption: "HRG JUAL",
+                        allowEditing: false,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "QTY",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 60
+                    },
+                    {
+                        dataField: "DISC",
+                        caption: "DISC %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 55
+                    },
+                    {
+                        dataField: "DISC2",
+                        caption: "DISC Rp.",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 70
+                    },
+                    {
+                        dataField: "RESEP",
+                        caption: "/R",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 65
+                    },
+
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 90,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+                            var disc = ''
+                            var disc2 = ''
+                            var resep = ''
+
+                            if (rowData.HJUAL == '') {
+                                hjual = 0
+                            } else {
+                                hjual = parseFloat(rowData.HJUAL)
+                            }
+
+                            if (!rowData.QTY) {
+                                qty = 0
+                            } else {
+                                qty = parseFloat(rowData.QTY)
+                            }
+
+                            if (!rowData.DISC) {
+                                disc = 0
+                            } else {
+                                disc = parseFloat(rowData.DISC)
+                            }
+
+                            if (!rowData.DISC2) {
+                                disc2 = 0
+                            } else {
+                                disc2 = parseInt(rowData.DISC2)
+                            }
+
+                            if (!rowData.RESEP) {
+                                resep = 0
+                            } else {
+                                resep = parseInt(rowData.RESEP)
+                            }
+
+                            var res = (hjual * qty) - ((hjual * qty) * (disc / 100)) - disc2 + resep
+                            return parseInt(Math.ceil(res))
+                            // return rupiah2(Math.floor(res))
+                        }
+                    },
+                    {
+                        dataField: "STATUS",
+                        alignment: 'center',
+                        caption: "STATUS",
+                        width: 50,
+                        allowEditing: true
+                    },
+
+                    {
+                        dataField: "TTYPEC",
+                        alignment: 'center',
+                        caption: "ID PRODUK",
+                        width: 0,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "STATUSPRODUK",
+                        alignment: 'center',
+                        caption: "STATUSPRODUK",
+                        width: 0,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "ID_BARANG2",
+                        caption: "ID RESEP",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 0,
+                        allowSorting: false
+                    },
+
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+                    if (d.column.dataField == "QTY") {
+                        setGridStock(d.data.ID_BARANG)
+                    }
+                },
+                onCellPrepared: function (e) {
+                    if (e.rowType === "data" && e.column.dataField === "STATUS" && (e.value != undefined)) {
+                        e.cellElement.css("color", "white");
+                        if (e.value == 'Non') {
+                            e.cellElement.css("background-color", "red");
+                        } else {
+                            e.cellElement.css("background-color", "blue");
+                        }
+                    }
+                    if (e.rowType === "data" && (e.rowIndex % 2 == 0) && (e.rowIndex != 0)) {
+                        e.cellElement.addClass('cell-grey');
+                    }
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 2) {
+                        colIndex = "ID_BARANG"
+                    } else if (colIndex == 6) {
+                        colIndex = "QTY"
+                    } else if (colIndex == 9) {
+                        colIndex = "RESEP"
+                    }
+
+                },
+                onRowUpdated: function (e) {
+                    if (e.data.hasOwnProperty("QTY")) {
+                        if (e.data.QTY < 0) {
+                            alert('QTY Tidak Boleh Kurang Dari 1');
+                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                            dataGrid.cellValue(rowIndex, "QTY", '0');
+                            dataGrid.saveEditData();
+                        } else {
+                            if (e.data.ID_BARANG != '' && e.data.ID_BARANG != null && e.data.STATUSPRODUK == 0 && e.data.QTY > 0) {
+                                Cekeror = false;
+                                $.ajax({
+                                    url: host + "/cekStokBarangFarmasi",
+                                    method: "GET",
+                                    data: {
+                                        "kode": e.data.ID_BARANG,
+                                        "kode_gudang": $('#far_kode_gudang').val(),
+                                    },
+                                    success: function (datas) {
+
+                                        if (datas.status != "gagal") {
+                                            let stok = datas.item.STOK
+                                            if (stok <= 0) {
+                                                stok = 0
+                                            }
+                                            if (e.data.QTY > stok) {
+                                                alert('Maaf Stok Barang ' + tempNama + ' Hanya Tersedia ' + stok)
+                                                if (stok <= 0) {
+                                                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                                    dataGrid.cellValue(rowIndex, 'ID_BARANG', '')
+                                                    dataGrid.cellValue(rowIndex, "NAMA_BARANG", '');
+                                                    dataGrid.cellValue(rowIndex, "SATUAN", '');
+                                                    dataGrid.cellValue(rowIndex, "HJUAL", '');
+                                                    dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", 0);
+                                                    dataGrid.cellValue(rowIndex, "STATUSPRODUK", '');
+                                                    dataGrid.saveEditData();
+                                                    colIndex = 'ID_BARANG'
+                                                    setFocusID_BARANG()
+
+                                                } else {
+                                                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                                    dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", stok);
+                                                    dataGrid.saveEditData();
+                                                    Cekeror = true;
+                                                }
+                                            } else {
+                                                Cekeror = true;
+                                            }
+                                        } else {
+                                            let stok = 0
+                                            if (stok <= 0) {
+                                                stok = 0
+                                            }
+                                            if (e.data.QTY > stok) {
+                                                alert('Maaf Stok Barang ' + tempNama + ' Hanya Tersedia ' + stok)
+                                                if (stok <= 0) {
+                                                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                                    dataGrid.cellValue(rowIndex, 'ID_BARANG', '')
+                                                    dataGrid.cellValue(rowIndex, "NAMA_BARANG", '');
+                                                    dataGrid.cellValue(rowIndex, "SATUAN", '');
+                                                    dataGrid.cellValue(rowIndex, "HJUAL", '');
+                                                    dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", 0);
+                                                    dataGrid.cellValue(rowIndex, "STATUSPRODUK", '');
+                                                    dataGrid.saveEditData();
+                                                    colIndex = 'ID_BARANG'
+                                                    setFocusID_BARANG()
+                                                    Cekeror = false;
+                                                } else {
+                                                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                                    dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "QTY", stok);
+                                                    dataGrid.saveEditData();
+                                                    Cekeror = true;
+                                                }
+                                            } else {
+                                                Cekeror = true;
+                                            }
+                                        }
+                                    }
+                                })
+                            } else {
+                                Cekeror = true;
+                            }
+                        }
+                        setTotal()
+                        setDiskon()
+                        setResep()
+                        setPembulatan()
+                    }
+                },
+
+                onRowRemoved: function (e) {
+                    // console.log(e)
+                    setTotal()
+                    setDiskon()
+                    setResep()
+                    setPembulatan()
+                    // setNetto()
+                },
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Barang Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    } else {
+                        setTotal()
+                        setDiskon()
+                        setResep()
+                        setPembulatan()
+                    }
+                },
+                onRowClick: function (e) {
+                    setGridStock(e.data.ID_BARANG)
+                },
+                onKeyDown: function (d) {
+
+                    if (colIndex == 'ID_BARANG' && d.event.originalEvent.which == 13) {
+                        if (canAdd == 1) {
+                            var dataGrid = d.component
+                            var baris = dataGrid.getVisibleRows().length
+                            var id_barangKODE = d.event.target.value
+                            carikodebrgid(id_barangKODE)
+
+                        }
+                    }
+                    if (colIndex == 'RESEP' && d.event.originalEvent.which == 13) {
+                        // kalo enter tambah row otomatis
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        dataGrid.saveEditData();
+                        if (canAdd == 1) {
+                            if (Cekeror == true) {
+                                error_in_field()
+                                if (Cekeror == true) {
+                                    tambahrow()
+                                }
+                            }
+                        }
+                    }
+                },
+                onContentReady: function (d) {
+                    setTotal()
+                    setDiskon()
+                    setResep()
+                    setPembulatan()
+                }
+            });
+
+        }
+    })
+}
+
+function getantrianDokter(no_bukti) {
+    var tanggal = $('#far_tanggal').val();
+    var KD_PASIEN = $('#far_kode_pasien').val();
+    $.ajax({
+        url: host + "/getAntriandokter",
+        method: "GET",
+        data: {
+            "no_bukti": no_bukti,
+            'tanggal': tanggal,
+            "KD_PASIEN": KD_PASIEN,
+        },
+        success: function (datas) {
+            if (datas.data1.length != 0) {
+                $('#far_antri_farmasi').val(datas.data1[0].NOANTRI);
+                $('#far_antri_poly').val(datas.data1[0].NOANTRIDOKTER);
+            } else if (datas.data2.length != 0) {
+                $('#far_antri_farmasi').val('');
+                $('#far_antri_poly').val(datas.data2[0].FRPNOANTRIDOKTER);
+            } else {
+                $('#far_antri_farmasi').val('');
+                $('#far_antri_poly').val('')
+            }
+
+        }
+    })
+
+}

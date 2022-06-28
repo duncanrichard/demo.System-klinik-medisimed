@@ -8,6 +8,8 @@ from . import master_produk
 from . import kasir_rj
 from . import daftar_paket
 from . import paket_produk
+from . import farmasi
+
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
@@ -174,7 +176,7 @@ urlpatterns = [
         url(r'^getDaftarPaketTransaksiByBukti', daftar_paket.getDaftarPaketTransaksiByBukti),
         url(r'^getDaftarPaketTransaksi', daftar_paket.getDaftarPaketTransaksi),
         url(r'^SP_AUD_BAYAR_TRANSAKSI', kasir_rj.SP_AUD_BAYAR_TRANSAKSI),
-        
+        url(r'^cetakBilling', daftar_paket.cetakBilling),
         
     ])),
 
@@ -186,6 +188,10 @@ urlpatterns = [
         url(r'^SP_AUD_PAKET', paket_produk.SP_AUD_PAKET),
         url(r'^getTransaksi', paket_produk.getTransaksi),
         url(r'^getpaketprodukByBukti', paket_produk.getpaketprodukByBukti),
+    ])),
+    url(r'^farmasi/', include ([
+        url(r'^$',farmasi.farmasi, name='farmasi'),
+
     ])),
 
 

@@ -1,0 +1,244 @@
+// Get Pasien
+$(document).ready(function () {
+    $('input[name=search_by]').click(function () {
+        //if($('input[name=search_by]:checked').val() == 'search_pasien_all'){
+        // cariPendaftar(event)
+        //}
+        cariPendaftar(event)
+    })
+
+    $('#far_kode_pasien').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#far_kode_pasien").val() != '') {
+                    getDataPasien($("#far_kode_pasien").val());
+                    $('#far_keterangan').focus()
+                } else {
+                    $('#far_keterangan').focus()
+                }
+            }
+        }
+
+    })
+
+    $('#cari_far_kode_pasien').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalPasien').modal('show');
+        cariPendaftar(event)
+        $('#DxGridLabelPasien').html('Pasien');
+    })
+    $('#cari_info_kode_pasien').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalPasien').modal('show');
+        cariPendaftar(event)
+        $('#DxGridLabelPasien').html('Pasien');
+    })
+
+    $("#search_name").keyup(function (e) {
+        if ($("#search_name").val().length > 2) {
+            cariPendaftar(event)
+        }
+    });
+    $("#search_almt").keyup(function (e) {
+        if ($("#search_almt").val().length > 2) {
+            cariPendaftar(event)
+        }
+    });
+    $("#search_kdpas").keyup(function (e) {
+        if ($("#search_kdpas").val().length > 2) {
+            cariPendaftar(event)
+        }
+    });
+
+
+    $("#search_pasien_by_date_date").change(function () {
+        if ($('input[name=search_by]:checked').val() == 'search_pasien_by_date') {
+            cariPendaftar(event)
+        }
+    });
+
+    $('.grid-opt-pasien').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            cariPendaftar(event)
+        }
+    });
+})
+
+var gridDataPendaftar = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kdpas = $('#search_kdpas').val();
+        var search_name = $('#search_name').val();
+        var search_almt = $('#search_almt').val();
+
+        var pilihan = $('input[name=search_by]:checked').val();
+        var tanggal = $('#search_pasien_by_date_date').val();
+        return $.ajax({
+            url: host + "/getPasien",
+            method: "GET",
+            data: {
+                "search_name": search_name,
+                "search_almt": search_almt,
+                "search_kdpas": search_kdpas,
+                "pilihan": pilihan,
+                'tanggal': tanggal
+            },
+            success: function (datas) {
+                recordCount = datas.length;
+                $('#jumlahcount').html(recordCount)
+                $('#DxGridModalPasien').modal('show');
+            }
+        })
+    }
+});
+
+function cariPendaftar(e) {
+    //e.preventDefault();
+    //var mode = $('input[name=search_by]:checked').val()
+    e.stopImmediatePropagation();
+    $("#DxGridDataPasien").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDataPendaftar,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [
+            "KODE_PASIEN",
+            "NAMA_PASIEN",
+            "ALAMAT",
+        ],
+        onRowClick: function (e) {
+            getDataPasien(e.data.KODE_PASIEN);
+            $('#dxGridModalPasien').modal('hide');
+        }
+    });
+}
+
+function getDataPasien(e) {
+    var tanggal = $('#search_pasien_by_date_date').val();
+    $.ajax({
+        url: host + "/getDataPasien",
+        method: "GET",
+        data: {
+            'tanggal': tanggal,
+            "KD_PASIEN": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.data1.length != 0) {
+
+                $('#far_kode_pasien').val(datas.data1[0].KODE_PASIEN);
+                $('#far_nama_pasien').val(datas.data1[0].NAMA_PASIEN);
+                $('#far_alamat').val(datas.data1[0].ALAMAT);
+                // info resep
+                $('#info_kode_pasien').val(datas.data1[0].KODE_PASIEN);
+                $('#info_nama_pasien').val(datas.data1[0].NAMA_PASIEN);
+
+                $('#far_tanggal_lhr').val(datas.data1[0].TGL_LAHIR.substr(0, 10));
+
+                $('#far_jenis_tarif').val(datas.data1[0].FMKJENIS_TARIP);
+                $('#far_jenis_tarifobat').val(datas.data1[0].FMKTARIP_OBAT);
+                $('#far_message').val(datas.data1[0].FMKMESSAGE);
+                $('#far_kode_klp_customer').val(datas.data1[0].FMKCUST_ID);
+                $('#far_nama_klp_customer').val(datas.data1[0].FMKCUSTN);
+                $('#far_kode_customer').val(datas.data1[0].CUSID);
+                $('#far_nama_customer').val(datas.data1[0].NAME);
+                $('#far_kode_poly').val(datas.data1[0].KPKD_POLY);
+                $('#far_nama_poly').val(datas.data1[0].FMPKLINIKN);
+                $('#far_kode_dokter').val(datas.data1[0].KODE_DOKTER);
+                $('#far_nama_dokter').val(datas.data1[0].NAMA_DOKTER);
+                $('#far_antri_poly').val(datas.data1[0].FRPNOANTRIDOKTER);
+
+            } else if (datas.data2.length != 0) {
+
+                $('#far_kode_pasien').val(datas.data2[0].KODE_PASIEN);
+                $('#far_nama_pasien').val(datas.data2[0].NAMA_PASIEN);
+                // info resep
+                $('#info_kode_pasien').val(datas.data2[0].KODE_PASIEN);
+                $('#info_nama_pasien').val(datas.data2[0].NAMA_PASIEN);
+
+                $('#far_alamat').val(datas.data2[0].ALAMAT);
+                $('#far_tanggal_lhr').val(datas.data2[0].TGL_LAHIR.substr(0, 10));
+
+                $('#far_jenis_tarif').val(datas.data2[0].FMKJENIS_TARIP);
+                $('#far_jenis_tarifobat').val(datas.data2[0].FMKTARIP_OBAT);
+                $('#far_message').val(datas.data2[0].FMKMESSAGE);
+                $('#far_kode_klp_customer').val(datas.data2[0].FMKCUST_ID);
+                $('#far_nama_klp_customer').val(datas.data2[0].FMKCUSTN);
+                $('#far_kode_customer').val(datas.data2[0].CUSID);
+                $('#far_nama_customer').val(datas.data2[0].NAME);
+                $('#far_kode_poly').val(datas.data2[0].PRWIKD_SPECIAL);
+                $('#far_nama_poly').val(datas.data2[0].FMSPESIALISASIN);
+                $('#far_kode_dokter').val(datas.data2[0].KODE_DOKTER);
+                $('#far_nama_dokter').val(datas.data2[0].NAMA_DOKTER);
+                $('#far_antri_poly').val('');
+
+
+
+            } else if (datas.data3.length != 0) {
+                $('#far_kode_pasien').val(datas.data3[0].KODE_PASIEN);
+                $('#far_nama_pasien').val(datas.data3[0].NAMA_PASIEN);
+                // info resep
+                $('#info_kode_pasien').val(datas.data3[0].KODE_PASIEN);
+                $('#info_nama_pasien').val(datas.data3[0].NAMA_PASIEN);
+                $('#far_alamat').val(datas.data3[0].ALAMAT);
+                $('#far_tanggal_lhr').val(datas.data3[0].TGL_LAHIR.substr(0, 10));
+
+                $('#far_jenis_tarif').val(datas.data3[0].FMKJENIS_TARIP);
+                $('#far_jenis_tarifobat').val(datas.data3[0].FMKTARIP_OBAT);
+                $('#far_message').val(datas.data3[0].FMKMESSAGE);
+                $('#far_kode_klp_customer').val(datas.data3[0].FMKCUST_ID);
+                $('#far_nama_klp_customer').val(datas.data3[0].FMKCUSTN);
+                $('#far_kode_customer').val(datas.data3[0].CUSID);
+                $('#far_nama_customer').val(datas.data3[0].NAME);
+                $('#far_kode_poly').val('');
+                $('#far_nama_poly').val('');
+                $('#far_kode_dokter').val('');
+                $('#far_nama_dokter').val('');
+                $('#far_antri_poly').val('');
+            } else {
+                $('#far_kode_pasien').val('');
+                $('#far_nama_pasien').val('');
+                // info resep
+                $('#info_kode_pasien').val('');
+                $('#info_nama_pasien').val('');
+
+                $('#far_alamat').val('');
+                $('#far_tanggal_lhr').val(todays);
+
+                $('#far_jenis_tarif').val('');
+                $('#far_jenis_tarifobat').val('');
+                $('#far_message').val('');
+                $('#far_kode_klp_customer').val('');
+                $('#far_nama_klp_customer').val('');
+                $('#far_kode_customer').val('');
+                $('#far_nama_customer').val('');
+                $('#far_kode_poly').val('');
+                $('#far_nama_poly').val('');
+                $('#far_kode_dokter').val('');
+                $('#far_nama_dokter').val('');
+                $('#far_antri_poly').val('');
+
+            }
+            var usia = checkUmur($('#far_tanggal_lhr').val())
+            $('#far_usia_tahun_pasien').val(usia.tahun)
+            $('#far_usia_bulan_pasien').val(usia.bulan)
+            $('#far_usia_hari_pasien').val(usia.hari)
+        }
+    })
+}

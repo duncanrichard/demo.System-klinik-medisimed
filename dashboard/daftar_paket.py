@@ -219,13 +219,13 @@ def getDaftarPaketTransaksi(request):
         q = "select  top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,a.FDPNOMINAL  "
         q +="from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN   "
         q +="where (FDPNO_DEPOSIT like %s) and (FDPKD_PASIEN like %s) and "
-        q += "(NAMAPASIEN like %s) and (YEAR(FDPTGL_DEPOSIT) = %s) and (MONTH(FDPTGL_DEPOSIT) = %s) and a.FDPKD_CABANG= %s"
+        q += "(NAMAPASIEN like %s) and (YEAR(FDPTGL_DEPOSIT) = %s) and (MONTH(FDPTGL_DEPOSIT) = %s) and a.FDPKD_CABANG= %s order by FDPNO_DEPOSIT"
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal.year, tanggal.month,KD_CABANG])
     else:
         q = "select  top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,a.FDPNOMINAL  "
         q +="from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN "
         q +="where (FDPNO_DEPOSIT like %s) and (FDPKD_PASIEN like %s) and "
-        q += "(NAMAPASIEN like %s) and (FDPTGL_DEPOSIT = %s AND a.FDPKD_CABANG= %s )"
+        q += "(NAMAPASIEN like %s) and (FDPTGL_DEPOSIT = %s AND a.FDPKD_CABANG= %s )  order by FDPNO_DEPOSIT"
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal,KD_CABANG])
 
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -258,3 +258,27 @@ def getDaftarPaketTransaksiByBukti(request):
 		'data1':result,'data5':result5
 	}, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
+
+def cetakBilling(request):
+	nomor = request.GET['no_bukti']
+	terbilang= request.GET['terbilang']
+	tanggal_waktu_cetak = datetime.now().strftime('%Y-%m-%d')
+	jam = str(datetime.now().strftime('%H:%M:%S'))
+	user = request.session['user_priv']
+	# pilihcetak=request.GET['pilihcetak']
+	pdf_file = Globals().generateReportDB(
+		"Billingdeposit.jrxml", 
+		'Billingdeposit', 
+		user,
+		{
+			'nomor': nomor,
+			'nama_rs': request.session['nama_cabang'],
+			'tanggal_waktu_cetak': Globals().tanggalIndo(tanggal_waktu_cetak),
+			'terbilang': terbilang,
+			'user': user,
+
+		} ,
+		# list_format=[pilihcetak]
+	)
+	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")

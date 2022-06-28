@@ -1,0 +1,70 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+F A R M A S I / PRODUK
+{% endblock %} 
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+    .input-xs {
+        height: 2rem;
+    }
+
+    .input-date-xs {
+        height: 2rem;
+        padding: 0 5px !important;
+        line-height: 15px !important;
+    }
+
+    .btn-group-xs > .btn, .btn-xs {
+        line-height: 1.4 !important;
+    }
+    div#datagrid.dx-widget {
+        font-size: 12px;
+        line-height: 0.8;
+    }
+    div#dxGridStockBarang.dx-widget {
+        font-size: 12px;
+        line-height: 0.8;
+        height: 100px;
+    }
+    
+    .form-group {
+    margin-bottom: 0.2rem;
+    }
+    .btn-xs {
+    font-size: 12px;
+    padding: 1px 5px;
+    line-height: 19px;
+    margin-bottom: 4px;
+    }
+    .row {
+    margin-right: -5px;
+    margin-left: -5px;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+{% include 'dashboard/farmasi/dxgrid/dxGridModalPasien.html' %}
+{% include 'dashboard/farmasi/modal/ModalBarang.html' %}
+{% include 'dashboard/farmasi/form.html' %}
+{% include 'dashboard/modal/modalLoading.html' %}
+
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script src="{% static 'js/terbilang.js'%}"></script>
+<script type="text/javascript">
+    
+    {% include 'dashboard/farmasi/js/getPasien.html' %}
+    {% include 'dashboard/farmasi/js/getBarang.html' %}
+    {% include 'dashboard/farmasi/js/getDxGrid.html' %}
+    {% include 'dashboard/farmasi/js/init.html' %}
+</script>
+{% endblock %}

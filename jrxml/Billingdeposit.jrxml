@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.10.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Billingkasir" pageWidth="215" pageHeight="842" columnWidth="187" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="5" isSummaryWithPageHeaderAndFooter="true" isIgnorePagination="true" uuid="48ff6ba0-1b86-481a-9da6-df50a6e828a9">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Billingdeposit" pageWidth="215" pageHeight="842" columnWidth="187" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="5" isSummaryWithPageHeaderAndFooter="true" isIgnorePagination="true" uuid="48ff6ba0-1b86-481a-9da6-df50a6e828a9">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="www.medisimed.com"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="525"/>
@@ -12,46 +12,71 @@
 	<parameter name="user" class="java.lang.String"/>
 	<parameter name="terbilang" class="java.lang.String"/>
 	<queryString language="SQL">
-		<![CDATA[select  A.FTNO_TRANSAKSI,a.FTNO_KUNJUNGAN, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN,
-d.FDTNOMER as NO,d.FDTKD_PRODUK as ID_PRODUK,d.FDTKDPRODUKN as NAMA_PRODUK,FDTQTY as QTY,d.FDTHARGA as HARGA,FDT_DISCKONSUMEN as DISCKONSUMEN,d.FDT_DISC as DISC,d.FDT_DISC2 as DISC2,d.FDT_DISC3 as DISC3,d.FDT_DISC4 as DISC4,
-d.FD_DISCRESELER as DISCRESELER,d.FD_FEEDOKTER as FEEDOKTER,d.FD_FEEBC as FEEBC,d.FD_FEEPERAWAT as FEEPERAWAT,d.FDTNO_FAKTUR as NOFAKTUR,d.FDTJENISTRANSAKSI,a.USERRS,a.UPDATERS,a.KD_RESELER,e.NAMA_RESELER,a.FKUNCI
-from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI 
-inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  
-inner join TRANSAKSIPASIEND d on a.FTNO_TRANSAKSI=d.FDTNO_TRANSAKSI
-left join RESELER e on a.KD_RESELER=e.KD_RESELER
-where (FTNO_TRANSAKSI=$P{nomor}    )]]>
+		<![CDATA[select  A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,C.ALAMAT,a.FDPNOMINAL,
+a.FDP_JENIS_DEPOSITO,a.FDPKD_PAKET,a.FDPKETERANGAN,isnull(a.FDPSTATUS,0) as FDPSTATUS,a.USERRS,a.UPDATERS, 
+ROW_NUMBER() OVER (ORDER BY FMPPRODUKN) AS NO,b.FDPDKD_PRODUK as ID_PRODUK, FDPDQTY as QTY, FDPDTARIF as HARGA, 
+FDPD_DISCKONSUMEN as DISCKONSUMEN, FDPD_DISC1 as DISC, FDPD_DISC2 as DISC2, FDPD_DISC3 as DISC3, FDPD_DISC4 as DISC4,d.FMPPRODUKN as NAMA_PRODUK
+from DEPOSIT_PAKET a left join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT  
+inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN 
+left join PRODUK d on b.FDPDKD_PRODUK=d.FMPPRODUK_ID
+where (FDPNO_DEPOSIT=$P{nomor})]]>
 	</queryString>
-	<field name="FTNO_TRANSAKSI" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="FTNO_TRANSAKSI"/>
-		<property name="com.jaspersoft.studio.field.label" value="FTNO_TRANSAKSI"/>
-	</field>
-	<field name="FTNO_KUNJUNGAN" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="FTNO_KUNJUNGAN"/>
-		<property name="com.jaspersoft.studio.field.label" value="FTNO_KUNJUNGAN"/>
+	<field name="FDPNO_DEPOSIT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDPNO_DEPOSIT"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDPNO_DEPOSIT"/>
 	</field>
 	<field name="TANGGAL" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="TANGGAL"/>
 		<property name="com.jaspersoft.studio.field.label" value="TANGGAL"/>
 	</field>
-	<field name="KPKD_PASIEN" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="KPKD_PASIEN"/>
-		<property name="com.jaspersoft.studio.field.label" value="KPKD_PASIEN"/>
+	<field name="FDPKD_PASIEN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDPKD_PASIEN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDPKD_PASIEN"/>
 	</field>
 	<field name="NAMAPASIEN" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="NAMAPASIEN"/>
 		<property name="com.jaspersoft.studio.field.label" value="NAMAPASIEN"/>
 	</field>
-	<field name="NO" class="java.lang.Integer">
+	<field name="ALAMAT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="ALAMAT"/>
+		<property name="com.jaspersoft.studio.field.label" value="ALAMAT"/>
+	</field>
+	<field name="FDPNOMINAL" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDPNOMINAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDPNOMINAL"/>
+	</field>
+	<field name="FDP_JENIS_DEPOSITO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDP_JENIS_DEPOSITO"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDP_JENIS_DEPOSITO"/>
+	</field>
+	<field name="FDPKD_PAKET" class="java.sql.Clob">
+		<property name="com.jaspersoft.studio.field.name" value="FDPKD_PAKET"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDPKD_PAKET"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DEPOSIT_PAKET"/>
+	</field>
+	<field name="FDPKETERANGAN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDPKETERANGAN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDPKETERANGAN"/>
+	</field>
+	<field name="FDPSTATUS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FDPSTATUS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDPSTATUS"/>
+	</field>
+	<field name="USERRS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="USERRS"/>
+		<property name="com.jaspersoft.studio.field.label" value="USERRS"/>
+	</field>
+	<field name="UPDATERS" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="UPDATERS"/>
+		<property name="com.jaspersoft.studio.field.label" value="UPDATERS"/>
+	</field>
+	<field name="NO" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="NO"/>
 		<property name="com.jaspersoft.studio.field.label" value="NO"/>
 	</field>
 	<field name="ID_PRODUK" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="ID_PRODUK"/>
 		<property name="com.jaspersoft.studio.field.label" value="ID_PRODUK"/>
-	</field>
-	<field name="NAMA_PRODUK" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="NAMA_PRODUK"/>
-		<property name="com.jaspersoft.studio.field.label" value="NAMA_PRODUK"/>
 	</field>
 	<field name="QTY" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.name" value="QTY"/>
@@ -81,49 +106,9 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 		<property name="com.jaspersoft.studio.field.name" value="DISC4"/>
 		<property name="com.jaspersoft.studio.field.label" value="DISC4"/>
 	</field>
-	<field name="DISCRESELER" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.name" value="DISCRESELER"/>
-		<property name="com.jaspersoft.studio.field.label" value="DISCRESELER"/>
-	</field>
-	<field name="FEEDOKTER" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.name" value="FEEDOKTER"/>
-		<property name="com.jaspersoft.studio.field.label" value="FEEDOKTER"/>
-	</field>
-	<field name="FEEBC" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.name" value="FEEBC"/>
-		<property name="com.jaspersoft.studio.field.label" value="FEEBC"/>
-	</field>
-	<field name="FEEPERAWAT" class="java.lang.Double">
-		<property name="com.jaspersoft.studio.field.name" value="FEEPERAWAT"/>
-		<property name="com.jaspersoft.studio.field.label" value="FEEPERAWAT"/>
-	</field>
-	<field name="NOFAKTUR" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="NOFAKTUR"/>
-		<property name="com.jaspersoft.studio.field.label" value="NOFAKTUR"/>
-	</field>
-	<field name="FDTJENISTRANSAKSI" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="FDTJENISTRANSAKSI"/>
-		<property name="com.jaspersoft.studio.field.label" value="FDTJENISTRANSAKSI"/>
-	</field>
-	<field name="USERRS" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="USERRS"/>
-		<property name="com.jaspersoft.studio.field.label" value="USERRS"/>
-	</field>
-	<field name="UPDATERS" class="java.sql.Timestamp">
-		<property name="com.jaspersoft.studio.field.name" value="UPDATERS"/>
-		<property name="com.jaspersoft.studio.field.label" value="UPDATERS"/>
-	</field>
-	<field name="KD_RESELER" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="KD_RESELER"/>
-		<property name="com.jaspersoft.studio.field.label" value="KD_RESELER"/>
-	</field>
-	<field name="NAMA_RESELER" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="NAMA_RESELER"/>
-		<property name="com.jaspersoft.studio.field.label" value="NAMA_RESELER"/>
-	</field>
-	<field name="FKUNCI" class="java.lang.Integer">
-		<property name="com.jaspersoft.studio.field.name" value="FKUNCI"/>
-		<property name="com.jaspersoft.studio.field.label" value="FKUNCI"/>
+	<field name="NAMA_PRODUK" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NAMA_PRODUK"/>
+		<property name="com.jaspersoft.studio.field.label" value="NAMA_PRODUK"/>
 	</field>
 	<variable name="Amount" class="java.lang.Double">
 		<variableExpression><![CDATA[$F{QTY}*$F{HARGA}]]></variableExpression>
@@ -138,7 +123,7 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 		<variableExpression><![CDATA[($V{Amount} - $V{totdisckonsumen} - $V{totdisc}) * ($F{DISC2} / 100)]]></variableExpression>
 	</variable>
 	<variable name="totdisc3" class="java.lang.Double">
-		<variableExpression><![CDATA[ ($V{Amount} - $V{totdisckonsumen} - $V{totdisc} - $V{totdisc2}) * ($F{DISC3} / 100)]]></variableExpression>
+		<variableExpression><![CDATA[($V{Amount} - $V{totdisckonsumen} - $V{totdisc} - $V{totdisc2}) * ($F{DISC3} / 100)]]></variableExpression>
 	</variable>
 	<variable name="res" class="java.lang.Double">
 		<variableExpression><![CDATA[CEIL( $V{Amount} - $V{totdisckonsumen} - $V{totdisc} - $V{totdisc2} - $V{totdisc3} - $F{DISC4})]]></variableExpression>
@@ -160,7 +145,7 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Billing ]]></text>
+				<text><![CDATA[Paket Treatment]]></text>
 			</staticText>
 			<line>
 				<reportElement x="1" y="28" width="189" height="1" uuid="e749c461-a8ab-472c-86b5-fc89bdfa2a68">
@@ -184,11 +169,6 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 				<text><![CDATA[No. RM]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="5" y="97" width="69" height="20" uuid="7a675f35-c19f-4b38-a1c1-9fd06d3ce436"/>
-				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[Reseler]]></text>
-			</staticText>
-			<staticText>
 				<reportElement x="71" y="31" width="10" height="19" uuid="25c291fc-1048-4a10-b422-b36b051f4e92"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[:]]></text>
@@ -200,11 +180,6 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 			</staticText>
 			<staticText>
 				<reportElement x="71" y="60" width="10" height="20" uuid="5711094f-eb2e-4cce-a322-6e2d73b9ea50"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<text><![CDATA[:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="71" y="97" width="10" height="20" uuid="7bd0ccb6-052b-4ece-adf6-7459c520c625"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<text><![CDATA[:]]></text>
 			</staticText>
@@ -227,7 +202,7 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 				<textElement verticalAlignment="Middle">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{KPKD_PASIEN}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{FDPKD_PASIEN}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="82" y="76" width="108" height="20" uuid="a03b2fdc-d7d1-4f15-a68e-bf7baaeb28a9"/>
@@ -235,13 +210,6 @@ where (FTNO_TRANSAKSI=$P{nomor}    )]]>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{NAMAPASIEN}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="81" y="97" width="110" height="30" uuid="0e72c7b5-aaff-47e1-a784-be2e2bb60252"/>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{NAMA_RESELER}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="71" y="76" width="10" height="20" uuid="a277c69c-9b67-46a0-9756-c20db53d9cbd"/>

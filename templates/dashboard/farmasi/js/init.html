@@ -1,0 +1,215 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+
+var todays = ''
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var qtyIndex = ''
+var data = ''
+var tempId = ''
+var tempNama = ''
+var tempIdPrd = ''
+var tempSatuan = ''
+var tempHjual = ''
+var tempHrupiah = ''
+var temppqty = 0
+var tempdisc = 0
+var tempdisc2 = 0
+var tempresep = 0
+var tempttypec = ''
+var tempKRSM = ''
+var tempStok = ''
+var tempbrgId2 = ''
+var tempstatusproduk = ''
+var recordCount = 0
+
+var canEnterBarang = 0
+let status_aud = null;
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+todays = today
+$(".today").val(today)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    setAwal()
+    $('#far_keterangan').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#far_kode_pasien").val() != '') {
+                    error_in_field()
+                    if (Cekeror == true) {
+                        tambahrow()
+                    }
+                }
+            }
+        }
+    })
+    $("#menu_tambah").click(function () {
+        livetext()
+
+        if ($("#far_jenis_tarifobat").val() != '') {
+            let cabang = ['30', '03', '20', '07', '35'];
+
+            if (cabang.includes('{{ request.session.id_cabang }}')) {
+                if ($("#far_jenis_tarifobat").val() != '0') {
+                    var c = confirm('Apakah Anda Meneruskan Pemecahan Resep...???')
+                    if (c) {
+                        $('#no_fakturid').val('');
+                        $('#kode_transfer_apt').val('');
+                        $('#nama_transfer_apt').val('');
+                        $('input[name=inlineCheckboxKronis]').iCheck('check');
+                    } else {
+                        cleartext()
+                        setGridEmpty()
+                        $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
+                    }
+                } else {
+                    cleartext()
+                    setGridEmpty()
+                    $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
+                }
+            } else {
+                cleartext()
+                setGridEmpty()
+                $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
+            }
+        } else {
+            cleartext()
+            setGridEmpty()
+            $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
+        }
+        $('#btnfar_tambah_produk').css("display", 'block');
+        $('#btn_hapus_semua_barang').css("display", 'block');
+        canAdd = 1
+        Cekeror = true;
+        $('#far_kode_pasien').focus()
+
+
+    })
+    $("#menu_cancel").click(function () {
+        setAwal()
+    })
+})
+
+function setAwal() {
+    deathtext()
+    cleartext()
+    // $('#btnfar_tambah_produk').css("display", 'none');
+    // canAdd = 0
+    // setGridEmpty()
+}
+
+function deathtext() {
+    menuEnable('menu_tambah')
+    menuEnable('menu_edit')
+    menuEnable('menu_hapus')
+    menuDisable('menu_simpan')
+    menuDisable('menu_cancel')
+    menuEnable('menu_find')
+    menuEnable('menu_cetak')
+    menuEnable('menu_transferrj')
+    menuEnable('menu_kasir')
+    setReadOnly('no_fakturid')
+    setReadOnly('far_tanggal')
+    setReadOnly('far_kode_pasien')
+    setReadOnly('far_nama_pasien')
+    setReadOnly('far_alamat')
+    btnDisable('cari_far_kode_pasien')
+    btnDisable('cari_far_kode_pasien')
+    btnDisable('cari_far_kode_gudang')
+    setReadOnly('far_keterangan')
+    btnDisable('cari_far_kode_dokter')
+    btnDisable('opt_resep1')
+    btnDisable('opt_resep2')
+    setReadOnly('adm_racik')
+    setReadOnly('far_kode_reseler')
+    setReadOnly('far_nama_reseler')
+    btnDisable('cari_far_kode_reseler')
+    btnDisable('inlineCheckboxclose')
+    $("#datagrid").dxDataGrid({
+        disabled: true,
+    })
+
+}
+
+function livetext() {
+    menuDisable('menu_tambah')
+    menuDisable('menu_edit')
+    menuDisable('menu_hapus')
+    menuEnable('menu_simpan')
+    menuEnable('menu_cancel')
+    menuDisable('menu_find')
+    menuDisable('menu_cetak')
+    menuDisable('menu_transferri')
+    menuDisable('menu_kasir')
+
+    setReadOnly('no_fakturid')
+    setReadOnly('far_tanggal')
+    setUnReadOnly('far_kode_pasien')
+    setReadOnly('far_nama_pasien')
+    setReadOnly('far_alamat')
+    btnEnable('cari_far_kode_pasien')
+    btnEnable('cari_far_kode_gudang')
+    setUnReadOnly('far_keterangan')
+    btnEnable('cari_far_kode_dokter')
+    setReadOnly('far_kode_reseler')
+    setReadOnly('far_nama_reseler')
+    btnEnable('cari_far_kode_reseler')
+
+    btnEnable('opt_resep1')
+    btnEnable('opt_resep2')
+    setUnReadOnly('adm_racik')
+
+    $("#datagrid").dxDataGrid({
+        disabled: false,
+    })
+}
+
+function cleartext() {
+    $('#no_fakturid').val('');
+    $('#far_tanggal').val(todays);
+    $('#far_tanggal_lhr').val(todays);
+    $('#no_fakturinap').val('');
+    $('#far_kode_pasien').val('');
+    $('#far_nama_pasien').val('');
+    $('#far_usia_tahun_pasien').val('');
+    $('#far_usia_bulan_pasien').val('');
+    $('#far_alamat').val('');
+    $('#far_keterangan').val('');
+    $('#far_kode_reseler').val('');
+    $('#far_nama_reseler').val('');
+    $('#far_kode_dokter').val('');
+    $('#far_nama_dokter').val('');
+    $('#adm_racik').val('0');
+
+    $('#far_message').val('');
+    $('#far_jenis_tarifobat').val('');
+
+    // TOTAL NGISOR DI CLEAR THO OJOLALI
+    $('#kode_transfer_apt').val('');
+    $('#nama_transfer_apt').val('');
+    $('#bayar').val('0');
+    $('#sisa').val('0');
+    $('#iur_askes').val('0');
+    $('#iur_pasien').val('0');
+    try {
+        $('#dxGridStockBarang').dxDataGrid("instance").dispose();
+    } catch (e) {
+
+    }
+    $("#inlineCheckboxclose").prop('checked', false)
+}

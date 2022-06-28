@@ -1217,8 +1217,7 @@ function getTotal() {
         var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
         var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
         var jumlah = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
-
-
+        jumlah = parseInt(Math.ceil(jumlah))
         result += (jumlah);
     }
     return result

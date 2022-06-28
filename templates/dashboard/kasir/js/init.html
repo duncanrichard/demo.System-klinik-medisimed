@@ -281,6 +281,18 @@ $(document).ready(function () {
                                 FHP_NAMA_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT)
                             }
                         }
+                        var dataGrid5 = $("#datagridbayar").dxDataGrid("instance");
+                        var FBY_NO = []
+                        var FBY_NOFAKTUR = []
+                        var FBY_TUNAI = []
+                        for (let i = 0; i < dataGrid5.getVisibleRows().length; i++) {
+                            if (dataGrid5.getVisibleRows()[i].data.NOFAKTUR != '') {
+                                FBY_NO.push("" + dataGrid5.getVisibleRows()[i].data.NO)
+                                FBY_NOFAKTUR.push("" + dataGrid5.getVisibleRows()[i].data.NOFAKTUR)
+                                FBY_TUNAI.push("" + dataGrid5.getVisibleRows()[i].data.TUNAI)
+                            }
+                        }
+
                         status_aud = 'A'
                         $.ajax({
                             url: host + "/SP_AUD_TRANSAKSI",
@@ -314,6 +326,10 @@ $(document).ready(function () {
                                 "FHP_NO": JSON.stringify(FHP_NO),
                                 "FHP_ID_PERAWAT": JSON.stringify(FHP_ID_PERAWAT),
                                 "FHP_NAMA_PERAWAT": JSON.stringify(FHP_NAMA_PERAWAT),
+
+                                "FBY_NO": JSON.stringify(FBY_NO),
+                                "FBY_NOFAKTUR": JSON.stringify(FBY_NOFAKTUR),
+                                "FBY_TUNAI": JSON.stringify(FBY_TUNAI),
 
 
 

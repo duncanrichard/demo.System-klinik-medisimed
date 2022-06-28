@@ -135,7 +135,6 @@ $(document).ready(function () {
 
         }
     })
-
     $("#deposit_tunai_off").change(function () {
         if ($('#deposit_tunai_off').val() == '0') {
             setUnReadOnly('deposit_tunai_nom')
@@ -153,7 +152,6 @@ $(document).ready(function () {
 
         }
     })
-
     $('#deposit_tunai_nom').keyup(function (e) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
         if (keycode == '13') {
@@ -161,7 +159,6 @@ $(document).ready(function () {
             $('#keterangan').focus()
         }
     })
-
     $("#kd_paket").change(function () {
         kode_paket = $('#kd_paket').val()
     })
@@ -398,7 +395,13 @@ $(document).ready(function () {
     $("#select_daftar_paket").change(function () {
         cari_daftarpakettransaksi()
     })
-
+    $("#menu_cetak").click(function () {
+        if ($("#no_trans").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            Prosescetak()
+        }
+    })
     $('#tambah_produk').click(function () {
         error_in_field()
         if (Cekeror == true) {
@@ -567,7 +570,6 @@ function cari_daftarpakettransaksi() {
     });
 }
 
-
 function error_in_field() {
     Cekeror = true;
     if ($('#idPasien').val() == '') {
@@ -663,4 +665,27 @@ function livetext() {
     btnEnable('deposit_tunai_on')
     btnEnable('deposit_tunai_off')
 
+}
+
+function Prosescetak() {
+    var terbilang = (angkaTerbilang(String(desimal2($('#total').val()))).toUpperCase() + " RUPIAH ")
+    $.ajax({
+        url: host + "/cetakBilling",
+        method: "GET",
+        data: {
+            'no_bukti': $("#no_trans").val(),
+            'terbilang': terbilang,
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf);
+        },
+    })
 }

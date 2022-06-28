@@ -568,18 +568,44 @@ function setGridEmpty() {
                 allowSorting: false
             },
             {
-                dataField: "ID_PRODUK",
-                caption: "KODE PRODUK",
-                alignment: 'left',
-                allowEditing: true,
-                width: 120,
-                allowSorting: false
+                dataField: "TUNAI",
+                caption: "TUNAI",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
             },
             {
-                dataField: "NAMA_PRODUK",
-                caption: "NAMA PRODUK",
-                alignment: 'left',
-                allowEditing: false
+                dataField: "BANK",
+                caption: "BANK",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "PIUTANG",
+                caption: "PIUTANG",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "JAMINAN",
+                caption: "JAMINAN",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "VOUCHER",
+                caption: "VOUCHER",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
             },
             {
                 dataField: "TOTAL",
@@ -589,6 +615,43 @@ function setGridEmpty() {
                 dataType: "number",
                 format: 'decimal fixedPoint',
                 width: 130,
+                calculateCellValue: function (rowData) {
+                    var tunai = ''
+                    var piutang = ''
+                    var bank = ''
+                    var voucher = ''
+                    var jaminan = ''
+
+                    if (rowData.TUNAI == '') {
+                        tunai = 0
+                    } else {
+                        tunai = parseInt(rowData.TUNAI)
+                    }
+
+                    if (!rowData.BANK) {
+                        bank = 0
+                    } else {
+                        bank = parseInt(rowData.BANK)
+                    }
+                    if (!rowData.PIUTANG) {
+                        piutang = 0
+                    } else {
+                        piutang = parseFloat(rowData.PIUTANG)
+                    }
+                    if (!rowData.VOUCHER) {
+                        voucher = 0
+                    } else {
+                        voucher = parseFloat(rowData.VOUCHER)
+                    }
+
+                    if (!rowData.JAMINAN) {
+                        jaminan = 0
+                    } else {
+                        jaminan = parseFloat(rowData.JAMINAN)
+                    }
+                    var res = tunai + piutang + bank + voucher + jaminan
+                    return parseInt(Math.ceil(res))
+                }
             },
         ],
         editing: {

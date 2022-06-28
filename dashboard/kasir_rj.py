@@ -175,7 +175,9 @@ def SP_AUD_TRANSAKSI(request):
     FHP_ID_PERAWAT = json.loads(request.POST['FHP_ID_PERAWAT'])
     FHP_NAMA_PERAWAT = json.loads(request.POST['FHP_NAMA_PERAWAT'])
 
-    
+    FBY_NO = json.loads(request.POST['FBY_NO'])
+    FBY_NOFAKTUR = json.loads(request.POST['FBY_NOFAKTUR'])
+    FBY_TUNAI = json.loads(request.POST['FBY_TUNAI'])
 
     # header
     FH_BUKTI_ID = request.POST['FH_BUKTI_ID']
@@ -193,6 +195,7 @@ def SP_AUD_TRANSAKSI(request):
     q += "DECLARE @LIST_DOKTER LIST_DOKTER;"
     q += "DECLARE @LIST_BC LIST_BC;"
     q += "DECLARE @LIST_PERAWAT LIST_PERAWAT;"
+    q += "DECLARE @LIST_BAYAR MASTERCOMPONENT;"
     q += "DECLARE @NOW datetime; "
     q += "SET @NOW = GETDATE(); "
 
@@ -249,6 +252,15 @@ def SP_AUD_TRANSAKSI(request):
         q += "'" + FH_BUKTI_ID + "');"
         i += 1
 
+    i = 0
+    for x in FBY_NO:
+        q += "INSERT INTO @LIST_BAYAR (FCDKD_COMPONENT, COMPONENT, FCDTARIF) "
+        q += "VALUES ("
+        q += FBY_NO[i] + ","
+        q += "'" + FBY_NOFAKTUR[i] + "',"
+        q +=  FBY_TUNAI[i] + ");"
+        i += 1
+
     q += "EXEC IMD_AUD_TRANSAKSI "
     q += "'" + FH_BUKTI_ID + "',"
     q += "'" + FH_REGISTER_ID + "',"
@@ -261,7 +273,8 @@ def SP_AUD_TRANSAKSI(request):
     q += "@LIST_TRANSAKSI,"
     q += "@LIST_DOKTER,"
     q += "@LIST_BC,"
-    q += "@LIST_PERAWAT"
+    q += "@LIST_PERAWAT,"
+    q += "@LIST_BAYAR"
 
     if (status_aud=='D') :
         user = {
@@ -296,14 +309,14 @@ def getTransaksi(request):
         q +="from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI "
         q +="inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  "
         q +="where (FTNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
-        q += "(NAMAPASIEN like %s) and (YEAR(FTTGL_TRANSAKSI) = %s) and (MONTH(FTTGL_TRANSAKSI) = %s) and a.KD_CABANG= %s"
+        q += "(NAMAPASIEN like %s) and (YEAR(FTTGL_TRANSAKSI) = %s) and (MONTH(FTTGL_TRANSAKSI) = %s) and a.KD_CABANG= %s order by FTNO_TRANSAKSI"
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal.year, tanggal.month,KD_CABANG])
     else:
         q = "select  top 100 A.FTNO_TRANSAKSI, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
         q +="from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI "
         q +="inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  "
         q +="where (FTNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
-        q += "(NAMAPASIEN like %s) and (FTTGL_TRANSAKSI = %s AND a.KD_CABANG= %s )"
+        q += "(NAMAPASIEN like %s) and (FTTGL_TRANSAKSI = %s AND a.KD_CABANG= %s )  order by FTNO_TRANSAKSI"
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal,KD_CABANG])
 
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -559,7 +572,7 @@ def getGridPaketprodukpasien(request):
     result = Globals().getDataQuery(q , [KD_CABANG])
 
 
-    q = "select A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
+    q = "select ROW_NUMBER() OVER (ORDER BY FDPNO_DEPOSIT) AS NO,A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
     q += "(select sum(dbo.fungsiCalculasiDeposit(FDPDTARIF,1,FDPD_DISCKONSUMEN,FDPD_DISC1,FDPD_DISC2,FDPD_DISC3,FDPD_DISC4))   "
     q += "FROM DEPOSIT_PAKETD b where b.FDPDNO_DEPOSIT=a.FDPNO_DEPOSIT) AS TUNAI   "
     q += "from DEPOSIT_PAKET a   "

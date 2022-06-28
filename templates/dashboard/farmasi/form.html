@@ -1,0 +1,353 @@
+<div class="wrapper wrapper-content entry" style="padding: 8px 8px 0px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="card-header text-center h6 bg-secondary font-bold text-white" style="border-radius: 15px;">
+                    Entry Obat dan Alkes
+                </div>
+                <div class="ibox-content" style="background-color: #6ea8bb;border-radius: 15px;">
+                    <div class="row">
+                        <div class="row" style="padding-top: 10px; margin-bottom: 7px;font-style: bold;">
+                            <div class="row" style="background-color: #6ea8bb;padding-top: 5px;">
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">No Transaksi </label>
+                                        <div class="col-md-4">
+
+                                            <input id="no_fakturid" name="no_fakturid" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <label class="col-md-2 control-label text-center">Tanggal </label>
+                                        <div class="col-md-3">
+                                            <input id="far_tanggal" name="far_tanggal" type="date"
+                                                class="form-control input-sm" style="background-color: white">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Pasien </label>
+                                        <div class="col-md-3">
+                                            <input id="far_kode_pasien" name="kode_pasien" type="text"
+                                                class="form-control input-sm" style="background-color: white">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input id="far_nama_pasien" name="far_nama_pasien" type="text"
+                                                class="form-control input-sm" style="background-color: white">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn  btn-success btn-xs" id="cari_far_kode_pasien"><i
+                                                    class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Usia </label>
+                                        <div class="col-md-1">
+                                            <input id="far_usia_tahun_pasien" name="usia_tahun_pasien" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <label class="col-md-1 control-label">Thn</label>
+                                        <div class="col-md-1">
+                                            <input id="far_usia_bulan_pasien" name="usia_bulan_pasien" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <label class="col-md-1 control-label">Bln</label>
+                                        <div class="col-md-1">
+                                            <input id="far_usia_hari_pasien" name="usia_hari_pasien" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <label class="col-md-1 control-label">Hari</label>
+                                        <input id="far_tanggal_lhr" name="far_tanggal_lhr" type="date"
+                                            style="display: none" class="form-control input-sm"
+                                            style="background-color: white">
+
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Alamat </label>
+                                        <div class="col-md-8">
+                                            <input id="far_alamat" name="far_alamat" type="text"
+                                                class="form-control input-sm" style="background-color: white">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Gudang </label>
+                                        <div class="col-md-3">
+                                            <input id="far_kode_gudang" name="far_kode_gudang" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <div class="col-md-5">
+                                            <input id="far_nama_gudang" name="far_nama_gudang" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn  btn-success btn-xs" id="cari_far_kode_gudang"><i
+                                                    class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Keterangan </label>
+                                        <div class="col-md-9">
+                                            <input id="far_keterangan" name="far_keterangan" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Kode Reseler </label>
+                                        <div class="col-md-2">
+                                            <input id="far_kode_reseler" name="far_kode_reseler" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="far_nama_reseler" name="far_nama_reseler" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn  btn-success btn-xs" id="cari_far_kode_reseler"><i
+                                                    class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 control-label">Dokter </label>
+                                        <div class="col-md-2">
+                                            <input id="far_kode_dokter" name="far_kode_dokter" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="far_nama_dokter" name="far_nama_dokter" type="text"
+                                                class="form-control input-sm" readonly style="background-color: white">
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button class="btn  btn-success btn-xs" id="cari_far_kode_dokter"><i
+                                                    class="fa fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-5">
+                                            <label class="radio-inline" style="font-weight: 700;">
+                                                <input type="radio" id="opt_resep1" name="opt_resep" value='0'
+                                                    checked>Resep
+                                            </label>
+                                            <label class="radio-inline" style="font-weight: 700;margin-left: 5px;">
+                                                <input type="radio" id="opt_resep2" name="opt_resep" value='1'>Non Resep
+                                            </label>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <input id="far_message" name="far_message" type="text"
+                                                        class="form-control input-sm" readonly
+                                                        style="background-color: white">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input id="far_jenis_tarifobat" name="far_jenis_tarifobat"
+                                                        type="text" class="form-control input-sm" readonly
+                                                        style="background-color: white">
+                                                </div>
+                                                <div class="col-md-3" style="background:#ed55657a;">
+                                                    <label class="checkbox-inline">
+                                                        <input type="checkbox" id="inlineCheckboxclose"
+                                                            name="inlineCheckboxclose" value="0">Close
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="wrapper wrapper-content entry dashboard" style="margin-top: -25px; margin-bottom: 5px;">
+                    <div class="row">
+                        <div class="row">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="margin-left: 7px; margin-right: 7px;">
+                                    <div class="row" style="margin-top:-5px;margin-bottom: 5px;">
+                                        <div class="row">
+                                            <button class="btn btn-xs btn-primary" id="btnfar_tambah_produk"
+                                                style="display: none;">Tambah Produk</button>
+                                            <div style="height: 150px;overflow-y: auto;" class="mt-7">
+                                                <div id="datagrid"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-md-9">
+                                                <div id="dxGridStockBarang"
+                                                    style="height: 100px;font-size: 12px;line-height: 0.8;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="row" style="background-color: #ca98a0;padding-top: 10px;">
+                                                <div class="col-md-4">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label text-center">User: </label>
+                                                        <div class="col-md-7">
+                                                            <input id="userrs" name="userrs"
+                                                                class="form-control input-sm" readonly
+                                                                style="background-color: #9093c2;font-size: 12px;font: bold;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-7">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label text-center">Update:
+                                                        </label>
+                                                        <div class="col-md-7">
+                                                            <input id="updaters" name="updaters"
+                                                                class="form-control input-sm" readonly
+                                                                style="background-color: #93a8c7;font-size: 12px;font: bold;">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="row" style="background-color: #88cab4;padding-top: 10px;">
+                                                <div class="col-md-6">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label text-center">Sistem Bayar
+                                                        </label>
+                                                        <div class="col-md-7">
+                                                            <input id="no_fakturinap" name="no_fakturinap"
+                                                                class="form-control input-sm" readonly
+                                                                style="background-color: #c599b3;font-size: 12px;font: bold;">
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-md-3">
+                                                            <input type="text" id="kode_transfer_apt" value=""
+                                                                class="form-control input-sm" readonly
+                                                                style="background-color: white">
+                                                        </div>
+                                                        <div class="col-md-9">
+                                                            <input type="text" id="nama_transfer_apt" value=""
+                                                                class="form-control input-sm" readonly
+                                                                style="background-color: white">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row" style="margin-top: 4px;">
+                                                        <label class="col-md-5 control-label">IUR ASKES </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" id="iur_askes" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">IUR PASIEN </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" id="iur_pasien" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">BAYAR </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" id="bayar" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">SISA </label>
+                                                        <div class="col-md-7">
+                                                            <input type="text" id="sisa" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6" style="background-color: #88cab4;">
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">T O T A L </label>
+                                                        <div class="col-md-2">
+                                                            : Rp
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="text" id="total" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">DISCOUNT </label>
+                                                        <div class="col-md-2">
+                                                            : Rp
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="text" id="discount" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">Adm Resep </label>
+                                                        <div class="col-md-2">
+                                                            : Rp
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="text" id="adm_resep" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">Adm Racik </label>
+                                                        <div class="col-md-2">
+                                                            : Rp
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="text" id="adm_racik" value="0"
+                                                                class="form-control input-sm inputText"
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">Pembulatan </label>
+                                                        <div class="col-md-2">
+                                                            : Rp
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="text" id="pembulatan" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <div class="form-group row">
+                                                        <label class="col-md-5 control-label">N E T T O </label>
+                                                        <div class="col-md-2">
+                                                            : Rp
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <input type="text" id="netto" value="0"
+                                                                class="form-control input-sm inputText" readonly
+                                                                style="background-color: white;text-align: right">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

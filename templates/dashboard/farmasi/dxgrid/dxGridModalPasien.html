@@ -1,0 +1,83 @@
+<div class="modal fade" id="dxGridModalPasien" tabindex="-1" role="dialog" aria-labelledby="myModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+						aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title col-md-3" id="DxGridLabelPasien"></h4>
+				<label class="col-md-3 control-label">Jumlah Record : <span id="jumlahcount"></span> </label>
+			</div>
+
+			<div class="modal-body">
+				<div class="card" style="overflow-x: visible;">
+					<div class="card-body">
+						<div class="row form-group">
+							<div class="form-group col-md-2 col-md-offset-1">
+								<label class="radio-inline">
+									<input type="radio" name="search_by" id="search_pasien_all"
+										value="search_pasien_all">Semua Pasien
+								</label>
+							</div>
+							<div class="form-group col-md-2">
+								<label class="radio-inline">
+									<input type="radio" name="search_by" id="search_pasien_today"
+										value="search_pasien_today" checked>Pasien Hari Ini
+								</label>
+							</div>
+							<div class="form-group col-md-5">
+								<div class="row">
+									<div class="col-md-5">
+										<label class="radio-inline">
+											<input type="radio" name="search_by" id="search_pasien_by_date"
+												value="search_pasien_by_date">Pasien Per Tgl
+										</label>
+									</div>
+									<div class="col-md-7">
+										<input type="date" class="form-control input-sm-lab today formdate"
+											id="search_pasien_by_date_date" value="search_pasien_by_date_date">
+									</div>
+								</div>
+							</div>
+							<div class="form-group col-md-3">
+								<label class="radio-inline">
+									<input type="radio" name="search_by" id="search_pasien_rawat_inap"
+										value="search_pasien_rawat_inap">Pasien Rawat Inap
+								</label>
+							</div>
+						</div>
+						<div class="row form-group">
+							<div class="col-md-3 col-md-offset-1">
+								<input type="text" name="search_kdpas" id="search_kdpas"
+									class="form-control input-sm-lab grid-opt-pasien" placeholder="Kode">
+							</div>
+							<div class="col-md-3">
+								<input type="text" name="search_name" id="search_name"
+									class="form-control input-sm-lab grid-opt-pasien" placeholder="Nama">
+							</div>
+							<div class="col-md-3">
+								<input type="text" name="search_almt" id="search_almt"
+									class="form-control input-sm-lab grid-opt-pasien" placeholder="Alamat">
+							</div>
+							<div class="col-md-1">
+								<button class="btn btn-sm btn-primary" onclick="cariPendaftar(event)">
+									<span class="fa fa-search"></span> Cari
+								</button>
+							</div>
+						</div>
+						<br>
+						<div class="row form-group">
+							<div class="col-md-12">
+								<div id="DxGridDataPasien" style="height: 340px;font-size: 12px;line-height: 0.8;">
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+			</div>
+		</div>
+	</div>
+</div>

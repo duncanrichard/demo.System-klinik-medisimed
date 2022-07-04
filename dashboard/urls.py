@@ -9,12 +9,13 @@ from . import kasir_rj
 from . import daftar_paket
 from . import paket_produk
 from . import farmasi
+from . import jasamedis001
+from . import jasareseller001
 
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
     url(r'^cabang', views.cabang, name='cabang'),
-
     url(r'^shift/', include([
         url(r'^setShift', shift.setShift),
         url(r'^tutupShift', shift.tutupShift),
@@ -23,7 +24,6 @@ urlpatterns = [
         url(r'^getShiftList', shift.getShiftList),
         url(r'^getShift', shift.getShift),
     ])),
-
     url(r'^privilege/', include([
         url(r'^$', privelige.dashboard, name='privilege'),
         url(r'^menu/',privelige.menu, name='menu'),
@@ -83,7 +83,6 @@ urlpatterns = [
         url(r'^GUD_PASIEN', data_pasien.GUD_PASIEN),
 
     ])),
-
     url(r'^pasien_rj/', include ([
         url(r'^$',pasien_rj.pasien_rj, name='pasien_rj'),
         url(r'^getKelamin', data_pasien.getKelamin),
@@ -122,7 +121,6 @@ urlpatterns = [
         url(r'^cekRMterakhir', pasien_rj.cekRMterakhir),
         url(r'^getDaftarPasien', pasien_rj.getDaftarPasien),
     ])),
-
     url(r'^master_produk/', include ([
         url(r'^$',master_produk.master_produk, name='master_produk'),
         url(r'^getProdukHeader', master_produk.getProdukHeader),
@@ -139,7 +137,6 @@ urlpatterns = [
         url(r'^get_produk_tarif',master_produk.get_produk_tarif),
         url(r'^save_produk_tarif',master_produk.save_produk_tarif),
     ])),
-
     url(r'^kasir_rj/', include ([
         url(r'^$',kasir_rj.kasir_rj, name='kasir_rj'),
         url(r'^getDaftarPasien', pasien_rj.getDaftarPasien),
@@ -179,7 +176,6 @@ urlpatterns = [
         url(r'^cetakBilling', daftar_paket.cetakBilling),
         
     ])),
-
     url(r'^paket_produk/', include ([
         url(r'^$',paket_produk.paket_produk, name='paket_produk'),
         url(r'^getIdDataProduk', daftar_paket.getIdDataProduk),
@@ -193,7 +189,18 @@ urlpatterns = [
         url(r'^$',farmasi.farmasi, name='farmasi'),
 
     ])),
-
+    url(r'^jasamedis001/', include ([
+        url(r'^$',jasamedis001.jasamedis001, name='jasamedis001'),
+        url(r'^getdokter', kasir_rj.getdokter),
+        url(r'^getperawat', kasir_rj.getperawat),
+        url(r'^getBC', kasir_rj.getBC),
+        url(r'^proses_excel', jasamedis001.proses_excel),
+    ])),
+    url(r'^jasareseller001/', include ([
+        url(r'^$',jasareseller001.jasareseller001, name='jasareseller001'),
+        url(r'^getReseler', data_pasien.getReseler),
+        url(r'^proses_excel', jasareseller001.proses_excel),
+    ])),
 
 
 ]

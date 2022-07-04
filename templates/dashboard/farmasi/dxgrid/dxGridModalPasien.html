@@ -1,16 +1,17 @@
 <div class="modal fade" id="dxGridModalPasien" tabindex="-1" role="dialog" aria-labelledby="myModal">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-						aria-hidden="true">&times;</span></button>
+			<div class="modal-header  py-2">
 				<h4 class="modal-title col-md-3" id="DxGridLabelPasien"></h4>
 				<label class="col-md-3 control-label">Jumlah Record : <span id="jumlahcount"></span> </label>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
 
-			<div class="modal-body">
-				<div class="card" style="overflow-x: visible;">
-					<div class="card-body">
+			<div class="modal-body p-3">
+				<div class="row  mb-1">
+					<div class="container-fluid">
 						<div class="row form-group">
 							<div class="form-group col-md-2 col-md-offset-1">
 								<label class="radio-inline">
@@ -38,12 +39,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group col-md-3">
-								<label class="radio-inline">
-									<input type="radio" name="search_by" id="search_pasien_rawat_inap"
-										value="search_pasien_rawat_inap">Pasien Rawat Inap
-								</label>
-							</div>
+
 						</div>
 						<div class="row form-group">
 							<div class="col-md-3 col-md-offset-1">

@@ -18,8 +18,9 @@ $(document).ready(function () {
     $('#btnFindReseler').click(function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
+        var param = 1
         $('#dxGridModalReseler').modal('show');
-        cariReseler(event)
+        cariReseler(param)
     })
 
 });
@@ -40,14 +41,15 @@ function getDataReseler(e) {
                 $('#email').focus()
             } else {
                 $('#dxGridModalReseler').modal('show');
-                cariReseler()
+                param = 1
+                cariReseler(param)
             }
 
         }
     })
 }
 
-function cariReseler() {
+function cariReseler(param = null) {
     $("#dxGridDataReseler").dxDataGrid({
         showBorders: true,
         showRowLines: true,
@@ -69,8 +71,6 @@ function cariReseler() {
 
         dataSource: new DevExpress.data.DataSource({
             load: function (e) {
-                var Kecamatan_id = $('#idKecamatan').val();
-
                 var deferred = $.Deferred();
                 $.ajax({
                     url: host + "/getReseler",
@@ -107,8 +107,14 @@ function cariReseler() {
             },
         ],
         onRowClick: function (e) {
-            $("#idReseler").val(e.data.KD_RESELER);
-            $("#namaReseler").val(e.data.NAMA_RESELER);
+            if (param == 1) {
+                $("#idReseler").val(e.data.KD_RESELER);
+                $("#namaReseler").val(e.data.NAMA_RESELER);
+            } else if (param == 2) {
+                $("#kodereseller_dari").val(e.data.KD_RESELER);
+            } else if (param == 3) {
+                $("#kodereseller_sampai").val(e.data.KD_RESELER);
+            }
             $('#dxGridModalReseler').modal('hide');
             $('#email').focus()
         },

@@ -1,0 +1,597 @@
+var dataGrid;
+var total = '';
+var ito = '';
+$(document).ready(function () {
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function (data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    $("#inlineRadiokreteria1").prop('checked', true)
+    setGridEmpty();
+
+});
+
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [{
+                dataField: "NO_TRANSAKSI",
+                caption: "NO TRANSAKSI",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "NO_REGISTRASI",
+                caption: "NO REGISTRASI",
+                alignment: 'left',
+                allowEditing: false,
+                width: 100,
+                allowSorting: false
+            },
+            {
+                dataField: "ID_PRODUK",
+                caption: "KODE PRODUK",
+                alignment: 'left',
+                allowEditing: true,
+                width: 120,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_PRODUK",
+                caption: "NAMA PRODUK",
+                alignment: 'left',
+                width: 270,
+                allowEditing: false
+            },
+            {
+                dataField: "HARGA",
+                alignment: 'right',
+                caption: "HARGA/UNIT",
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 100
+            },
+            {
+                dataField: "QTY",
+                caption: "QTY",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 50
+            },
+            {
+                dataField: "DISCKONSUMEN",
+                alignment: 'center',
+                caption: "KONSUMEN %",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 100,
+                allowEditing: false,
+
+            },
+            {
+                dataField: "DISC",
+                caption: "DISC %",
+                alignment: 'right',
+                dataType: "number",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "DISC2",
+                caption: "DISC 2 %",
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "DISC3",
+                caption: "DISC 3 %",
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "DISC4",
+                caption: "DISC Rp.",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 100
+            },
+            {
+                dataField: "TOTAL",
+                caption: "TOTAL",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 130,
+                calculateCellValue: function (rowData) {
+                    var hjual = ''
+                    var qty = ''
+                    var disckonsumen = ''
+                    var disc = ''
+                    var disc2 = ''
+                    var disc3 = ''
+                    var disc4 = ''
+
+                    if (rowData.HARGA == '') {
+                        hjual = 0
+                    } else {
+                        hjual = parseInt(rowData.HARGA)
+                    }
+
+                    if (!rowData.QTY) {
+                        qty = 0
+                    } else {
+                        qty = parseInt(rowData.QTY)
+                    }
+                    if (!rowData.DISCKONSUMEN) {
+                        disckonsumen = 0
+                    } else {
+                        disckonsumen = parseFloat(rowData.DISCKONSUMEN)
+                    }
+                    if (!rowData.DISC) {
+                        disc = 0
+                    } else {
+                        disc = parseFloat(rowData.DISC)
+                    }
+
+                    if (!rowData.DISC2) {
+                        disc2 = 0
+                    } else {
+                        disc2 = parseFloat(rowData.DISC2)
+                    }
+                    if (!rowData.DISC3) {
+                        disc3 = 0
+                    } else {
+                        disc3 = parseFloat(rowData.DISC3)
+                    }
+                    if (!rowData.DISC4) {
+                        disc4 = 0
+                    } else {
+                        disc4 = parseInt(rowData.DISC4)
+                    }
+                    var amount = (hjual * qty)
+                    var totdisckonsumen = amount * (disckonsumen / 100)
+                    var totdisc = (amount - totdisckonsumen) * (disc / 100)
+                    var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+                    var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+                    var res = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+                    return parseInt(Math.ceil(res))
+                }
+            },
+
+            {
+                dataField: "DISCRESELER",
+                alignment: 'center',
+                caption: "DISCRESELER",
+                width: 100,
+                allowEditing: false
+            },
+            {
+                dataField: "FEEDOKTER",
+                alignment: 'center',
+                caption: "FEEDOKTER",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 100,
+                allowEditing: false
+            },
+            {
+                dataField: "FEEBC",
+                alignment: 'center',
+                caption: "FEEBC",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 100,
+                allowEditing: false
+            },
+            {
+                dataField: "FEEPERAWAT",
+                alignment: 'center',
+                caption: "FEEPERAWAT",
+                width: 100,
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                allowEditing: false
+            },
+
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+    var pilihan = ''
+    if ($("#inlineRadiokreteria1:checked").val() == '1') {
+        pilihan = '1'
+    } else if ($("#inlineRadiokreteria2:checked").val() == '2') {
+        pilihan = '2'
+    } else {
+        pilihan = '3'
+    }
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "kodemedis_dari": $("#kodemedis_dari").val(),
+            "kodemedis_sampai": $("#kodemedis_sampai").val(),
+            "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
+            "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
+            "pilihan": pilihan
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                sorting: {
+                    mode: 'multiple',
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "NO_TRANSAKSI",
+                        caption: "NO TRANSAKSI",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 100
+                    },
+                    {
+                        dataField: "TANGGAL",
+                        caption: "TANGGAL",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 80,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_MEDIS",
+                        caption: "NAMA_MEDIS",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 120,
+                        allowSorting: true
+                    },
+                    {
+                        dataField: "NAMA_PRODUK",
+                        caption: "NAMA PRODUK",
+                        alignment: 'left',
+                        width: 270,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "HARGA",
+                        alignment: 'right',
+                        caption: "HARGA/UNIT",
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "QTY",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 50
+                    },
+                    {
+                        dataField: "DISCKONSUMEN",
+                        alignment: 'center',
+                        caption: "KONSUMEN %",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false,
+
+                    },
+                    {
+                        dataField: "DISC",
+                        caption: "DISC %",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC2",
+                        caption: "DISC 2 %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC3",
+                        caption: "DISC 3 %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC4",
+                        caption: "DISC Rp.",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+                            var disckonsumen = ''
+                            var disc = ''
+                            var disc2 = ''
+                            var disc3 = ''
+                            var disc4 = ''
+
+                            if (rowData.HARGA == '') {
+                                hjual = 0
+                            } else {
+                                hjual = parseInt(rowData.HARGA)
+                            }
+
+                            if (!rowData.QTY) {
+                                qty = 0
+                            } else {
+                                qty = parseInt(rowData.QTY)
+                            }
+                            if (!rowData.DISCKONSUMEN) {
+                                disckonsumen = 0
+                            } else {
+                                disckonsumen = parseFloat(rowData.DISCKONSUMEN)
+                            }
+                            if (!rowData.DISC) {
+                                disc = 0
+                            } else {
+                                disc = parseFloat(rowData.DISC)
+                            }
+
+                            if (!rowData.DISC2) {
+                                disc2 = 0
+                            } else {
+                                disc2 = parseFloat(rowData.DISC2)
+                            }
+                            if (!rowData.DISC3) {
+                                disc3 = 0
+                            } else {
+                                disc3 = parseFloat(rowData.DISC3)
+                            }
+                            if (!rowData.DISC4) {
+                                disc4 = 0
+                            } else {
+                                disc4 = parseInt(rowData.DISC4)
+                            }
+                            var amount = (hjual * qty)
+                            var totdisckonsumen = amount * (disckonsumen / 100)
+                            var totdisc = (amount - totdisckonsumen) * (disc / 100)
+                            var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+                            var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+                            var res = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+                    {
+                        dataField: "FEE_MEDIS",
+                        alignment: 'center',
+                        caption: "FEE MEDIS",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "JUMLAH_MEDIS",
+                        alignment: 'center',
+                        caption: "JUMLAH MEDIS",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEE_RP_MEDIS",
+                        alignment: 'right',
+                        caption: "FEE_RP_MEDIS",
+                        width: 100,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 0
+                        },
+                        allowEditing: false,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+                            var disckonsumen = ''
+                            var disc = ''
+                            var disc2 = ''
+                            var disc3 = ''
+                            var disc4 = ''
+                            var fee_dokter = ''
+                            var jumlah_dokter = ''
+
+
+                            if (rowData.HARGA == '') {
+                                hjual = 0
+                            } else {
+                                hjual = parseInt(rowData.HARGA)
+                            }
+
+                            if (!rowData.QTY) {
+                                qty = 0
+                            } else {
+                                qty = parseInt(rowData.QTY)
+                            }
+                            if (!rowData.DISCKONSUMEN) {
+                                disckonsumen = 0
+                            } else {
+                                disckonsumen = parseFloat(rowData.DISCKONSUMEN)
+                            }
+                            if (!rowData.DISC) {
+                                disc = 0
+                            } else {
+                                disc = parseFloat(rowData.DISC)
+                            }
+
+                            if (!rowData.DISC2) {
+                                disc2 = 0
+                            } else {
+                                disc2 = parseFloat(rowData.DISC2)
+                            }
+                            if (!rowData.DISC3) {
+                                disc3 = 0
+                            } else {
+                                disc3 = parseFloat(rowData.DISC3)
+                            }
+                            if (!rowData.DISC4) {
+                                disc4 = 0
+                            } else {
+                                disc4 = parseInt(rowData.DISC4)
+                            }
+                            if (!rowData.JUMLAH_MEDIS) {
+                                jumlah_dokter = 0
+                            } else {
+                                jumlah_dokter = parseInt(rowData.JUMLAH_MEDIS)
+                            }
+                            if (!rowData.FEE_MEDIS) {
+                                fee_dokter = 0
+                            } else {
+                                fee_dokter = parseInt(rowData.FEE_MEDIS)
+                            }
+                            var amount = (hjual * qty)
+                            var totdisckonsumen = amount * (disckonsumen / 100)
+                            var totdisc = (amount - totdisckonsumen) * (disc / 100)
+                            var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+                            var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+                            var total = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+                            var res = (total * (fee_dokter / 100)) / jumlah_dokter
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+
+                ],
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 500);$('#ModalLoading').modal('hide');
+        },
+    })
+}

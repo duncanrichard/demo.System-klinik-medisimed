@@ -84,6 +84,7 @@ Kasir        I M M O D E R M A
 {% block content %}
 {% csrf_token %}
 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalReseler.html'%}
 {% include 'dashboard/kasir/modal/ModalDaftarPaketTransaksi.html'%}
 {% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}
 {% include 'dashboard/kasir/dxgrid/DxGridModalVoucher.html'%}
@@ -106,7 +107,7 @@ Kasir        I M M O D E R M A
 <script src="{% static 'js/terbilang.js'%}"></script>
 <script type="text/javascript">
     
-    
+    {% include 'dashboard/data_pasien/js/getReseler.html' %}
     {% include 'dashboard/kasir/js/getvoucher.html' %}
     {% include 'dashboard/kasir/js/getTpay.html' %}
     {% include 'dashboard/kasir/js/getbc.html' %}

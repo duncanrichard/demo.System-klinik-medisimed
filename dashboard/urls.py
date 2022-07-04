@@ -141,6 +141,7 @@ urlpatterns = [
         url(r'^$',kasir_rj.kasir_rj, name='kasir_rj'),
         url(r'^getDaftarPasien', pasien_rj.getDaftarPasien),
         url(r'^getDataPasien', data_pasien.getDataPasien),
+        url(r'^getReseler', data_pasien.getReseler),
         url(r'^getIdDataProduk', kasir_rj.getIdDataProduk),
         url(r'^getdataProduk', kasir_rj.getdataProduk),
         url(r'^getDiscCustomer', kasir_rj.getDiscCustomer),

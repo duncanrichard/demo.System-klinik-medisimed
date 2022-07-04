@@ -39,6 +39,13 @@ $(document).ready(function () {
     $('#Findjenis').hide()
     $('#Findjenis2').hide()
     setupAwal()
+    $('#btnFindReseler').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var param = 1
+        $('#dxGridModalReseler').modal('show');
+        cariReseler(param)
+    })
 
     $("#menu_tambah").click(function () {
         kode_paket = ''

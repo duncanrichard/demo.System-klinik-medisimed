@@ -90,7 +90,7 @@ function cariDaftarPasien() {
             $("#idPasien").val(e.data.KPKD_PASIEN);
             $('#nama_pasien').val(e.data.NAMAPASIEN);
             $("#no_regis").val(e.data.KPNO_TRANSAKSI);
-            $('#tgl_periksa').val(e.data.TANGGAL.substr(0, 10));
+            $('#tanggal').val(e.data.TANGGAL.substr(0, 10));
             getDataPasien($("#idPasien").val());
             $('#ModalDaftarRJ').modal('hide');
             $('#nama_pasien').focus()

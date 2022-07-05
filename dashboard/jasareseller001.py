@@ -49,7 +49,6 @@ def proses_excel(request):
     q += "inner join RESELER e on a.KD_RESELER=e.KD_RESELER "
     q += "where (FD_DISCRESELER<>0 and a.KD_RESELER>=%s AND a.KD_RESELER<=%s and FTTGL_TRANSAKSI>=%s AND FTTGL_TRANSAKSI<=%s AND a.KD_CABANG= %s) "
     result = Globals().getDataQuery(q, [kodereseller_dari,kodereseller_sampai,tanggal_dr,tanggal_sd,KD_CABANG])
-    print (q)
 
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

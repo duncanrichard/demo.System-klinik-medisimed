@@ -73,6 +73,7 @@ var gridDataPendaftar = new DevExpress.data.DataSource({
         var search_kdpas = $('#search_kdpas').val();
         var search_name = $('#search_name').val();
         var search_almt = $('#search_almt').val();
+        var search_telp = $('#search_telp').val();
 
         var pilihan = $('input[name=search_by]:checked').val();
         var tanggal = $('#search_pasien_by_date_date').val();
@@ -83,6 +84,7 @@ var gridDataPendaftar = new DevExpress.data.DataSource({
                 "search_name": search_name,
                 "search_almt": search_almt,
                 "search_kdpas": search_kdpas,
+                "search_telp": search_telp,
                 "pilihan": pilihan,
                 'tanggal': tanggal
             },
@@ -120,6 +122,8 @@ function cariPendaftar(e) {
             "KODE_PASIEN",
             "NAMA_PASIEN",
             "ALAMAT",
+            "TELEPON",
+            "TANGGAL",
         ],
         onRowClick: function (e) {
             getDataPasien(e.data.KODE_PASIEN);
@@ -163,32 +167,6 @@ function getDataPasien(e) {
                 $('#far_kode_dokter').val(datas.data1[0].KODE_DOKTER);
                 $('#far_nama_dokter').val(datas.data1[0].NAMA_DOKTER);
                 $('#far_antri_poly').val(datas.data1[0].FRPNOANTRIDOKTER);
-
-            } else if (datas.data2.length != 0) {
-
-                $('#far_kode_pasien').val(datas.data2[0].KODE_PASIEN);
-                $('#far_nama_pasien').val(datas.data2[0].NAMA_PASIEN);
-                // info resep
-                $('#info_kode_pasien').val(datas.data2[0].KODE_PASIEN);
-                $('#info_nama_pasien').val(datas.data2[0].NAMA_PASIEN);
-
-                $('#far_alamat').val(datas.data2[0].ALAMAT);
-                $('#far_tanggal_lhr').val(datas.data2[0].TGL_LAHIR.substr(0, 10));
-
-                $('#far_jenis_tarif').val(datas.data2[0].FMKJENIS_TARIP);
-                $('#far_jenis_tarifobat').val(datas.data2[0].FMKTARIP_OBAT);
-                $('#far_message').val(datas.data2[0].FMKMESSAGE);
-                $('#far_kode_klp_customer').val(datas.data2[0].FMKCUST_ID);
-                $('#far_nama_klp_customer').val(datas.data2[0].FMKCUSTN);
-                $('#far_kode_customer').val(datas.data2[0].CUSID);
-                $('#far_nama_customer').val(datas.data2[0].NAME);
-                $('#far_kode_poly').val(datas.data2[0].PRWIKD_SPECIAL);
-                $('#far_nama_poly').val(datas.data2[0].FMSPESIALISASIN);
-                $('#far_kode_dokter').val(datas.data2[0].KODE_DOKTER);
-                $('#far_nama_dokter').val(datas.data2[0].NAMA_DOKTER);
-                $('#far_antri_poly').val('');
-
-
 
             } else if (datas.data3.length != 0) {
                 $('#far_kode_pasien').val(datas.data3[0].KODE_PASIEN);

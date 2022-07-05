@@ -145,73 +145,32 @@ function getDataPasien(e) {
         success: function (datas) {
 
             if (datas.data1.length != 0) {
-
                 $('#far_kode_pasien').val(datas.data1[0].KODE_PASIEN);
                 $('#far_nama_pasien').val(datas.data1[0].NAMA_PASIEN);
                 $('#far_alamat').val(datas.data1[0].ALAMAT);
-                // info resep
-                $('#info_kode_pasien').val(datas.data1[0].KODE_PASIEN);
-                $('#info_nama_pasien').val(datas.data1[0].NAMA_PASIEN);
-
                 $('#far_tanggal_lhr').val(datas.data1[0].TGL_LAHIR.substr(0, 10));
-
-                $('#far_jenis_tarif').val(datas.data1[0].FMKJENIS_TARIP);
-                $('#far_jenis_tarifobat').val(datas.data1[0].FMKTARIP_OBAT);
-                $('#far_message').val(datas.data1[0].FMKMESSAGE);
-                $('#far_kode_klp_customer').val(datas.data1[0].FMKCUST_ID);
-                $('#far_nama_klp_customer').val(datas.data1[0].FMKCUSTN);
-                $('#far_kode_customer').val(datas.data1[0].CUSID);
-                $('#far_nama_customer').val(datas.data1[0].NAME);
-                $('#far_kode_poly').val(datas.data1[0].KPKD_POLY);
-                $('#far_nama_poly').val(datas.data1[0].FMPKLINIKN);
+                $('#far_kode_reseler').val(datas.data1[0].KD_RESELER);
+                $('#far_nama_reseler').val(datas.data1[0].NAMA_RESELER);
                 $('#far_kode_dokter').val(datas.data1[0].KODE_DOKTER);
                 $('#far_nama_dokter').val(datas.data1[0].NAMA_DOKTER);
-                $('#far_antri_poly').val(datas.data1[0].FRPNOANTRIDOKTER);
-
             } else if (datas.data3.length != 0) {
                 $('#far_kode_pasien').val(datas.data3[0].KODE_PASIEN);
                 $('#far_nama_pasien').val(datas.data3[0].NAMA_PASIEN);
-                // info resep
-                $('#info_kode_pasien').val(datas.data3[0].KODE_PASIEN);
-                $('#info_nama_pasien').val(datas.data3[0].NAMA_PASIEN);
                 $('#far_alamat').val(datas.data3[0].ALAMAT);
                 $('#far_tanggal_lhr').val(datas.data3[0].TGL_LAHIR.substr(0, 10));
-
-                $('#far_jenis_tarif').val(datas.data3[0].FMKJENIS_TARIP);
-                $('#far_jenis_tarifobat').val(datas.data3[0].FMKTARIP_OBAT);
-                $('#far_message').val(datas.data3[0].FMKMESSAGE);
-                $('#far_kode_klp_customer').val(datas.data3[0].FMKCUST_ID);
-                $('#far_nama_klp_customer').val(datas.data3[0].FMKCUSTN);
-                $('#far_kode_customer').val(datas.data3[0].CUSID);
-                $('#far_nama_customer').val(datas.data3[0].NAME);
-                $('#far_kode_poly').val('');
-                $('#far_nama_poly').val('');
+                $('#far_kode_reseler').val(datas.data3[0].KD_RESELER);
+                $('#far_nama_reseler').val(datas.data3[0].NAMA_RESELER);
                 $('#far_kode_dokter').val('');
                 $('#far_nama_dokter').val('');
-                $('#far_antri_poly').val('');
             } else {
                 $('#far_kode_pasien').val('');
                 $('#far_nama_pasien').val('');
-                // info resep
-                $('#info_kode_pasien').val('');
-                $('#info_nama_pasien').val('');
-
                 $('#far_alamat').val('');
                 $('#far_tanggal_lhr').val(todays);
-
-                $('#far_jenis_tarif').val('');
-                $('#far_jenis_tarifobat').val('');
-                $('#far_message').val('');
-                $('#far_kode_klp_customer').val('');
-                $('#far_nama_klp_customer').val('');
-                $('#far_kode_customer').val('');
-                $('#far_nama_customer').val('');
-                $('#far_kode_poly').val('');
-                $('#far_nama_poly').val('');
+                $('#far_kode_reseler').val('');
+                $('#far_nama_reseler').val('');
                 $('#far_kode_dokter').val('');
                 $('#far_nama_dokter').val('');
-                $('#far_antri_poly').val('');
-
             }
             var usia = checkUmur($('#far_tanggal_lhr').val())
             $('#far_usia_tahun_pasien').val(usia.tahun)

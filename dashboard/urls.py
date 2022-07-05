@@ -189,6 +189,7 @@ urlpatterns = [
     url(r'^farmasi/', include ([
         url(r'^$',farmasi.farmasi, name='farmasi'),
         url(r'^getPasien', farmasi.getPasien),
+        url(r'^getDataPasien', farmasi.getDataPasien),
 
     ])),
     url(r'^jasamedis001/', include ([

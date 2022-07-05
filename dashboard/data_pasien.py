@@ -243,9 +243,9 @@ def getPasien(request):
     search_telp = '%'+request.GET['search_telp']+'%'
     cabang_id = request.session['kdCabang']
     q = " select TOP 200 a.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
-    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s   order by a.NAMAPASIEN "
+    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s and (a.KD_ASAL_CABANG = %s)  order by a.NAMAPASIEN "
 
-    proc_param = [search_name,search_almt,search_kdpas,search_telp]
+    proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
     # pprint(proc_param)
     result = Globals().getDataQuery(q, proc_param)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -254,6 +254,7 @@ def getPasien(request):
 
 def getDataPasien(request):
     kdpas = request.GET['PasienId']
+    cabang_id = request.session['kdCabang']
     q = "select  A.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, A.TELEPON,A.EMAIL,KD_POS,JENIS_KELAMIN,TEMPAT_LAHIR,TGL_LAHIR, "
     q += " A.KD_KELURAHAN,C.KELURAHAN AS NAMA_KELURAHAN,C.KD_KECAMATAN,C2.KECAMATAN AS NAMA_KECAMATAN, "
     q += " C2.KD_KABUPATEN,C3.KABUPATEN AS NAMA_KABUPATEN,C3.KD_PROPINSI,C4.PROPINSIN AS NAMA_PROPINSI, "
@@ -277,9 +278,9 @@ def getDataPasien(request):
     q += " LEFT JOIN SUKU as L ON A.SUKU = L.FMSKODE "
     q += " LEFT JOIN RESELER as M ON A.KD_RESELER = M.KD_RESELER "
     q += " LEFT JOIN CABANG as N ON A.KD_ASAL_CABANG = N.CABANG_ID "
-    q += " where KD_PASIEN = %s order by NAMAPASIEN "
+    q += " where KD_PASIEN = %s and (a.KD_ASAL_CABANG = %s) order by NAMAPASIEN "
 
-    result = Globals().getDataQuery(q,[kdpas])
+    result = Globals().getDataQuery(q,[kdpas,cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

@@ -115,16 +115,14 @@ $(document).ready(function () {
     enterFocusTo('keterangan', 'noEKTP');
     enterFocusTo('noEKTP', 'idKlpPasien');
 
-    
+
 
     $("#menu_tambah").click(function () {
         Livetext()
         Cleartext()
         canAdd = 1
-        if ($('#idAsal_cabang').val() == '') {
-            $('#idAsal_cabang').val("{{request.session.kdCabang}}");
-            $('#namaAsal_cabang').val("{{request.session.nama_cabang}}");
-        }
+        $('#idAsal_cabang').val("{{request.session.kdCabang}}");
+        $('#namaAsal_cabang').val("{{request.session.nama_cabang}}");
     })
 
     $('#menu_edit').click(function () {

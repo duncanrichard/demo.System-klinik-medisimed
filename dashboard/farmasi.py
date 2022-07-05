@@ -63,42 +63,33 @@ def getPasien(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def getDataPasien(request):
-	kdpas = request.GET['KD_PASIEN']
-	tanggal = datetime.strptime(request.GET['tanggal'], "%Y-%m-%d")
-	# CEK RAWAT JALAN
-	q = "SELECT a.KD_PASIEN AS KODE_PASIEN, a.NAMAPASIEN AS NAMA_PASIEN, a.ALAMAT,a.TGL_LAHIR, "
-	q += "f.KPKD_DOKTER as KODE_DOKTER, g.FMDDOKTERN AS NAMA_DOKTER,f.KPKD_POLY,h.FMPKLINIKN,  "
-	q += "c.CUSID, c.NAME, d.FMKCUSTN, d.FMKCUST_ID, d.FMKJENIS_TARIP,d.FMKTARIP_OBAT,d.FMKMESSAGE , e.Jenistarip,  "
-	q += " isnull(i.FRPNOANTRIDOKTER,'') as FRPNOANTRIDOKTER "
-	q += "FROM PASIEN AS a INNER JOIN  "
-	q += "KUNJUNGANPASIEN AS f ON a.KD_PASIEN = f.KPKD_PASIEN   INNER JOIN  " 
-	q += "CUSTOMER AS c ON f.KD_CUSTOMER = c.CUSID INNER JOIN   "
-	q += "KELOMPOKCUSTOMER AS d ON c.KELOMPOK_ID = d.FMKCUST_ID INNER JOIN  "
-	q += "TARIF_JENIS AS e ON d.FMKJENIS_TARIP = e.kd_tarip INNER JOIN  "
-	q += "DOKTER AS g ON g.FMDDOKTER_ID = f.KPKD_DOKTER  INNER JOIN "
-	q += "POLIKLINIK AS h ON h.FMPKLINIK_ID = f.KPKD_POLY LEFT JOIN  "
-	q += "PASIEN_RUJUKAN i on f.KPNO_TRANSAKSI=i.FRPNOTRANSAKSIKJ "
-	q += "WHERE (KPTGL_PERIKSA= %s  and a.KD_PASIEN = %s AND f.KPJENISTRANSAKSI not in('PK018','PK019')) "
+    kdpas = request.GET['KD_PASIEN']
+    tanggal = datetime.strptime(request.GET['tanggal'], "%Y-%m-%d")
+    # CEK RAWAT JALAN
+    q = "SELECT  a.KD_PASIEN AS KODE_PASIEN, a.NAMAPASIEN AS NAMA_PASIEN, a.ALAMAT, a.TGL_LAHIR, "
+    q += "(SELECT TOP (1) FDDKD_DOKTER "
+    q += "FROM   TRANSAKSIDOKTERD AS b "
+    q += "WHERE  (FDDNO_TRANSAKSI = f.KPNO_TRANSAKSI)) AS KODE_DOKTER, "
+    q += "(SELECT  TOP (1) e.FMDDOKTERN "
+    q += "FROM   TRANSAKSIDOKTERD AS c INNER JOIN "
+    q += "DOKTER AS e ON c.FDDKD_DOKTER = e.FMDDOKTER_ID "
+    q += "WHERE (c.FDDNO_TRANSAKSI = f.KPNO_TRANSAKSI)) AS NAMA_DOKTER, f.KD_RESELER, h.NAMA_RESELER "
+    q += "FROM   PASIEN AS a INNER JOIN "
+    q += "KUNJUNGANPASIEN AS f ON a.KD_PASIEN = f.KPKD_PASIEN LEFT OUTER JOIN "
+    q += "RESELER AS h ON h.KD_RESELER = f.KD_RESELER "
+    q += "WHERE (KPTGL_PERIKSA= %s  and a.KD_PASIEN = %s) "
+    result1 = Globals().getDataQuery(q, [tanggal,kdpas])
 	# CEK PASIEN LANGSUNG
-	q += "SELECT a.KD_PASIEN AS KODE_PASIEN, a.NAMAPASIEN AS NAMA_PASIEN, a.ALAMAT,a.TGL_LAHIR, "
-	q += "c.CUSID, c.NAME, d.FMKCUSTN, d.FMKCUST_ID, d.FMKJENIS_TARIP,d.FMKTARIP_OBAT,d.FMKMESSAGE , e.Jenistarip  "
-	q += "FROM PASIEN AS a LEFT OUTER JOIN  "
-	q += "CUSTOMER AS c ON a.KD_PERUSAHAAN = c.CUSID LEFT OUTER JOIN  "
-	q += "KELOMPOKCUSTOMER AS d ON c.KELOMPOK_ID = d.FMKCUST_ID LEFT OUTER JOIN "
-	q += "TARIF_JENIS AS e ON d.FMKJENIS_TARIP = e.kd_tarip  "
-	q += "WHERE (a.KD_PASIEN = %s ) "
-
-	result1 = Globals().getData(q, [tanggal,kdpas,kdpas,kdpas], 1)
-	result2 = Globals().getData(q, [tanggal,kdpas,kdpas,kdpas], 2)
-	result3 = Globals().getData(q, [tanggal,kdpas,kdpas,kdpas], 3)
-
-	data = {
-		'data1': result1,
-		'data2': result2,
-		'data3': result3,
-	}
-
-	json_data = json.dumps(data, cls=DjangoJSONEncoder)
-	cursor.close()
-	return HttpResponse(json_data, content_type="application/json")
+    q = "SELECT a.KD_PASIEN AS KODE_PASIEN, a.NAMAPASIEN AS NAMA_PASIEN, a.ALAMAT,a.TGL_LAHIR, "
+    q += "c.KD_RESELER,c.NAMA_RESELER  "
+    q += "FROM PASIEN AS a LEFT OUTER JOIN  "
+    q += "RESELER AS c ON a.KD_RESELER = c.KD_RESELER  "
+    q += "WHERE (a.KD_PASIEN = %s ) "
+    result3 = Globals().getDataQuery(q, [kdpas])
+    data = {
+        'data1': result1,
+        'data3': result3,
+    }
+    json_data = json.dumps(data, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
 

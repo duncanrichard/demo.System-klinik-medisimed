@@ -109,8 +109,8 @@ $(document).ready(function () {
     enterFocusTo('alamat', 'telepon');
     enterFocusTo('telepon', 'kd_pos');
     enterFocusTo('kd_pos', 'idProvinsi');
-    enterFocusTo('email', 'keterangan');
-    enterFocusTo('keterangan', 'noEKTP');
+    enterFocusTo('email', 'kode_Sumber');
+    enterFocusTo('kode_Sumber', 'noEKTP');
     enterFocusTo('noEKTP', 'idKlpPasien');
 
     $("#menu_tambah").click(function () {
@@ -154,7 +154,7 @@ $(document).ready(function () {
                         TELEPON: $("#telepon").val(),
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
-                        KETERANGAN: $("#keterangan").val(),
+                        KETERANGAN: $("#kode_Sumber").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
                         TEMPAT_LAHIR: $("#tempat_lahir").val(),
                         BAHASA: $("#idBahasa").val(),
@@ -198,7 +198,7 @@ $(document).ready(function () {
                         TELEPON: $("#telepon").val(),
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
-                        KETERANGAN: $("#keterangan").val(),
+                        KETERANGAN: $("#kode_Sumber").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
                         TEMPAT_LAHIR: $("#tempat_lahir").val(),
                         BAHASA: $("#idBahasa").val(),
@@ -210,6 +210,7 @@ $(document).ready(function () {
                     },
                     success: function (e) {
                         alert(e[0].STATUS + ' - ' + e[0].STATE)
+
                         Deathtext()
                     }
                 });
@@ -295,7 +296,8 @@ function Cleartext() {
     $('#jenisTarif').val('');
     $('#telepon').val('');
     $('#email').val('');
-    $('#keterangan').val('');
+    $('#kode_Sumber').val('');
+    $('#nama_Sumber').val('');
     $('#noEKTP').val('');
     $('#idKlpPasien').val('');
     $('#namaKlpPasien').val('');
@@ -375,7 +377,7 @@ function Deathtext() {
 
     btnDisable('wni')
     setReadOnly('email')
-    setReadOnly('keterangan')
+    setReadOnly('kode_Sumber')
     btnDisable('identitas')
     setReadOnly('noEKTP')
 
@@ -465,7 +467,7 @@ function Livetext() {
 
     btnEnable('wni')
     setUnReadOnly('email')
-    setUnReadOnly('keterangan')
+    setUnReadOnly('kode_Sumber')
     btnEnable('identitas')
     setReadOnly('noEKTP')
 

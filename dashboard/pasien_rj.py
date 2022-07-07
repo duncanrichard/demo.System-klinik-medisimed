@@ -58,7 +58,7 @@ def AUD_PASIENRJ(request):
     TELEPON = request.POST['TELEPON']
     KD_POS = request.POST['KD_POS']
     NO_ASURANSI = request.POST['NO_ASURANSI']
-    KETERANGAN = request.POST['KETERANGAN']
+    Sumber_id = request.POST['Sumber_id']
     NAMA_KELUARGA = request.POST['NAMA_KELUARGA']
     TEMPAT_LAHIR = request.POST['TEMPAT_LAHIR']
     BAHASA = request.POST['BAHASA']
@@ -77,7 +77,7 @@ def AUD_PASIENRJ(request):
     try:
         q = "EXEC AUD_KUNJUNGAN_PASIEN  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
         param = [KD_PASIEN, KD_KELURAHAN, KD_PENDIDIKAN,KD_PEKERJAAN, KD_PERUSAHAAN, NAMAPASIEN, TGL_LAHIR, GOL_DARAH, JENIS_KELAMIN, STATUS_MARITA, 
-                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI, KETERANGAN, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
+                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI, Sumber_id, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
                 KD_RESELER, USERRS,TGL_PERIKSA,NO_TRANSAKSI,KD_ASAL_CABANG,status_aud]
         # print (q % tuple(param))
         result = Globals().getDataSP(

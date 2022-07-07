@@ -11,6 +11,7 @@ from . import paket_produk
 from . import farmasi
 from . import jasamedis001
 from . import jasareseller001
+from . import master_sumber
 
 
 urlpatterns = [
@@ -120,6 +121,7 @@ urlpatterns = [
         url(r'^AUD_PASIENRJ', pasien_rj.AUD_PASIENRJ),
         url(r'^cekRMterakhir', pasien_rj.cekRMterakhir),
         url(r'^getDaftarPasien', pasien_rj.getDaftarPasien),
+        url(r'^open_sumber', master_sumber.open_sumber),
     ])),
     url(r'^master_produk/', include ([
         url(r'^$',master_produk.master_produk, name='master_produk'),
@@ -190,6 +192,7 @@ urlpatterns = [
         url(r'^$',farmasi.farmasi, name='farmasi'),
         url(r'^getPasien', farmasi.getPasien),
         url(r'^getDataPasien', farmasi.getDataPasien),
+        url(r'^getReseler', data_pasien.getReseler),
 
     ])),
     url(r'^jasamedis001/', include ([
@@ -203,6 +206,13 @@ urlpatterns = [
         url(r'^$',jasareseller001.jasareseller001, name='jasareseller001'),
         url(r'^getReseler', data_pasien.getReseler),
         url(r'^proses_excel', jasareseller001.proses_excel),
+    ])),
+    url(r'^master_sumber/', include ([
+        url(r'^$',master_sumber.master_sumber, name='master_sumber'),
+        url(r'^open_sumber', master_sumber.open_sumber),
+        url(r'^aud_Sumber', master_sumber.aud_Sumber),
+        
+ 
     ])),
 
 

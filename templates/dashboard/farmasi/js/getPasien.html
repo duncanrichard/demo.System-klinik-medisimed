@@ -149,8 +149,8 @@ function getDataPasien(e) {
                 $('#far_nama_pasien').val(datas.data1[0].NAMA_PASIEN);
                 $('#far_alamat').val(datas.data1[0].ALAMAT);
                 $('#far_tanggal_lhr').val(datas.data1[0].TGL_LAHIR.substr(0, 10));
-                $('#far_kode_reseler').val(datas.data1[0].KD_RESELER);
-                $('#far_nama_reseler').val(datas.data1[0].NAMA_RESELER);
+                $('#idReseler').val(datas.data1[0].KD_RESELER);
+                $('#namaReseler').val(datas.data1[0].NAMA_RESELER);
                 $('#far_kode_dokter').val(datas.data1[0].KODE_DOKTER);
                 $('#far_nama_dokter').val(datas.data1[0].NAMA_DOKTER);
             } else if (datas.data3.length != 0) {
@@ -158,8 +158,8 @@ function getDataPasien(e) {
                 $('#far_nama_pasien').val(datas.data3[0].NAMA_PASIEN);
                 $('#far_alamat').val(datas.data3[0].ALAMAT);
                 $('#far_tanggal_lhr').val(datas.data3[0].TGL_LAHIR.substr(0, 10));
-                $('#far_kode_reseler').val(datas.data3[0].KD_RESELER);
-                $('#far_nama_reseler').val(datas.data3[0].NAMA_RESELER);
+                $('#idReseler').val(datas.data3[0].KD_RESELER);
+                $('#namaReseler').val(datas.data3[0].NAMA_RESELER);
                 $('#far_kode_dokter').val('');
                 $('#far_nama_dokter').val('');
             } else {
@@ -167,8 +167,8 @@ function getDataPasien(e) {
                 $('#far_nama_pasien').val('');
                 $('#far_alamat').val('');
                 $('#far_tanggal_lhr').val(todays);
-                $('#far_kode_reseler').val('');
-                $('#far_nama_reseler').val('');
+                $('#idReseler').val('');
+                $('#namaReseler').val('');
                 $('#far_kode_dokter').val('');
                 $('#far_nama_dokter').val('');
             }

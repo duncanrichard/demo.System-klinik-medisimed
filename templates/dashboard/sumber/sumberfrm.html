@@ -1,0 +1,26 @@
+{% extends "layout/master.html" %} 
+
+{% block title %} 
+sumber 
+{% endblock %} 
+
+{% block head %}
+    
+{% endblock head %}
+
+{% block content %} 
+{% csrf_token %} 
+{% include 'dashboard/sumber/content.html'%} 
+{% include 'dashboard/sumber/modal/dxGridModalsumber.html'%} 
+{% endblock %} 
+
+
+{% block script %}
+
+{% load static %}
+
+<script type="text/javascript">
+  {% include 'dashboard/sumber/js/init.html' %}
+  {% include 'dashboard/sumber/js/aud_sumber.html' %}
+</script>
+{% endblock %}

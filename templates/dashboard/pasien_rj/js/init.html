@@ -45,6 +45,8 @@ $(document).ready(function () {
 
     })
 
+
+
     $('#usia_thn').focusout(function () {
 
         var today = new Date();
@@ -111,11 +113,14 @@ $(document).ready(function () {
     enterFocusTo('alamat', 'telepon');
     enterFocusTo('telepon', 'kd_pos');
     enterFocusTo('kd_pos', 'idProvinsi');
-    enterFocusTo('email', 'keterangan');
-    enterFocusTo('keterangan', 'noEKTP');
+    enterFocusTo('email', 'Sumber_id');
+    enterFocusTo('Sumber_id', 'noEKTP');
     enterFocusTo('noEKTP', 'idKlpPasien');
 
-
+    $("#btnFindsumber").click(function () {
+        $('#dxGridModalsumber').modal('show')
+        load_Sumber()
+    })
 
     $("#menu_tambah").click(function () {
         Livetext()
@@ -169,7 +174,7 @@ $(document).ready(function () {
                         TELEPON: $("#telepon").val(),
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
-                        KETERANGAN: $("#keterangan").val(),
+                        Sumber_id: $("#kode_Sumber").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
                         TEMPAT_LAHIR: $("#tempat_lahir").val(),
                         BAHASA: $("#idBahasa").val(),
@@ -221,7 +226,7 @@ $(document).ready(function () {
                         TELEPON: $("#telepon").val(),
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
-                        KETERANGAN: $("#keterangan").val(),
+                        Sumber_id: $("#kode_Sumber").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
                         TEMPAT_LAHIR: $("#tempat_lahir").val(),
                         BAHASA: $("#idBahasa").val(),
@@ -334,7 +339,8 @@ function Cleartext() {
     $('#jenisTarif').val('');
     $('#telepon').val('');
     $('#email').val('');
-    $('#keterangan').val('');
+    $('#kode_Sumber').val('');
+    $('#nama_Sumber').val('');
     $('#noEKTP').val('');
     $('#idKlpPasien').val('');
     $('#namaKlpPasien').val('');
@@ -416,7 +422,8 @@ function Deathtext() {
 
     btnDisable('wni')
     setReadOnly('email')
-    setReadOnly('keterangan')
+    setReadOnly('Sumber_id')
+    btnDisable('btnFindsumber')
     btnDisable('identitas')
     setReadOnly('noEKTP')
 
@@ -510,7 +517,8 @@ function Livetext() {
 
     btnEnable('wni')
     setUnReadOnly('email')
-    setUnReadOnly('keterangan')
+    setUnReadOnly('Sumber_id')
+    btnEnable('btnFindsumber')
     btnEnable('identitas')
     setReadOnly('noEKTP')
 
@@ -553,4 +561,58 @@ function Livetext() {
 
     setUnReadOnly('tgl_periksa')
 
+}
+
+function load_Sumber() {
+    $("#dxGridDataSumber").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000,
+        },
+        filterRow: {
+            visible: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/open_sumber",
+                    data: {},
+                    method: "GET",
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length,
+                        });
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single",
+        },
+        columns: [{
+                dataField: "SUMBER_ID",
+                caption: "Kode Sumber",
+            },
+            {
+                dataField: "NAMA_SUMBER",
+                caption: "Nama Sumber",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#kode_Sumber").val(e.data.SUMBER_ID);
+            $("#nama_Sumber").val(e.data.NAMA_SUMBER);
+            $('#dxGridModalsumber').modal('hide')
+        },
+    });
 }

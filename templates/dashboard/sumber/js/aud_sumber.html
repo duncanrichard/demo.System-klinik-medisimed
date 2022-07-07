@@ -1,0 +1,181 @@
+$(document).ready(function () {
+  menuhidup()
+
+});
+
+var status_aud = null
+var status_cetak = null
+
+function cekKosong(data) {
+  let z = false
+  data.forEach(id => {
+    if ($('#' + id).val() == '') {
+      z = true
+    }
+  });
+  return z;
+}
+
+function menuhidup() {
+  menuEnable('menu_tambah');
+  menuEnable('menu_edit');
+  menuEnable('menu_hapus');
+  menuDisable('menu_simpan');
+  menuDisable('menu_cancel');
+  menuEnable('menu_find');
+  menuEnable('menu_cetak');
+
+  setReadOnly('kode_Sumber')
+  setReadOnly('nama_Sumber')
+}
+
+function menumati() {
+  menuDisable('menu_tambah');
+  menuDisable('menu_edit');
+  menuDisable('menu_hapus');
+  menuEnable('menu_simpan');
+  menuEnable('menu_cancel');
+  menuDisable('menu_find');
+  menuDisable('menu_cetak');
+
+  setReadOnly('kode_Sumber')
+  setUnReadOnly('nama_Sumber')
+}
+
+$('#menu_tambah').click(function (e) {
+  status_aud = 'A'
+  menumati()
+  $('input[type=text]').val('')
+  $('#nama_Sumber').focus()
+});
+
+$('#menu_edit').click(function (e) {
+  if ($('#kode_Sumber').val() == '') {
+    Swal.fire({
+      icon: 'error',
+      title: 'Pilih data terlebih dahulu !',
+    })
+
+  } else {
+    status_aud = 'A'
+    menumati()
+    $('#nama_Sumber').focus()
+  }
+});
+
+$('#menu_cancel').click(function (e) {
+  menuhidup()
+});
+
+$('#menu_simpan').click(function (e) {
+  if (cekKosong(['nama_Sumber']) == true) {
+    alert('isi nama sumber Dulu!')
+  } else {
+    $.ajax({
+      type: "POST",
+      url: host + '/aud_Sumber',
+      data: {
+        Sumber_id: $('#kode_Sumber').val(),
+        nama: $('#nama_Sumber').val(),
+        status_aud: status_aud,
+        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+      },
+      dataType: "json",
+      success: function (e) {
+        alert(e[0].STATUS + ' - ' + e[0].STATE)
+        $("#kode_Sumber").val(e[0].SUMBER_ID);
+        menuhidup()
+      }
+    });
+  }
+});
+
+$('#menu_hapus').click(function () {
+  if ($('#kode_Sumber').val() == '') {
+    alert('Pilih kode sumber Dulu!')
+  } else {
+    var result = confirm('Yakin data akan dihapus?')
+    var status_aud = "D"
+    if (result) {
+      $.ajax({
+        url: host + "/aud_Sumber",
+        method: "POST",
+        data: {
+          Sumber_id: $('#kode_Sumber').val(),
+          nama: $('#nama_Sumber').val(),
+          status_aud: status_aud,
+          "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function (e) {
+          alert(e[0].STATUS + ' - ' + e[0].STATE)
+          $('#kode_Sumber').val('')
+          $('#nama_Sumber').val('')
+
+        }
+      });
+    }
+  }
+})
+
+$('#menu_find').click(function (e) {
+  $('#dxGridModalsumber').modal('show')
+  load_Sumber()
+});
+$('#menu_keluar').click(function () {
+  window.open('/', "_self");
+})
+
+function load_Sumber() {
+  $("#dxGridDataSumber").dxDataGrid({
+    showBorders: true,
+    showRowLines: true,
+    columnAutoWidth: true,
+    showColumnLines: false,
+    hoverStateEnabled: true,
+    rowAlternationEnabled: true,
+    paging: {
+      pageSize: 1000,
+    },
+    filterRow: {
+      visible: true,
+    },
+    searchPanel: {
+      visible: true
+    },
+    dataSource: new DevExpress.data.DataSource({
+      load: function (e) {
+        var deferred = $.Deferred();
+        $.ajax({
+          url: host + "/open_sumber",
+          data: {},
+          method: "GET",
+          success: function (result) {
+            deferred.resolve(result, {
+              totalCount: result.length,
+            });
+          },
+        });
+
+        return deferred.promise();
+      },
+    }),
+    selection: {
+      mode: "single",
+    },
+    columns: [{
+        dataField: "SUMBER_ID",
+        caption: "Kode Sumber",
+      },
+      {
+        dataField: "NAMA_SUMBER",
+        caption: "Nama Sumber",
+      },
+    ],
+    onRowClick: function (e) {
+      $("#kode_Sumber").val(e.data.SUMBER_ID);
+      $("#nama_Sumber").val(e.data.NAMA_SUMBER);
+      $('#dxGridModalsumber').modal('hide')
+      menuhidup();
+    },
+  });
+}

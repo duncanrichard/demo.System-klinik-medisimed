@@ -35,6 +35,7 @@ Pendaftaran Pasien
 {% block content %} 
 {% csrf_token %} 
 
+{% include 'dashboard/sumber/modal/dxGridModalsumber.html'%} 
 {% include 'dashboard/pasien_rj/modal/ModalDaftarRJ.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalCustomer.html'%}

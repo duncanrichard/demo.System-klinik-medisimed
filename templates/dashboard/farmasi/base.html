@@ -49,6 +49,7 @@ F A R M A S I / PRODUK
 {% block content %}
 {% csrf_token %}
 
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalReseler.html'%}
 {% include 'dashboard/farmasi/dxgrid/dxGridModalPasien.html' %}
 {% include 'dashboard/farmasi/modal/ModalBarang.html' %}
 {% include 'dashboard/farmasi/form.html' %}
@@ -62,6 +63,7 @@ F A R M A S I / PRODUK
 <script src="{% static 'js/terbilang.js'%}"></script>
 <script type="text/javascript">
     
+    {% include 'dashboard/data_pasien/js/getReseler.html' %}
     {% include 'dashboard/farmasi/js/getPasien.html' %}
     {% include 'dashboard/farmasi/js/getBarang.html' %}
     {% include 'dashboard/farmasi/js/getDxGrid.html' %}

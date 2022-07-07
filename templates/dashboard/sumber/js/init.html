@@ -1,0 +1,227 @@
+var host_main = window.location.href.split("/");
+var host_root = host_main[0] + "//" + host_main[2];
+var host = host_main[0] + "//" + host_main[2] + "/" + host_main[3];
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+
+    $('.enter-cari-merk').keypress(function (e) {
+        var keycode = (e.keyCode ? e.keyCode : e.which);
+        if (keycode == '13') {
+            load_merk()
+        }
+    });
+    $('.enter-cari-darisampai').keypress(function (e) {
+        var keycode = (e.keyCode ? e.keyCode : e.which);
+        if (keycode == '13') {
+            searchMerk()
+        }
+    });
+// })
+// $(document).ready(function () {
+//     setupawal()
+//     $('#menu_tambah').click(function () {
+//         tambah()
+//     })
+//     $('#menu_edit').click(function () {
+//         if ($('#kode_merk').val() == '') {
+//             alert('Pilih Kode Merk Dulu!')
+//         } else {
+//             livetext()
+//             setReadOnly('kode_merk');
+//         }
+//     })
+//     $('#menu_hapus').click(function () {
+//         if ($('#kode_merk').val() == '') {
+//             alert('Pilih Kode Merk Dulu!')
+//         } else {
+//             var result = confirm('Yakin data ingin dihapus?')
+//             var status_aud = "D"
+//             if (result) {
+//                 $.ajax({
+//                     url: host + "merk_simpan",
+//                     method: "POST",
+//                     data: {
+//                         KODE_MERK: $("#kode_merk").val(),
+//                         NAMA_MERK: $("#nama_merk").val(),
+//                         INSENTIF_MERK: $("#insentif_merk").val(),
+//                         status_aud: status_aud,
+//                         "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+//                     },
+//                     success: function (e) {
+//                         alert(e[0].STATUS + ' - ' + e[0].STATE)
+//                         setupawal()
+//                     }
+//                 });
+//             }
+//         }
+//     })
+//     $('#menu_simpan').click(function () {
+//         checkError()
+//         if (cekError == true) {
+//             var result = confirm('Yakin data ingin disimpan?')
+//             var status_aud = "A"
+//             if (result) {
+//                 $.ajax({
+//                     url: host + "merk_simpan",
+//                     method: "POST",
+//                     data: {
+//                         KODE_MERK: $("#kode_merk").val(),
+//                         NAMA_MERK: $("#nama_merk").val(),
+//                         INSENTIF_MERK: $("#insentif_merk").val(),
+//                         status_aud: status_aud,
+//                         "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+//                     },
+//                     success: function (e) {
+//                         alert(e[0].STATUS + ' - ' + e[0].STATE)
+//                         setupawal()
+//                     }
+//                 });
+//             }
+//         }
+//     })
+//     $('#menu_batal').click(function () {
+//         setupawal()
+//     })
+//     $('#menu_cari').click(function () {
+//         carimerk()
+//         $('#ModalMerk').modal('show')
+//     })
+//     $('#menu_keluar').click(function () {
+//         window.open('/', "_self");
+//     })
+// });
+
+// function tambah() {
+//     livetext()
+//     cleartext()
+// }
+
+// function setupawal() {
+//     deathtext()
+//     cleartext()
+//     load_merk()
+// }
+
+// function checkError() {
+//     cekError = true;
+//     if ($('#kode_merk').val() == '') {
+//         cekError = false;
+//         alert('Masukkan Kode Merk!')
+//     }
+//     if ($('#nama_merk').val() == '') {
+//         cekError = false;
+//         alert('Masukkan Nama Merk!')
+//     }
+//     if ($('#insentif_merk').val() == '') {
+//         cekError = false;
+//         alert('Masukkan Insentif Merk!')
+//     }
+//     return cekError;
+// }
+
+// function deathtext() {
+//     menuEnable('menu_tambah');
+//     menuEnable('menu_edit');
+//     menuEnable('menu_hapus');
+//     menuDisable('menu_simpan');
+//     menuDisable('menu_batal');
+//     menuEnable('menu_cari');
+//     menuEnable('menu_cetak');
+//     menuEnable('menu_keluar');
+
+//     setReadOnly('kode_merk');
+//     setReadOnly('nama_merk');
+//     setReadOnly('insentif_merk');
+// }
+
+// function cleartext() {
+//     setEmpty('kode_merk');
+//     setEmpty('nama_merk');
+//     setEmpty('insentif_merk');
+// }
+
+// function livetext() {
+//     menuDisable('menu_tambah');
+//     menuEnable('menu_edit');
+//     menuEnable('menu_hapus');
+//     menuEnable('menu_simpan');
+//     menuEnable('menu_batal');
+//     menuDisable('menu_cari');
+//     menuDisable('menu_cetak');
+//     menuDisable('menu_keluar');
+
+//     setUnReadOnly('kode_merk');
+//     setUnReadOnly('nama_merk');
+//     setUnReadOnly('insentif_merk');
+// }
+
+// function load_merk() {
+//     console.log('Siapa yaah?');
+//     $("#data_grid").dxDataGrid({
+//         showBorders: true,
+//         showRowLines: true,
+//         columnAutoWidth: true,
+//         showColumnLines: false,
+//         hoverStateEnabled: true,
+//         rowAlternationEnabled: true,
+//         paging: {
+//             pageSize: 1000
+//         },
+//         filterRow: {
+//             visible: true
+//         },
+//         // searchPanel : { visible: true },
+//         dataSource: new DevExpress.data.DataSource({
+//             load: function (e) {
+//                 var deferred = $.Deferred();
+//                 $.ajax({
+//                     url: host + "getDataMerk",
+//                     method: "GET",
+//                     success: function (result) {
+//                         deferred.resolve(result, {
+//                             totalCount: result.length
+//                         });
+//                     }
+//                 });
+
+//                 return deferred.promise();
+//             }
+//         }),
+//         selection: {
+//             mode: "single"
+//         },
+//         columns: [{
+//                 dataField: "MERK_ID",
+//                 caption: "Kode Merk",
+//                 width: 90,
+//             },
+//             {
+//                 dataField: "NAMA",
+//                 caption: "Nama Merk",
+//                 width: 280,
+//             },
+//             {
+//                 dataField: "INSENTIF",
+//                 caption: "Insentif",
+//                 width: 80,
+
+//             },
+//         ],
+//         onRowClick: function (e) {
+//             $("#kode_merk").val(e.data.MERK_ID);
+//             $("#nama_merk").val(e.data.NAMA);
+//             $("#insentif_merk").val(e.data.INSENTIF);
+//         }
+//     });
+})

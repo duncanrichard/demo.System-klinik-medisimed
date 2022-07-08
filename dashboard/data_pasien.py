@@ -242,11 +242,16 @@ def getPasien(request):
     search_kdpas = '%'+request.GET['search_kdpas']+'%'
     search_telp = '%'+request.GET['search_telp']+'%'
     cabang_id = request.session['kdCabang']
-    q = " select TOP 200 a.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
-    q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s and (a.KD_ASAL_CABANG = %s)  order by a.NAMAPASIEN "
+    pilihan = request.GET['pilihan']
+    if pilihan == 'search_cabang_all':
+        q = " select TOP 200 a.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
+        q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s   order by a.NAMAPASIEN "
+        proc_param = [search_name,search_almt,search_kdpas,search_telp]
+    else:
+        q = " select TOP 200 a.KD_PASIEN,NAMAPASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
+        q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s and (a.KD_ASAL_CABANG = %s)  order by a.NAMAPASIEN "
+        proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
 
-    proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
-    # pprint(proc_param)
     result = Globals().getDataQuery(q, proc_param)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
@@ -279,9 +284,9 @@ def getDataPasien(request):
     q += " LEFT JOIN RESELER as M ON A.KD_RESELER = M.KD_RESELER "
     q += " LEFT JOIN CABANG as N ON A.KD_ASAL_CABANG = N.CABANG_ID "
     q += " LEFT JOIN SUMBER as O ON A.KETERANGAN = O.SUMBER_ID "
-    q += " where KD_PASIEN = %s and (a.KD_ASAL_CABANG = %s) order by NAMAPASIEN "
+    q += " where KD_PASIEN = %s  order by NAMAPASIEN "
 
-    result = Globals().getDataQuery(q,[kdpas,cabang_id])
+    result = Globals().getDataQuery(q,[kdpas])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

@@ -539,16 +539,16 @@ function setGridStock(kode_barang = null) {
 function setGudangPasien() {
     var dataGrid = $("#datagrid").dxDataGrid("instance");
     if (dataGrid.getVisibleRows().length != 0) {
-        setDisabled('cari_far_kode_gudang', 0)
+        btnDisable('cari_far_kode_gudang')
     } else {
-        setDisabled('cari_far_kode_gudang', 1)
+        btnEnable('cari_far_kode_gudang')
     }
 }
 
 function deleteAllRow() {
     setGridEmpty()
-    setDisabled('cari_gudang', 1)
-    setDisabled('cari_pasien', 1)
+    btnDisable('cari_far_kode_gudang')
+    btnDisable('cari_far_kode_pasien')
 }
 
 function setFocusQTY() {

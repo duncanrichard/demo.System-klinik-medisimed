@@ -330,7 +330,6 @@ function Cari_discount(tempttypec = null, callback = null) {
             method: "GET",
             data: {
                 'kode_produk': tempttypec,
-                'kode_customer': $('#far_kode_customer').val(),
             },
             success: function (datas) {
                 if (datas.length > 0) {

@@ -49,6 +49,8 @@ F A R M A S I / PRODUK
 {% block content %}
 {% csrf_token %}
 
+{% include 'dashboard/farmasi/dxgrid/dxGridModalGudang.html'%}
+{% include 'dashboard/farmasi/dxgrid/dxGridModalDokter.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalReseler.html'%}
 {% include 'dashboard/farmasi/dxgrid/dxGridModalPasien.html' %}
 {% include 'dashboard/farmasi/modal/ModalBarang.html' %}
@@ -63,6 +65,8 @@ F A R M A S I / PRODUK
 <script src="{% static 'js/terbilang.js'%}"></script>
 <script type="text/javascript">
     
+    {% include 'dashboard/farmasi/js/getGudang.html'%}
+    {% include 'dashboard/farmasi/js/getDokter.html'%}
     {% include 'dashboard/data_pasien/js/getReseler.html' %}
     {% include 'dashboard/farmasi/js/getPasien.html' %}
     {% include 'dashboard/farmasi/js/getBarang.html' %}

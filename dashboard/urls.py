@@ -193,7 +193,17 @@ urlpatterns = [
         url(r'^getPasien', farmasi.getPasien),
         url(r'^getDataPasien', farmasi.getDataPasien),
         url(r'^getReseler', data_pasien.getReseler),
-
+        url(r'^getDataDokter', farmasi.getDataDokter),
+        url(r'^getdokter', farmasi.getdokter),
+        url(r'^getDataGudang', farmasi.getDataGudang),
+        url(r'^getgudang', farmasi.getgudang),
+        url(r'^getIdDataBarang', farmasi.getIdDataBarang),
+        url(r'^getDataBarang', farmasi.getDataBarang),
+        url(r'^getDiscCustomer', farmasi.getDiscCustomer),
+        url(r'^getParameter', farmasi.getParameter),
+        url(r'^getHistoryBarang', farmasi.getHistoryBarang),
+        url(r'^cekStokBarangFarmasi', farmasi.cekStokBarangFarmasi),
+        url(r'^SP_AUD_FJINKOTA', farmasi.SP_AUD_FJINKOTA),
     ])),
     url(r'^jasamedis001/', include ([
         url(r'^$',jasamedis001.jasamedis001, name='jasamedis001'),
@@ -214,6 +224,4 @@ urlpatterns = [
         
  
     ])),
-
-
 ]

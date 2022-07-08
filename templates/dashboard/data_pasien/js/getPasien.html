@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    $('input[name=search_by]').click(function () {
+        cariPasien(event)
+    })
     $('#idPasien').keypress(function (e) {
         // e.preventDefault();
         e.stopImmediatePropagation();
@@ -20,7 +23,6 @@ $(document).ready(function () {
     $('#btnFindPasienId').click(function (e) {
         e.preventDefault();
         e.stopImmediatePropagation();
-        console.log('dddddd')
         cariPasien()
     })
 
@@ -131,6 +133,7 @@ function cariPasien() {
         dataSource: new DevExpress.data.DataSource({
             load: function (e) {
                 var deferred = $.Deferred();
+                var pilihan = $('input[name=search_by]:checked').val();
                 $.ajax({
                     url: host + "/getPasien",
                     method: "GET",
@@ -139,6 +142,7 @@ function cariPasien() {
                         "search_almt": $('#search_almt').val(),
                         "search_kdpas": $('#search_kdpas').val(),
                         "search_telp": $('#search_telp').val(),
+                        "pilihan": pilihan,
                     },
                     success: function (result) {
                         deferred.resolve(result, {

@@ -55,6 +55,8 @@ F A R M A S I / PRODUK
 
 {% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}
 {% include 'dashboard/farmasi/modal/ModalTransferRj.html' %}
+{% include 'dashboard/kasir/dxgrid/DxGridModaltpay.html'%}
+{% include 'dashboard/kasir/dxgrid/DxGridModalVoucher.html'%}
 {% include 'dashboard/farmasi/dxgrid/dxGridModalJenisTransfer.html'%}
 {% include 'dashboard/farmasi/dxgrid/dxGridModalNoTransaksiUnit.html'%}
 {% include 'dashboard/farmasi/modal/ModalResepRJ.html' %}
@@ -74,6 +76,8 @@ F A R M A S I / PRODUK
 <script src="{% static 'js/terbilang.js'%}"></script>
 <script type="text/javascript">
     
+    {% include 'dashboard/kasir/js/getTpay.html' %}
+    {% include 'dashboard/kasir/js/getvoucher.html' %}
     {% include 'dashboard/farmasi/js/getTransferRj.html'%}
     {% include 'dashboard/farmasi/js/getGudang.html'%}
     {% include 'dashboard/farmasi/js/getDokter.html'%}

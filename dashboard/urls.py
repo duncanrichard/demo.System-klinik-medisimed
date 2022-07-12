@@ -177,6 +177,8 @@ urlpatterns = [
         url(r'^getDaftarPaketTransaksi', daftar_paket.getDaftarPaketTransaksi),
         url(r'^SP_AUD_BAYAR_TRANSAKSI', kasir_rj.SP_AUD_BAYAR_TRANSAKSI),
         url(r'^cetakBilling', daftar_paket.cetakBilling),
+        url(r'^getTpay', kasir_rj.getTpay),
+        url(r'^getVoucherPay', kasir_rj.getVoucherPay),
         
     ])),
     url(r'^paket_produk/', include ([
@@ -209,7 +211,7 @@ urlpatterns = [
         url(r'^getBarangByBukti', farmasi.getBarangByBukti),
         url(r'^getNoTransaksiUnit', farmasi.getNoTransaksiUnit),
         url(r'^transferRj', farmasi.transferRj),
-        url(r'^getTpay', farmasi.getTpay),
+        url(r'^getTpay', kasir_rj.getTpay),
         url(r'^getVoucherPay', kasir_rj.getVoucherPay),
         url(r'^SP_AUD_BAYAR_TRANSAKSI', kasir_rj.SP_AUD_BAYAR_TRANSAKSI),
         url(r'^cetakBillingFarmasi', farmasi.cetakBillingFarmasi),

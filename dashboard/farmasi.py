@@ -482,12 +482,6 @@ def getNoTransaksiUnit(request):
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
-def getTpay(request):
-    q = "SELECT tpay_id AS KODE, nama AS NAMA_MERK, KREDIT FROM TPAY ORDER BY tpay_id "
-    result = Globals().getDataQuery(q)
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
-
 def transferRj(request):
     no_transaksi = request.POST['no_transaksi']
     tanggal_transaksi = request.POST['tanggal_transaksi']

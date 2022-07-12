@@ -79,6 +79,7 @@ function cariPasien() {
                         "search_almt": $('#search_almt').val(),
                         "search_kdpas": $('#search_kdpas').val(),
                         "search_telp": $('#search_telp').val(),
+                        "pilihan" : $('[name=search_by]:checked').val(),
                     },
                     success: function (result) {
                         deferred.resolve(result, {

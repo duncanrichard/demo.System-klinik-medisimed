@@ -161,6 +161,7 @@ urlpatterns = [
         url(r'^findDepositPaketD', kasir_rj.findDepositPaketD),
         url(r'^findDepositPaket', kasir_rj.findDepositPaket),
         url(r'^getGridPaketprodukpasien',kasir_rj.getGridPaketprodukpasien),
+        url(r'^SP_BATAL_BAYAR', kasir_rj.SP_BATAL_BAYAR),
         
     ])),
     url(r'^daftar_paket/', include ([
@@ -179,7 +180,7 @@ urlpatterns = [
         url(r'^cetakBilling', daftar_paket.cetakBilling),
         url(r'^getTpay', kasir_rj.getTpay),
         url(r'^getVoucherPay', kasir_rj.getVoucherPay),
-        
+        url(r'^SP_BATAL_BAYAR', kasir_rj.SP_BATAL_BAYAR),
     ])),
     url(r'^paket_produk/', include ([
         url(r'^$',paket_produk.paket_produk, name='paket_produk'),

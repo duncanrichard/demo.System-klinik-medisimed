@@ -592,3 +592,32 @@ def getGridPaketprodukpasien(request):
 		'data1':result,'data5':result5
 	}, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
+
+def SP_BATAL_BAYAR(request):
+    FH_BUKTI_ID = request.POST['FH_BUKTI_ID']
+    USERRS = request.session['user_id']
+    status_aud = request.POST['StatusAUD']
+
+    q = "SET NOCOUNT ON;"
+    q += "EXEC IMD_BATAL_PEMBAYARAN "
+    q += "'" + FH_BUKTI_ID + "',"
+    q += "'" + USERRS + "',"
+    q += "'" + status_aud + "' "
+
+    if (status_aud=='D') :
+        user = {
+        'user_id': request.session['user_id'],
+        'user_name': request.session['user_name'],
+        'user_priv': request.session['user_priv'],
+        }
+        data = []
+        data.append({"query": "select * from TRANSAKSIBAYARD where FTBNO_TRANSAKSI = '" + FH_BUKTI_ID + "'"})
+        
+        Globals().create_log('Hapus LogDelete.txt', 'IMMODERMA', data, user)
+    try:
+        result = Globals().getDataSP(q)
+        json_data = json.dumps(result, cls=DjangoJSONEncoder)
+        return HttpResponse(json_data, content_type="application/json")
+
+    except ValueError:
+        print(q)

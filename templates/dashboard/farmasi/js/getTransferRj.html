@@ -1,0 +1,283 @@
+var kode_tpay = ''
+var nama_tpay = ''
+var no_transaksi_unit = ''
+
+$(document).ready(function () {
+    var todays = new Date();
+    var date = todays.getFullYear() + '-' + (todays.getMonth() + 1).toString().padStart(2, "0") + '-' + todays.getDate().toString().padStart(2, "0");
+    var time = todays.getHours() + ":" + todays.getMinutes().toString().padStart(2, "0") + ":" + todays.getSeconds().toString().padStart(2, "0");
+    var dateTime = date + ' ' + time;
+    var no_transaksi_unit_tgl = date
+    Cleartransfer()
+
+
+    $("#cari_jenis_transfer").click(function (e) {
+        open_modal_jenis_transfer()
+    });
+
+    $("#btn_ok_jenis_transfer").click(function (e) {
+        $('#jt_kode_transfer').val(kode_tpay)
+        $('#jt_nama_transfer').val(nama_tpay)
+    });
+
+    $("#cari_no_transaksi_jt").click(function (e) {
+        open_modal_no_transaksi_jt()
+    });
+
+    $("#btn_ok_no_transaksi_jt").click(function (e) {
+        $('#jt_no_transaksi_unit').val(no_transaksi_unit)
+        $('#jt_tanggal_transaksi').val(no_transaksi_unit_tgl)
+
+
+    });
+
+    $('input[name=search_byss]').click(function () {
+        search_transaksi_unit()
+    })
+
+    $("#search_transaksi_by_date_date").change(function () {
+        if ($('input[name=search_byss]:checked').val() == 'by_date') {
+            search_transaksi_unit()
+        }
+    });
+
+    $("#btn_ok_transfer_pembayaran").click(function (e) {
+        if ($("#jt_kode_transfer").val() == '' || $("#jt_no_transaksi_unit").val() == '') {
+            alert('Lengkapi Data dengan Benar')
+        } else {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0');
+            var yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+
+            $.ajax({
+                url: host + "/transferRj",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    "jenis_transaksi": 'rj',
+                    "no_transaksi": $("#jt_no_transaksi").val(),
+                    "tanggal_transaksi": $("#jt_tanggal").val(),
+                    "kode_pay": $("#jt_kode_transfer").val(),
+                    "user": '{{request.session.user_id}}',
+                    "kode_pasien": $("#jt_kode_pasien").val(),
+                    "kode_produk": $("#jt_kode_transfer").val(),
+                    "nama_produk": $("#jt_nama_transfer").val(),
+                    "qty": '1',
+                    "harga": desimal2($("#jt_jumlah_dipindahkan").val()),
+                    "no_faktur": $("#jt_no_transaksi_unit").val(),
+                },
+                beforeSend: function () {
+                    $('#ModalLoading').modal('show');
+                    $('#loading_title').html('Proses Transfer..');
+                    $('#loading_text').html('Tunggu Sebentar');
+                },
+                complete: function () {
+                    $('#ModalLoading').modal('hide');
+                },
+                success: function (e) {
+                    $('#ModalTransferRj').modal('hide');
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    getGridTableBarang(e[0].no_trans)
+                }
+            })
+        }
+    });
+})
+
+function openModalTransferRJ() {
+    var pilihan = $('input[name=search_byss]:checked').val();
+    var tanggal = $('#search_transaksi_by_date_date').val();
+    $.ajax({
+        url: host + "/getNoTransaksiUnit",
+        method: "GET",
+        data: {
+            'get_by': pilihan,
+            'kode_pasien': $('#far_kode_pasien').val(),
+            'no_transaksi': $('#no_fakturid').val(),
+            'tanggal': tanggal,
+        },
+        success: function (data) {
+            if (data.length != 0) {
+                if ('{{ request.session.id_cabang }}' == '22') {
+                    $('#jt_no_transaksi_unit').val('');
+                } else {
+                    $('#jt_no_transaksi_unit').val(data[0].NoTransaksi);
+                }
+            } else {
+                $('#jt_no_transaksi_unit').val('');
+            }
+            if ($("#jt_no_transaksi_unit").val() == '') {
+                open_modal_no_transaksi_jt()
+                $('#jt_kode_transfer').val(global_KodeTransferApt);
+                $('#jt_nama_transfer').val(global_NamaTransferApt);
+                $('#jt_kode_unit').val($('#idReseler').val());
+                $('#jt_nama_unit').val($('#namaReseler').val());
+
+                $('#jt_tanggal_transaksi').val($('#far_tanggal').val());
+                $('#jt_kode_pasien').val($('#far_kode_pasien').val());
+                $('#jt_nama_pasien').val($('#far_nama_pasien').val());
+                $('#jt_alamat_pasien').val($('#far_alamat').val());
+                $('#jt_no_transaksi').val($('#no_fakturid').val());
+                $('#jt_tanggal').val($('#far_tanggal').val());
+                $('#jt_jumlah_biaya').val($('#netto').val());
+                $('#jt_iur_perusahaan').val(0);
+                $('#jt_jumlah_dipindahkan').val($('#netto').val());
+                $('#ModalTransferRj').modal('show');
+                // alert('No Register RJ Masih Kosong')
+            } else {
+                $('#jt_kode_transfer').val(global_KodeTransferApt);
+                $('#jt_nama_transfer').val(global_NamaTransferApt);
+                $('#jt_kode_unit').val($('#idReseler').val());
+                $('#jt_nama_unit').val($('#namaReseler').val());
+
+                $('#jt_tanggal_transaksi').val($('#far_tanggal').val());
+                $('#jt_kode_pasien').val($('#far_kode_pasien').val());
+                $('#jt_nama_pasien').val($('#far_nama_pasien').val());
+                $('#jt_alamat_pasien').val($('#far_alamat').val());
+                $('#jt_no_transaksi').val($('#no_fakturid').val());
+                $('#jt_tanggal').val($('#far_tanggal').val());
+                $('#jt_jumlah_biaya').val($('#netto').val());
+                $('#jt_iur_perusahaan').val(0);
+                $('#jt_jumlah_dipindahkan').val($('#netto').val());
+                $('#ModalTransferRj').modal('show');
+            }
+        }
+    })
+}
+
+function Cleartransfer() {
+    $('#jt_no_transaksi_unit').val('')
+}
+
+function open_modal_jenis_transfer() {
+    $('#dxGridModalJenisTransfer').modal('show');
+    $("#DxGridDataJenisTransfer").dxDataGrid({
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getTpay",
+                    method: "GET",
+                    data: {
+                        'kode': '',
+                        'tipe': ''
+                    },
+                    success: function (datas) {}
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        paging: {
+            pageSize: 100
+        },
+        showColumnLines: true,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        columns: [{
+            dataField: "KODE",
+            caption: "KODE"
+        }, {
+            dataField: "NAMA_MERK",
+            caption: "NAMA "
+        }],
+        onRowClick: function (e) {
+            kode_tpay = e.data.KODE
+            nama_tpay = e.data.NAMA_MERK
+        }
+    });
+}
+
+function open_modal_no_transaksi_jt() {
+    $('#dxGridModalNoTransaksiUnit').modal('show');
+    search_transaksi_unit()
+}
+
+function search_transaksi_unit() {
+    var pilihan = $('input[name=search_byss]:checked').val();
+    var tanggal = $('#search_transaksi_by_date_date').val();
+
+    $("#DxGridDataNoTransaksiUnit").dxDataGrid({
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getNoTransaksiUnit",
+                    method: "GET",
+                    data: {
+                        'get_by': pilihan,
+                        'kode_pasien': $('#far_kode_pasien').val(),
+                        'no_transaksi': $('#no_fakturid').val(),
+                        'tanggal': tanggal,
+                    },
+                    success: function (datas) {
+                        // console.log(datas)
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: true
+        },
+        showColumnLines: true,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        columns: [{
+                dataField: "NoTransaksi",
+                caption: "NO TRANSAKSI",
+                alignment: 'left',
+                width: 120,
+            }, {
+                dataField: "NamaUnit",
+                caption: "NAMA Reseler",
+                alignment: 'left',
+                width: 120,
+            },
+            {
+                dataField: "KD_PASIEN",
+                caption: "KD PASIEN",
+                alignment: 'left',
+                width: 90,
+            },
+            {
+                dataField: "NAMAPASIEN",
+                caption: "NAMA PASIEN",
+                alignment: 'left',
+                width: 180,
+            },
+            {
+                dataField: "ALAMAT",
+                caption: "ALAMAT",
+                alignment: 'left',
+                // width: 200,
+            },
+            {
+                dataField: "TGLPERIKSA",
+                caption: "TANGGAL",
+                alignment: 'left',
+                dataType: 'date',
+                width: 90,
+                format: 'dd/MM/yyyy',
+            },
+
+        ],
+        onRowClick: function (e) {
+            no_transaksi_unit = e.data.NoTransaksi
+            no_transaksi_unit_tgl = e.data.TGLPERIKSA
+        }
+    });
+}

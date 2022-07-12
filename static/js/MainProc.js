@@ -1,3 +1,6 @@
+var global_KodeTransferApt = 'ADL002'
+var global_NamaTransferApt = 'BIAYA OBAT DAN ALKES'
+
 function getTodayDateTime() {
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1).toString().padStart(2, "0") + '-' + today.getDate().toString().padStart(2, "0");

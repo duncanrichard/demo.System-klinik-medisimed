@@ -1,0 +1,615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.10.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Billingfarmasi" pageWidth="215" pageHeight="842" columnWidth="187" leftMargin="14" rightMargin="14" topMargin="14" bottomMargin="5" isSummaryWithPageHeaderAndFooter="true" isIgnorePagination="true" uuid="48ff6ba0-1b86-481a-9da6-df50a6e828a9">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="www.medisimed.com"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="525"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="461"/>
+	<property name="com.jaspersoft.studio.unit." value="mm"/>
+	<parameter name="nama_rs" class="java.lang.String"/>
+	<parameter name="nomor" class="java.lang.String"/>
+	<parameter name="tanggal_waktu_cetak" class="java.lang.String"/>
+	<parameter name="user" class="java.lang.String"/>
+	<parameter name="terbilang" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select  a.*,b.FDFJPRD_ID,FDFJNOM,FDFJBRG_ID,FDFJBRGN,FDFJSATUAN,  FDFJHJUAL,FDFJQTY,FDFJDISC1,FDFJDISC4,FDFJEMBALAGE,FDFJTOTAL,FDFJJENISTARIP,
+c.NAMA_RESELER,d.NAME_WH
+from  FJINKOTA a INNER JOIN FJINKOTAD b ON  a.FHFJBUKTI_ID=b.FDFJBUKTI_ID  
+LEFT JOIN RESELER c ON a.FHFJPOLY_ID=c.KD_RESELER
+LEFT JOIN WAREHOUSE d on a.FHFJWH_ID=d.WH_ID
+where   a.FHFJBUKTI_ID = $P{nomor}   ORDER BY FDFJNOM]]>
+	</queryString>
+	<field name="FHFJBUKTI_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJBUKTI_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJBUKTI_ID"/>
+	</field>
+	<field name="FHFJNO_TRANSAKSI" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJNO_TRANSAKSI"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJNO_TRANSAKSI"/>
+	</field>
+	<field name="FHFJDATE" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJDATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJDATE"/>
+	</field>
+	<field name="FHFJJENISCUST_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJJENISCUST_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJJENISCUST_ID"/>
+	</field>
+	<field name="FHFJJENISCUSTN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJJENISCUSTN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJJENISCUSTN"/>
+	</field>
+	<field name="FHFJPOLY_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJPOLY_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJPOLY_ID"/>
+	</field>
+	<field name="FHFJPOLYN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJPOLYN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJPOLYN"/>
+	</field>
+	<field name="FHFJDOKTER_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJDOKTER_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJDOKTER_ID"/>
+	</field>
+	<field name="FHFJDOKTERN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJDOKTERN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJDOKTERN"/>
+	</field>
+	<field name="FHFJSTATUSOBAT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJSTATUSOBAT"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJSTATUSOBAT"/>
+	</field>
+	<field name="FHFJCUST_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJCUST_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJCUST_ID"/>
+	</field>
+	<field name="FHFJCUSTN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJCUSTN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJCUSTN"/>
+	</field>
+	<field name="FHFJADDR1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJADDR1"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJADDR1"/>
+	</field>
+	<field name="FHFJADDR2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJADDR2"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJADDR2"/>
+	</field>
+	<field name="FHFJTPAY_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJTPAY_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJTPAY_ID"/>
+	</field>
+	<field name="FHFJTPAYN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJTPAYN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJTPAYN"/>
+	</field>
+	<field name="FHFJWH_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJWH_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJWH_ID"/>
+	</field>
+	<field name="FHFJWHN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJWHN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJWHN"/>
+	</field>
+	<field name="FHFJREMARK" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJREMARK"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJREMARK"/>
+	</field>
+	<field name="FHFJBRANCH" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJBRANCH"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJBRANCH"/>
+	</field>
+	<field name="FHFJJUMLAH" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJJUMLAH"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJJUMLAH"/>
+	</field>
+	<field name="FHFJRACIK" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJRACIK"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJRACIK"/>
+	</field>
+	<field name="FHFJRESEP" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJRESEP"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJRESEP"/>
+	</field>
+	<field name="FHFJBULAT" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJBULAT"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJBULAT"/>
+	</field>
+	<field name="FHFJTOTAL" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJTOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJTOTAL"/>
+	</field>
+	<field name="FHFJBAYAR" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJBAYAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJBAYAR"/>
+	</field>
+	<field name="FHFJTGL_BAYAR" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJTGL_BAYAR"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJTGL_BAYAR"/>
+	</field>
+	<field name="FHFJUSER" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJUSER"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJUSER"/>
+	</field>
+	<field name="FHFJUPDATE" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJUPDATE"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJUPDATE"/>
+	</field>
+	<field name="FKUNCI" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FKUNCI"/>
+		<property name="com.jaspersoft.studio.field.label" value="FKUNCI"/>
+	</field>
+	<field name="FHFJSTSRETUR" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJSTSRETUR"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJSTSRETUR"/>
+	</field>
+	<field name="FKUNCIFIFO" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FKUNCIFIFO"/>
+		<property name="com.jaspersoft.studio.field.label" value="FKUNCIFIFO"/>
+	</field>
+	<field name="FKUNCISTOCK" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FKUNCISTOCK"/>
+		<property name="com.jaspersoft.studio.field.label" value="FKUNCISTOCK"/>
+	</field>
+	<field name="FHFJCETAKAN" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJCETAKAN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJCETAKAN"/>
+	</field>
+	<field name="FHFJPRINTCETAK" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJPRINTCETAK"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJPRINTCETAK"/>
+	</field>
+	<field name="FHFJJENIS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJJENIS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJJENIS"/>
+	</field>
+	<field name="FHFJJENISTRANSAKSI" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJJENISTRANSAKSI"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJJENISTRANSAKSI"/>
+	</field>
+	<field name="USERRS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="USERRS"/>
+		<property name="com.jaspersoft.studio.field.label" value="USERRS"/>
+	</field>
+	<field name="UPDATERS" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="UPDATERS"/>
+		<property name="com.jaspersoft.studio.field.label" value="UPDATERS"/>
+	</field>
+	<field name="FHFJNORESEP" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJNORESEP"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJNORESEP"/>
+	</field>
+	<field name="FHFJIURASKES" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJIURASKES"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJIURASKES"/>
+	</field>
+	<field name="FHFJSTATUS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJSTATUS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJSTATUS"/>
+	</field>
+	<field name="FHFJJUMLAHUANG" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJJUMLAHUANG"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJJUMLAHUANG"/>
+	</field>
+	<field name="FHFJKD_SHIFT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJKD_SHIFT"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJKD_SHIFT"/>
+	</field>
+	<field name="FHFJTGL_SHIFT" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJTGL_SHIFT"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJTGL_SHIFT"/>
+	</field>
+	<field name="FHFJNO_URUT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJNO_URUT"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJNO_URUT"/>
+	</field>
+	<field name="FHFJKRONIS" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FHFJKRONIS"/>
+		<property name="com.jaspersoft.studio.field.label" value="FHFJKRONIS"/>
+	</field>
+	<field name="FDFJPRD_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJPRD_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJPRD_ID"/>
+	</field>
+	<field name="FDFJNOM" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJNOM"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJNOM"/>
+	</field>
+	<field name="FDFJBRG_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJBRG_ID"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJBRG_ID"/>
+	</field>
+	<field name="FDFJBRGN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJBRGN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJBRGN"/>
+	</field>
+	<field name="FDFJSATUAN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJSATUAN"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJSATUAN"/>
+	</field>
+	<field name="FDFJHJUAL" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJHJUAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJHJUAL"/>
+	</field>
+	<field name="FDFJQTY" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJQTY"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJQTY"/>
+	</field>
+	<field name="FDFJDISC1" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJDISC1"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJDISC1"/>
+	</field>
+	<field name="FDFJDISC4" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJDISC4"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJDISC4"/>
+	</field>
+	<field name="FDFJEMBALAGE" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJEMBALAGE"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJEMBALAGE"/>
+	</field>
+	<field name="FDFJTOTAL" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJTOTAL"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJTOTAL"/>
+	</field>
+	<field name="FDFJJENISTARIP" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="FDFJJENISTARIP"/>
+		<property name="com.jaspersoft.studio.field.label" value="FDFJJENISTARIP"/>
+	</field>
+	<field name="NAMA_RESELER" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NAMA_RESELER"/>
+		<property name="com.jaspersoft.studio.field.label" value="NAMA_RESELER"/>
+	</field>
+	<field name="NAME_WH" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="NAME_WH"/>
+		<property name="com.jaspersoft.studio.field.label" value="NAME_WH"/>
+	</field>
+	<variable name="SUBTOTAL" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$V{Amount}]]></variableExpression>
+	</variable>
+	<variable name="amountdisc" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[(($F{FDFJQTY}*$F{FDFJHJUAL})*($F{FDFJDISC1}/100))+$F{FDFJDISC4}]]></variableExpression>
+	</variable>
+	<variable name="Amount" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{FDFJQTY}*$F{FDFJHJUAL}]]></variableExpression>
+	</variable>
+	<variable name="admracik" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{FDFJEMBALAGE}]]></variableExpression>
+	</variable>
+	<pageHeader>
+		<band height="165" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="-12" width="191" height="20" uuid="be102759-12c0-402f-8808-11420c72e501"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nama_rs}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="8" width="191" height="20" uuid="d3ebccd1-c314-43f2-a3d5-d2177b837c4c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Billing Farmasi ]]></text>
+			</staticText>
+			<line>
+				<reportElement x="1" y="28" width="189" height="1" uuid="e749c461-a8ab-472c-86b5-fc89bdfa2a68">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="5" y="31" width="69" height="19" uuid="9a5eef45-edac-4642-b2a9-1fa9ca8bed49"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[No. Transaksi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="45" width="69" height="20" uuid="9bb20034-e619-475b-88ad-ceb2f1652fd4"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Tanggal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="60" width="69" height="20" uuid="f74f4c6c-866b-41ba-b43b-99df526d878d"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[No. RM]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="97" width="69" height="20" uuid="7a675f35-c19f-4b38-a1c1-9fd06d3ce436"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Alamat]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="127" width="69" height="20" uuid="49999bb3-e8a2-47ff-a450-8eb9f6e9ffee"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Instalasi]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="31" width="10" height="19" uuid="25c291fc-1048-4a10-b422-b36b051f4e92"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="45" width="10" height="20" uuid="02940238-f48a-465c-8abc-d6c0ed920f3e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="60" width="10" height="20" uuid="5711094f-eb2e-4cce-a322-6e2d73b9ea50"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="127" width="10" height="20" uuid="927a7117-cd40-4487-8407-bff0b07acf1e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="71" y="97" width="10" height="20" uuid="7bd0ccb6-052b-4ece-adf6-7459c520c625"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="81" y="30" width="108" height="20" uuid="81726334-f26d-4a9b-973a-16de1b9aee89"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nomor}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="1" y="164" width="187" height="1" uuid="72239f10-e614-4ae1-b0a2-f8b261261cee">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="81" y="45" width="110" height="20" uuid="708c44ba-f0da-49e7-aab5-ebdba6b43a2d"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FHFJDATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="60" width="103" height="20" uuid="b1f689ee-9be4-4582-9072-b67701d87181"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FHFJCUST_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="82" y="76" width="108" height="20" uuid="a03b2fdc-d7d1-4f15-a68e-bf7baaeb28a9"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FHFJCUSTN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="97" width="110" height="30" uuid="0e72c7b5-aaff-47e1-a784-be2e2bb60252"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FHFJADDR1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="81" y="127" width="110" height="21" uuid="9f0b3a58-e0da-4d39-ae52-3fe6bd44f2fa"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{NAME_WH}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="71" y="76" width="10" height="20" uuid="a277c69c-9b67-46a0-9756-c20db53d9cbd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="5" y="76" width="69" height="20" uuid="7acd0898-f8e3-4197-ba06-b21acf129d6d"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Nama Pasien]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="17" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="4" width="20" height="12" isRemoveLineWhenBlank="true" isPrintInFirstWholeBand="true" uuid="b38d960f-da86-42e1-867d-e90623d13b43"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="20" y="4" width="52" height="12" isRemoveLineWhenBlank="true" uuid="e8626abc-04bf-4406-aa30-e10075c8afe6">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[NAMA OBAT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="4" width="28" height="12" isRemoveLineWhenBlank="true" uuid="6471a5fe-ff55-4e16-84ca-6024aba50e4b">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QTY]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="16" width="189" height="1" isRemoveLineWhenBlank="true" uuid="624925a5-c7fb-49b2-ace3-2d044171957b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="100" y="4" width="48" height="12" isRemoveLineWhenBlank="true" uuid="fd5ebab4-d3cd-44ed-aa46-ed0b718cdd80">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[HARGA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="144" y="4" width="43" height="12" isRemoveLineWhenBlank="true" uuid="62857c3b-f22f-45d0-9d34-6de49de54fc4">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JUMLAH]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="28">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField pattern="#,##0.###">
+				<reportElement x="2" y="1" width="18" height="14" uuid="0741475d-cb72-463f-9f46-a3f921abee6c">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="a0130228-fbb3-4548-9958-c5571b328aaf"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FDFJNOM}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="19" y="0" width="172" height="14" uuid="04caf7f7-4ba6-44c3-987a-1d58ee443b26">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="badea9d5-27ee-4fff-8eb1-2f8c5887546e"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial" size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FDFJBRGN}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="2" y="14" width="98" height="14" uuid="47970e12-83ee-42bd-8008-66629735db67">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="54e2190b-e573-4c47-96b8-f5a365ad6def"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box padding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FDFJQTY}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="99" y="14" width="50" height="14" uuid="c8c265c5-49eb-44fc-ae76-01a4f8534897">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6d5b4369-4ade-4a8e-812f-7e134e5c2bb8"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<box padding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FDFJHJUAL}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="144" y="14" width="42" height="14" uuid="0eb17a7d-6c6e-4d91-aa68-396be134d7eb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="39a81a44-e6ea-4a81-8688-10bf0ee5dbc9"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box padding="1">
+					<bottomPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FDFJQTY}*$F{FDFJHJUAL}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<lastPageFooter>
+		<band height="7">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<line>
+				<reportElement x="1" y="1" width="189" height="1" uuid="f901d7b0-66a8-48e6-b2b7-7ab8ae924341">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="mm"/>
+				</reportElement>
+			</line>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="84">
+			<textField>
+				<reportElement x="6" y="53" width="92" height="20" uuid="d4287488-f9e7-432d-8068-a9723b658eb5"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial" size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tanggal_waktu_cetak}+'-'+$P{user}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="26" y="1" width="48" height="12" isRemoveLineWhenBlank="true" uuid="c464ab50-b5cf-4e00-8539-eb41797b200c">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="26" y="13" width="48" height="12" isRemoveLineWhenBlank="true" uuid="aff6be30-3d18-4752-b163-8f3a5b5c7eda">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DISCOUNT]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="117" y="14" width="67" height="12" uuid="89da96ed-2444-4d07-bf76-9e9cbb5de447">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{amountdisc}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="118" y="2" width="67" height="12" uuid="2c22b64b-76c1-43b7-9fc5-5b7c2e830019"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Amount}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="26" y="26" width="48" height="12" isRemoveLineWhenBlank="true" uuid="bee0ac0a-8da5-4534-aefc-9048204b128e">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Adm.& Rck]]></text>
+			</staticText>
+			<textField pattern="#,##0.###">
+				<reportElement x="85" y="26" width="100" height="12" uuid="4eeb7b84-1d5a-4a61-9e2b-9c7a4a9329c0"/>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{admracik}+$F{FHFJRACIK}+$F{FHFJBULAT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###">
+				<reportElement x="85" y="38" width="100" height="12" uuid="ca03b8ab-4b6e-40fb-9568-5ca9feee29ff">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{Amount}-($V{amountdisc})+($V{admracik}+$F{FHFJRACIK}+$F{FHFJBULAT})]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="26" y="39" width="48" height="12" isRemoveLineWhenBlank="true" uuid="1fa66408-0b2c-45ab-97d8-56976cec1bbb">
+					<property name="com.jaspersoft.studio.unit.height" value="inch"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N E T T O]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

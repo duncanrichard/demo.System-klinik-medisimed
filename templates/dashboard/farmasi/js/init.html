@@ -58,6 +58,12 @@ $(document).ready(function () {
             }
         }
     })
+    $('#btnfar_tambah_produk').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            tambahrow()
+        }
+    })
     $("#menu_tambah").click(function () {
         livetext()
         cleartext()
@@ -69,6 +75,19 @@ $(document).ready(function () {
         $('#far_kode_pasien').focus()
 
 
+    })
+    $("#menu_edit,#nav_FRMRSPRJ00102").click(function () {
+        if ($("#no_fakturid").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            livetext()
+            $('#btnfar_tambah_produk').css("display", 'block');
+            $('#btn_hapus_semua_barang').css("display", 'block');
+            canAdd = 1
+            Cekeror = true;
+        }
     })
     $("#menu_cancel").click(function () {
         setAwal()
@@ -200,11 +219,427 @@ $(document).ready(function () {
             }
         }
     })
+    $("#menu_hapus,#nav_FRMRSPRJ00103").click(function () {
+        if ($("#no_fakturid").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                var NO = []
+                var TTYPEC = []
+                var ID_BARANG = []
+                var ID_BARANG2 = []
+                var NAMA_BARANG = []
+                var SATSTAND = []
+                var HJUAL = []
+                var QTY = []
+                var DISC = []
+                var DISC2 = []
+                var RESEP = []
+                var TOTAL = []
+                var STATUS = []
+
+
+                var tot = ''
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    if (dataGrid.getVisibleRows()[i].data.NAMA_BARANG != '' && dataGrid.getVisibleRows()[i].data.QTY > 0) {
+                        NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                        TTYPEC.push("" + dataGrid.getVisibleRows()[i].data.TTYPEC)
+                        ID_BARANG.push("" + dataGrid.getVisibleRows()[i].data.ID_BARANG)
+                        ID_BARANG2.push("" + dataGrid.getVisibleRows()[i].data.ID_BARANG2)
+                        NAMA_BARANG.push("" + dataGrid.getVisibleRows()[i].data.NAMA_BARANG)
+                        SATSTAND.push("" + dataGrid.getVisibleRows()[i].data.SATSTAND)
+                        HJUAL.push("" + parseInt(dataGrid.getVisibleRows()[i].data.HJUAL))
+                        QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                        DISC.push("" + dataGrid.getVisibleRows()[i].data.DISC)
+                        DISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC2)
+                        RESEP.push("" + dataGrid.getVisibleRows()[i].data.RESEP)
+                        TOTAL.push("" + dataGrid.getVisibleRows()[i].cells[10].value)
+                        if (dataGrid.getVisibleRows()[i].data.STATUS == 'Non') {
+                            STATUS.push("0")
+                        } else if (dataGrid.getVisibleRows()[i].data.STATUS == 'KRSM') {
+                            STATUS.push("1")
+                        } else if (dataGrid.getVisibleRows()[i].data.STATUS == '0') {
+                            STATUS.push("0")
+                        } else if (dataGrid.getVisibleRows()[i].data.STATUS == '1') {
+                            STATUS.push("1")
+                        } else {
+                            STATUS.push("1")
+                        }
+                    }
+                }
+
+                $.ajax({
+                    url: host + "/SP_AUD_FJINKOTA",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "NO": JSON.stringify(NO),
+                        "TTYPEC": JSON.stringify(TTYPEC),
+                        "ID_BARANG": JSON.stringify(ID_BARANG),
+                        "ID_BARANG2": JSON.stringify(ID_BARANG2),
+                        "NAMA_BARANG": JSON.stringify(NAMA_BARANG),
+                        "SATSTAND": JSON.stringify(SATSTAND),
+                        "HJUAL": JSON.stringify(HJUAL),
+                        "QTY": JSON.stringify(QTY),
+                        "DISC": JSON.stringify(DISC),
+                        "DISC2": JSON.stringify(DISC2),
+                        "RESEP": JSON.stringify(RESEP),
+                        "TOTAL": JSON.stringify(TOTAL),
+                        "STATUS": JSON.stringify(STATUS),
+                        "HPP": '0',
+                        "BUKTI_ID": $("#no_fakturid").val(),
+                        "CUST_ID": $("#far_kode_pasien").val(),
+
+                        "FHFJBUKTI_ID": $("#no_fakturid").val(),
+                        "FHFJNO_TRANSAKSI": $("#no_fakturinap").val(),
+                        "FHFJDATE": $("#far_tanggal").val(),
+                        "FHFJRESELER_ID": $("#idReseler").val(),
+                        "FHFJDOKTER_ID": $("#far_kode_dokter").val(),
+                        "FHFJSTATUSOBAT": $('input[name="opt_resep"]:checked').val(),
+                        "FHFJCUST_ID": $("#far_kode_pasien").val(),
+                        "FHFJCUSTN": $("#far_nama_pasien").val(),
+                        "FHFJADDR1": $("#far_alamat").val(),
+                        "FHFJTPAY_ID": $("#kode_transfer_apt").val(),
+                        "FHFJWH_ID": $("#far_kode_gudang").val(),
+                        "FHFJREMARK": $("#far_keterangan").val(),
+                        "FHFJJUMLAH": parseInt(desimal2($("#total").val())),
+                        "FHFJRACIK": parseInt(desimal2($("#adm_racik").val())),
+                        "FHFJRESEP": parseInt(desimal2($("#adm_resep").val())),
+                        "FHFJBULAT": parseInt(desimal2($("#pembulatan").val())),
+                        "FHFJTOTAL": parseInt(desimal2($("#netto").val())),
+                        "FHFJBAYAR": parseInt(desimal2($("#bayar").val())),
+                        "FHFJTGL_BAYAR": $("#far_tanggal").val(),
+                        "FHFJUSER": '{{request.session.user_id}}',
+                        "FKUNCI": '0',
+                        "FHFJSTSRETUR": '0',
+                        "FKUNCIFIFO": '0',
+                        "FKUNCISTOCK": '0',
+                        "FHFJCETAKAN": '0',
+                        "FHFJJENIS": 'J01',
+                        "FHFJJENISTRANSAKSI": 'R01',
+                        "USERRS": '{{request.session.user_id}}',
+                        "FHFJIURASKES": $("#iur_askes").val(),
+                        "FHFJSTATUS": '0',
+                        "FHFJJUMLAHUANG": parseInt(desimal2($("#bayar").val())),
+                        "StatusAUD": 'D',
+                        "FKSMUTASI": 'JK',
+                        "FDFJJENISTARIP": '0',
+
+                    },
+                    success: function (e) {
+
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        setAwal()
+                        cleartext()
+                        setGridEmpty()
+
+                    }
+                })
+            }
+        }
+    })
+    $("#menu_find,#nav_FRMRSPRJ00301").click(function () {
+        $('#ModalResepRJ').modal('show')
+        $('#mutasi_tanggal').val(todays);
+        $("#select_mutasi").val('mutasi_by_tanggal');
+        $('#mutasi_bukti').val('');
+        $('#mutasi_pasien').val('');
+        $('#mutasi_nama').val('');
+        cari_mutasi()
+    })
+    $("#btn_cari_mutasi").click(function () {
+        cari_mutasi()
+    })
+    $("#mutasi_tanggal").change(function () {
+        cari_mutasi()
+    })
+    $("#select_mutasi").change(function () {
+        cari_mutasi()
+    })
+    $('.enter-cari-mutasi').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            cari_mutasi()
+        }
+    });
+    $("#menu_transferrj").click(function (e) {
+        $('#jt_kode_transfer').val('');
+        $('#jt_nama_transfer').val('');
+        $('#jt_kode_unit').val('');
+        $('#jt_nama_unit').val('');
+
+        $('#jt_tanggal_transaksi').val('');
+        $('#jt_kode_pasien').val('');
+        $('#jt_nama_pasien').val('');
+        $('#jt_alamat_pasien').val('');
+        $('#jt_no_transaksi').val('');
+        $('#jt_tanggal').val('');
+        $('#jt_jumlah_biaya').val(0);
+        $('#jt_iur_perusahaan').val(0);
+        $('#jt_jumlah_dipindahkan').val(0);
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
+
+        if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            openModalTransferRJ()
+        }
+    });
+    $("#menu_kasir").click(function () {
+        if ($("#no_fakturid").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            $('#no_kwitansi_pembayaran').val($('#no_fakturid').val());
+            $('#tanggal_trans').val($('#far_tanggal').val());
+            $('#tanggal_piutang').val($('#far_tanggal').val());
+            $('#id_pasien_pembayaran').val($('#far_kode_pasien').val());
+            $('#nama_pasien_pembayaran').val($('#far_nama_pasien').val());
+            $('#nama_diterima').val($('#far_nama_pasien').val());
+            $('#grand_total_pembayaran').val($('#netto').val());
+            $('#beban_pasien_pembayaran').val($('#netto').val());
+            perhitungan()
+            $('#modalPembayaranKasir').modal('show')
+            $('#total_dijamin_pembayaran').focus()
+        }
+    })
+    $("#simpanBayar").click(function () {
+        var c = confirm('Yakin Ingin Menyimpan Pembayaran Ini ?')
+        if (c) {
+            status_aud = 'A'
+            $.ajax({
+                url: host + "/SP_AUD_BAYAR_TRANSAKSI",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    "FH_BUKTI_ID": $("#no_kwitansi_pembayaran").val(),
+                    "FH_NAMA_PEMBAYAR": $("#nama_diterima").val(),
+                    "FH_DATE": $("#tanggal_trans").val(),
+                    "FH_DATE_PIUTANG": $("#tanggal_piutang").val(),
+                    "FH_TUNAI": parseFloat(convertToAngka($("#nominal_tunai").val())),
+                    "FH_TUNAI_PHISIK": parseInt(convertToAngka($("#nominal_fisik").val())),
+                    "FH_TOTAL_BANK1": parseInt(convertToAngka($("#jumlah_pembayaran_1").val())),
+                    "FH_TOTAL_BANK2": parseInt(convertToAngka($("#jumlah_pembayaran_2").val())),
+                    "FH_TOTAL_BANK3": parseInt(convertToAngka($("#jumlah_pembayaran_3").val())),
+                    "FH_TOTAL_BANK4": parseInt(convertToAngka($("#jumlah_pembayaran_4").val())),
+                    "FH_ID_EDC1": $("#id_edc_1").val(),
+                    "FH_ID_EDC2": $("#id_edc_2").val(),
+                    "FH_ID_EDC3": $("#id_edc_3").val(),
+                    "FH_ID_EDC4": $("#id_edc_4").val(),
+                    "FH_NO_KARTU1": $("#no_kartu_1").val(),
+                    "FH_NO_KARTU2": $("#no_kartu_2").val(),
+                    "FH_NO_KARTU3": $("#no_kartu_3").val(),
+                    "FH_NO_KARTU4": $("#no_kartu_4").val(),
+                    "FH_JENIS_KARTU1": $(".kasir_debit_kredit_1:checked").val(),
+                    "FH_JENIS_KARTU2": $(".kasir_debit_kredit_2:checked").val(),
+                    "FH_JENIS_KARTU3": $(".kasir_debit_kredit_3:checked").val(),
+                    "FH_JENIS_KARTU4": $(".kasir_debit_kredit_4:checked").val(),
+                    "FH_TOTAL_VOUCHER1": parseInt(convertToAngka($("#voucher_pembayaran_1").val())),
+                    "FH_TOTAL_VOUCHER2": parseInt(convertToAngka($("#voucher_pembayaran_2").val())),
+                    "FH_TOTAL_VOUCHER3": parseInt(convertToAngka($("#voucher_pembayaran_3").val())),
+                    "FH_TOTAL_VOUCHER4": parseInt(convertToAngka($("#voucher_pembayaran_4").val())),
+                    "FH_NO_VOUCHER1": $("#no_voucher_1").val(),
+                    "FH_NO_VOUCHER2": $("#no_voucher_2").val(),
+                    "FH_NO_VOUCHER3": $("#no_voucher_3").val(),
+                    "FH_NO_VOUCHER4": $("#no_voucher_4").val(),
+                    "FH_TOTAL_DIJAMIN": parseInt(convertToAngka($("#total_dijamin_pembayaran").val())),
+                    "FH_TOTAL_PIUTANG": parseInt(convertToAngka($("#nominal_piutang").val())),
+                    "StatusAUD": status_aud,
+                },
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    $("#no_fakturid").val(e[0].NOMOR_TRANSAKSI)
+                    getGridTableBarang($("#no_fakturid").val())
+                    deathtext()
+                    $('#btnfar_tambah_produk').css("display", 'none');
+                    $('#btn_hapus_semua_barang').css("display", 'none');
+                    canAdd = 0
+                    $('#modalPembayaranKasir').modal('hide')
+
+                }
+            })
+
+        }
+    })
+    $('#total_dijamin_pembayaran').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_1').focus()
+        }
+    })
+    $('#jumlah_pembayaran_1').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_2').focus()
+        }
+    })
+    $('#jumlah_pembayaran_2').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_3').focus()
+        }
+    })
+    $('#jumlah_pembayaran_3').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#jumlah_pembayaran_4').focus()
+        }
+    })
+    $('#jumlah_pembayaran_4').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungan()
+            $('#nominal_fisik').focus()
+        }
+    })
+    $("#menu_cetak,#nav_FRMRSPRJ00401").click(function () {
+        if ($("#no_fakturid").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            // pilihancetak(1)
+            Prosescetak()
+        }
+    })
 
     $('#menu_keluar').click(function () {
         window.open('/', "_self");
     })
 })
+
+function Prosescetak() {
+    var terbilang = (angkaTerbilang(String(desimal2($('#netto').val()))).toUpperCase() + " RUPIAH ")
+    $.ajax({
+        url: host + "/cetakBillingFarmasi",
+        method: "GET",
+        data: {
+            'no_bukti': $("#no_fakturid").val(),
+            'terbilang': terbilang,
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf);
+        },
+    })
+}
+
+function perhitungan() {
+    $('#grand_total_pembayaran').val(rupiah2(desimal2($('#grand_total_pembayaran').val())));
+    $('#total_dijamin_pembayaran').val(rupiah2(desimal2($('#total_dijamin_pembayaran').val())));
+    var beban_pasien_pembayaran = Math.round(desimal2($('#grand_total_pembayaran').val())) - Math.round(desimal2($('#total_dijamin_pembayaran').val()))
+    $("#beban_pasien_pembayaran").val(rupiah2(beban_pasien_pembayaran))
+    $('#jumlah_pembayaran_1').val(rupiah2(desimal2($('#jumlah_pembayaran_1').val())));
+    $('#jumlah_pembayaran_2').val(rupiah2(desimal2($('#jumlah_pembayaran_2').val())));
+    $('#jumlah_pembayaran_3').val(rupiah2(desimal2($('#jumlah_pembayaran_3').val())));
+    $('#jumlah_pembayaran_4').val(rupiah2(desimal2($('#jumlah_pembayaran_4').val())));
+    var jumlah_kartu_total = Math.round(desimal2($('#jumlah_pembayaran_1').val())) + Math.round(desimal2($('#jumlah_pembayaran_2').val())) + Math.round(desimal2($('#jumlah_pembayaran_3').val())) + Math.round(desimal2($('#jumlah_pembayaran_4').val()))
+    $("#jumlah_kartu_total").val(rupiah2(jumlah_kartu_total))
+    $('#voucher_pembayaran_1').val(rupiah2(desimal2($('#voucher_pembayaran_1').val())));
+    $('#voucher_pembayaran_2').val(rupiah2(desimal2($('#voucher_pembayaran_2').val())));
+    $('#voucher_pembayaran_3').val(rupiah2(desimal2($('#voucher_pembayaran_3').val())));
+    $('#voucher_pembayaran_4').val(rupiah2(desimal2($('#voucher_pembayaran_4').val())));
+    var total_voucher = Math.round(desimal2($('#voucher_pembayaran_1').val())) + Math.round(desimal2($('#voucher_pembayaran_2').val())) + Math.round(desimal2($('#voucher_pembayaran_3').val())) + Math.round(desimal2($('#voucher_pembayaran_4').val()))
+    $("#total_voucher").val(rupiah2(total_voucher))
+    $('#nominal_piutang').val(rupiah2(desimal2($('#nominal_piutang').val())));
+    var nominal_tunai = Math.round((beban_pasien_pembayaran)) - Math.round((jumlah_kartu_total)) - Math.round((total_voucher)) - Math.round(desimal2($('#nominal_piutang').val()))
+    $("#nominal_tunai").val(rupiah2(nominal_tunai))
+}
+
+function cari_mutasi() {
+    $("#DataMutasiResep").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/getResepRJ",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'pasien': $('#mutasi_pasien').val(),
+                        'nama_pasien': $('#mutasi_nama').val(),
+                        'FHFJJENIS': 'J01'
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                        recordCount = datas.length;
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHFJBUKTI_ID",
+                caption: "NO BUKTI",
+                width: 150,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "FHFJCUST_ID",
+                caption: "PASIEN",
+                width: 70,
+            },
+            {
+                dataField: "FHFJCUSTN",
+                caption: "Nama Pasien",
+                // width: 200,
+            },
+            {
+                dataField: "FHFJTOTAL",
+                caption: "T O T A L",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+        ],
+        onRowClick: function (e) {
+            getGridTableBarang(e.data.FHFJBUKTI_ID)
+            $('#ModalResepRJ').modal('hide')
+        }
+    });
+}
 
 function setAwal() {
     deathtext()
@@ -255,7 +690,7 @@ function livetext() {
     menuEnable('menu_cancel')
     menuDisable('menu_find')
     menuDisable('menu_cetak')
-    menuDisable('menu_transferri')
+    menuDisable('menu_transferrj')
     menuDisable('menu_kasir')
 
     setReadOnly('no_fakturid')

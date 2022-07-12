@@ -378,6 +378,7 @@ function setGridEmpty() {
             }
         },
     });
+
 }
 
 function tambahrow() {
@@ -793,21 +794,10 @@ function getGridTableBarang(no_bukti) {
             $('#far_kode_gudang').val(datas[0].FHFJWH_ID);
             $('#far_nama_gudang').val(datas[0].FHFJWHN);
             $('#far_keterangan').val(datas[0].FHFJREMARK);
-
-            getantrianDokter($('#no_fakturid').val())
-
-            $('#far_kode_klp_customer').val(datas[0].FMKCUST_ID);
-            $('#far_nama_klp_customer').val(datas[0].FMKCUSTN);
-            $('#far_kode_customer').val(datas[0].FHFJJENISCUST_ID);
-            $('#far_nama_customer').val(datas[0].NAME);
-            $('#far_kode_poly').val(datas[0].FHFJPOLY_ID);
-            $('#far_nama_poly').val(datas[0].FHFJPOLYN);
+            $('#idReseler').val(datas[0].FHFJPOLY_ID);
+            $('#namaReseler').val(datas[0].NAMA_RESELER);
             $('#far_kode_dokter').val(datas[0].FHFJdokter_ID);
             $('#far_nama_dokter').val(datas[0].FHFJdokterN);
-            $('#far_no_resep').val(datas[0].FHFJNORESEP);
-            $('#far_jenis_tarifobat').val(datas[0].FMKTARIP_OBAT);
-            $('#far_jenis_tarif').val(datas[0].FMKJENIS_TARIP);
-            $('#far_message').val(datas[0].FMKMESSAGE);
             var status2 = parseInt(datas[0].FHFJSTATUSOBAT)
             if (status2 == 0) {
                 $("#opt_resep1").prop('checked', true)
@@ -833,11 +823,6 @@ function getGridTableBarang(no_bukti) {
                 $('input[name=inlineCheckboxclose]').iCheck('check');
             } else {
                 $('input[name=inlineCheckboxclose]').iCheck('uncheck');
-            }
-            if (datas[0].FHFJKRONIS == 1) {
-                $('input[name=inlineCheckboxKronis]').iCheck('check');
-            } else {
-                $('input[name=inlineCheckboxKronis]').iCheck('uncheck');
             }
             $('#userrs').val(datas[0].FHFJUSER);
             $('#updaters').val(datas[0].FHFJUPDATE.substr(0, 20));
@@ -1217,34 +1202,230 @@ function getGridTableBarang(no_bukti) {
                 }
             });
 
+
         }
     })
-}
-
-function getantrianDokter(no_bukti) {
-    var tanggal = $('#far_tanggal').val();
-    var KD_PASIEN = $('#far_kode_pasien').val();
     $.ajax({
-        url: host + "/getAntriandokter",
+        url: host + "/getBayarfarmasi",
         method: "GET",
         data: {
             "no_bukti": no_bukti,
-            'tanggal': tanggal,
-            "KD_PASIEN": KD_PASIEN,
         },
-        success: function (datas) {
-            if (datas.data1.length != 0) {
-                $('#far_antri_farmasi').val(datas.data1[0].NOANTRI);
-                $('#far_antri_poly').val(datas.data1[0].NOANTRIDOKTER);
-            } else if (datas.data2.length != 0) {
-                $('#far_antri_farmasi').val('');
-                $('#far_antri_poly').val(datas.data2[0].FRPNOANTRIDOKTER);
-            } else {
-                $('#far_antri_farmasi').val('');
-                $('#far_antri_poly').val('')
-            }
+        success: function (data) {
+            $("#datagridbayar").dxDataGrid({
+                dataSource: data,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10000
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        type: "buttons",
+                        buttons: [{
+                            name: "delete",
+                            text: "hapus"
+                        }],
+                        width: 60
+                    },
+                    {
+                        dataField: "NOFAKTUR",
+                        caption: "REFFERENSI",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 100,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "TUNAI",
+                        caption: "TUNAI",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "BANK",
+                        caption: "BANK",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "PIUTANG",
+                        caption: "PIUTANG",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "JAMINAN",
+                        caption: "JAMINAN",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "VOUCHER",
+                        caption: "VOUCHER",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                        calculateCellValue: function (rowData) {
+                            var tunai = ''
+                            var piutang = ''
+                            var bank = ''
+                            var voucher = ''
+                            var jaminan = ''
+
+                            if (rowData.TUNAI == '') {
+                                tunai = 0
+                            } else {
+                                tunai = parseInt(rowData.TUNAI)
+                            }
+
+                            if (!rowData.BANK) {
+                                bank = 0
+                            } else {
+                                bank = parseInt(rowData.BANK)
+                            }
+                            if (!rowData.PIUTANG) {
+                                piutang = 0
+                            } else {
+                                piutang = parseFloat(rowData.PIUTANG)
+                            }
+                            if (!rowData.VOUCHER) {
+                                voucher = 0
+                            } else {
+                                voucher = parseFloat(rowData.VOUCHER)
+                            }
+
+                            if (!rowData.JAMINAN) {
+                                jaminan = 0
+                            } else {
+                                jaminan = parseFloat(rowData.JAMINAN)
+                            }
+                            var res = tunai + piutang + bank + voucher + jaminan
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+
+
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                    if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                        console.log(e)
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih hapus dari paket')
+                    } else {
+                        setTotalbayar()
+                    }
+                },
+                onContentReady: function (d) {
+                    setTotalbayar()
+                }
+            });
+
 
         }
     })
 
+}
+
+function setTotalbayar() {
+    $('#totalbayar').val(rupiah2(getTotalbayar()))
+}
+
+function getTotalbayar() {
+
+    var dataGrid = $("#datagridbayar").dxDataGrid("instance");
+    var result = 0;
+    var tunai = 0;
+    var piutang = 0;
+    var bank = 0;
+    var voucher = 0;
+    var jaminan = 0;
+
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.TUNAI))) {
+            tunai = 0
+        } else {
+            tunai = parseInt(dataGrid.getVisibleRows()[i].data.TUNAI)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.PIUTANG))) {
+            piutang = 0
+        } else {
+            piutang = parseInt(dataGrid.getVisibleRows()[i].data.PIUTANG)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.BANK))) {
+            bank = 0
+        } else {
+            bank = parseInt(dataGrid.getVisibleRows()[i].data.BANK)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.VOUCHER))) {
+            voucher = 0
+        } else {
+            voucher = parseInt(dataGrid.getVisibleRows()[i].data.VOUCHER)
+        }
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.JAMINAN))) {
+            jaminan = 0
+        } else {
+            jaminan = parseInt(dataGrid.getVisibleRows()[i].data.JAMINAN)
+        }
+
+        var jumlah = tunai + piutang + bank + voucher + jaminan
+
+        result += (jumlah);
+    }
+    return result
 }

@@ -1210,14 +1210,28 @@ function getGridTabletransaksi(no_bukti) {
 
                 },
                 onRowUpdated: function (e) {
-                    if (e.data.hasOwnProperty("QTY")) {
-                        if (e.data.QTY < 0) {
-                            alert('QTY Tidak Boleh Kurang Dari 1');
-                            var dataGrid = $("#datagrid").dxDataGrid("instance");
-                            dataGrid.cellValue(rowIndex, "QTY", '1');
-                            dataGrid.saveEditData();
-                        }
+                    if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dirubah, Silahkan Pilih rubah dari transaksi awal')
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        dataGrid.cellValue(rowIndex, "QTY", '1');
+                        dataGrid.cellValue(rowIndex, "DISC", '0');
+                        dataGrid.cellValue(rowIndex, "DISC2", '0');
+                        dataGrid.cellValue(rowIndex, "DISC3", '0');
+                        dataGrid.cellValue(rowIndex, "DISC4", '0');
+                        dataGrid.saveEditData();
                         setTotal()
+                    } else {
+                        if (e.data.hasOwnProperty("QTY")) {
+                            if (e.data.QTY < 0) {
+                                alert('QTY Tidak Boleh Kurang Dari 1');
+                                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                                dataGrid.cellValue(rowIndex, "QTY", '1');
+                                dataGrid.saveEditData();
+                            }
+                            setTotal()
+                        }
+
                     }
                 },
                 onRowRemoved: function (e) {

@@ -45,18 +45,19 @@ def getPasien(request):
     cabang_id = request.session['kdCabang']
     if pilihan == 'search_pasien_all':
         q = " select TOP 200 a.KD_PASIEN as KODE_PASIEN,NAMAPASIEN as NAMA_PASIEN,ALAMAT,NAMA_KELUARGA, TELEPON from  PASIEN a where NAMAPASIEN like %s  "
-        q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s and (KD_ASAL_CABANG= %s)  order by a.NAMAPASIEN "
+        q += " and ALAMAT like %s and KD_PASIEN like %s AND TELEPON like %s   order by a.NAMAPASIEN "
+        proc_param = [search_name,search_almt,search_kdpas,search_telp]
     elif pilihan == 'search_pasien_today':
         q = "select top 200 a.KPKD_PASIEN as KODE_PASIEN,b.NAMAPASIEN as NAMA_PASIEN,b.ALAMAT,NAMA_KELUARGA, TELEPON, convert(varchar, KPTGL_PERIKSA, 23) as TANGGAL "
         q +="from KUNJUNGANPASIEN a inner join PASIEN b on a.KPKD_PASIEN=b.KD_PASIEN  where  "
         q += "(NAMAPASIEN like %s) and ALAMAT like %s and (KPKD_PASIEN like %s) AND TELEPON like %s  and (KPTGL_PERIKSA = '"+today+"' ) and (a.KD_CABANG = %s) "
+        proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
     else:
         q = "select top 200 a.KPKD_PASIEN as KODE_PASIEN,b.NAMAPASIEN as NAMA_PASIEN,b.ALAMAT,NAMA_KELUARGA, TELEPON, convert(varchar, KPTGL_PERIKSA, 23) as TANGGAL "
         q +="from KUNJUNGANPASIEN a inner join PASIEN b on a.KPKD_PASIEN=b.KD_PASIEN  where  "
         q += "(NAMAPASIEN like %s) and ALAMAT like %s and (KPKD_PASIEN like %s) AND TELEPON like %s  and (KPTGL_PERIKSA = '"+tanggal+"' ) and (a.KD_CABANG = %s) "
-        
+        proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]    
 
-    proc_param = [search_name,search_almt,search_kdpas,search_telp,cabang_id]
     # pprint(proc_param)
     result = Globals().getDataQuery(q, proc_param)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -403,11 +404,144 @@ def SP_AUD_FJINKOTA(request):
         
     proc_param.extend([FHFJCUSTN])
     try:
-        print (q)
         result = Globals().getDataSP(q,proc_param)
-        print (result)
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 
     except ValueError:
         print(q)
+
+def getResepRJ(request):
+	no_bukti = '%'+request.GET['no_bukti']+'%'
+	pasien = '%'+request.GET['pasien']+'%'
+	nama_pasien = '%'+request.GET['nama_pasien']+'%'
+	tipe = request.GET['tipe']
+	FHFJJENIS= request.GET['FHFJJENIS']
+
+	tanggal = datetime.strptime(request.GET['tanggal'], "%Y-%m-%d")
+
+	if(tipe == 'mutasi_by_bulan'):
+		q = "select top 100 FHFJBUKTI_ID,FHFJCUST_ID,FHFJCUSTN,FHFJTOTAL,FHFJPOLYN,FHFJJENISCUSTN, convert(varchar, FHFJDATE, 23) as TANGGAL "
+		q +="from FJINKOTA where (FHFJBUKTI_ID like %s) and (FHFJCUST_ID like %s) and "
+		q += "(FHFJCUSTN like %s) and (YEAR(FHFJDATE) = %s) and (MONTH(FHFJDATE) = %s) AND FHFJJENIS= %s"
+		result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal.year, tanggal.month,FHFJJENIS])
+	else:
+		q = "select top 100 FHFJBUKTI_ID,FHFJCUST_ID,FHFJCUSTN,FHFJTOTAL,FHFJPOLYN,FHFJJENISCUSTN, convert(varchar, FHFJDATE, 23) as TANGGAL "
+		q +="from FJINKOTA where (FHFJBUKTI_ID like %s) and (FHFJCUST_ID like %s) and "
+		q += "(FHFJCUSTN like %s) and (FHFJDATE = %s AND FHFJJENIS= %s )"
+		result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal,FHFJJENIS])
+
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def getBarangByBukti(request):
+    no_bukti = request.GET['no_bukti']
+
+    q = "select a.FHFJBUKTI_ID,FHFJNO_TRANSAKSI,FHFJDATE,FHFJCUST_ID,FHFJCUSTN, "
+    q += "FHFJADDR1,FHFJADDR2,FHFJPOLY_ID, d.NAMA_RESELER,FHFJdokter_ID,e.FMDDOKTERN as FHFJdokterN, "
+    q += "FHFJTPAY_ID,FHFJTPAYN,FHFJWH_ID,f. NAME_WH as FHFJWHN,FHFJSTATUSOBAT, "
+    q += "FHFJREMARK,FHFJRACIK,FHFJRESEP,FHFJBULAT,FHFJIURASKES,FHFJBAYAR,FHFJTOTAL,FKUNCI,FKUNCISTOCK,FHFJUSER,FHFJUPDATE, "
+    q += "b.FDFJNOM as NO,FDFJPRD_ID as TTYPEC,FDFJBRG_ID as ID_BARANG,KDBARANG as ID_BARANG2,FDFJBRGN as NAMA_BARANG,FDFJSATUAN as SATSTAND, "
+    q += "FDFJHJUAL as HJUAL,FDFJQTY as QTY,FDFJDISC1 as DISC,FDFJDISC4 as DISC2,FDFJEMBALAGE as RESEP,FDFJTOTAL as TOTAL, "
+    q += "FDFJHPP,FDFJBUKTI_ID,FDFJCUST_ID,IIF(FDFJJENISTARIP='0','Non','KRSM') as STATUS,isnull(c.TGL_LAHIR,getdate()) as TGL_LAHIR, "
+    q += "h.STATUSPRODUK  "
+    q += "from FJINKOTA a inner join FJINKOTAD b on a.FHFJBUKTI_ID = b.FDFJBUKTI_ID left join "
+    q += "PASIEN c on a.FHFJCUST_ID=c.KD_PASIEN  LEFT OUTER JOIN "
+    q += "RESELER AS d ON a.FHFJPOLY_ID = d.KD_RESELER LEFT OUTER JOIN  "
+    q += "DOKTER AS e ON a.FHFJdokter_ID=e.FMDDOKTER_ID LEFT OUTER JOIN "
+    q += "WAREHOUSE AS f ON a.FHFJWH_ID=f.WH_ID LEFT OUTER JOIN "
+    q += "PRODUKOBAT AS h ON b.FDFJPRD_ID = h.PRD_ID "
+    q += "where a.FHFJBUKTI_ID = %s order by FDFJNOM asc"
+    result = Globals().getDataQuery(q, [no_bukti])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getNoTransaksiUnit(request):
+    get_by = request.GET['get_by']
+    kode_pasien = request.GET['kode_pasien']
+    no_transaksi = request.GET['no_transaksi']
+    tanggal = request.GET['tanggal']
+
+    if get_by == 'all':
+        q = "SELECT a.NAMA_RESELER AS NamaUnit, b.KD_PASIEN, b.NAMAPASIEN, b.ALAMAT, c.KPTGL_PERIKSA AS TGLPERIKSA, a.KD_RESELER AS kodeunit, e.FTNO_TRANSAKSI AS NoTransaksi  "
+        q += "FROM RESELER AS a LEFT JOIN KUNJUNGANPASIEN AS c ON a.KD_RESELER = c.KD_RESELER  "
+        q += "INNER JOIN PASIEN AS b ON c.KPKD_PASIEN = b.KD_PASIEN  "
+        q += "INNER JOIN TRANSAKSIPASIEN AS e ON c.KPNO_TRANSAKSI = e.FTNO_KUNJUNGAN "
+        q += "WHERE   (b.KD_PASIEN = %s) AND (ISNULL(e.FKUNCI,0) = 0)  "
+        q += "ORDER BY NamaUnit "
+        result = Globals().getDataQuery(q, [kode_pasien])
+    else:
+        q = "SELECT a.NAMA_RESELER AS NamaUnit, b.KD_PASIEN, b.NAMAPASIEN, b.ALAMAT, c.KPTGL_PERIKSA AS TGLPERIKSA, a.KD_RESELER AS kodeunit, e.FTNO_TRANSAKSI AS NoTransaksi  "
+        q += "FROM RESELER AS a LEFT JOIN KUNJUNGANPASIEN AS c ON a.KD_RESELER = c.KD_RESELER  "
+        q += "INNER JOIN PASIEN AS b ON c.KPKD_PASIEN = b.KD_PASIEN  "
+        q += "INNER JOIN TRANSAKSIPASIEN AS e ON c.KPNO_TRANSAKSI = e.FTNO_KUNJUNGAN "
+        q += "WHERE   (b.KD_PASIEN = %s) AND (ISNULL(e.FKUNCI,0) = 0) AND (c.KPTGL_PERIKSA = %s) "
+        q += "ORDER BY NamaUnit "
+        result = Globals().getDataQuery(q, [kode_pasien, tanggal])
+
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getTpay(request):
+    q = "SELECT tpay_id AS KODE, nama AS NAMA_MERK, KREDIT FROM TPAY ORDER BY tpay_id "
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def transferRj(request):
+    no_transaksi = request.POST['no_transaksi']
+    tanggal_transaksi = request.POST['tanggal_transaksi']
+    kode_pay = request.POST['kode_pay']
+    user = request.POST['user']
+    kode_pasien = request.POST['kode_pasien']
+    kode_produk = request.POST['kode_produk']
+    nama_produk =request.POST['nama_produk']
+    qty = request.POST['qty']
+    harga = request.POST['harga']
+    no_faktur = request.POST['no_faktur']
+    q = "exec FRM_ADD_TRANSFERRJ %s,%s,%s,%s,%s,%s,%s,%s,%s,%s"
+    try:
+        result = Globals().getDataSP(q, [no_transaksi,tanggal_transaksi,kode_pay,user,kode_pasien,kode_produk,nama_produk,qty,harga,no_faktur])
+        json_data = json.dumps(result, cls=DjangoJSONEncoder)
+        return HttpResponse(json_data, content_type="application/json")
+
+    except ValueError:
+        print(q)
+
+def getBayarfarmasi(request):
+    no_bukti = request.GET['no_bukti']
+    q = "select ROW_NUMBER() OVER (ORDER BY FTBNO_TRANSAKSI) AS NO,FTBNO_TRANSAKSI as NO_TRANSAKSI, FTBTGL_TRANSAKSI, FTBTUNAI as TUNAI, isnull(FTBPIUTANG,0) as PIUTANG, isnull(FTBJAMINPERUSAHAAN,0) as JAMINAN, USERRS, UPDATERS, FTBNAMAPEMBAYAR, FTBJUMLAH_UANG, FTBKEMBALIAN_UANG, isnull(FTBNO_FAKTUR,'') as NOFAKTUR,   "
+    q += "FTBTGL_FAKTUR, FTBNILAI_FAKTUR, FTBNOKARTU01, FTBNOKARTU02, FTBNOKARTU03, FTBNOKARTU04, FTBDEBITKREDIT01, FTBDEBITKREDIT02, FTBDEBITKREDIT03, FTBDEBITKREDIT04, FTBNILAIBANK01,  "
+    q += "FTBNILAIBANK02, FTBNILAIBANK03, FTBNILAIBANK04, FTBBANK01, FTBBANK02, FTBBANK03, FTBBANK04, NO_VOUCHER01, NO_VOUCHER02, NO_VOUCHER03, NO_VOUCHER04, NILAI_VOUCHER01, NILAI_VOUCHER02,  "
+    q += "NILAI_VOUCHER03, NILAI_VOUCHER04, "
+    q += "(ISNULL(FTBNILAIBANK01,0)+ISNULL(FTBNILAIBANK02,0)+ISNULL(FTBNILAIBANK03,0)+ISNULL(FTBNILAIBANK04,0)) as BANK, "
+    q += "(ISNULL(NILAI_VOUCHER01,0)+ISNULL(NILAI_VOUCHER02,0)+ISNULL(NILAI_VOUCHER03,0)+ISNULL(NILAI_VOUCHER04,0)) as VOUCHER "
+    q += "FROM TRANSAKSIBAYARD a where  a.FTBNO_TRANSAKSI=%s "
+    result = Globals().getDataQuery(q, [no_bukti])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def cetakBillingFarmasi(request):
+	nomor = request.GET['no_bukti']
+	terbilang= request.GET['terbilang']
+	tanggal_waktu_cetak = datetime.now().strftime('%Y-%m-%d')
+	jam = str(datetime.now().strftime('%H:%M:%S'))
+	user = request.session['user_priv']
+	# pilihcetak=request.GET['pilihcetak']
+	pdf_file = Globals().generateReportDB(
+		"Billingfarmasi.jrxml", 
+		'Billingfarmasi', 
+		user,
+		{
+			'nomor': nomor,
+			'nama_rs': request.session['nama_cabang'],
+			'tanggal_waktu_cetak': Globals().tanggalIndo(tanggal_waktu_cetak),
+			'terbilang': terbilang,
+			'user': user,
+
+		} ,
+		# list_format=[pilihcetak]
+	)
+	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+

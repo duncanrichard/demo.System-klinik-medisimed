@@ -1,0 +1,111 @@
+<div class="modal fade" id="ModalTransferRj" data-keyboard="false" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Transfer Pembayaran</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class=" card-body">
+                        <div class="row">
+                            <label class="form-group col-md-3 control-label">Jenis Transfer </label>
+                            <div class="form-group col-md-2">
+                                <input type="text" class="form-control input-sm" id="jt_kode_transfer" readonly
+                                    style="background-color: white;">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input type="text" class="form-control input-sm" id="jt_nama_transfer" readonly
+                                    style="background-color: white;">
+                            </div>
+                            <div class="form-group col-md-1">
+                                <button class="btn btn-success btn-xs" id="cari_jenis_transfer"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="form-group col-md-4 control-label">No Transaksi Unit </label>
+                            <div class="form-group col-md-7">
+                                <input type="text" class="form-control input-sm" id="jt_no_transaksi_unit" readonly
+                                    style="background-color: white;">
+                            </div>
+                            <div class="form-group col-md-1">
+                                <button class="btn btn-success btn-xs" id="cari_no_transaksi_jt"><i
+                                        class="fa fa-search"></i></button>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 control-label">Tanggal Transaksi </label>
+                            <div class="col-md-7">
+                                <input type="date" class="form-control input-sm" style="line-height: 14px"
+                                    id="jt_tanggal_transaksi" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 control-label">Pasien </label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-sm" id="jt_kode_pasien" readonly
+                                    style="background-color: white;">
+                            </div>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control input-sm" id="jt_nama_pasien" readonly
+                                    style="background-color: white;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-4 control-label">&nbsp;</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control input-sm" id="jt_alamat_pasien" readonly
+                                    style="background-color: white;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-5 control-label">No Transaksi </label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control input-sm" id="jt_no_transaksi" readonly
+                                    style="background-color: white;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-5 control-label">Tanggal </label>
+                            <div class="col-md-7">
+                                <input type="date" class="form-control input-sm" style="line-height: 14px"
+                                    id="jt_tanggal" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-5 control-label">Jumlah Biaya </label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control input-sm" id="jt_jumlah_biaya" readonly
+                                    style="background-color: white;text-align: right;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-5 control-label">Iur Perusahaan </label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control input-sm" id="jt_iur_perusahaan" readonly
+                                    style="background-color: white;text-align: right;">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-5 control-label">Jumlah Dipindahkan </label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control input-sm" id="jt_jumlah_dipindahkan" readonly
+                                    style="background-color: white;text-align: right;">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn_ok_transfer_pembayaran">Ok</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -251,7 +251,8 @@ $(document).ready(function () {
                                 FD_FEEDOKTER.push("" + dataGrid.getVisibleRows()[i].data.FEEDOKTER)
                                 FD_FEEBC.push("" + dataGrid.getVisibleRows()[i].data.FEEBC)
                                 FD_FEEPERAWAT.push("" + dataGrid.getVisibleRows()[i].data.FEEPERAWAT)
-                                FD_BUKTI_ID.push($("#No_faktur").val())
+                                FD_BUKTI_ID.push("" + dataGrid.getVisibleRows()[i].data.NOFAKTUR)
+
                             }
                         }
 

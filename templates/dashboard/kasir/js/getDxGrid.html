@@ -710,6 +710,7 @@ function getGridTabletransaksi(no_bukti) {
             $('#nama_pasien').val(datas.data1[0].NAMAPASIEN);
             $('#idReseler').val(datas.data1[0].KD_RESELER);
             $('#namaReseler').val(datas.data1[0].NAMA_RESELER);
+            $('#kd_paket').val(datas.data1[0].FTNO_DEPOSIT);
             if (datas.data1[0].FKUNCI == 1) {
                 $('input[name=inlineCheckboxclose]').iCheck('check');
             } else {
@@ -1439,12 +1440,10 @@ function getGridTabletransaksi(no_bukti) {
 function getGridPaketprodukpasien(no_bukti) {
     if (kode_paket == '') {
         kode_paket = no_bukti
-        $('#kd_paket').val(kode_paket)
     } else {
         kode_paket = kode_paket + ',' + no_bukti
-        $('#kd_paket').val(kode_paket)
     }
-
+    $('#kd_paket').val(kode_paket)
     $('#tambah_produk').css("display", 'block');
     canAdd = 1
     setGridEmpty()
@@ -1455,7 +1454,6 @@ function getGridPaketprodukpasien(no_bukti) {
             "no_bukti": kode_paket,
         },
         success: function (datas) {
-            $('#kd_paket').val(datas.data1[0].NOFAKTUR);
             $("#datagrid").dxDataGrid({
                 dataSource: datas.data1,
                 selection: {

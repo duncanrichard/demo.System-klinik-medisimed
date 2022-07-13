@@ -162,6 +162,8 @@ def SP_AUD_TRANSAKSI(request):
     FD_FEEDOKTER = json.loads(request.POST['FD_FEEDOKTER'])
     FD_FEEBC = json.loads(request.POST['FD_FEEBC'])
     FD_FEEPERAWAT = json.loads(request.POST['FD_FEEPERAWAT'])
+    FD_BUKTI_ID = json.loads(request.POST['FD_BUKTI_ID'])
+    
 
     FHD_NO = json.loads(request.POST['FHD_NO'])
     FHD_ID_DOKTER = json.loads(request.POST['FHD_ID_DOKTER'])
@@ -218,7 +220,7 @@ def SP_AUD_TRANSAKSI(request):
         q += FD_FEEDOKTER[i] + ","
         q += FD_FEEBC[i] + ","
         q += FD_FEEPERAWAT[i] + ","
-        q += "'" + FH_BUKTI_ID + "');"
+        q += "'" + FD_BUKTI_ID[i] + "');"
         i += 1
 
     i = 0
@@ -327,7 +329,7 @@ def getTransaksiByBukti(request):
     no_bukti = request.GET['no_bukti']
     KD_CABANG= request.session['kdCabang']
 
-    q = "select  A.FTNO_TRANSAKSI,a.FTNO_KUNJUNGAN, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN, "
+    q = "select  A.FTNO_TRANSAKSI,a.FTNO_KUNJUNGAN, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN,FTNO_DEPOSIT, "
     q += "d.FDTNOMER as NO,d.FDTKD_PRODUK as ID_PRODUK,d.FDTKDPRODUKN as NAMA_PRODUK,FDTQTY as QTY,d.FDTHARGA as HARGA,FDT_DISCKONSUMEN as DISCKONSUMEN,d.FDT_DISC as DISC,d.FDT_DISC2 as DISC2,d.FDT_DISC3 as DISC3,d.FDT_DISC4 as DISC4, "
     q += "d.FD_DISCRESELER as DISCRESELER,d.FD_FEEDOKTER as FEEDOKTER,d.FD_FEEBC as FEEBC,d.FD_FEEPERAWAT as FEEPERAWAT,d.FDTNO_FAKTUR as NOFAKTUR,d.FDTJENISTRANSAKSI,a.USERRS,a.UPDATERS,a.KD_RESELER,e.NAMA_RESELER,a.FKUNCI "
     q += "from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI  "
@@ -522,9 +524,15 @@ def SP_AUD_BAYAR_TRANSAKSI(request):
 def findDepositPaket(request):
     kd_pasien = request.GET['kd_pasien']
     KD_CABANG= request.session['kdCabang']
-    q = "select  top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as Sisasaldo  "
-    q +="from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN "
-    q +="WHERE FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s AND a.FDPKD_CABANG= %s "
+    q ="select    "
+    q += "distinct top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,isnull(FDPNOMINAL_SISA,0) as FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as Sisasaldo  "
+    q += ",A.FDPKD_PAKET,d.FMPKPAKETN "
+    q += ",isnull((SELECT sum(z.FDTQTY) as QTY FROM TRANSAKSIPASIEN x inner join TRANSAKSIPASIEND z on x.FTNO_TRANSAKSI=z.FDTNO_TRANSAKSI where z.FDTNO_FAKTUR = a.FDPNO_DEPOSIT AND z.FDTKD_PRODUK = b.FDPDKD_PRODUK),0) as qtypakai  "
+    q += "from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN " 
+    q += "left join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT " 
+    q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET "
+    q += "WHERE FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s and a.FDP_JENIS_DEPOSITO=0 and isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)<>0  "
+    q += "AND a.FDPKD_CABANG= %s "
     result = Globals().getDataQuery(q , [kd_pasien,KD_CABANG])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")	
@@ -534,16 +542,16 @@ def findDepositPaketD(request):
     KD_CABANG= request.session['kdCabang']
     q ="select * from "
     q += "(select   "
-    q += " distinct top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,isnull(FDPNOMINAL_SISA,0) as FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as Sisasaldo "
-    q += ", b.FDPDQTY "
-    q += ",isnull((SELECT sum(z.FDTQTY) as QTY FROM TRANSAKSIPASIEN x inner join TRANSAKSIPASIEND z on x.FTNO_TRANSAKSI=z.FDTNO_TRANSAKSI where x.FTNO_DEPOSIT = a.FDPNO_DEPOSIT AND z.FDTKD_PRODUK = b.FDPDKD_PRODUK),0) as qtypakai "
+    q += "distinct top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,isnull(FDPNOMINAL_SISA,0) as FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as Sisasaldo "
+    q += ",b.FDPDQTY ,A.FDPKD_PAKET,d.FMPKPAKETN "
+    q += ",isnull((SELECT sum(z.FDTQTY) as QTY FROM TRANSAKSIPASIEN x inner join TRANSAKSIPASIEND z on x.FTNO_TRANSAKSI=z.FDTNO_TRANSAKSI where z.FDTNO_FAKTUR = a.FDPNO_DEPOSIT AND z.FDTKD_PRODUK = b.FDPDKD_PRODUK),0) as qtypakai "
     q += "from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN "
     q += "inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT "
-    q += "WHERE FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s  "
+    q += "inner join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET  "
+    q += "WHERE FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s and FDP_JENIS_DEPOSITO=1 "
     q += "AND a.FDPKD_CABANG= %s "
     q += ") as dd where dd.FDPDQTY <> qtypakai "
     result = Globals().getDataQuery(q , [kd_pasien,KD_CABANG])
-
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")	
 

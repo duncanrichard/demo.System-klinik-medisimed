@@ -1733,13 +1733,42 @@ function getGridPaketprodukpasien(no_bukti) {
                         e.cancel = true
                         alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
                     }
-                    // if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
-                    //     console.log(e)
-                    //     e.cancel = true
-                    //     alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih hapus dari produk farmasi')
-                    // } else {
-                    //     setTotal()
-                    // }
+                    if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                        // var bukti = e.data.NOFAKTUR
+                        // gethapuspaket(bukti)
+                        // setTotalbayar()
+                        // setTotal()
+                        // e.cancel = true
+                        // cek data farmasi bukan
+                        // var bukti = e.data.NOFAKTUR
+                        // console.log('aaa')
+                        // console.log(bukti)
+                        // $.ajax({
+                        //     url: host + "/Cekdepositfarmasi",
+                        //     method: "GET",
+                        //     data: {
+                        //         'bukti': bukti,
+                        //     },
+                        //     success: function (datas) {
+                        //         totalCount = datas.length
+                        //         console.log('ada')
+                        //         console.log(totalCount)
+                        //         if (totalCount == 0) {
+                        //             e.cancel = false
+                        //             var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        //             dataGrid.deleteRow(rowIndex)
+                        //             dataGrid.saveEditData()
+                        //             setTotal()
+                        //         } else {
+                        //             e.cancel = true
+                        //             alert('Maaf Produk Tidak Dapat Dihapus, karena paket/produk farmasi')
+                        //         }
+                        //     }
+                        // })
+                    } else {
+                        setTotal()
+                    }
+
                 },
                 onKeyDown: function (d) {
                     if (colIndex == 'ID_PRODUK' && d.event.originalEvent.which == 13) {
@@ -1913,14 +1942,11 @@ function getGridPaketprodukpasien(no_bukti) {
                     colIndex = d.column.dataField;
 
                 },
-
-
                 onRowRemoving: function (e) {
                     if (canAdd == 0) {
                         e.cancel = true
                         alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
                     } else {
-                        console.log(e)
                         var bukti = e.data.NOFAKTUR
                         gethapuspaket(bukti)
                         setTotalbayar()
@@ -2073,12 +2099,11 @@ function gethapuspaket(bukti) {
     var result = 0;
     for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
         if (dataGrid.getVisibleRows()[i].data.NOFAKTUR == bukti) {
-            console.log('ora beres')
-            console.log(bukti)
             dataGrid.deleteRow(i)
         }
     }
     dataGrid.saveEditData()
+    $('#kd_paket').val('')
     return result
 }
 

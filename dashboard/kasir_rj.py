@@ -185,7 +185,7 @@ def SP_AUD_TRANSAKSI(request):
     FH_DATE = request.POST['FH_DATE']
     FH_PASIEN_ID = request.POST['FH_PASIEN_ID']
     FH_RESELER_ID = request.POST['FH_RESELER_ID']
-
+    FH_PAKET_ID = request.POST['FH_PAKET_ID']
     USERRS = request.session['user_id']
     KD_CABANG= request.session['kdCabang']
     status_aud = request.POST['StatusAUD']
@@ -267,6 +267,7 @@ def SP_AUD_TRANSAKSI(request):
     q += "'" + FH_DATE + "',"
     q += "'" + FH_PASIEN_ID + "',"
     q += "'" + FH_RESELER_ID + "',"
+    q += "'" + FH_PAKET_ID + "',"
     q += "'" + USERRS + "',"
     q += "'" + KD_CABANG + "',"
     q += "'" + status_aud + "', "
@@ -531,12 +532,16 @@ def findDepositPaket(request):
 def findDepositPaketD(request):
     kd_pasien = request.GET['kd_pasien']
     KD_CABANG= request.session['kdCabang']
-    q = "select DISTINCT A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,C.ALAMAT, "
-    q += "a.FDPKD_PAKET,a.FDPKETERANGAN,isnull(a.FDPSTATUS,0) as FDPSTATUS,a.USERRS,a.UPDATERS,d.FMPKPAKETN  "
-    q += "from DEPOSIT_PAKET a inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT   "
-    q += "inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN  "
-    q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET "
-    q += "where FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s AND a.FDPKD_CABANG= %s "
+    q ="select * from "
+    q += "(select   "
+    q += " distinct top 100 A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,isnull(FDPNOMINAL_SISA,0) as FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as Sisasaldo "
+    q += ", b.FDPDQTY "
+    q += ",isnull((SELECT sum(z.FDTQTY) as QTY FROM TRANSAKSIPASIEN x inner join TRANSAKSIPASIEND z on x.FTNO_TRANSAKSI=z.FDTNO_TRANSAKSI where x.FTNO_DEPOSIT = a.FDPNO_DEPOSIT AND z.FDTKD_PRODUK = b.FDPDKD_PRODUK),0) as qtypakai "
+    q += "from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN "
+    q += "inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT "
+    q += "WHERE FDPSTATUS = 1 AND A.FDPKD_PASIEN = %s  "
+    q += "AND a.FDPKD_CABANG= %s "
+    q += ") as dd where dd.FDPDQTY <> qtypakai "
     result = Globals().getDataQuery(q , [kd_pasien,KD_CABANG])
 
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
@@ -621,3 +626,11 @@ def SP_BATAL_BAYAR(request):
 
     except ValueError:
         print(q)
+
+def Cekdepositfarmasi(request):
+    bukti = request.GET['bukti']
+    KD_CABANG= request.session['kdCabang']
+    q ="select a.FHFJBUKTI_ID from FJINKOTA a where a.FHFJBUKTI_ID = %s and a.FHFJBRANCH = %s "
+    result = Globals().getDataQuery(q , [bukti,KD_CABANG])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")	

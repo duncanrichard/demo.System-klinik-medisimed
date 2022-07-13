@@ -162,7 +162,8 @@ urlpatterns = [
         url(r'^findDepositPaket', kasir_rj.findDepositPaket),
         url(r'^getGridPaketprodukpasien',kasir_rj.getGridPaketprodukpasien),
         url(r'^SP_BATAL_BAYAR', kasir_rj.SP_BATAL_BAYAR),
-        
+        url(r'^Cekdepositfarmasi', kasir_rj.Cekdepositfarmasi),
+       
     ])),
     url(r'^daftar_paket/', include ([
         url(r'^$',daftar_paket.daftar_paket, name='daftar_paket'),

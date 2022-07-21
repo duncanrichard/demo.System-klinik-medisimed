@@ -636,18 +636,18 @@ function setGridEmpty() {
                     if (!rowData.PIUTANG) {
                         piutang = 0
                     } else {
-                        piutang = parseFloat(rowData.PIUTANG)
+                        piutang = parseInt(rowData.PIUTANG)
                     }
                     if (!rowData.VOUCHER) {
                         voucher = 0
                     } else {
-                        voucher = parseFloat(rowData.VOUCHER)
+                        voucher = parseInt(rowData.VOUCHER)
                     }
 
                     if (!rowData.JAMINAN) {
                         jaminan = 0
                     } else {
-                        jaminan = parseFloat(rowData.JAMINAN)
+                        jaminan = parseInt(rowData.JAMINAN)
                     }
                     var res = tunai + piutang + bank + voucher + jaminan
                     return parseInt(Math.ceil(res))
@@ -1437,7 +1437,7 @@ function getGridTabletransaksi(no_bukti) {
     })
 }
 
-function getGridPaketprodukpasien(no_bukti) {
+function getGridPaketprodukpasien(no_bukti, nominal_deposit = 0) {
     if (kode_paket == '') {
         kode_paket = no_bukti
     } else {
@@ -1452,6 +1452,7 @@ function getGridPaketprodukpasien(no_bukti) {
         method: "GET",
         data: {
             "no_bukti": kode_paket,
+            "nominal_deposit": nominal_deposit,
         },
         success: function (datas) {
             $("#datagrid").dxDataGrid({
@@ -1881,6 +1882,8 @@ function getGridPaketprodukpasien(no_bukti) {
                         format: 'decimal fixedPoint',
                         width: 130,
                         calculateCellValue: function (rowData) {
+                            console.log('rowData')
+                            console.log(rowData)
                             var tunai = ''
                             var piutang = ''
                             var bank = ''
@@ -1901,18 +1904,544 @@ function getGridPaketprodukpasien(no_bukti) {
                             if (!rowData.PIUTANG) {
                                 piutang = 0
                             } else {
-                                piutang = parseFloat(rowData.PIUTANG)
+                                piutang = parseInt(rowData.PIUTANG)
                             }
                             if (!rowData.VOUCHER) {
                                 voucher = 0
                             } else {
-                                voucher = parseFloat(rowData.VOUCHER)
+                                voucher = parseInt(rowData.VOUCHER)
                             }
 
                             if (!rowData.JAMINAN) {
                                 jaminan = 0
                             } else {
-                                jaminan = parseFloat(rowData.JAMINAN)
+                                jaminan = parseInt(rowData.JAMINAN)
+                            }
+                            var res = tunai + piutang + bank + voucher + jaminan
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    } else {
+                        var bukti = e.data.NOFAKTUR
+                        gethapuspaket(bukti)
+                        setTotalbayar()
+                        setTotal()
+                    }
+                },
+                onContentReady: function (d) {
+                    setTotalbayar()
+                }
+            });
+
+        }
+    })
+}
+
+function getGridDaftarPakettransaksi(no_bukti, nominal_deposit = 0) {
+    if (kode_paket == '') {
+        kode_paket = no_bukti
+    } else {
+        kode_paket = kode_paket + ',' + no_bukti
+    }
+    $('#kd_paket').val(kode_paket)
+    $('#tambah_produk').css("display", 'block');
+    canAdd = 1
+    setGridEmpty()
+    $.ajax({
+        url: host + "/getGridPaketprodukpasien",
+        method: "GET",
+        data: {
+            "no_bukti": kode_paket,
+            "nominal_deposit": nominal_deposit,
+        },
+        success: function (datas) {
+            $("#datagrid").dxDataGrid({
+                dataSource: datas.data1,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10000
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        type: "buttons",
+                        buttons: [{
+                            name: "delete",
+                            text: "hapus"
+                        }],
+                        width: 60
+                    },
+                    {
+                        dataField: "NOFAKTUR",
+                        caption: "REFFERENSI",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 100,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "ID_PRODUK",
+                        caption: "KODE PRODUK",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 120,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_PRODUK",
+                        caption: "NAMA PRODUK",
+                        alignment: 'left',
+                        width: 270,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "HARGA",
+                        alignment: 'right',
+                        caption: "HARGA/UNIT",
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "QTY",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 50
+                    },
+                    {
+                        dataField: "DISCKONSUMEN",
+                        alignment: 'center',
+                        caption: "KONSUMEN %",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false,
+
+                    },
+                    {
+                        dataField: "DISC",
+                        caption: "DISC %",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC2",
+                        caption: "DISC 2 %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC3",
+                        caption: "DISC 3 %",
+                        alignment: 'right',
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "DISC4",
+                        caption: "DISC Rp.",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+                            var disckonsumen = ''
+                            var disc = ''
+                            var disc2 = ''
+                            var disc3 = ''
+                            var disc4 = ''
+
+                            if (rowData.HARGA == '') {
+                                hjual = 0
+                            } else {
+                                hjual = parseInt(rowData.HARGA)
+                            }
+
+                            if (!rowData.QTY) {
+                                qty = 0
+                            } else {
+                                qty = parseInt(rowData.QTY)
+                            }
+                            if (!rowData.DISCKONSUMEN) {
+                                disckonsumen = 0
+                            } else {
+                                disckonsumen = parseFloat(rowData.DISCKONSUMEN)
+                            }
+                            if (!rowData.DISC) {
+                                disc = 0
+                            } else {
+                                disc = parseFloat(rowData.DISC)
+                            }
+
+                            if (!rowData.DISC2) {
+                                disc2 = 0
+                            } else {
+                                disc2 = parseFloat(rowData.DISC2)
+                            }
+                            if (!rowData.DISC3) {
+                                disc3 = 0
+                            } else {
+                                disc3 = parseFloat(rowData.DISC3)
+                            }
+                            if (!rowData.DISC4) {
+                                disc4 = 0
+                            } else {
+                                disc4 = parseInt(rowData.DISC4)
+                            }
+                            var amount = (hjual * qty)
+                            var totdisckonsumen = amount * (disckonsumen / 100)
+                            var totdisc = (amount - totdisckonsumen) * (disc / 100)
+                            var totdisc2 = (amount - totdisckonsumen - totdisc) * (disc2 / 100)
+                            var totdisc3 = (amount - totdisckonsumen - totdisc - totdisc2) * (disc3 / 100)
+                            var res = amount - totdisckonsumen - totdisc - totdisc2 - totdisc3 - disc4
+                            return parseInt(Math.ceil(res))
+                        }
+                    },
+
+                    {
+                        dataField: "DISCRESELER",
+                        alignment: 'center',
+                        caption: "DISCRESELER",
+                        width: 0,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEEDOKTER",
+                        alignment: 'center',
+                        caption: "FEEDOKTER",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEEBC",
+                        alignment: 'center',
+                        caption: "FEEBC",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 100,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "FEEPERAWAT",
+                        alignment: 'center',
+                        caption: "FEEPERAWAT",
+                        width: 100,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        allowEditing: false
+                    },
+
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 3) {
+                        colIndex = "ID_PRODUK"
+                    } else if (colIndex == 6) {
+                        colIndex = "QTY"
+                    } else if (colIndex == 11) {
+                        colIndex = "DISC4"
+                    }
+
+                },
+                onRowUpdated: function (e) {
+                    if (e.data.hasOwnProperty("QTY")) {
+                        if (e.data.QTY < 0) {
+                            alert('QTY Tidak Boleh Kurang Dari 1');
+                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                            dataGrid.cellValue(rowIndex, "QTY", '1');
+                            dataGrid.saveEditData();
+                        }
+                        setTotal()
+                    }
+                },
+                onRowRemoved: function (e) {
+                    setTotal()
+                },
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Produk Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                    if (e.data.NOFAKTUR && e.data.NOFAKTUR != '') {
+                        // var bukti = e.data.NOFAKTUR
+                        // gethapuspaket(bukti)
+                        // setTotalbayar()
+                        // setTotal()
+                        // e.cancel = true
+                        // cek data farmasi bukan
+                        // var bukti = e.data.NOFAKTUR
+                        // console.log('aaa')
+                        // console.log(bukti)
+                        // $.ajax({
+                        //     url: host + "/Cekdepositfarmasi",
+                        //     method: "GET",
+                        //     data: {
+                        //         'bukti': bukti,
+                        //     },
+                        //     success: function (datas) {
+                        //         totalCount = datas.length
+                        //         console.log('ada')
+                        //         console.log(totalCount)
+                        //         if (totalCount == 0) {
+                        //             e.cancel = false
+                        //             var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        //             dataGrid.deleteRow(rowIndex)
+                        //             dataGrid.saveEditData()
+                        //             setTotal()
+                        //         } else {
+                        //             e.cancel = true
+                        //             alert('Maaf Produk Tidak Dapat Dihapus, karena paket/produk farmasi')
+                        //         }
+                        //     }
+                        // })
+                    } else {
+                        setTotal()
+                    }
+
+                },
+                onKeyDown: function (d) {
+                    if (colIndex == 'ID_PRODUK' && d.event.originalEvent.which == 13) {
+                        if (canAdd == 1) {
+                            var dataGrid = d.component
+                            var baris = dataGrid.getVisibleRows().length
+                            var ID_PRODUKKODE = d.event.target.value
+                            carikodeprodukid(ID_PRODUKKODE)
+
+                        }
+                    }
+                    if (colIndex == 'DISC4' && d.event.originalEvent.which == 13) {
+                        // kalo enter tambah row otomatis
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        dataGrid.saveEditData();
+                        if (canAdd == 1) {
+                            if (Cekeror == true) {
+                                error_in_field()
+                                if (Cekeror == true) {
+                                    tambahrow()
+                                }
+                            }
+                        }
+                    }
+                },
+                onContentReady: function (d) {
+                    setTotal()
+                }
+            });
+            $("#datagridbayar").dxDataGrid({
+                dataSource: datas.data5,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columnAutoWidth: true,
+                rowAlternationEnabled: true,
+                paging: {
+                    pageSize: 10000
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        type: "buttons",
+                        buttons: [{
+                            name: "delete",
+                            text: "hapus"
+                        }],
+                        width: 60
+                    },
+                    {
+                        dataField: "NOFAKTUR",
+                        caption: "REFFERENSI",
+                        alignment: 'left',
+                        allowEditing: false,
+                        width: 100,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "TUNAI",
+                        caption: "TUNAI",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "BANK",
+                        caption: "BANK",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "PIUTANG",
+                        caption: "PIUTANG",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "JAMINAN",
+                        caption: "JAMINAN",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "VOUCHER",
+                        caption: "VOUCHER",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                        calculateCellValue: function (rowData) {
+                            console.log('rowData')
+                            console.log(rowData)
+                            var tunai = ''
+                            var piutang = ''
+                            var bank = ''
+                            var voucher = ''
+                            var jaminan = ''
+
+                            if (rowData.TUNAI == '') {
+                                tunai = 0
+                            } else {
+                                tunai = parseInt(rowData.TUNAI)
+                            }
+
+                            if (!rowData.BANK) {
+                                bank = 0
+                            } else {
+                                bank = parseInt(rowData.BANK)
+                            }
+                            if (!rowData.PIUTANG) {
+                                piutang = 0
+                            } else {
+                                piutang = parseInt(rowData.PIUTANG)
+                            }
+                            if (!rowData.VOUCHER) {
+                                voucher = 0
+                            } else {
+                                voucher = parseInt(rowData.VOUCHER)
+                            }
+
+                            if (!rowData.JAMINAN) {
+                                jaminan = 0
+                            } else {
+                                jaminan = parseInt(rowData.JAMINAN)
                             }
                             var res = tunai + piutang + bank + voucher + jaminan
                             return parseInt(Math.ceil(res))

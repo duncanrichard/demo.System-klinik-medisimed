@@ -295,37 +295,100 @@ $(document).ready(function () {
         }
     })
     $('#menu_batal').click(function () {
-        if ($("#no_trans").val() == '') {
-            alert("Nomor Masih Kosong")
-        } else if (($("#inlineCheckboxclose").prop('checked') == false)) {
-            alert("Transaksi sudah dibuka")
-        } else {
-            var c = confirm('Yakin Ingin Membuka Data Ini ?')
-            if (c) {
-                status_aud = 'D'
-                $.ajax({
-                    url: host + "/SP_BATAL_BAYAR",
-                    method: "POST",
-                    data: {
-                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
-                        "FH_BUKTI_ID": $("#no_trans").val(),
-                        "StatusAUD": status_aud,
-                    },
-                    success: function (e) {
-                        alert(e[0].STATUS + ' - ' + e[0].STATE)
-                        $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
-                        Deathtext()
-                        getGridDaftarPakettransaksi($('#no_trans').val())
-                        $('#tambah_produk').css("display", 'none');
-                        canAdd = 0
+        // cek paket sudah dipake di kasir apa belum
+        $.ajax({
+            url: host + "/getpaketbayar",
+            method: "GET",
+            data: {
+                'bukti': $("#no_trans").val(),
+            },
+            success: function (data) {
+                if (data.length == 0) {
+                    if ($("#no_trans").val() == '') {
+                        alert("Nomor Masih Kosong")
+                    } else if (($("#inlineCheckboxclose").prop('checked') == false)) {
+                        alert("Transaksi sudah dibuka")
+                    } else {
+                        var c = confirm('Yakin Ingin Membuka Data Ini ?')
+                        if (c) {
+                            status_aud = 'D'
+                            $.ajax({
+                                url: host + "/SP_BATAL_BAYAR",
+                                method: "POST",
+                                data: {
+                                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                                    "FH_BUKTI_ID": $("#no_trans").val(),
+                                    "StatusAUD": status_aud,
+                                },
+                                success: function (e) {
+                                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                                    $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
+                                    Deathtext()
+                                    getGridDaftarPakettransaksi($('#no_trans').val())
+                                    $('#tambah_produk').css("display", 'none');
+                                    canAdd = 0
+
+                                }
+                            })
+                        }
+
 
                     }
-                })
+                } else {
+                    alert('Silahkan batalkan transaksi di kasir dulu')
+                }
             }
+        })
+    })
 
+    $('#menu_ubah_paket').click(function () {
+        if ($("#no_trans").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else if (($("#deposit_tunai_on").prop('checked') == true)) {
+            alert("Transaksi sudah deposit uang")
+        } else {
+            // cek paket sudah dipake di kasir apa belum
+            $.ajax({
+                url: host + "/getpaketbayar",
+                method: "GET",
+                data: {
+                    'bukti': $("#no_trans").val(),
+                },
+                success: function (data) {
+                    if (data.length != 0) {
+                        var c = confirm('Yakin Ingin mengubah menjadi Deposit Tunai ?')
+                        if (c) {
+                            status_aud = 'D'
+                            $.ajax({
+                                url: host + "/SP_BATAL_BAYAR",
+                                method: "POST",
+                                data: {
+                                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                                    "FH_BUKTI_ID": $("#no_trans").val(),
+                                    "StatusAUD": status_aud,
+                                },
+                                success: function (e) {
+                                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                                    $('#no_trans').val(e[0].NOMOR_TRANSAKSI);
+                                    Deathtext()
+                                    getGridDaftarPakettransaksi($('#no_trans').val())
+                                    $('#tambah_produk').css("display", 'none');
+                                    canAdd = 0
 
+                                }
+                            })
+                        }
+
+                    } else {
+                        alert('Silahkan batalkan transaksi di kasir dulu')
+                    }
+                }
+            })
         }
     })
+
     $("#simpanBayar").click(function () {
         var c = confirm('Yakin Ingin Menyimpan Pembayaran Ini ?')
         if (c) {

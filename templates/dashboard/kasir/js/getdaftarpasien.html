@@ -1,5 +1,7 @@
 $(document).ready(function () {
     $("#btnFindPasien").click(function () {
+        Cleartext()
+        setGridEmpty()
         $('#ModalDaftarRJ').modal('show')
         cariDaftarPasien()
     })

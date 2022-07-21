@@ -1,8 +1,13 @@
+var total_deposit = 0
 $(document).ready(function () {
     $("#kd_paket").change(function () {
         kode_paket = $('#kd_paket').val()
     })
     $('#tambah_paket').click(function () {
+        $("#deposit_produk_paket").prop('checked', true)
+        $('#formGridPaket').show();
+        $('#formGridNominal').hide();
+        $('#formNominalDepositPaket').hide();
         error_in_field()
         if (Cekeror == true) {
             if ($('#no_trans').val() == '') {
@@ -66,6 +71,7 @@ function cari_paketpasien() {
                         deferred.resolve(datas, {
                             totalCount: datas.length
                         });
+                        $('#nominalDepositPaket').val(rupiah2(parseInt(datas[0].Sisasaldo)));
                     }
                 })
                 return deferred.promise();
@@ -124,7 +130,8 @@ function cari_paketpasien() {
 
         ],
         onRowClick: function (e) {
-            getGridDaftarPakettransaksi(e.data.FDPNO_DEPOSIT)
+            total_deposit = Math.round(desimal2($('#nominalDepositPaket').val()))
+            getGridDaftarPakettransaksi(e.data.FDPNO_DEPOSIT, total_deposit)
             $('#ModalDaftarPaketTransaksi').modal('hide')
         }
     });
@@ -191,7 +198,9 @@ function cari_paketpasien() {
             },
         ],
         onRowClick: function (e) {
-            getGridPaketprodukpasien(e.data.FDPNO_DEPOSIT)
+            total_deposit = total_deposit
+            //  Math.round(desimal2($('#nominalDepositPaket').val()))
+            getGridPaketprodukpasien(e.data.FDPNO_DEPOSIT, total_deposit)
             $('#ModalDaftarPaketTransaksi').modal('hide')
         }
     });

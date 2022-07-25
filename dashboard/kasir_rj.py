@@ -563,6 +563,7 @@ def findDepositPaketD(request):
 
 def getGridPaketprodukpasien(request):
     no_bukti = request.GET['no_bukti']
+    nominal_deposit= request.GET['nominal_deposit']
     databukti=no_bukti.split(',')
     KD_CABANG= request.session['kdCabang']
     q = "select A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,C.ALAMAT, "
@@ -592,8 +593,9 @@ def getGridPaketprodukpasien(request):
 
 
     q = "select ROW_NUMBER() OVER (ORDER BY FDPNO_DEPOSIT) AS NO,A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
+    q += " IIF(FDP_JENIS_DEPOSITO=1,0,%s) as JAMINAN,0 as PIUTANG,0 as BANK,0 as VOUCHER,0 as TUNAI, "
     q += "(select sum(dbo.fungsiCalculasiDeposit(FDPDTARIF,1,FDPD_DISCKONSUMEN,FDPD_DISC1,FDPD_DISC2,FDPD_DISC3,FDPD_DISC4))   "
-    q += "FROM DEPOSIT_PAKETD b where b.FDPDNO_DEPOSIT=a.FDPNO_DEPOSIT) AS TUNAI   "
+    q += "FROM DEPOSIT_PAKETD b where b.FDPDNO_DEPOSIT=a.FDPNO_DEPOSIT) as Detail_sisa   "
     q += "from DEPOSIT_PAKET a   "
     q += "where A.FDPNO_DEPOSIT in( "
     i=0
@@ -605,7 +607,7 @@ def getGridPaketprodukpasien(request):
         i+=1
     q += ")  "
     q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s order by FDPNO_DEPOSIT "
-    result5 = Globals().getDataQuery(q , [KD_CABANG])
+    result5 = Globals().getDataQuery(q , [nominal_deposit,KD_CABANG])
 
     json_data = json.dumps({
 		'data1':result,'data5':result5

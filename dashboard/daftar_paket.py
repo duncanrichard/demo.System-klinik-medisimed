@@ -282,3 +282,10 @@ def cetakBilling(request):
 	)
 	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
+
+def getpaketbayar(request):
+    bukti = request.GET['bukti']
+    q ="select a.FDTNO_FAKTUR from TRANSAKSIPASIEND a where a.FDTNO_FAKTUR = %s  "
+    result = Globals().getDataQuery(q , [bukti])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")	

@@ -661,6 +661,12 @@ function getGridDaftarPakettransaksi(no_bukti) {
             $('#alamat').val(datas.data1[0].ALAMAT);
             $('#keterangan').val(datas.data1[0].FDPKETERANGAN);
             $('#deposit_tunai_nom').val(rupiah2(desimal2(datas.data1[0].FDPNOMINAL)));
+            var status2 = parseInt(datas.data1[0].FDP_JENIS_DEPOSITO)
+            if (status2 == 0) {
+                $("#deposit_tunai_on").prop('checked', true)
+            } else {
+                $("#deposit_tunai_off").prop('checked', true)
+            }
             if (datas.data1[0].FDPSTATUS == 1) {
                 $('input[name=inlineCheckboxclose]').iCheck('check');
             } else {

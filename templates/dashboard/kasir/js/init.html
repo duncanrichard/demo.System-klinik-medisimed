@@ -109,7 +109,8 @@ $(document).ready(function () {
                         FD_FEEDOKTER.push("" + dataGrid.getVisibleRows()[i].data.FEEDOKTER)
                         FD_FEEBC.push("" + dataGrid.getVisibleRows()[i].data.FEEBC)
                         FD_FEEPERAWAT.push("" + dataGrid.getVisibleRows()[i].data.FEEPERAWAT)
-                        FD_BUKTI_ID.push($("#No_faktur").val())
+                        FD_BUKTI_ID.push("" + dataGrid.getVisibleRows()[i].data.NOFAKTUR)
+
                     }
                 }
 
@@ -147,6 +148,17 @@ $(document).ready(function () {
                         FHP_NAMA_PERAWAT.push("" + dataGrid4.getVisibleRows()[i].data.NAMA_PERAWAT)
                     }
                 }
+                var dataGrid5 = $("#datagridbayar").dxDataGrid("instance");
+                var FBY_NO = []
+                var FBY_NOFAKTUR = []
+                var FBY_TUNAI = []
+                for (let i = 0; i < dataGrid5.getVisibleRows().length; i++) {
+                    if (dataGrid5.getVisibleRows()[i].data.NOFAKTUR != '') {
+                        FBY_NO.push("" + dataGrid5.getVisibleRows()[i].data.NO)
+                        FBY_NOFAKTUR.push("" + dataGrid5.getVisibleRows()[i].data.NOFAKTUR)
+                        FBY_TUNAI.push("" + dataGrid5.getVisibleRows()[i].data.TUNAI)
+                    }
+                }
                 status_aud = 'D'
                 $.ajax({
                     url: host + "/SP_AUD_TRANSAKSI",
@@ -180,6 +192,10 @@ $(document).ready(function () {
                         "FHP_NO": JSON.stringify(FHP_NO),
                         "FHP_ID_PERAWAT": JSON.stringify(FHP_ID_PERAWAT),
                         "FHP_NAMA_PERAWAT": JSON.stringify(FHP_NAMA_PERAWAT),
+
+                        "FBY_NO": JSON.stringify(FBY_NO),
+                        "FBY_NOFAKTUR": JSON.stringify(FBY_NOFAKTUR),
+                        "FBY_TUNAI": JSON.stringify(FBY_TUNAI),
 
 
 
@@ -377,10 +393,14 @@ $(document).ready(function () {
         cari_transaksi()
     })
     $("#menu_kasir").click(function () {
+        var debet = Math.round(desimal2($('#total').val()))
+        var kredit = Math.round(desimal2($('#totalbayar').val()))
         if ($("#no_trans").val() == '') {
             alert("Nomor Masih Kosong")
         } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
             alert("Transaksi sudah ditutup")
+        } else if (debet - kredit == 0) {
+            alert("Transaksi sudah lunas")
         } else {
             $('#no_kwitansi_pembayaran').val($('#no_trans').val());
             $('#tanggal_trans').val($('#tanggal').val());

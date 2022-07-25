@@ -104,22 +104,28 @@ def getDiscCustomer(request):
 
 def getdokter(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' order by FMDDOKTERN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, nakes.* from (SELECT a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' UNION select a.FMPPERAWAT_ID AS ID_DOKTER,A.FMPPERAWATN AS NAMA_DOKTER from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMDDOKTERN) as nakes "
     result = Globals().getDataQuery(q,[cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
 def getperawat(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_PERAWAT,A.FMPPERAWATN AS NAMA_PERAWAT from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
-    result = Globals().getDataQuery(q,[cabang_id])
+    q = " select ROW_NUMBER() OVER (ORDER BY ID_PERAWAT) AS NO, nakes.* from (select a.FMPPERAWAT_ID AS ID_PERAWAT,a.FMPPERAWATN AS NAMA_PERAWAT 
+    q += " from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' 
+    q += " union SELECT a.FMDDOKTER_ID AS ID_PERAWAT,FMDDOKTERN AS NAMA_PERAWAT 
+    q += " from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' ) as nakes order by NAMA_PERAWAT
+    result = Globals().getDataQuery(q,[cabang_id,cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
 def getBC(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,A.FMPPERAWATN AS NAMA_BC from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
-    result = Globals().getDataQuery(q,[cabang_id])
+    q = " select ROW_NUMBER() OVER (ORDER BY ID_BC) AS NO, nakes.* from (select a.FMPPERAWAT_ID AS ID_BC,a.FMPPERAWATN AS NAMA_BC 
+    q += " from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' 
+    q += " union SELECT a.FMDDOKTER_ID AS ID_BC,FMDDOKTERN AS NAMA_BC 
+    q += " from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' ) as nakes order by NAMA_BC
+    result = Globals().getDataQuery(q,[cabang_id,cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

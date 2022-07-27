@@ -29,6 +29,7 @@ $(document).ready(function () {
             $('#formGridNominal').show();
             $('#formNominalDepositPaket').show();
         }
+        cari_paketpasien()
     })
 
     $('#deposit_nominal_paket').change(function (e) {
@@ -41,6 +42,7 @@ $(document).ready(function () {
             $('#formGridNominal').hide();
             $('#formNominalDepositPaket').hide();
         }
+        cari_paketpasien()
     })
 })
 
@@ -66,12 +68,16 @@ function cari_paketpasien() {
                     method: "GET",
                     data: {
                         'kd_pasien': $('#idPasien').val(),
+                        'jenis_deposit': $('[name=option_produk_paket]:checked').val()
                     },
                     success: function (datas) {
                         deferred.resolve(datas, {
                             totalCount: datas.length
                         });
-                        $('#nominalDepositPaket').val(rupiah2(parseInt(datas[0].Sisasaldo)));
+                        if(datas.length > 0)
+                        {
+                            $('#nominalDepositPaket').val(rupiah2(parseInt(datas[0].Sisasaldo)));
+                        }
                     }
                 })
                 return deferred.promise();
@@ -156,6 +162,7 @@ function cari_paketpasien() {
                     method: "GET",
                     data: {
                         'kd_pasien': $('#idPasien').val(),
+                        'jenis_deposit': $('[name=option_produk_paket]:checked').val()
                     },
                     success: function (datas) {
                         deferred.resolve(datas, {

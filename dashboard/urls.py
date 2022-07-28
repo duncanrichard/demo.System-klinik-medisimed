@@ -12,7 +12,8 @@ from . import farmasi
 from . import jasamedis001
 from . import jasareseller001
 from . import master_sumber
-
+from . import rptkunjungan001
+from . import rptkunjungan002
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
@@ -235,7 +236,14 @@ urlpatterns = [
         url(r'^$',master_sumber.master_sumber, name='master_sumber'),
         url(r'^open_sumber', master_sumber.open_sumber),
         url(r'^aud_Sumber', master_sumber.aud_Sumber),
-        
- 
     ])),
+    url(r'^rptkunjungan002/', include ([
+        url(r'^$',rptkunjungan002.rptkunjungan002, name='rptkunjungan002'),
+        url(r'^proses_excel', rptkunjungan002.proses_excel),
+    ])),
+    url(r'^rptkunjungan001/', include ([
+        url(r'^$',rptkunjungan001.rptkunjungan001, name='rptkunjungan001'),
+        url(r'^proses_excel', rptkunjungan001.proses_excel),
+    ])),
+    
 ]

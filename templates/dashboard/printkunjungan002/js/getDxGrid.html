@@ -1,0 +1,232 @@
+var dataGrid;
+var total = '';
+var ito = '';
+$(document).ready(function () {
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function (data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    $("#inlineRadiokreteria1").prop('checked', true)
+    setGridEmpty();
+
+});
+
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40
+            },
+            {
+                dataField: "ID_TREATMENT",
+                caption: "KODE TREATMENT",
+                alignment: 'left',
+                allowEditing: true,
+                width: 120,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_TREATMENT",
+                caption: "NAMA TREATMENT",
+                alignment: 'left',
+                // width: 270,
+                allowEditing: false
+            },
+            {
+                dataField: "QTY",
+                caption: "QTY",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 50
+            },
+            {
+                dataField: "TOTAL",
+                caption: "TOTAL",
+                alignment: 'right',
+                allowEditing: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 130,
+
+            },
+
+
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
+            "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                sorting: {
+                    mode: 'multiple',
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40
+                    },
+                    {
+                        dataField: "ID_TREATMENT",
+                        caption: "KODE TREATMENT",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 120,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_TREATMENT",
+                        caption: "NAMA TREATMENT",
+                        alignment: 'left',
+                        width: 270,
+                        allowEditing: false
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "QTY",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 50
+                    },
+                    {
+                        dataField: "HARGA",
+                        caption: "HARGA",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100,
+                    },
+                    {
+                        dataField: "JUMLAH",
+                        caption: "JUMLAH",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                    },
+                    {
+                        dataField: "DISCOUNT",
+                        caption: "DISCOUNT",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 100,
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                    },
+
+
+                ],
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 500);
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

@@ -351,3 +351,9 @@ class Globals:
 						i+= 1
 					
 				return results
+
+	def input(self, method, key, default=None):
+		if key not in method:
+			return default
+		else: 
+			return method[key]

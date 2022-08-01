@@ -1,0 +1,118 @@
+// Get barang
+
+$(document).ready(function () {
+    $("#cari_barang").keyup(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#DxgridDatabarang2").dxDataGrid("instance");
+
+        if (code == 27 || code == 13) {
+
+            if (dataGrid.getVisibleRows().length != 0) {
+                e.preventDefault()
+                $(this).blur()
+                dataGrid.focus(dataGrid.getCellElement(0, 'NAME_BRG'))
+                dataGrid.selectRowsByIndexes(0)
+            }
+
+        } else {
+            if ($("#cari_barang").val().length > 2) {
+                searchBarangByName($("#cari_barang").val())
+            } else {
+                searchBarangByName('nullnone0')
+            }
+        }
+    });
+
+    $('#Findbarang').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalbarang').modal('show');
+        $('#DxGridLabelbarang').html('Barang Farmasi');
+        searchBarangByName($("#cari_barang").val())
+    })
+
+})
+
+function searchBarangByName(nama, param = null) {
+    $.ajax({
+        url: host + "/load_barang",
+        method: "GET",
+        data: {
+            'nama': nama,
+        },
+        success: function (datas) {
+            canEnterBarang = 1
+            $("#DxgridDatabarang2").dxDataGrid({
+                dataSource: datas,
+                keyExpr: 'BARANGC',
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 100
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                focusedRowEnabled: true,
+                columns: [{
+                        dataField: "BARANGC",
+                        caption: "KODE",
+                        width: 75,
+                    },
+                    {
+                        dataField: "NAME_BRG",
+                        caption: "NAMA",
+                        width: 320,
+                    },
+                    {
+                        dataField: "NAME_PRD",
+                        caption: "NAMA JENIS",
+                        width: 100,
+                    },
+
+                    {
+                        dataField: "HPOKOK",
+                        caption: "Harga Pokok",
+                        width: 100,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "HJUAL",
+                        caption: "Harga RJ",
+                        width: 100,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "HJUALRI",
+                        caption: "Harga RI",
+                        width: 100,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+
+                    {
+                        dataField: "SATSTAND",
+                        caption: "Satuan",
+                        width: 75,
+                    },
+                ],
+                onRowClick: function (e) {
+                    if (param == null) {
+                        $("#idkode_barang").val(e.data.BARANGC)
+                        $("#idkode_barangN").val(e.data.NAME_BRG)
+                    }
+                    $('#dxGridModalbarang').modal('hide');
+                },
+                onContentReady: function (e) {
+                    setTimeout(() => {
+                        $('#cari_barang').focus()
+                    }, 200);
+
+                }
+            });
+        }
+    })
+}

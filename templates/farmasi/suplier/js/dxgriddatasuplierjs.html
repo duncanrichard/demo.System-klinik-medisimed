@@ -1,0 +1,605 @@
+load_suplier = 'unlock'
+setMenu('menu_tambah')
+setMenu('menu_edit')
+setMenu('menu_hapus')
+setMenu('menu_simpan', 0)
+setMenu('menu_cancel', 0)
+setMenu('menu_find')
+setMenu('menu_cetak')
+
+$(document).ready(function () {
+
+    // iki perintah enter 
+    $('#nama_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#alamat_suplier').focus()
+        }
+    })
+    $('#alamat_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#kota_suplier').focus()
+        }
+    })
+    $('#kota_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#kodepos_suplier').focus()
+        }
+    })
+    $('#kodepos_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#top_suplier').focus()
+        }
+    })
+
+    $('#top_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#top_suplier').val(convertToRibuan($('#top_suplier').val()));
+            $('#telepon_suplier').focus()
+        }
+    })
+
+
+    $('#telepon_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#fax_suplier').focus()
+        }
+    })
+    $('#fax_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#contact_suplier').focus()
+        }
+    })
+    $('#contact_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#npwp_suplier').focus()
+        }
+    })
+    $('#npwp_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#coa_suplier').focus()
+        }
+    })
+
+    $('#coa_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#tpay_suplier').focus()
+        }
+    })
+    Buka_suplier()
+    Buka_suplierdisc()
+
+
+
+
+    $('#menu_tambah, #nav_FRMSUPP0101').click(function (e) {
+        setMenu('menu_tambah', 0)
+        setMenu('menu_edit', 0)
+        setMenu('menu_hapus', 0)
+        setMenu('menu_simpan')
+        setMenu('menu_cancel')
+        ClearText()
+        ClearText2()
+        LiveText()
+        load_suplier = 'lock'
+        $('#nama_suplier').focus()
+    })
+
+    $('#menu_edit, #nav_FRMSUPP0102').click(function (e) {
+        if ($("#kode_suplier").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setMenu('menu_tambah', 0)
+            setMenu('menu_edit', 0)
+            setMenu('menu_hapus', 0)
+            setMenu('menu_simpan')
+            setMenu('menu_cancel')
+            load_suplier = 'lock'
+            LiveText()
+
+        }
+        $('#nama_suplier').focus()
+    })
+    $('#menu_find,#nav_FRMSUPP0301').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#DxGridModalsuplier').modal('show');
+        carisuplier(event)
+        $('#DxGridLabelsuplier').html('Supplier');
+    })
+
+    $('#menu_hapus,#nav_FRMSUPP0103').click(function (e) {
+        if ($("#kode_suplier").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            var result = confirm("Yakin Ingin Dihapus ?");
+            if (result) {
+                $.ajax({
+                    url: host + "/suplier_hapus",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        'kode': $("#kode_suplier").val(),
+                    },
+                    success: function (datas) {
+                        alert(datas.pesan)
+                        Buka_suplier()
+                        Buka_suplierdisc()
+                        ClearText()
+                        ClearText2()
+                    }
+                })
+            }
+        }
+    })
+
+    $('#menu_simpan,#nav_FRMSUPP0101').click(function (e) {
+        if ($('#top_suplier').val() == '') {
+            $("#top_suplier").val(0)
+        }
+        if ($("#nama_suplier").val() == '') {
+            alert('Nama Harus Diisi')
+        } else {
+            $.ajax({
+                url: host + "/suplier_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_suplier").val(),
+                    'nama': $("#nama_suplier").val(),
+                    'alamat': $("#alamat_suplier").val(),
+                    'kota': $("#kota_suplier").val(),
+                    'kodepos': $("#kodepos_suplier").val(),
+                    'top': desimal2($('#top_suplier').val()),
+                    'telepon': $("#telepon_suplier").val(),
+                    'fax': $("#fax_suplier").val(),
+                    'contact': $("#contact_suplier").val(),
+                    'npwp': $("#npwp_suplier").val(),
+                    'coa': $("#coa_suplier").val(),
+                    'coan': $("#coan_suplier").val(),
+                    'tpay': $("#tpay_suplier").val(),
+                    "status_aud": 'A',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    alert(datas.pesan)
+                    setMenu('menu_tambah')
+                    setMenu('menu_hapus')
+                    setMenu('menu_edit')
+                    setMenu('menu_simpan', 0)
+                    setMenu('menu_cancel', 0)
+                    ClearText()
+                    ClearText2()
+                    load_suplier = 'unlock'
+                    setDisabled('kode_suplier', 0)
+                    Buka_suplier()
+                    Buka_suplierdisc()
+                }
+            })
+        }
+    })
+
+    $('#menu_cancel,#nav_FRMSUPP0202').click(function (e) {
+        setMenu('menu_tambah')
+        setMenu('menu_hapus')
+        setMenu('menu_edit')
+        setMenu('menu_simpan', 0)
+        setMenu('menu_cancel', 0)
+        ClearText()
+        ClearText2()
+        DeathText()
+        load_suplier = 'unlock'
+        setDisabled('kode_suplier', 0)
+    })
+
+    $("#menu_cetak,nav_FRMSUPP04").click(function (e) {
+        e.preventDefault();
+        $("#cetak_dari").val('00')
+        $("#cetak_sampai").val('ZZZ')
+        e.stopImmediatePropagation();
+        $('#Modalprintsuplier').modal('show');
+    })
+
+    // discount
+    $('#add_btn').click(function (e) {
+        if ($("#kode_suplier").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setDisabled('add_btn', 0)
+            setDisabled('edit_btn', 0)
+            setDisabled('save_btn', 1)
+            setDisabled('cancel_btn', 1)
+            setDisabled('remove_btn', 0)
+            LiveText2()
+            ClearText2()
+        }
+
+    })
+    $('#edit_btn').click(function (e) {
+        if ($("#kode_suplier").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setDisabled('add_btn', 0)
+            setDisabled('edit_btn', 0)
+            setDisabled('save_btn', 1)
+            setDisabled('cancel_btn', 1)
+            setDisabled('remove_btn', 0)
+            LiveText2()
+            setreadonly('idkode_barang', 0)
+            setDisabled('Findbarang', 0)
+        }
+    })
+    $('#save_btn').click(function (e) {
+        error_in_field2()
+        if (Cekeror == true) {
+            $.ajax({
+                url: host + "/barangdiscsup_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_suplier").val(),
+                    'kodebarang': $("#idkode_barang").val(),
+                    'disc01': ($('#disc01').val()),
+                    'disc02': ($('#disc02').val()),
+                    "status_aud": 'A',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    if (datas.status == 'sukses') {
+                        alert('simpan berhasil ' + datas.data)
+                        setDisabled('add_btn', 1)
+                        setDisabled('edit_btn', 1)
+                        setDisabled('save_btn', 0)
+                        setDisabled('cancel_btn', 0)
+                        setDisabled('remove_btn', 1)
+                        ClearText2()
+                        Buka_suplierdisc()
+
+                    } else {
+                        alert('gagal ' + datas.data)
+                    }
+
+                }
+            })
+        }
+    })
+    $('#cancel_btn').click(function (e) {
+        setDisabled('add_btn', 1)
+        setDisabled('edit_btn', 1)
+        setDisabled('save_btn', 0)
+        setDisabled('cancel_btn', 0)
+        setDisabled('remove_btn', 1)
+        ClearText2()
+        DeathText2()
+    })
+    $('#remove_btn').click(function (e) {
+        if ($("#kode_suplier").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            $.ajax({
+                url: host + "/barangdiscsup_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_suplier").val(),
+                    'kodebarang': $("#idkode_barang").val(),
+                    'disc01': ($('#disc01').val()),
+                    'disc02': ($('#disc02').val()),
+                    "status_aud": 'D',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    if (datas.status == 'sukses') {
+                        alert('Data berhasil dihapus ' + datas.data)
+                        setDisabled('add_btn', 1)
+                        setDisabled('edit_btn', 1)
+                        setDisabled('save_btn', 0)
+                        setDisabled('cancel_btn', 0)
+                        setDisabled('remove_btn', 1)
+                        ClearText2()
+                        Buka_suplierdisc()
+
+                    } else {
+                        alert('gagal ' + datas.data)
+                    }
+
+                }
+            })
+        }
+    })
+
+})
+
+function error_in_field2() {
+    Cekeror = true;
+    if ($("#idkode_barang").val() == '') {
+        alert('Kode Barang tidak boleh kosong')
+        Cekeror = false;
+    }
+
+    if ($("#disc01").val() == '') {
+        alert('disc 01 barang tidak boleh kosong')
+        $("#disc01").val(0)
+        Cekeror = false;
+    }
+    if ($("#disc02").val() == '') {
+        alert('disc 02 barang  barang tidak boleh kosong')
+        $("#disc02").val(0)
+        Cekeror = false;
+    }
+
+
+
+    return Cekeror;
+
+}
+
+function Buka_suplier() {
+    DeathText()
+    $("#dxGridDatasuplier").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10000
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/load_suplier",
+                    method: "GET",
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "SUPPLIERC",
+                caption: "KODE",
+                width: 100,
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA",
+                width: 320,
+            },
+            {
+                dataField: "ADDRESS1",
+                caption: "Alamat",
+                width: 420,
+            },
+            {
+                dataField: "CITYC",
+                caption: "Kota",
+                width: 220,
+            },
+            {
+                dataField: "TELP",
+                caption: "Telepon",
+                width: 190,
+            },
+            {
+                dataField: "CONTACT",
+                caption: "Contact",
+                width: 190,
+            },
+
+        ],
+        onRowClick: function (e) {
+            if (load_suplier == 'unlock') {
+                $("#kode_suplier").val(e.data.SUPPLIERC)
+                $("#nama_suplier").val(e.data.NAME_SUPPL)
+                $("#alamat_suplier").val(e.data.ADDRESS1)
+                $("#kota_suplier").val(e.data.CITYC)
+                $("#kodepos_suplier").val(e.data.POSTC)
+                $("#top_suplier").val(e.data.TOPD)
+                $('#top_suplier').val(convertToRibuan($('#top_suplier').val()));
+                if ($("#top_suplier").val == '') {
+                    $("#top_suplier").val(0)
+                }
+                $("#telepon_suplier").val(e.data.TELP)
+                $("#fax_suplier").val(e.data.FAX)
+                $("#contact_suplier").val(e.data.CONTACT)
+                $("#npwp_suplier").val(e.data.NPWP)
+                $("#coa_suplier").val(e.data.COAPASIVA)
+                $("#coan_suplier").val(e.data.COAPASIVAN)
+                $("#tpay_suplier").val(e.data.PAYMENT)
+                $("#tpayn_suplier").val(e.data.NAMA)
+                Buka_suplierdisc()
+            }
+        }
+    })
+};
+
+function Buka_suplierdisc() {
+    DeathText2()
+    $("#dxGridDatasuplierdisc").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10000
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/load_suplierDisc",
+                    method: "GET",
+                    data: {
+                        'kode_suplier': $("#kode_suplier").val(),
+                    },
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "NAME_BRG",
+                caption: "NAMA",
+                // width: 320,
+            },
+            {
+                dataField: "FMSDDISC01",
+                caption: "Disc-01",
+                width: 90,
+            },
+            {
+                dataField: "FMSDDISC02",
+                caption: "Disc-02",
+                width: 90,
+            },
+
+        ],
+        onRowClick: function (e) {
+            if (load_suplier == 'unlock') {
+                $("#idkode_barang").val(e.data.FMSDKODEBRG)
+                $("#idkode_barangN").val(e.data.NAME_BRG)
+                $("#disc01").val(e.data.FMSDDISC01)
+                $("#disc02").val(e.data.FMSDDISC02)
+            }
+        }
+    })
+};
+
+
+function DeathText() {
+    setreadonly('kode_suplier', 0)
+    setreadonly('nama_suplier', 0)
+    setreadonly('alamat_suplier', 0)
+    setreadonly('kota_suplier', 0)
+    setreadonly('kodepos_suplier', 0)
+    setreadonly('top_suplier', 0)
+    setreadonly('telepon_suplier', 0)
+    setreadonly('fax_suplier', 0)
+    setreadonly('contact_suplier', 0)
+    setreadonly('npwp_suplier', 0)
+    setreadonly('coa_suplier', 0)
+    setreadonly('coan_suplier', 0)
+    setDisabled('FindCoa', 0)
+
+    setreadonly('tpay_suplier', 0)
+    setreadonly('tpayn_suplier', 0)
+    setDisabled('Findtpay', 0)
+
+}
+
+function DeathText2() {
+    setreadonly('idkode_barang', 0)
+    setDisabled('Findbarang', 0)
+    setreadonly('disc01', 0)
+    setreadonly('disc02', 0)
+}
+
+function LiveText() {
+    setreadonly('kode_suplier', 0)
+    setreadonly('nama_suplier', 1)
+    setreadonly('alamat_suplier', 1)
+    setreadonly('kota_suplier', 1)
+    setreadonly('kodepos_suplier', 1)
+    setreadonly('top_suplier', 1)
+    setreadonly('telepon_suplier', 1)
+    setreadonly('fax_suplier', 1)
+    setreadonly('contact_suplier', 1)
+    setreadonly('npwp_suplier', 1)
+    setreadonly('coa_suplier', 1)
+    setreadonly('coan_suplier', 0)
+    setDisabled('FindCoa', 1)
+
+    setreadonly('tpay_suplier', 1)
+    setreadonly('tpayn_suplier', 0)
+    setDisabled('Findtpay', 1)
+}
+
+function LiveText2() {
+    setreadonly('idkode_barang', 1)
+    setDisabled('Findbarang', 1)
+    setreadonly('disc01', 1)
+    setreadonly('disc02', 1)
+}
+
+function ClearText() {
+    $("#kode_suplier").val('')
+    $("#nama_suplier").val('')
+    $("#alamat_suplier").val('')
+    $("#kota_suplier").val('')
+    $("#kodepos_suplier").val('')
+    $("#telepon_suplier").val('')
+    $("#fax_suplier").val('')
+    $("#contact_suplier").val('')
+    $("#npwp_suplier").val('')
+    $("#coa_suplier").val('')
+    $("#coan_suplier").val('')
+    $("#top_suplier").val(0)
+    $("#tpay_suplier").val('')
+    $("#tpayn_suplier").val('')
+
+}
+
+function ClearText2() {
+    $("#idkode_barang").val('')
+    $("#idkode_barangN").val('')
+    $("#disc01").val(0)
+    $("#disc02").val(0)
+}
+
+function convertToAngka(rupiah) {
+    return parseInt(rupiah.replace(',', ''));
+}
+
+function desimal2(rupiah) {
+    return parseInt(rupiah.replace(/,/g, '').toString());
+}
+
+function convertToRibuan(bilangan) {
+    var number_string = bilangan.toString(),
+        sisa = number_string.length % 3,
+        rupiah = number_string.substr(0, sisa),
+        ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+    if (ribuan) {
+        separator = sisa ? ',' : '';
+        rupiah += separator + ribuan.join(',');
+    }
+
+    return rupiah;
+}

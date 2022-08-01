@@ -1,0 +1,74 @@
+// Get Gudang
+$(document).ready(function () {
+    $('#DxGridLabelTpay').val('Data Tpay')
+    $('#tpay_suplier').click(function (e) {
+        $('#dxGridModalTpay').modal('show');
+        carikodeTpay(e)
+        $('#Findtpay').attr('onclick','carikodeTpay(event)')
+    })
+})
+
+
+var gridDataTpay = new DevExpress.data.DataSource({
+    load: function (values) {
+        return $.ajax({
+            url: host + "/getTpay",
+            method: "GET",
+            data: {
+            },
+            success: function (datas) {
+                $('#dxGridModalTpay').modal('show');
+            }
+        })
+    }
+});
+
+function carikodeTpay(e, param = null) {
+    $("#DxgridDataTpay").dxDataGrid({
+        dataSource: gridDataTpay,
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        scrolling: {
+            mode: "virtual"
+        },
+        filterRow: {
+            visible: false
+        },
+ 
+        searchPanel : { visible: true },
+        
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "TPAY_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAMA",
+                caption: "NAMA",
+            }
+        ],
+        onContentReady: function(e) {
+            e.component.option("loadPanel.enabled", false);
+        },
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#tpay_suplier").val(e.data.TPAY_ID)
+                $("#tpayn_suplier").val(e.data.NAMA)
+            }  else if (param == 2) {
+                $("#Tpay_dari").val(e.data.TPAY_ID)
+            } else {
+                $("#Tpay_sampai").val(e.data.TPAY_ID)
+            }
+            $('#dxGridModalTpay').modal('hide');
+        }
+    });
+}

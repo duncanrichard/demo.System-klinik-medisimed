@@ -104,8 +104,9 @@ def getDiscCustomer(request):
 
 def getdokter(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, nakes.* from (SELECT a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' UNION select a.FMPPERAWAT_ID AS ID_DOKTER,A.FMPPERAWATN AS NAMA_DOKTER from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMDDOKTERN) as nakes "
-    result = Globals().getDataQuery(q,[cabang_id])
+    q ="select ROW_NUMBER() OVER (ORDER BY NAMA_DOKTER) AS NO, nakes.* from (SELECT a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0'  "
+    q +="UNION select a.FMPPERAWAT_ID AS ID_DOKTER,A.FMPPERAWATN AS NAMA_DOKTER from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0') as nakes "
+    result = Globals().getDataQuery(q,[cabang_id,cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

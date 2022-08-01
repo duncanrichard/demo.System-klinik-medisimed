@@ -1,0 +1,60 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    SUPLIER
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDatasuplier.dx-widget {
+            font-size: 12px;
+            line-height: 0.95;
+            height: 240px;
+        }
+        div#dxGridDatasuplierdisc.dx-widget {
+            font-size: 12px;
+            line-height: 0.95;
+            height: 240px;
+        }
+        div#DxgridDatasuplier2.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 240px;
+        }
+        div#DxgridDatacoa.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 240px;
+        }
+        div#DxgridDataTpay.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 240px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'farmasi/suplier/layout/menu.html' %}
+    {% include 'farmasi/suplier/form_suplier.html' %}
+    {% include 'farmasi/suplier/layout/Modalprintsuplier.html' %}
+    {% include 'farmasi/suplier/dxgrid/dxGridModalsuplier.html' %}
+    {% include 'farmasi/suplier/dxgrid/dxGridModalcoa.html' %}
+    {% include 'farmasi/suplier/dxgrid/dxGridModalTpay.html' %}
+    {% include 'farmasi/suplier/dxgrid/dxGridModalbarang.html' %}
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/suplier/js/init.html' %}
+{% include 'farmasi/suplier/js/dxgriddatasuplierjs.html' %}
+{% include 'farmasi/suplier/js/getsuplier.html' %}
+{% include 'farmasi/suplier/js/getCoa.html' %}
+{% include 'farmasi/suplier/js/getTpay.html' %}
+{% include 'farmasi/suplier/js/getbarang.html' %}
+
+</script>
+{% endblock  %}

@@ -1,0 +1,74 @@
+// Get Gudang
+$(document).ready(function () {
+    $('#DxGridLabelcoa').val('Data COA')
+    $('#coa_suplier').click(function (e) {
+        $('#dxGridModalcoa').modal('show');
+        carikodecoa(e)
+        $('#Findcoa').attr('onclick','carikodecoa(event)')
+    })
+})
+
+
+var gridDataCoa = new DevExpress.data.DataSource({
+    load: function (values) {
+        return $.ajax({
+            url: host + "/getcoa",
+            method: "GET",
+            data: {
+            },
+            success: function (datas) {
+                $('#dxGridModalcoa').modal('show');
+            }
+        })
+    }
+});
+
+function carikodecoa(e, param = null) {
+    $("#DxgridDatacoa").dxDataGrid({
+        dataSource: gridDataCoa,
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        scrolling: {
+            mode: "virtual"
+        },
+        filterRow: {
+            visible: false
+        },
+ 
+        searchPanel : { visible: true },
+        
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "ACCOUNT",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "DESCRIPTION",
+                caption: "NAMA",
+            }
+        ],
+        onContentReady: function(e) {
+            e.component.option("loadPanel.enabled", false);
+        },
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#coa_suplier").val(e.data.ACCOUNT)
+                $("#coan_suplier").val(e.data.DESCRIPTION)
+            }  else if (param == 2) {
+                $("#coa_dari").val(e.data.ACCOUNT)
+            } else {
+                $("#coa_sampai").val(e.data.ACCOUNT)
+            }
+            $('#dxGridModalcoa').modal('hide');
+        }
+    });
+}

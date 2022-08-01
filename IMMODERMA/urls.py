@@ -4,4 +4,5 @@ from .globals import Globals
 urlpatterns = [
     url(r'^',include('auth.urls')),
     url(r'^',include('dashboard.urls')),
+    url(r'^',include('farmasi.urls')),
 ]

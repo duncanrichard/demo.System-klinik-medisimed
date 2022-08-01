@@ -1,0 +1,149 @@
+// Get suplier
+$(document).ready(function () {
+    $('#coa_suplier').keypress(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            cariCoa2(event)
+        }
+    })
+    $('#FindCoa').click(function (e) {
+        carikodecoa(e)
+    })
+
+    $('#Findtpay').click(function (e) {
+        carikodeTpay(e)
+    })
+
+    $('.grid-opt-suplier').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carisuplier(event)
+        }
+    });
+
+
+})
+
+var gridDatasuplier = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_suplier = $('#search_kode_suplier').val();
+        var search_nama_suplier = $('#search_nama_suplier').val();
+        return $.ajax({
+            url: host + "/getsuplier",
+            method: "GET",
+            data: {
+                "search_kode_suplier": search_kode_suplier,
+                "search_nama_suplier": search_nama_suplier
+            },
+            success: function (datas) {
+                $('#DxGridModalsuplier').modal('show');
+            }
+        })
+    }
+});
+
+function carisuplier(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatasuplier2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatasuplier,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "SUPPLIERC",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#kode_suplier").val(e.data.SUPPLIERC)
+                $("#nama_suplier").val(e.data.NAME_SUPPL)
+                $("#alamat_suplier").val(e.data.ADDRESS1)
+                $("#kota_suplier").val(e.data.CITYC)
+                $("#kodepos_suplier").val(e.data.POSTC)
+                $("#telepon_suplier").val(e.data.TELP)
+                $("#fax_suplier").val(e.data.FAX)
+                $("#contact_suplier").val(e.data.CONTACT)
+                $("#npwp_suplier").val(e.data.NPWP)
+                $("#coa_suplier").val(e.data.COAPASIVA)
+                $("#coan_suplier").val(e.data.COAPASIVAN)
+                $("#top_suplier").val(e.data.TOPD)
+                $('#top_suplier').val(convertToRibuan($('#top_suplier').val()));
+                if ($("#top_suplier").val=='') {
+                    $("#top_suplier").val(0)
+                }
+                $("#tpay_suplier").val(e.data.PAYMENT)
+                $("#tpayn_suplier").val(e.data.COAPASIVAN)
+                $('#DxGridModalsuplier').modal('hide');
+            } else if (param == 1) {
+                $("#cetak_dari").val(e.data.SUPPLIERC)
+            } else {
+                $("#cetak_sampai").val(e.data.SUPPLIERC)
+            }
+
+            $('#DxGridModalsuplier').modal('hide');
+        }
+    });
+}
+
+function getDatasuplier(e) {
+    $.ajax({
+        url: host + "/getDatasuplier",
+        method: "GET",
+        data: {
+            "kode_suplier": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_suplier').val(datas.SUPPLIERC);
+            $('#nama_suplier').val(datas.NAME_SUPPL);
+        }
+    })
+}
+
+function cetaksuplier(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+
+    $.ajax({
+        url: host + "/cetak_suplier",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            console.log(datas);
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintsuplier').modal('show');
+}

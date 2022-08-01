@@ -1,0 +1,202 @@
+<div class="wrapper wrapper-content entry">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h3 style="text-align: center">SUPLIER</h3>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="panel-body"
+                            style="background-color:#fafafa;border-radius: 5px;padding-bottom:10px;margin-top:5px;border-bottom: 1px solid #ddd">
+                            <div class="col-md-12" style="padding-top: 10px;">
+                                <div class="row">
+                                    <div class="col-md-6  col-md-offset-0">
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Kode suplier </label>
+                                            <div class="col-md-2">
+                                                <input id="kode_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Nama suplier </label>
+                                            <div class="col-md-8">
+                                                <input id="nama_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Alamat </label>
+                                            <div class="col-md-10">
+                                                <input id="alamat_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Kota </label>
+                                            <div class="col-md-6">
+                                                <input id="kota_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Kode Pos </label>
+                                            <div class="col-md-2">
+                                                <input id="kodepos_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <label class="col-md-2 col-md-offset-3 control-label">T.O.P </label>
+                                            <div class="col-md-2">
+                                                <input id="top_suplier" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-1  control-label">HARI </label>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Telepon </label>
+                                            <div class="col-md-5">
+                                                <input id="telepon_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <label class="col-md-2 control-label">Fax </label>
+                                            <div class="col-md-3">
+                                                <input id="fax_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Contact </label>
+                                            <div class="col-md-4">
+                                                <input id="contact_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <label class="col-md-2 col-md-offset-1 control-label">N P W P </label>
+                                            <div class="col-md-3">
+                                                <input id="npwp_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Coa </label>
+                                            <div class="col-md-3">
+                                                <input id="coa_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="coan_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="FindCoa" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-2 control-label">Sistem Bayar </label>
+                                            <div class="col-md-3">
+                                                <input id="tpay_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="tpayn_suplier" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Findtpay" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="col-sm-12" style="background:#e9cfd27a;padding:10px;">
+                                            <div class="col-sm-12" style="margin-left:-10px;">
+                                                <div class="col-sm-12">
+                                                    <label class="control-label col-sm-7 col-md-offset-3"
+                                                        style="background:#ed55657a;">Discount Per
+                                                        Barang/Supplier</label>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="pull-right col-md-1 col-xs-2">
+                                                        <button class="btn btn-danger btn-block" id="remove_btn"
+                                                            title="Hapus">
+                                                            <span class="fa fa-remove"></span>
+                                                        </button>
+                                                        <!-- btn-xs  iki rodi cilik -->
+                                                    </div>
+                                                    <div class="pull-right col-md-1 col-xs-2 ">
+                                                        <button class="btn btn-warning btn-block" id="cancel_btn"
+                                                            title="Batal">
+                                                            <span class="fa fa-undo"></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="pull-right col-md-1 col-xs-2 ">
+                                                        <button class="btn btn-primary btn-block" id="save_btn"
+                                                            title="Simpan">
+                                                            <span class="fa fa-save"></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="pull-right col-md-1 col-xs-2">
+                                                        <button class="btn btn-success  btn-block" id="edit_btn"
+                                                            title="Edit">
+                                                            <span class="fa fa-edit"></span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="pull-right col-md-1 col-xs-2 ">
+                                                        <button class="btn btn-primary btn-block" id="add_btn"
+                                                            title="Tambah">
+                                                            <span class="fa fa-plus"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12" style="background:#9be6c07a;padding:10px;">
+                                            <div class="col-sm-12" style="margin-left:-10px;">
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 control-label">Kode Barang </label>
+                                                    <div class="col-md-2">
+                                                        <input id="idkode_barang" type="text" class="form-control input-sm">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <input id="idkode_barangN" type="text" class="form-control input-sm"
+                                                            readonly>
+                                                    </div>
+                                                    <div class="col-md-1">
+                                                        <button id="Findbarang" class="btn btn-success btn-xs">
+                                                            Cari
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-md-2 control-label">Disc-01 </label>
+                                                    <div class="col-md-2">
+                                                        <input id="disc01" type="text"
+                                                            class="form-control input-sm text-right">
+                                                    </div>
+                                                    <label class="col-md-2 control-label">Disc-02 </label>
+                                                    <div class="col-md-2">
+                                                        <input id="disc02" type="text"
+                                                            class="form-control input-sm text-right">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <!-- BUAT GRID -->
+                                <div class="row" style="margin-top: 15px;">
+                                    <div class="col-md-8">
+                                        <div class="col-sm-12" style="background:#ec91967a;padding:10px;">
+                                            <div id="dxGridDatasuplier"></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="col-sm-12" style="background:#8edfb77a;padding:10px;">
+                                            <div id="dxGridDatasuplierdisc"></div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -282,7 +282,7 @@ def SP_AUD_TRANSAKSI(request):
     q += "@LIST_BC,"
     q += "@LIST_PERAWAT,"
     q += "@LIST_BAYAR"
-    print(q)
+
     if (status_aud=='D') :
         user = {
         'user_id': request.session['user_id'],

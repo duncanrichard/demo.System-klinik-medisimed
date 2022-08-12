@@ -1,0 +1,89 @@
+$(document).ready(function () {
+    $('#FindWh').click(function (e) {
+        gridFindgudang(e)
+    })
+
+    $('#Findkodegudang2').click(function (e) {
+        $('#DxGridModalgudang').modal('show');
+        carigudang(e,2)
+        $('#FindWh').attr('onclick','carigudang(event,2)')
+    })
+    $('#Findkodegudang3').click(function (e) {
+        $('#DxGridModalgudang').modal('show');
+        carigudang(e,3)
+        $('#FindWh').attr('onclick','carigudang(event,3)')
+    })
+
+
+    $('.grid-opt-gudang').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carigudang(event)
+        }
+    });
+    
+})
+
+function gridFindgudang(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    $('#DxGridModalgudang').modal('show');
+    carigudang(e)
+    $('#DxGridLabelgudang').html('gudang');
+}
+
+var gridDatagudang = new DevExpress.data.DataSource({
+    load: function (values) {
+        return $.ajax({
+            url: host + "/getgudang",
+            method: "GET",
+            data: {
+            },
+        })
+    }
+});
+
+function carigudang(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatagudang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        searchPanel : { visible: true },
+        dataSource: gridDatagudang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "WH_ID",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "NAME_WH",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if(param == null){
+                $("#idWh").val(e.data.WH_ID)
+                $("#idWhn").val(e.data.NAME_WH)
+                $('#DxGridModalgudang').modal('hide');
+            } else if(param == 2){
+                $("#cetak_dariwh").val(e.data.WH_ID)
+            } else {
+                $("#cetak_sampaiwh").val(e.data.WH_ID)
+            }
+            $('#DxGridModalgudang').modal('hide');
+        }
+    });
+}

@@ -1,0 +1,36 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+console.log(host)
+
+function setMenu(id, enable = 1) {
+if (enable == 0) {
+$('#' + id).addClass('disabled')
+} else {
+$('#' + id).removeClass('disabled')
+}
+}
+
+function setreadonly(id, enable = 1) {
+if (enable == 0) {
+$('#' + id).attr("readonly", true);
+$('#' + id).css("background-color", 'white');
+
+} else {
+$('#' + id).attr("readonly", false);
+$('#' + id).css("background-color", 'white');
+}
+}
+
+function setDisabled(id, enable = 1) {
+if (enable == 1) {
+$('#' + id).attr("disabled", false);
+<!-- $('#' + id).css("background-color", 'white'); -->
+<!-- $('#' + id).css("color", 'black'); -->
+} else {
+$('#' + id).attr("disabled", true);
+<!-- $('#' + id).css("background-color", 'white'); -->
+<!-- $('#' + id).css("color", 'black'); -->
+}
+}

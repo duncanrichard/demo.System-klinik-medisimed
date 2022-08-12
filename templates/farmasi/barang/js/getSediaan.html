@@ -1,0 +1,76 @@
+$(document).ready(function () {
+    $('#Findsediaan').click(function (e) {
+        gridFindsediaan(e)
+    })
+    $('.grid-opt-sediaan').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carisediaan(event)
+        }
+    });
+    
+})
+
+function gridFindsediaan(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    $('#DxGridModalsediaan').modal('show');
+    carisediaan(e)
+    $('#DxGridLabelsediaan').html('Sediaan');
+}
+
+var gridDatasediaan = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_sediaan = $('#search_kode_sediaan').val();
+        var search_nama_sediaan = $('#search_nama_sediaan').val();
+        return $.ajax({
+            url: host + "/getsediaan",
+            method: "GET",
+            data: {
+                "search_kode_sediaan": search_kode_sediaan,
+                "search_nama_sediaan": search_nama_sediaan
+            },
+        })
+    }
+});
+
+function carisediaan(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatasediaan2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatasediaan,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMSKODE",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "FMSSEDIAAN",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if(param == null){
+                $("#sediaan_barang").val(e.data.FMSKODE)
+                $("#sediaann_barang").val(e.data.FMSSEDIAAN)
+                $('#DxGridModalsediaan').modal('hide');
+            } 
+            $('#DxGridModalsediaan').modal('hide');
+        }
+    });
+}

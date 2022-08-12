@@ -1,0 +1,218 @@
+load_produk_barang = 'unlock'
+setMenu('menu_tambah')
+setMenu('menu_edit')
+setMenu('menu_hapus')
+setMenu('menu_simpan', 0)
+setMenu('menu_cancel', 0)
+setMenu('menu_find')
+setMenu('menu_cetak')
+setDisabled('Findcoa1', 0)
+setDisabled('Findcoa2', 0)
+
+function Buka_produk_barang() {
+    $("#dxGridDataproduk_barang").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/load_produk_barang",
+                    method: "GET",
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "PRD_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "NAMA",
+            },
+        ],
+        onRowClick: function (e) {
+            if (load_produk_barang == 'unlock') {
+                $("#kode_produk_barang").val(e.data.PRD_ID)
+                $("#nama_produk_barang").val(e.data.NAME_PRD)
+                var status2 = parseInt(e.data.STATUSPRODUK)
+                if (status2 == 0) {
+                    $("#inlineRadioOptstatus1").prop('checked', true)
+                } else {
+                    $("#inlineRadioOptstatus2").prop('checked', true)
+                }
+                $("#pmjual_rj").val(e.data.PROFITMARGIN)
+                $("#pmjual_ri").val(e.data.PROFITMARGINRI)
+            }
+        }
+    });
+}
+
+$(document).ready(function () {
+    Buka_produk_barang()
+
+    $('#menu_tambah, #nav_FRMPRD0101').click(function (e) {
+        setMenu('menu_tambah', 0)
+        setMenu('menu_edit', 0)
+        setMenu('menu_hapus', 0)
+        setMenu('menu_simpan')
+        setMenu('menu_cancel')
+        setMenu('menu_find', 0)
+        setMenu('menu_cetak', 0)
+        setMenu('menu_keluar', 0)
+        $("#kode_produk_barang").val('')
+        $("#nama_produk_barang").val('')
+        $("#pmjual_rj").val('0')
+        $("#pmjual_ri").val('0')
+        load_produk_barang = 'lock'
+        setDisabled('kode_produk_barang')
+    })
+
+    $('#menu_edit, #nav_FRMPRD0102').click(function (e) {
+        if ($("#kode_produk_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setMenu('menu_tambah', 0)
+            setMenu('menu_edit', 0)
+            setMenu('menu_hapus', 0)
+            setMenu('menu_simpan')
+            setMenu('menu_cancel')
+            setMenu('menu_find', 0)
+            setMenu('menu_cetak', 0)
+            setMenu('menu_keluar', 0)
+            load_produk_barang = 'lock'
+            setDisabled('kode_produk_barang', 0)
+        }
+    })
+
+    $('#menu_hapus,#nav_FRMPRD0103').click(function (e) {
+        if ($("#kode_produk_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            var result = confirm("Yakin Ingin Dihapus ?");
+            if (result) {
+                $.ajax({
+                    url: host + "/produk_barang_simpan",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        'kode': $("#kode_produk_barang").val(),
+                        'nama': $("#nama_produk_barang").val(),
+                        'statusproduk': $("[name=inlineRadioOptstatus]:checked").val(),
+                        'pmjual_rj': $("#pmjual_rj").val(),
+                        'pmjual_ri': $("#pmjual_ri").val(),
+                        "status_aud": 'D',
+
+                    },
+                    success: function (datas) {
+                        alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                        Buka_produk_barang()
+                        $("#kode_produk_barang").val('')
+                        $("#nama_produk_barang").val('')
+                        $("#pmjual_rj").val('')
+                        $("#pmjual_ri").val('')
+                    }
+                })
+            }
+        }
+    })
+
+    $('#menu_simpan,#nav_FRMPRD0201').click(function (e) {
+        if ($("#nama_produk_barang").val() == '') {
+            alert('Nama Harus Diisi')
+        } else {
+            if ($("#pmjual_rj").val() == '') {
+                $("#pmjual_rj").val('0')
+            }
+            if ($("#pmjual_ri").val() == '') {
+                $("#pmjual_ri").val('0')
+            }
+            var b = $("[name=inlineRadioOptstatus]:checked").val()
+            $.ajax({
+                url: host + "/produk_barang_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_produk_barang").val(),
+                    'nama': $("#nama_produk_barang").val(),
+                    'statusproduk': $("[name=inlineRadioOptstatus]:checked").val(),
+                    'pmjual_rj': $("#pmjual_rj").val(),
+                    'pmjual_ri': $("#pmjual_ri").val(),
+                    "status_aud": 'A',
+
+                },
+                success: function (datas) {
+                    alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                    setMenu('menu_tambah')
+                    setMenu('menu_hapus')
+                    setMenu('menu_edit')
+                    setMenu('menu_simpan', 0)
+                    setMenu('menu_cancel', 0)
+                    setMenu('menu_find')
+                    setMenu('menu_cetak')
+                    setMenu('menu_keluar')
+                    $("#kode_produk_barang").val('')
+                    $("#nama_produk_barang").val('')
+                    $("#pmjual_rj").val('')
+                    $("#pmjual_ri").val('')
+                    load_produk_barang = 'unlock'
+                    setDisabled('kode_produk_barang', 0)
+                    setDisabled('Findcoa1', 0)
+                    setDisabled('Findcoa2', 0)
+                    Buka_produk_barang()
+                }
+            })
+        }
+    })
+
+    $('#menu_cancel,#nav_FRMPRD0202').click(function (e) {
+        setMenu('menu_tambah')
+        setMenu('menu_hapus')
+        setMenu('menu_edit')
+        setMenu('menu_simpan', 0)
+        setMenu('menu_cancel', 0)
+        setMenu('menu_find')
+        setMenu('menu_cetak')
+        setMenu('menu_keluar')
+        $("#kode_produk_barang").val('')
+        $("#nama_produk_barang").val('')
+        $("#pmjual_rj").val('')
+        $("#pmjual_ri").val('')
+        load_produk_barang = 'unlock'
+        setDisabled('kode_produk_barang', 0)
+        setDisabled('Findcoa1', 0)
+        setDisabled('Findcoa2', 0)
+    })
+
+    $("#menu_cetak").click(function (e) {
+        e.preventDefault();
+        $("#cetak_dari").val('00')
+        $("#cetak_sampai").val('ZZZ')
+        e.stopImmediatePropagation();
+        $('#Modalprintproduk_barang').modal('show');
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+
+})

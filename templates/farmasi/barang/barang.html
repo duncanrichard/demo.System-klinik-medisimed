@@ -1,0 +1,62 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    B A R A N G
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDatabarang.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 483px;
+        }
+        div#dxGridDatabaranggudang.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 340px;
+        }
+        div#dxGridPrintBarang.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 340px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'farmasi/barang/form_barang.html' %}
+    {% include 'farmasi/barang/layout/Modalprintbarang.html' %} 
+    {% include 'farmasi/barang/layout/Modalprintgudang.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModaljenis_barang.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModalsuplier.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModalgolongan.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModalsediaan.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModalpabrikan.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModallokasi.html' %} 
+    {% include 'farmasi/barang/dxgrid/dxGridModalbarang.html' %} 
+    {% include 'farmasi/barang/dxgrid/DxGridModalgudang.html' %} 
+   
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/barang/js/init.html' %}
+{% include 'farmasi/barang/js/dxgriddatabarangjs.html' %}
+{% include 'farmasi/barang/js/getbarang.html' %}
+{% include 'farmasi/barang/js/getSupplier.html' %}
+{% include 'farmasi/barang/js/getGolongan.html' %}
+{% include 'farmasi/barang/js/getSediaan.html' %}
+{% include 'farmasi/barang/js/getPabrikan.html' %}
+{% include 'farmasi/barang/js/getLokasi.html' %}
+{% include 'farmasi/barang/js/getjenis_barang.html' %}
+{% include 'farmasi/barang/js/getGudang.html' %}
+
+
+</script>
+{% endblock  %}

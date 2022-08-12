@@ -1,0 +1,128 @@
+// Get jenis_barang
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    $('#menu_find').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#DxGridModaljenis_barang').modal('show');
+        carijenis_barang(event)
+        $('#DxGridLabeljenis_barang').html('Jenis Barang');
+        console.log('menu find clicked') 
+    })
+
+    $('.grid-opt-jenis_barang').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carijenis_barang(event)
+        }
+    });
+})
+
+var gridDatajenis_barang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_jenis_barang = $('#search_kode_jenis_barang').val();
+        var search_nama_jenis_barang = $('#search_nama_jenis_barang').val();
+        return $.ajax({
+            url: host + "/getjenis_barang",
+            method: "GET",
+            data: {
+                "search_kode_jenis_barang": search_kode_jenis_barang,
+                "search_nama_jenis_barang": search_nama_jenis_barang
+            },
+            success: function (datas) {
+                $('#DxGridModaljenis_barang').modal('show');
+            }
+        })
+    }
+});
+
+function carijenis_barang(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatajenis_barang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatajenis_barang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "merk_id",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "nama",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if(param == null){
+                $("#kode_jenis_barang").val(e.data.merk_id)
+                $("#nama_jenis_barang").val(e.data.nama)
+                $('#DxGridModaljenis_barang').modal('hide');
+            } else if(param == 1){
+                $("#cetak_dari").val(e.data.merk_id)
+            } else {
+                $("#cetak_sampai").val(e.data.merk_id)
+            }
+
+            $('#DxGridModaljenis_barang').modal('hide');
+        }
+    });
+}
+
+function getDatajenis_barang(e) {
+    $.ajax({
+        url: host + "/getDatajenis_barang",
+        method: "GET",
+        data: {
+            "kode_jenis_barang": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_jenis_barang').val(datas.merk_id);
+            $('#nama_jenis_barang').val(datas.nama);
+        }
+    })
+}
+
+function cetakjenis_barang(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+
+    $.ajax({
+        url: host+ "/cetak_jenis_barang",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            console.log(datas);
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintjenis_barang').modal('show');
+}

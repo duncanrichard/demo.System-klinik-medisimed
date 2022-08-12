@@ -1,0 +1,128 @@
+// Get sediaan
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    $('#menu_find').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#DxGridModalsediaan').modal('show');
+        carisediaan(event)
+        $('#DxGridLabelsediaan').html('Jenis Barang');
+        console.log('menu find clicked') 
+    })
+
+    $('.grid-opt-sediaan').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carisediaan(event)
+        }
+    });
+})
+
+var gridDatasediaan = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_sediaan = $('#search_kode_sediaan').val();
+        var search_nama_sediaan = $('#search_nama_sediaan').val();
+        return $.ajax({
+            url: host + "/getsediaan",
+            method: "GET",
+            data: {
+                "search_kode_sediaan": search_kode_sediaan,
+                "search_nama_sediaan": search_nama_sediaan
+            },
+            success: function (datas) {
+                $('#DxGridModalsediaan').modal('show');
+            }
+        })
+    }
+});
+
+function carisediaan(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatasediaan2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatasediaan,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMSKODE",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "FMSSEDIAAN",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if(param == null){
+                $("#kode_sediaan").val(e.data.FMSKODE)
+                $("#nama_sediaan").val(e.data.FMSSEDIAAN)
+                $('#DxGridModalsediaan').modal('hide');
+            } else if(param == 1){
+                $("#cetak_dari").val(e.data.FMSKODE)
+            } else {
+                $("#cetak_sampai").val(e.data.FMSKODE)
+            }
+
+            $('#DxGridModalsediaan').modal('hide');
+        }
+    });
+}
+
+function getDatasediaan(e) {
+    $.ajax({
+        url: host + "/getDatasediaan",
+        method: "GET",
+        data: {
+            "kode_sediaan": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_sediaan').val(datas.FMSKODE);
+            $('#nama_sediaan').val(datas.FMSSEDIAAN);
+        }
+    })
+}
+
+function cetaksediaan(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+
+    $.ajax({
+        url: host+ "/cetak_sediaan",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            console.log(datas);
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintsediaan').modal('show');
+}

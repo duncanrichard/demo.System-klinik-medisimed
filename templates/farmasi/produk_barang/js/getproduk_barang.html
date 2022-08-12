@@ -1,0 +1,165 @@
+// Get produk_barang
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    $("#inlineRadioOptstatus1").prop('checked', true)
+
+    $('#menu_find').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#DxGridModalproduk_barang').modal('show');
+        cariproduk_barang(event)
+        $('#DxGridLabelproduk_barang').html('Jenis Barang');
+    })
+
+    $('.grid-opt-produk_barang').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            cariproduk_barang(event)
+        }
+    });
+})
+
+var gridDataproduk_barang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_produk_barang = $('#search_kode_produk_barang').val();
+        var search_nama_produk_barang = $('#search_nama_produk_barang').val();
+        return $.ajax({
+            url: host + "/getproduk_barang",
+            method: "GET",
+            data: {
+                "search_kode_produk_barang": search_kode_produk_barang,
+                "search_nama_produk_barang": search_nama_produk_barang
+            },
+            success: function (datas) {
+                $('#DxGridModalproduk_barang').modal('show');
+            }
+        })
+    }
+});
+
+function cariproduk_barang(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDataproduk_barang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDataproduk_barang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "PRD_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#kode_produk_barang").val(e.data.PRD_ID)
+                $("#nama_produk_barang").val(e.data.NAME_PRD)
+                var status2 = parseInt(e.data.STATUSPRODUK)
+                if (status2 == 0) {
+                    $("#inlineRadioOptstatus1").prop('checked', true)
+                } else {
+                    $("#inlineRadioOptstatus2").prop('checked', true)
+                }
+                $("#pmjual_rj").val(rupiah2(parseInt(e.data.PROFITMARGIN)))
+                $("#pmjual_ri").val(rupiah2(parseInt(e.data.PROFITMARGINRI)))
+                $('#DxGridModalproduk_barang').modal('hide');
+            } else if (param == 1) {
+                $("#cetak_dari").val(e.data.PRD_ID)
+            } else {
+                $("#cetak_sampai").val(e.data.PRD_ID)
+            }
+
+            $('#DxGridModalproduk_barang').modal('hide');
+        }
+    });
+}
+
+function getDataproduk_barang(e) {
+    $.ajax({
+        url: host + "/getDataproduk_barang",
+        method: "GET",
+        data: {
+            "kode_produk_barang": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_produk_barang').val(datas.PRD_ID);
+            $('#nama_produk_barang').val(datas.NAME_PRD);
+            var status2 = parseInt(datas.STATUSPRODUK)
+            if (status2 == 0) {
+                $("#inlineRadioOptstatus1").prop('checked', true)
+            } else {
+                $("#inlineRadioOptstatus2").prop('checked', true)
+            }
+            $("#pmjual_rj").val(rupiah2(parseInt(datas.PROFITMARGIN)))
+            $("#pmjual_ri").val(rupiah2(parseInt(datas.PROFITMARGINRI)))
+        }
+    })
+}
+
+function cetakproduk_barang(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+
+    $.ajax({
+        url: host + "/cetak_produk_barang",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            console.log(datas);
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintproduk_barang').modal('show');
+}
+
+function rupiah2(angka, prefix) {
+    angka = String(angka)
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah2 = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    if (ribuan) {
+        separator = sisa ? ',' :
+            '';
+        rupiah2 += separator + ribuan.join(',');
+    }
+    rupiah2 = split[1] != undefined ? rupiah2 + ',' + split[1] : rupiah2;
+    return prefix == undefined ? rupiah2 : (rupiah2 ? 'Rp. ' + rupiah2 : '');
+}
+
+function convertToAngka(rupiah) {
+    return parseInt(rupiah.replace(/,/g, '').toString());
+}

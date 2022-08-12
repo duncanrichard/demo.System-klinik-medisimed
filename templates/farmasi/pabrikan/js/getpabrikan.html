@@ -1,0 +1,125 @@
+// Get pabrikan
+$(document).ready(function () {
+    $('.grid-opt-pabrikan').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            caripabrikan(event)
+        }
+    });
+
+
+})
+
+var gridDatapabrikan = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_pabrikan = $('#search_kode_pabrikan').val();
+        var search_nama_pabrikan = $('#search_nama_pabrikan').val();
+        return $.ajax({
+            url: host + "/getpabrikan",
+            method: "GET",
+            data: {
+                "search_kode_pabrikan": search_kode_pabrikan,
+                "search_nama_pabrikan": search_nama_pabrikan
+            },
+            success: function (datas) {
+                $('#DxGridModalpabrikan').modal('show');
+            }
+        })
+    }
+});
+
+function caripabrikan(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatapabrikan2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatapabrikan,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMPSUPPLIERC",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "FMPNAME_SUPPL",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#kode_pabrikan").val(e.data.FMPSUPPLIERC)
+                $("#nama_pabrikan").val(e.data.FMPNAME_SUPPL)
+                $("#alamat_pabrikan").val(e.data.FMPADDRESS1)
+                $("#kota_pabrikan").val(e.data.FMPCITYC)
+                $("#kodepos_pabrikan").val(e.data.FMPPOSTC)
+                $("#telepon_pabrikan").val(e.data.FMPTELP)
+                $("#fax_pabrikan").val(e.data.FMPFAX)
+                $("#contact_pabrikan").val(e.data.FMPCONTACT)
+                $('#DxGridModalpabrikan').modal('hide');
+            } else if (param == 1) {
+                $("#cetak_dari").val(e.data.FMPSUPPLIERC)
+            } else {
+                $("#cetak_sampai").val(e.data.FMPSUPPLIERC)
+            }
+
+            $('#DxGridModalpabrikan').modal('hide');
+        }
+    });
+}
+
+function getDatapabrikan(e) {
+    $.ajax({
+        url: host + "/getDatapabrikan",
+        method: "GET",
+        data: {
+            "kode_pabrikan": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_pabrikan').val(datas.FMPSUPPLIERC);
+            $('#nama_pabrikan').val(datas.FMPNAME_SUPPL);
+        }
+    })
+}
+
+function cetakpabrikan(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+
+    $.ajax({
+        url: host + "/cetak_pabrikan",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            console.log(datas);
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintpabrikan').modal('show');
+}

@@ -1,4 +1,5 @@
 var total_deposit = 0
+var no_deposit = ''
 $(document).ready(function () {
     $("#kd_paket").change(function () {
         kode_paket = $('#kd_paket').val()
@@ -7,6 +8,7 @@ $(document).ready(function () {
         $("#deposit_produk_paket").prop('checked', true)
         $('#formGridPaket').show();
         $('#formGridNominal').hide();
+        $('#btn_ok_data_Paket').hide();
         $('#formNominalDepositPaket').hide();
         error_in_field()
         if (Cekeror == true) {
@@ -23,10 +25,12 @@ $(document).ready(function () {
         if ($(this).prop('checked') == true) {
             $('#formGridPaket').show();
             $('#formGridNominal').hide();
+            $('#btn_ok_data_Paket').hide();
             $('#formNominalDepositPaket').hide();
         } else {
             $('#formGridPaket').hide();
             $('#formGridNominal').show();
+            $('#btn_ok_data_Paket').show();
             $('#formNominalDepositPaket').show();
         }
         cari_paketpasien()
@@ -36,13 +40,26 @@ $(document).ready(function () {
         if ($(this).prop('checked') == true) {
             $('#formGridPaket').hide();
             $('#formGridNominal').show();
+            $('#btn_ok_data_Paket').show();
             $('#formNominalDepositPaket').show();
         } else {
             $('#formGridPaket').show();
             $('#formGridNominal').hide();
+            $('#btn_ok_data_Paket').hide();
             $('#formNominalDepositPaket').hide();
         }
         cari_paketpasien()
+    })
+
+    $('#btn_ok_data_Paket').click(function () {
+        total_deposit = Math.round(desimal2($('#nominalDepositPaket').val()))
+        if (no_deposit != '' && total_deposit > 0) {
+            getGridDaftarPakettransaksi(no_deposit, total_deposit)
+            $('#ModalDaftarPaketTransaksi').modal('hide')
+        } else {
+            alert('Maaf Deposit Silahkan Pilih dulu')
+
+        }
     })
 })
 
@@ -74,8 +91,7 @@ function cari_paketpasien() {
                         deferred.resolve(datas, {
                             totalCount: datas.length
                         });
-                        if(datas.length > 0)
-                        {
+                        if (datas.length > 0) {
                             $('#nominalDepositPaket').val(rupiah2(parseInt(datas[0].Sisasaldo)));
                         }
                     }
@@ -137,8 +153,7 @@ function cari_paketpasien() {
         ],
         onRowClick: function (e) {
             total_deposit = Math.round(desimal2($('#nominalDepositPaket').val()))
-            getGridDaftarPakettransaksi(e.data.FDPNO_DEPOSIT, total_deposit)
-            $('#ModalDaftarPaketTransaksi').modal('hide')
+            no_deposit = e.data.FDPNO_DEPOSIT
         }
     });
     $("#Dataditailpakettransaksi").dxDataGrid({
@@ -221,6 +236,7 @@ function cari_paketpasien() {
         ],
         onRowClick: function (e) {
             total_deposit = total_deposit
+            no_deposit = e.data.FDPNO_DEPOSIT
             //  Math.round(desimal2($('#nominalDepositPaket').val()))
             getGridPaketprodukpasien(e.data.FDPNO_DEPOSIT, total_deposit)
             $('#ModalDaftarPaketTransaksi').modal('hide')

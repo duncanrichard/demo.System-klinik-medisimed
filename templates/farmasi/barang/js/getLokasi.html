@@ -1,0 +1,76 @@
+$(document).ready(function () {
+    $('#Findlokasi').click(function (e) {
+        gridFindlokasi(e)
+    })
+    $('.grid-opt-lokasi').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carilokasi(event)
+        }
+    });
+    
+})
+
+function gridFindlokasi(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    $('#DxGridModallokasi').modal('show');
+    carilokasi(e)
+    $('#DxGridLabellokasi').html('lokasi');
+}
+
+var gridDatalokasi = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_lokasi = $('#search_kode_lokasi').val();
+        var search_nama_lokasi = $('#search_nama_lokasi').val();
+        return $.ajax({
+            url: host + "/getlokasi",
+            method: "GET",
+            data: {
+                "search_kode_lokasi": search_kode_lokasi,
+                "search_nama_lokasi": search_nama_lokasi
+            },
+        })
+    }
+});
+
+function carilokasi(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatalokasi2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatalokasi,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMLFKODE",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "FMLFKETERAGAN",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if(param == null){
+                $("#lokasi_barang").val(e.data.FMLFKODE)
+                $("#lokasin_barang").val(e.data.FMLFKETERAGAN)
+                $('#DxGridModallokasi').modal('hide');
+            } 
+            $('#DxGridModallokasi').modal('hide');
+        }
+    });
+}

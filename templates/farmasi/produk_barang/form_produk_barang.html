@@ -1,0 +1,58 @@
+<div class="wrapper wrapper-content entry">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                    <h3 style="text-align: center">GOLONGAN BARANG</h3>
+                </div>
+                <div class="panel-body"
+                    style="background-color:#fafafa;border-radius: 5px;padding-bottom:10px;margin-top:5px;border-bottom: 1px solid #ddd">
+                    <div class="form-row" style="padding-top: 10px;">
+                        <div class="col-md-6 col-md-offset-1">
+                            <div class="form-row">
+                                <label class="col-md-4 control-label">Kode Jenis Barang </label>
+                                <div class="col-md-4">
+                                    <input id="kode_produk_barang" type="text" class="form-control input-sm">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-md-4 control-label">Nama Jenis Barang </label>
+                                <div class="col-md-8">
+                                    <input id="nama_produk_barang" type="text" class="form-control input-sm">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-md-4 control-label">Status Produk.</label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptstatus" id="inlineRadioOptstatus1"
+                                        value="0"> Obat / Alkes
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="inlineRadioOptstatus" id="inlineRadioOptstatus2"
+                                        value="1"> Jasa
+                                </label>
+                            </div>
+                            <div class="form-row">
+                                <label class="col-md-4 control-label">Profit Margin Rawat Jalan </label>
+                                <div class="col-md-2">
+                                    <input id="pmjual_rj" type="text" class="form-control input-sm text-right">
+                                </div>
+                                <label class="col-md-4 control-label">Profit Margin Rawat Inap </label>
+                                <div class="col-md-2">
+                                    <input id="pmjual_ri" type="text" class="form-control input-sm text-right">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-row">
+                            <!-- BUAT GRID -->
+                            <div class="col-md-12" style="margin-top: 15px;">
+                                <div id="dxGridDataproduk_barang"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

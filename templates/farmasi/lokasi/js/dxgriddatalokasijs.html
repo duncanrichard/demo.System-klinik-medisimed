@@ -1,0 +1,182 @@
+load_lokasi = 'unlock'
+setMenu('menu_tambah')
+setMenu('menu_edit')
+setMenu('menu_hapus')
+setMenu('menu_simpan', 0)
+setMenu('menu_cancel', 0)
+setMenu('menu_find')
+setMenu('menu_cetak')
+
+function Buka_lokasi() {
+    $("#dxGridDatalokasi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/load_lokasi",
+                    method: "GET",
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMLFKODE",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "FMLFKETERAGAN",
+                caption: "NAMA",
+            },
+        ],
+        onRowClick: function (e) {
+            if (load_lokasi == 'unlock') {
+                $("#kode_lokasi").val(e.data.FMLFKODE)
+                $("#nama_lokasi").val(e.data.FMLFKETERAGAN)
+            }
+        }
+    });
+}
+
+$(document).ready(function () {
+    Buka_lokasi()
+
+    $('#menu_tambah, #nav_FRMLOK0101').click(function (e) {
+        setMenu('menu_tambah', 0)
+        setMenu('menu_edit', 0)
+        setMenu('menu_hapus', 0)
+        setMenu('menu_simpan')
+        setMenu('menu_cancel')
+        setMenu('menu_find', 0)
+        setMenu('menu_cetak', 0)
+        setMenu('menu_keluar', 0)
+        $("#kode_lokasi").val('')
+        $("#nama_lokasi").val('')
+        load_lokasi = 'lock'
+        setDisabled('kode_lokasi')
+    })
+
+    $('#menu_edit, #nav_FRMLOK0102').click(function (e) {
+        if ($("#kode_lokasi").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setMenu('menu_tambah', 0)
+            setMenu('menu_edit', 0)
+            setMenu('menu_hapus', 0)
+            setMenu('menu_simpan')
+            setMenu('menu_cancel')
+            setMenu('menu_find', 0)
+            setMenu('menu_cetak', 0)
+            setMenu('menu_keluar', 0)
+            load_lokasi = 'lock'
+            setDisabled('kode_lokasi', 0)
+
+        }
+    })
+
+    $('#menu_hapus,#nav_FRMLOK0103').click(function (e) {
+        if ($("#kode_lokasi").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            var result = confirm("Yakin Ingin Dihapus ?");
+            if (result) {
+                $.ajax({
+                    url: host + "/lokasi_simpan",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        'kode': $("#kode_lokasi").val(),
+                        'nama': $("#nama_lokasi").val(),
+                        "status_aud": 'D',
+                    },
+                    success: function (datas) {
+                        alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                        Buka_lokasi()
+                        $("#kode_lokasi").val('')
+                        $("#nama_lokasi").val('')
+                    }
+                })
+            }
+        }
+    })
+
+    $('#menu_simpan,#nav_FRMLOK0201').click(function (e) {
+        if ($("#nama_lokasi").val() == '') {
+            alert('Nama Harus Diisi')
+        } else {
+            $.ajax({
+                url: host + "/lokasi_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_lokasi").val(),
+                    'nama': $("#nama_lokasi").val(),
+                    "status_aud": 'A',
+                },
+                success: function (datas) {
+                    alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                    setMenu('menu_tambah')
+                    setMenu('menu_hapus')
+                    setMenu('menu_edit')
+                    setMenu('menu_simpan', 0)
+                    setMenu('menu_cancel', 0)
+                    setMenu('menu_find')
+                    setMenu('menu_cetak')
+                    setMenu('menu_keluar')
+                    $("#kode_lokasi").val('')
+                    $("#nama_lokasi").val('')
+                    load_lokasi = 'unlock'
+                    setDisabled('kode_lokasi', 0)
+                    Buka_lokasi()
+                }
+            })
+        }
+    })
+
+    $('#menu_cancel,#nav_FRMLOK0202').click(function (e) {
+        setMenu('menu_tambah')
+        setMenu('menu_hapus')
+        setMenu('menu_edit')
+        setMenu('menu_simpan', 0)
+        setMenu('menu_cancel', 0)
+        setMenu('menu_find')
+        setMenu('menu_cetak')
+        setMenu('menu_keluar')
+        $("#kode_lokasi").val('')
+        $("#nama_lokasi").val('')
+        load_lokasi = 'unlock'
+        setDisabled('kode_lokasi', 0)
+    })
+
+    $("#menu_cetak").click(function (e) {
+        e.preventDefault();
+        $("#cetak_dari").val('00')
+        $("#cetak_sampai").val('ZZZ')
+        e.stopImmediatePropagation();
+        $('#Modalprintlokasi').modal('show');
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+
+})

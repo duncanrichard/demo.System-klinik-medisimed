@@ -1,0 +1,83 @@
+// Get Supplier
+$(document).ready(function () {
+    $('#Findsupplier').click(function (e) {
+        gridFindsupplier(e)
+    })
+    $('.grid-opt-suplier').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carisuplier(event)
+        }
+    });
+
+})
+
+function gridFindsupplier(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    carisuplier(e)
+}
+
+var gridDatasuplier = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_suplier = $('#search_kode_suplier').val();
+        var search_nama_suplier = $('#search_nama_suplier').val();
+        return $.ajax({
+            url: host + "/getsuplier",
+            method: "GET",
+            data: {
+                "search_kode_suplier": search_kode_suplier,
+                "search_nama_suplier": search_nama_suplier
+            },
+            // success: function (datas) {
+            //     // $('#DxGridModalsuplier').modal('show');
+            // }
+        })
+    }
+});
+
+function carisuplier(e, param = null) {
+    $('#DxGridModalsuplier').modal('show');
+    $('#DxGridLabelsuplier').html('Supplier');
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatasuplier2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatasuplier,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "SUPPLIERC",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#supplier_barang").val(e.data.SUPPLIERC)
+                $("#suppliern_barang").val(e.data.NAME_SUPPL)
+            } else if (param == '1') {
+                $("#kodesuplier_dari").val(e.data.SUPPLIERC)
+            } else if (param == '2') {
+                $("#kodesuplier_sampai").val(e.data.SUPPLIERC)
+            }
+            $('#DxGridModalsuplier').modal('hide');
+        }
+    });
+}

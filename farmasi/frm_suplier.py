@@ -23,14 +23,14 @@ def frm_suplier(request):
 		menubarCount = len(menubars)
 
 		response = render(request, 'farmasi/suplier/suplier.html', {
-            'navbars': navbars,
-            'menubars': menubars,
-            'menubarsChild': menubarsChild,
-            'menubarsType': 1,
-            'count_': menubarCount,
-            'list_': Globals().getSeparator(menubarCount),
-            'user_id': user_privelege
-        })
+			'navbars': navbars,
+			'menubars': menubars,
+			'menubarsChild': menubarsChild,
+			'menubarsType': 1,
+			'count_': menubarCount,
+			'list_': Globals().getSeparator(menubarCount),
+			'user_id': user_privelege
+		})
 		response['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
 		return response
 	else:
@@ -104,21 +104,7 @@ def suplier_simpan(request):
 	q = "exec FRM_AUD_SUPLIER  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s "
 	result = Globals().getDataSP(q, [kode, nama, alamat, kota, kodepos, telepon, fax, contact, npwp, coa, coan,top,tpay,status_aud,OutputNoBukti])
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
-	#json_data = json.dumps(result[0][0], cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
-
-def suplier_hapus(request):
-	kode = request.POST['kode']
-	q = "DELETE FROM SUPPLIER WHERE SUPPLIERC = %s"
-	result =Globals().getDataQuery(q, [kode])
-	json_data = json.dumps(result, cls=DjangoJSONEncoder)
-	#rekam kegiatan hapus
-	user = request.session['user_priv']
-	Globals().RekamKegiatan(kode,user)
-
-	return HttpResponse(json_data, content_type="application/json")
-
-
 
 def cetak_suplier(request):
 	start = request.GET['start']
@@ -135,9 +121,9 @@ def cetak_suplier(request):
 		{
 			'start': start,
 			'finish': finish,
-			'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-			'alamat_rs': Globals().getDataCabang('ALAMAT1'),
-			'tanggal': Globals().dateIndo(tanggal),
+			'nama_rs':  request.session['nama_cabang'],
+			'alamat_rs':  request.session['alamat_cabang'],
+			'tanggal': Globals().tanggalIndo(tanggal),
 			'jam': jam,
 		}
 	)

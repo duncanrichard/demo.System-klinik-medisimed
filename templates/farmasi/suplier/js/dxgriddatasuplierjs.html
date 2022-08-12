@@ -8,7 +8,8 @@ setMenu('menu_find')
 setMenu('menu_cetak')
 
 $(document).ready(function () {
-
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
     // iki perintah enter 
     $('#nama_suplier').keypress(function (e) {
         var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -123,19 +124,45 @@ $(document).ready(function () {
         } else {
             var result = confirm("Yakin Ingin Dihapus ?");
             if (result) {
+                if ($('#top_suplier').val() == '') {
+                    $("#top_suplier").val(0)
+                }
                 $.ajax({
-                    url: host + "/suplier_hapus",
+                    url: host + "/suplier_simpan",
                     method: "POST",
                     data: {
                         "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
                         'kode': $("#kode_suplier").val(),
+                        'nama': $("#nama_suplier").val(),
+                        'alamat': $("#alamat_suplier").val(),
+                        'kota': $("#kota_suplier").val(),
+                        'kodepos': $("#kodepos_suplier").val(),
+                        'top': desimal2($('#top_suplier').val()),
+                        'telepon': $("#telepon_suplier").val(),
+                        'fax': $("#fax_suplier").val(),
+                        'contact': $("#contact_suplier").val(),
+                        'npwp': $("#npwp_suplier").val(),
+                        'coa': $("#coa_suplier").val(),
+                        'coan': $("#coan_suplier").val(),
+                        'tpay': $("#tpay_suplier").val(),
+                        "status_aud": 'D',
+                        "OutputNoBukti": '',
+
                     },
-                    success: function (datas) {
-                        alert(datas.pesan)
-                        Buka_suplier()
-                        Buka_suplierdisc()
+                    success: function (e) {
+                        console.log(e)
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        setMenu('menu_tambah')
+                        setMenu('menu_hapus')
+                        setMenu('menu_edit')
+                        setMenu('menu_simpan', 0)
+                        setMenu('menu_cancel', 0)
                         ClearText()
                         ClearText2()
+                        load_suplier = 'unlock'
+                        setDisabled('kode_suplier', 0)
+                        Buka_suplier()
+                        Buka_suplierdisc()
                     }
                 })
             }
@@ -171,8 +198,8 @@ $(document).ready(function () {
                     "OutputNoBukti": '',
 
                 },
-                success: function (datas) {
-                    alert(datas.pesan)
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
                     setMenu('menu_tambah')
                     setMenu('menu_hapus')
                     setMenu('menu_edit')
@@ -208,6 +235,9 @@ $(document).ready(function () {
         $("#cetak_sampai").val('ZZZ')
         e.stopImmediatePropagation();
         $('#Modalprintsuplier').modal('show');
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
     })
 
     // discount
@@ -255,21 +285,15 @@ $(document).ready(function () {
                     "OutputNoBukti": '',
 
                 },
-                success: function (datas) {
-                    if (datas.status == 'sukses') {
-                        alert('simpan berhasil ' + datas.data)
-                        setDisabled('add_btn', 1)
-                        setDisabled('edit_btn', 1)
-                        setDisabled('save_btn', 0)
-                        setDisabled('cancel_btn', 0)
-                        setDisabled('remove_btn', 1)
-                        ClearText2()
-                        Buka_suplierdisc()
-
-                    } else {
-                        alert('gagal ' + datas.data)
-                    }
-
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    setDisabled('add_btn', 1)
+                    setDisabled('edit_btn', 1)
+                    setDisabled('save_btn', 0)
+                    setDisabled('cancel_btn', 0)
+                    setDisabled('remove_btn', 1)
+                    ClearText2()
+                    Buka_suplierdisc()
                 }
             })
         }
@@ -300,21 +324,15 @@ $(document).ready(function () {
                     "OutputNoBukti": '',
 
                 },
-                success: function (datas) {
-                    if (datas.status == 'sukses') {
-                        alert('Data berhasil dihapus ' + datas.data)
-                        setDisabled('add_btn', 1)
-                        setDisabled('edit_btn', 1)
-                        setDisabled('save_btn', 0)
-                        setDisabled('cancel_btn', 0)
-                        setDisabled('remove_btn', 1)
-                        ClearText2()
-                        Buka_suplierdisc()
-
-                    } else {
-                        alert('gagal ' + datas.data)
-                    }
-
+                success: function (e) {
+                    alert(e[0].STATUS + ' - ' + e[0].STATE)
+                    setDisabled('add_btn', 1)
+                    setDisabled('edit_btn', 1)
+                    setDisabled('save_btn', 0)
+                    setDisabled('cancel_btn', 0)
+                    setDisabled('remove_btn', 1)
+                    ClearText2()
+                    Buka_suplierdisc()
                 }
             })
         }

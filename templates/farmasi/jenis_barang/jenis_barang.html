@@ -1,0 +1,41 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    JENIS BARANG
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDatajenis_barang.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 340px;
+        }
+        div#DxgridDatajenis_barang2.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 340px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'farmasi/jenis_barang/form_jenis_barang.html' %}
+    {% include 'farmasi/jenis_barang/layout/Modalprintjenis_barang.html' %}  
+    {% include 'farmasi/jenis_barang/dxgrid/dxGridModaljenis_barang.html' %} 
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/jenis_barang/js/init.html' %}
+{% include 'farmasi/jenis_barang/js/dxgriddatajenis_barangjs.html' %}
+{% include 'farmasi/jenis_barang/js/getjenis_barang.html' %}
+
+</script>
+{% endblock  %}
+

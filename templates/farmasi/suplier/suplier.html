@@ -31,13 +31,16 @@
             line-height: 0.8;
             height: 240px;
         }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
 
     </style>
 {% endblock %}
 
 {% block content %}
     {% csrf_token %}
-    {% include 'farmasi/suplier/layout/menu.html' %}
     {% include 'farmasi/suplier/form_suplier.html' %}
     {% include 'farmasi/suplier/layout/Modalprintsuplier.html' %}
     {% include 'farmasi/suplier/dxgrid/dxGridModalsuplier.html' %}

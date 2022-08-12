@@ -1,0 +1,83 @@
+$(document).ready(function () {
+    $('#Findgolongan').click(function (e) {
+        gridFindgolongan(e)
+    })
+    $('.grid-opt-golongan').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            carigolongan(event)
+        }
+    });
+
+})
+
+function gridFindgolongan(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    $('#DxGridModalgolongan').modal('show');
+    carigolongan(e)
+    $('#DxGridLabelgolongan').html('Golongan');
+}
+
+var gridDatagolongan = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_produk_barang = $('#search_kode_golongan').val();
+        var search_nama_produk_barang = $('#search_nama_golongan').val();
+        return $.ajax({
+            url: host + "/getproduk_barang",
+            method: "GET",
+            data: {
+                "search_kode_produk_barang": search_kode_produk_barang,
+                "search_nama_produk_barang": search_nama_produk_barang
+            },
+        })
+    }
+});
+
+function carigolongan(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $('#DxGridModalgolongan').modal('show');
+    $('#DxGridLabelgolongan').html('Golongan');
+    $("#DxgridDatagolongan2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatagolongan,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "PRD_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#golongan_barang").val(e.data.PRD_ID)
+                $("#golongann_barang").val(e.data.NAME_PRD)
+                $("#margin_barang").val(e.data.PROFITMARGIN)
+                $("#marginri_barang").val(e.data.PROFITMARGINRI)
+            } else if (param == '1') {
+                $("#kodeproduk_dari").val(e.data.PRD_ID)
+            } else if (param == '2') {
+                $("#kodeproduk_sampai").val(e.data.PRD_ID)
+            }
+            $('#DxGridModalgolongan').modal('hide');
+        }
+    });
+}

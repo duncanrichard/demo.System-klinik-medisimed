@@ -122,11 +122,8 @@ def getperawat(request):
 
 def getBC(request):
     cabang_id = request.session['kdCabang']
-    q = " select ROW_NUMBER() OVER (ORDER BY ID_BC) AS NO, nakes.* from (select a.FMPPERAWAT_ID AS ID_BC,a.FMPPERAWATN AS NAMA_BC  "
-    q += " from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0'  "
-    q += " union SELECT a.FMDDOKTER_ID AS ID_BC,FMDDOKTERN AS NAMA_BC  "
-    q += " from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' ) as nakes order by NAMA_BC "
-    result = Globals().getDataQuery(q,[cabang_id,cabang_id])
+    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,A.FMPPERAWATN AS NAMA_BC from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
+    result = Globals().getDataQuery(q,[cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -285,7 +282,7 @@ def SP_AUD_TRANSAKSI(request):
     q += "@LIST_BC,"
     q += "@LIST_PERAWAT,"
     q += "@LIST_BAYAR"
-
+    print(q)
     if (status_aud=='D') :
         user = {
         'user_id': request.session['user_id'],

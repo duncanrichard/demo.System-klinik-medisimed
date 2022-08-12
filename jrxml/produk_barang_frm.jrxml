@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="produk_barang_frm" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="98d348d5-a1c6-457e-9817-210fc156664f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="medisimed"/>
+	<parameter name="start" class="java.lang.String"/>
+	<parameter name="finish" class="java.lang.String"/>
+	<parameter name="nama_rs" class="java.lang.String"/>
+	<parameter name="alamat_rs" class="java.lang.String"/>
+	<parameter name="tanggal" class="java.lang.String"/>
+	<parameter name="jam" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT PRD_ID, NAME_PRD
+FROM PRODUKOBAT
+WHERE (PRD_ID >= $P{start}   and  PRD_ID <= $P{finish} )]]>
+	</queryString>
+	<field name="PRD_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="PRD_ID"/>
+	</field>
+	<field name="NAME_PRD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NAME_PRD"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="67" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="555" height="30" uuid="b321db76-5e26-40fe-b614-d2305a3b32ad"/>
+				<textElement>
+					<font size="20"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nama_rs}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="30" width="554" height="21" uuid="d95a0d80-9993-4314-bab4-a5e2b8312b75"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{alamat_rs}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="26" splitType="Stretch">
+			<staticText>
+				<reportElement x="180" y="0" width="375" height="24" uuid="4b7b34fe-8ce3-42cc-8510-8438f5be8de7">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="810c0b99-dcc9-4233-8942-a4ce17562175"/>
+				</reportElement>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Nama Barang]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="2" width="180" height="24" uuid="67bdd974-55db-40e9-a286-99edf07fe320">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="810c0b99-dcc9-4233-8942-a4ce17562175"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<text><![CDATA[Kode barang]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="e7539d74-421e-4c1c-9862-1956aadf2582"/>
+			</line>
+			<line>
+				<reportElement x="1" y="24" width="555" height="1" uuid="aa09af30-bf1a-42a0-b37b-e66f6d170918"/>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="180" height="17" uuid="00cce079-2dff-4f46-a7bf-317481c284da">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2a36838b-0cb3-40d1-a66c-42a451777a2d"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{PRD_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="-1" width="376" height="18" uuid="1cc1bfaf-bcbe-4655-bb35-354a7edb901d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="faf00d15-32a9-4f7c-ac40-02ecae7c4c0c"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{NAME_PRD}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="24" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="100" height="14" uuid="cd848164-efc2-4a55-aa5a-7a70a5f7f574"/>
+				<textElement>
+					<font fontName="Arial"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tanggal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="100" height="22" uuid="6844c07f-e937-4994-b130-7b83edd59456"/>
+				<textFieldExpression><![CDATA[$P{jam}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="1" width="555" height="1" uuid="5ecbf4f8-cb79-4cba-9ca0-cc1d4f22d691"/>
+			</line>
+		</band>
+	</pageFooter>
+</jasperReport>

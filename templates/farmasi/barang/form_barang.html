@@ -1,0 +1,475 @@
+<div class="wrapper wrapper-content entry">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                    <h3 style="text-align: center">BARANG</h3>
+                </div>
+            </div>
+            <div class="tabs-container">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a data-toggle="tab" href="#form-2">General</a></li>
+                    <li class=""><a data-toggle="tab" href="#form-1">Tabel</a></li>
+
+                </ul>
+                <div class="tab-content">
+                    <div id="form-2" class="tab-pane registration-pane active">
+                        <div class="panel-body"
+                            style="background-color:#fafafa;border-radius: 5px;padding-bottom:10px;margin-top:10px;border-bottom: 1px solid #ddd">
+                            <div class="form-row" style="padding-top: 5px;">
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Kode barang
+                                            </label>
+                                            <div class="col-md-2">
+                                                <input id="kode_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input id="kode_barcode" type="text" placeholder="Kode Barcode"
+                                                    data-toggle="tooltip" data-placement="right" title="Input Barcode"
+                                                    class="form-control input-sm">
+                                            </div>
+
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Nama barang
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input id="nama_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <label class="col-md-4  control-label" style="background:#ed55657a;">Harga
+                                                Pokok + PPN
+                                                MARGIN </label>
+
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Jenis Obat
+                                            </label>
+                                            <div class="col-md-1">
+                                                <input id="golongan_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input id="golongann_barang" type="text" class="form-control input-sm"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Findgolongan" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <input id="hna_barang" type="text"
+                                                    class="form-control input-sm text-right" readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <input id="margin_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-1 control-label" style="background:#ed55657a;">%
+                                                RJ</label>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Harga Pokok
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input id="hargapokok_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <div class="col-md-1 col-md-offset-4">
+                                                <input id="marginri_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-1 control-label" style="background:#ed55657a;">% RI
+                                            </label>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Harga Jual RJ
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input id="hargajual_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-2 control-label">Harga Jual RI
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input id="hargajual_barangri" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Harga BPJS
+                                            </label>
+                                            <div class="col-md-4">
+                                                <input id="hargabpjs_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-2 control-label">Harga
+                                                PRSHN</label>
+                                            <div class="col-md-4">
+                                                <input id="hargaprh_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Qty Max </label>
+                                            <div class="col-md-2">
+                                                <input id="qtymax_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-2 control-label">Qty Min </label>
+                                            <div class="col-md-2">
+                                                <input id="qtymin_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-row" style="background:#ed55657a;padding:10px;">
+                                                <div class="form-row" style="margin-left:-10px;">
+                                                    <div class="form-row">
+                                                        <label class="control-label col-sm-3">Satuan
+                                                            Standart</label>
+                                                        <div class="col-md-2">
+                                                            <input id="idsatuanstd" name="idsatuanstd" type="text"
+                                                                class="form-control input-sm">
+                                                        </div>
+                                                        <div class="col-md-2 col-md-offset-1">
+                                                            <input id="idsatuankemas3" name="idsatuankemas3" type="text"
+                                                                class="form-control input-sm" placeholder="Kemasan"
+                                                                readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input id="idkonversisatuanstdkemasan"
+                                                                name="idkonversisatuanstdkemasan" type="text"
+                                                                class="form-control input-sm" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input id="idsatuanstd2" name="idsatuanstd2" type="text"
+                                                                class="form-control input-sm" placeholder="Standart"
+                                                                readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <label class="control-label col-sm-3">Kemasan
+                                                            Sedang</label>
+                                                        <div class="col-md-2">
+                                                            <input id="idsatuansedang" name="idsatuansedang" type="text"
+                                                                class="form-control input-sm">
+                                                        </div>
+                                                        <div class="col-md-2 col-md-offset-1">
+                                                            <input id="idsatuansedang2" name="idsatuansedang2"
+                                                                type="text" class="form-control input-sm"
+                                                                placeholder="Sedang" readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input id="idkonversisatuansedangstd"
+                                                                name="idkonversisatuansedangstd" type="text"
+                                                                class="form-control input-sm">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input id="idsatuanstd3" name="idsatuanstd3" type="text"
+                                                                class="form-control input-sm" placeholder="Standart"
+                                                                readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row">
+                                                        <label class="control-label col-sm-3">Satuan
+                                                            Kemasan</label>
+                                                        <div class="col-md-2">
+                                                            <input id="idsatuankemas" name="idsatuankemas" type="text"
+                                                                class="form-control input-sm">
+                                                        </div>
+                                                        <div class="col-md-2 col-md-offset-1">
+                                                            <input id="idsatuankemas2" name="idsatuankemas2" type="text"
+                                                                class="form-control input-sm" placeholder="Kemasan"
+                                                                readonly>
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input id="idkonversikemassedang"
+                                                                name="idkonversikemassedang" type="text"
+                                                                class="form-control input-sm">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <input id="idsatuansedang3" name="idsatuansedang3"
+                                                                type="text" class="form-control input-sm"
+                                                                placeholder="Sedang" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-row" style="background:white; padding:10px;">
+                                                <label class="checkbox-inline">
+                                                    <input type="checkbox" id="inlineCheckboxaktif1" value="1">
+                                                    Aktif / Masih Dipakai
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="form-row" style="background:#e9cfd27a;padding:10px;">
+                                            <div class="form-row" style="margin-left:-10px;">
+                                                <div class="form-row">
+                                                    <label class="control-label col-sm-3">Satuan
+                                                        Kekuatan</label>
+                                                    <div class="col-md-2">
+                                                        <input id="idsatkekuatan" name="idsatkekuatan" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+                                                    <label class="control-label col-sm-2">Kekuatan</label>
+                                                    <div class="col-md-2">
+                                                        <input id="idkekuatan" name="idkekuatan" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-row" style="background:rgb(160, 215, 224); padding:10px;">
+                                            <label class="control-label col-sm-2">Zat
+                                                Aktif</label>
+                                            <div class="col-md-10">
+                                                <input id="ideZatAktif" name="ideZatAktif" type="text"
+                                                    class="form-control input-sm">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-row">
+                                            <label class="col-md-3 control-label">Golongan Barang
+                                            </label>
+                                            <div class="col-md-2">
+                                                <input id="jenis_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="jenisn_barang" type="text" class="form-control input-sm"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Carijenis" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-3 control-label">Sediaan Barang
+                                            </label>
+                                            <div class="col-md-2">
+                                                <input id="sediaan_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="sediaann_barang" type="text" class="form-control input-sm"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Findsediaan" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-3 control-label">Supplier </label>
+                                            <div class="col-md-2">
+                                                <input id="supplier_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="suppliern_barang" type="text" class="form-control input-sm"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Findsupplier" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-3 control-label">Pabrikan </label>
+                                            <div class="col-md-2">
+                                                <input id="pabrikan_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="pabrikann_barang" type="text" class="form-control input-sm"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Findpabrikan" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-3 control-label">Lokasi </label>
+                                            <div class="col-md-2">
+                                                <input id="lokasi_barang" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="lokasin_barang" type="text" class="form-control input-sm"
+                                                    readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="Findlokasi" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-row" style="background:#88ca797a;padding:10px;">
+                                            <div class="col-md-12">
+                                                <div class="form-row">
+                                                    <label class="control-label col-sm-2">Indikasi</label>
+                                                    <div class="col-md-4">
+                                                        <input id="idindikasi" name="idindikasi" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+                                                    <label class="control-label col-sm-2">Penyimpanan</label>
+                                                    <div class="col-md-4">
+                                                        <input id="idpenyimpanan" name="idpenyimpanan" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-row">
+                                                    <label class="control-label col-sm-2">Aturan
+                                                        Pakai</label>
+                                                    <div class="col-md-4">
+                                                        <input id="idaturanpakai" name="idaturanpakai" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+                                                    <label class="control-label col-sm-2">EfekSamping</label>
+                                                    <div class="col-md-4">
+                                                        <input id="idefekSamping" name="idefekSamping" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-row">
+                                                    <label class="control-label col-sm-3">Cara
+                                                        Penggunaan</label>
+                                                    <div class="col-md-9">
+                                                        <input id="idcaraguna" name="idcaraguna" type="text"
+                                                            class="form-control input-sm">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-row">
+                                                    <label class="col-md-4 col-md-offset-4 control-label"
+                                                        style="background:#ed55657a;">KARAKTERISTIK
+                                                        OBAT</label>
+                                                </div>
+                                            </div>
+                                            <div class="form-row" style="background:white; padding:1px;">
+                                                <div class="col-md-12">
+                                                    <label class="col-md-3">
+                                                        <input class="col-md-2" type="checkbox"
+                                                            id="inlineCheckboxGenerik" value="1">Generik
+                                                    </label>
+                                                    <label class="col-md-4 ">
+                                                        <input class="col-md-2" type="checkbox"
+                                                            id="inlineCheckboxFormalarium" value="1">Obat
+                                                        Formalarium
+                                                    </label>
+                                                    <label class="col-md-3 ">
+                                                        <input class="col-md-2" type="checkbox" id="inlineCheckboxPRB"
+                                                            value="1">PRB
+                                                    </label>
+
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <label class="col-md-3 ">
+                                                        <input class="col-md-2" type="checkbox"
+                                                            id="inlineCheckboxRetriksi" value="1">Restriksi
+                                                    </label>
+                                                    <label class="col-md-4 ">
+                                                        <input class="col-md-2" type="checkbox"
+                                                            id="inlineCheckboxKerjasama" value="1">Kerjasama
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="form-1" class="tab-pane registration-pane ">
+                        <div class="panel-body" style="background-color:#66c29f;padding-top:10px;border-radius: 5px">
+                            <div class="form-row">
+                                <div class="col-md-7">
+                                    <div id="dxGridDatabarang"></div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-row">
+                                        <label class="control-label col-sm-4 col-md-offset-4"
+                                            style="background:#ed55657a;">Stok Min Max
+                                            PerGudang</label>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="pull-right col-md-1 col-xs-2">
+                                            <button class="btn btn-danger btn-block" id="remove_btn" title="Hapus">
+                                                <span class="fa fa-remove"></span>
+                                            </button>
+                                            <!-- btn-xs  iki rodi cilik -->
+                                        </div>
+                                        <div class="pull-right col-md-1 col-xs-2 ">
+                                            <button class="btn btn-warning btn-block" id="cancel_btn" title="Batal">
+                                                <span class="fa fa-undo"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-1 col-xs-2 ">
+                                            <button class="btn btn-primary btn-block" id="save_btn" title="Simpan">
+                                                <span class="fa fa-save"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-1 col-xs-2">
+                                            <button class="btn btn-success  btn-block" id="edit_btn" title="Edit">
+                                                <span class="fa fa-edit"></span>
+                                            </button>
+                                        </div>
+                                        <div class="pull-right col-md-1 col-xs-2 ">
+                                            <button class="btn btn-primary btn-block" id="add_btn" title="Tambah">
+                                                <span class="fa fa-plus"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row" style="background:#9be6c07a;">
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Gudang </label>
+                                            <div class="col-md-2">
+                                                <input id="idWh" type="text" class="form-control input-sm">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="idWhn" type="text" class="form-control input-sm" readonly>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button id="FindWh" class="btn btn-success btn-xs">
+                                                    Cari
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <label class="col-md-2 control-label">Qty Max </label>
+                                            <div class="col-md-2">
+                                                <input id="qtymaxwh_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                            <label class="col-md-2 control-label">Qty Min </label>
+                                            <div class="col-md-2">
+                                                <input id="qtyminwh_barang" type="text"
+                                                    class="form-control input-sm text-right">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-row" style="background:#ec91967a;">
+                                        <div id="dxGridDatabaranggudang"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

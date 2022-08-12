@@ -1,0 +1,39 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    PABRIKAN
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDatapabrikan.dx-widget {
+            font-size: 12px;
+            line-height: 0.95;
+            height: 240px;
+        }
+        div#DxgridDatapabrikan2.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 240px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'farmasi/pabrikan/form_pabrikan.html' %}
+    {% include 'farmasi/pabrikan/layout/Modalprintpabrikan.html' %}
+    {% include 'farmasi/pabrikan/dxgrid/dxGridModalpabrikan.html' %}
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/pabrikan/js/init.html' %}
+{% include 'farmasi/pabrikan/js/dxgriddatapabrikanjs.html' %}
+{% include 'farmasi/pabrikan/js/getpabrikan.html' %}
+</script>
+{% endblock  %}

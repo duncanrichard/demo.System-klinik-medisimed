@@ -1,0 +1,982 @@
+load_barang = 'unlock'
+setMenu('menu_tambah')
+setMenu('menu_edit')
+setMenu('menu_hapus')
+setMenu('menu_simpan', 0)
+setMenu('menu_cancel', 0)
+setMenu('menu_find')
+setMenu('menu_cetak')
+// LIMIT GUDANG
+setDisabled('add_btn', 1)
+setDisabled('edit_btn', 1)
+setDisabled('save_btn', 0)
+setDisabled('cancel_btn', 0)
+setDisabled('remove_btn', 1)
+
+$(document).ready(function () {
+    Buka_barang()
+    Buka_barang2()
+
+    $('#menu_tambah, #nav_FRMBRG0101').click(function (e) {
+        setMenu('menu_tambah', 0)
+        setMenu('menu_edit', 0)
+        setMenu('menu_hapus', 0)
+        setMenu('menu_simpan')
+        setMenu('menu_cancel')
+        setMenu('menu_find', 0)
+        setMenu('menu_cetak', 0)
+        ClearText()
+        LiveText()
+        load_barang = 'lock'
+        $('#nama_barang').focus()
+    })
+
+    $('#menu_edit, #nav_FRMBRG0102').click(function (e) {
+        if ($("#kode_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setMenu('menu_tambah', 0)
+            setMenu('menu_edit', 0)
+            setMenu('menu_hapus', 0)
+            setMenu('menu_simpan')
+            setMenu('menu_cancel')
+            setMenu('menu_find', 0)
+            setMenu('menu_cetak', 0)
+            load_barang = 'lock'
+            LiveText()
+        }
+    })
+
+    $('#menu_hapus,#nav_FRMBRG0103').click(function (e) {
+        if ($("#kode_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+
+            var result = confirm("Yakin Ingin Dihapus ?");
+            if (result) {
+                var aktifusia = '0'
+                if ($("#inlineCheckboxaktif1").prop('checked') == true) {
+                    aktifusia = '0'
+                } else {
+                    aktifusia = '1'
+                }
+                var Generik = '0'
+                if ($("#inlineCheckboxGenerik").prop('checked') == true) {
+                    Generik = '1'
+                }
+                var Formalarium = '0'
+                if ($("#inlineCheckboxFormalarium").prop('checked') == true) {
+                    Formalarium = '1'
+                }
+                var PRB = '0'
+                if ($("#inlineCheckboxPRB").prop('checked') == true) {
+                    PRB = '1'
+                }
+                var kerjasama = '0'
+                if ($("#inlineCheckboxKerjasama").prop('checked') == true) {
+                    kerjasama = '1'
+                }
+                var retriksi = '0'
+                if ($("#inlineCheckboxRetriksi").prop('checked') == true) {
+                    retriksi = '1'
+                }
+                $.ajax({
+                    url: host + "/barang_simpan",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        'kode': $("#kode_barang").val(),
+                        'barcode': $("#kode_barcode").val(),
+                        'nama': $("#nama_barang").val(),
+
+                        'harga_pokok': convertToAngka($('#hargapokok_barang').val()),
+                        'harga_jual': convertToAngka($('#hargajual_barang').val()),
+                        'harga_jualri': convertToAngka($('#hargajual_barangri').val()),
+                        'harga_jualbpjs': convertToAngka($('#hargabpjs_barang').val()),
+                        'harga_jualprsh': convertToAngka($('#hargaprh_barang').val()),
+
+
+                        'qty_max': convertToAngka($('#qtymax_barang').val()),
+                        'qty_min': convertToAngka($('#qtymin_barang').val()),
+                        'sat_standart': $("#idsatuanstd").val(),
+                        'sat_sedang': $("#idsatuansedang").val(),
+                        'sat_kemas': $("#idsatuankemas").val(),
+                        'konversistd': convertToAngka($('#idkonversisatuansedangstd').val()),
+                        'konversikemas': convertToAngka($('#idkonversikemassedang').val()),
+                        'aktif': aktifusia,
+                        'satkekuatan': $("#idsatkekuatan").val(),
+                        'kekuatan': convertToAngka($("#idkekuatan").val()),
+                        'ZatAktif': $("#ideZatAktif").val(),
+
+                        'golongan': $("#jenis_barang").val(),
+                        'produk': $("#golongan_barang").val(),
+                        'sediaan': $("#sediaan_barang").val(),
+                        'supplier': $("#supplier_barang").val(),
+                        'pabrikan': $("#pabrikan_barang").val(),
+                        'lokasi': $("#lokasi_barang").val(),
+
+                        'indikasi': $("#idindikasi").val(),
+                        'penyimpanan': $("#idpenyimpanan").val(),
+                        'aturanpakai': $("#idaturanpakai").val(),
+                        'efekSamping': $("#idefekSamping").val(),
+                        'caraguna': $("#idcaraguna").val(),
+                        'Generik': Generik,
+                        'Formalarium': Formalarium,
+                        'PRB': PRB,
+                        'kerjasama': kerjasama,
+                        'retriksi': retriksi,
+
+                        "status_aud": 'D',
+                        "OutputNoBukti": '',
+
+                    },
+                    success: function (datas) {
+                        alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                        setMenu('menu_tambah')
+                        setMenu('menu_edit')
+                        setMenu('menu_hapus')
+                        setMenu('menu_simpan', 0)
+                        setMenu('menu_cancel', 0)
+                        setMenu('menu_find')
+                        setMenu('menu_cetak')
+                        ClearText()
+                        load_barang = 'unlock'
+                        setDisabled('kode_barang', 0)
+                        Buka_barang()
+                    }
+                })
+            }
+        }
+    })
+
+    $('#menu_simpan,#nav_FRMBRG0101').click(function (e) {
+        error_in_field()
+        if (Cekeror == true) {
+            var aktifusia = '0'
+            if ($("#inlineCheckboxaktif1").prop('checked') == true) {
+                aktifusia = '0'
+            } else {
+                aktifusia = '1'
+            }
+            var Generik = '0'
+            if ($("#inlineCheckboxGenerik").prop('checked') == true) {
+                Generik = '1'
+            }
+            var Formalarium = '0'
+            if ($("#inlineCheckboxFormalarium").prop('checked') == true) {
+                Formalarium = '1'
+            }
+            var PRB = '0'
+            if ($("#inlineCheckboxPRB").prop('checked') == true) {
+                PRB = '1'
+            }
+            var kerjasama = '0'
+            if ($("#inlineCheckboxKerjasama").prop('checked') == true) {
+                kerjasama = '1'
+            }
+            var retriksi = '0'
+            if ($("#inlineCheckboxRetriksi").prop('checked') == true) {
+                retriksi = '1'
+            }
+            $.ajax({
+                url: host + "/barang_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_barang").val(),
+                    'barcode': $("#kode_barcode").val(),
+                    'nama': $("#nama_barang").val(),
+
+                    'harga_pokok': convertToAngka($('#hargapokok_barang').val()),
+                    'harga_jual': convertToAngka($('#hargajual_barang').val()),
+                    'harga_jualri': convertToAngka($('#hargajual_barangri').val()),
+                    'harga_jualbpjs': convertToAngka($('#hargabpjs_barang').val()),
+                    'harga_jualprsh': convertToAngka($('#hargaprh_barang').val()),
+
+
+                    'qty_max': convertToAngka($('#qtymax_barang').val()),
+                    'qty_min': convertToAngka($('#qtymin_barang').val()),
+                    'sat_standart': $("#idsatuanstd").val(),
+                    'sat_sedang': $("#idsatuansedang").val(),
+                    'sat_kemas': $("#idsatuankemas").val(),
+                    'konversistd': convertToAngka($('#idkonversisatuansedangstd').val()),
+                    'konversikemas': convertToAngka($('#idkonversikemassedang').val()),
+                    'aktif': aktifusia,
+                    'satkekuatan': $("#idsatkekuatan").val(),
+                    'kekuatan': convertToAngka($("#idkekuatan").val()),
+                    'ZatAktif': $("#ideZatAktif").val(),
+
+                    'golongan': $("#jenis_barang").val(),
+                    'produk': $("#golongan_barang").val(),
+                    'sediaan': $("#sediaan_barang").val(),
+                    'supplier': $("#supplier_barang").val(),
+                    'pabrikan': $("#pabrikan_barang").val(),
+                    'lokasi': $("#lokasi_barang").val(),
+
+                    'indikasi': $("#idindikasi").val(),
+                    'penyimpanan': $("#idpenyimpanan").val(),
+                    'aturanpakai': $("#idaturanpakai").val(),
+                    'efekSamping': $("#idefekSamping").val(),
+                    'caraguna': $("#idcaraguna").val(),
+                    'Generik': Generik,
+                    'Formalarium': Formalarium,
+                    'PRB': PRB,
+                    'kerjasama': kerjasama,
+                    'retriksi': retriksi,
+
+                    "status_aud": 'A',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                    setMenu('menu_tambah')
+                    setMenu('menu_edit')
+                    setMenu('menu_hapus')
+                    setMenu('menu_simpan', 0)
+                    setMenu('menu_cancel', 0)
+                    setMenu('menu_find')
+                    setMenu('menu_cetak')
+                    ClearText()
+                    load_barang = 'unlock'
+                    setDisabled('kode_barang', 0)
+                    Buka_barang()
+                }
+            })
+        }
+    })
+
+    $('#menu_cancel,#nav_FRMBRG0202').click(function (e) {
+        setMenu('menu_tambah')
+        setMenu('menu_edit')
+        setMenu('menu_hapus')
+        setMenu('menu_simpan', 0)
+        setMenu('menu_cancel', 0)
+        setMenu('menu_find')
+        setMenu('menu_cetak')
+        ClearText()
+        DeathText()
+        load_barang = 'unlock'
+        setDisabled('kode_barang', 0)
+    })
+
+    $("#menu_cetak,#nav_FRMBRG0401").click(function (e) {
+        e.preventDefault();
+        $("#cetak_dari").val('00')
+        $("#cetak_sampai").val('ZZZ')
+        $("#kodeproduk_dari").val('00')
+        $("#kodeproduk_sampai").val('ZZZ')
+        $("#kodesuplier_dari").val('00')
+        $("#kodesuplier_sampai").val('ZZZ')
+        $("#kodepabrikan_dari").val('00')
+        $("#kodepabrikan_sampai").val('ZZZ')
+        e.stopImmediatePropagation();
+        $('#Modalprintbarang').modal('show');
+    })
+
+    $("#nav_FRMBRG0402").click(function (e) {
+        e.preventDefault();
+        $("#cetak_dariwh").val('00')
+        $("#cetak_sampaiwh").val('ZZZ')
+        e.stopImmediatePropagation();
+        $('#Modalprintgudang').modal('show');
+    })
+    // LIMIT GUDANG
+    $('#add_btn').click(function (e) {
+        if ($("#kode_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setDisabled('add_btn', 0)
+            setDisabled('edit_btn', 0)
+            setDisabled('save_btn', 1)
+            setDisabled('cancel_btn', 1)
+            setDisabled('remove_btn', 0)
+            LiveText2()
+            ClearText2()
+        }
+
+    })
+    $('#edit_btn').click(function (e) {
+        if ($("#kode_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            setDisabled('add_btn', 0)
+            setDisabled('edit_btn', 0)
+            setDisabled('save_btn', 1)
+            setDisabled('cancel_btn', 1)
+            setDisabled('remove_btn', 0)
+            LiveText2()
+            setreadonly('idWh', 0)
+            setDisabled('FindWh', 0)
+        }
+    })
+    $('#save_btn').click(function (e) {
+        error_in_field2()
+        if (Cekeror == true) {
+            $.ajax({
+                url: host + "/barangwh_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_barang").val(),
+                    'kodewh': $("#idWh").val(),
+                    'qtywh_max': convertToAngka($('#qtymaxwh_barang').val()),
+                    'qtywh_min': convertToAngka($('#qtyminwh_barang').val()),
+                    "status_aud": 'A',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    if (datas.status == 'sukses') {
+                        alert('simpan berhasil ' + datas.data)
+                        setDisabled('add_btn', 1)
+                        setDisabled('edit_btn', 1)
+                        setDisabled('save_btn', 0)
+                        setDisabled('cancel_btn', 0)
+                        setDisabled('remove_btn', 1)
+                        ClearText2()
+                        Buka_barang2()
+
+                    } else {
+                        alert('gagal ' + datas.data)
+                    }
+
+                }
+            })
+        }
+    })
+    $('#cancel_btn').click(function (e) {
+        setDisabled('add_btn', 1)
+        setDisabled('edit_btn', 1)
+        setDisabled('save_btn', 0)
+        setDisabled('cancel_btn', 0)
+        setDisabled('remove_btn', 1)
+        ClearText2()
+        DeathText2()
+    })
+    $('#remove_btn').click(function (e) {
+        if ($("#kode_barang").val() == '') {
+            alert('Pilih Data Dahulu')
+        } else {
+            $.ajax({
+                url: host + "/barangwh_simpan",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    'kode': $("#kode_barang").val(),
+                    'kodewh': $("#idWh").val(),
+                    'qtywh_max': convertToAngka($('#qtymaxwh_barang').val()),
+                    'qtywh_min': convertToAngka($('#qtyminwh_barang').val()),
+                    "status_aud": 'D',
+                    "OutputNoBukti": '',
+
+                },
+                success: function (datas) {
+                    if (datas.status == 'sukses') {
+                        alert('Data berhasil dihapus ' + datas.data)
+                        setDisabled('add_btn', 1)
+                        setDisabled('edit_btn', 1)
+                        setDisabled('save_btn', 0)
+                        setDisabled('cancel_btn', 0)
+                        setDisabled('remove_btn', 1)
+                        ClearText2()
+                        Buka_barang2()
+
+                    } else {
+                        alert('gagal ' + datas.data)
+                    }
+
+                }
+            })
+        }
+    })
+})
+
+function error_in_field() {
+    Cekeror = true;
+    if ($("#nama_barang").val() == '') {
+        alert('Nama barang tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#idsatuanstd").val() == '') {
+        alert('Satuan standart barang tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#idsatuansedang").val() == '') {
+        alert('Satuan sedang barang tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#idsatuankemas").val() == '') {
+        alert('Satuan kemasan barang tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#idsatkekuatan").val() == '') {
+        alert('Satuan kekuatan barang tidak boleh kosong')
+        Cekeror = false;
+    }
+    if ($("#idkekuatan").val() == '') {
+        alert('kekuatan barang barang tidak boleh kosong')
+        $("#idkekuatan").val(1)
+        Cekeror = false;
+    }
+
+    if ($("#hargapokok_barang").val() == '') {
+        alert('harga pokok barang tidak boleh kosong')
+        $("#hargapokok_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#hargajual_barang").val() == '') {
+        alert('harga jual barang tidak boleh kosong')
+        $("#hargajual_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#hargajual_barangri").val() == '') {
+        alert('harga jual RI barang tidak boleh kosong')
+        $("#hargajual_barangri").val(0)
+        Cekeror = false;
+    }
+    if ($("#hargabpjs_barang").val() == '') {
+        alert('harga jual BPJS barang tidak boleh kosong')
+        $("#hargabpjs_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#hargaprh_barang").val() == '') {
+        alert('harga jual Perusahaan barang tidak boleh kosong')
+        $("#hargaprh_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#qtymax_barang").val() == '') {
+        alert('qty max barang barang tidak boleh kosong')
+        $("#qtymax_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#qtymin_barang").val() == '') {
+        alert('qty min barang barang tidak boleh kosong')
+        $("#qtymin_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#idkonversisatuansedangstd").val() == '') {
+        alert('qty konversi satuan std barang barang tidak boleh kosong')
+        $("#idkonversisatuansedangstd").val(1)
+        Cekeror = false;
+    }
+    if ($("#idkonversikemassedang").val() == '') {
+        alert('qty konversi satuan sedang barang barang tidak boleh kosong')
+        $("#idkonversikemassedang").val(1)
+        Cekeror = false;
+    }
+
+
+
+    return Cekeror;
+
+}
+
+function error_in_field2() {
+    Cekeror = true;
+    if ($("#idWh").val() == '') {
+        alert('GUDANG tidak boleh kosong')
+        Cekeror = false;
+    }
+
+    if ($("#qtymaxwh_barang").val() == '') {
+        alert('qty max Gudang barang tidak boleh kosong')
+        $("#qtymaxwh_barang").val(0)
+        Cekeror = false;
+    }
+    if ($("#qtyminwh_barang").val() == '') {
+        alert('qty min Gudang barang tidak boleh kosong')
+        $("#qtyminwh_barang").val(0)
+        Cekeror = false;
+    }
+
+
+
+    return Cekeror;
+
+}
+
+function Buka_barang() {
+    DeathText()
+    var nama = ''
+    $("#dxGridDatabarang").dxDataGrid({
+
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        export: {
+            enabled: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/open_barang",
+                    method: "GET",
+                    data: {
+                        // 'nama': nama,
+                    },
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "BARANGC",
+                caption: "KODE",
+                width: 75,
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "NAMA",
+                width: 200,
+            },
+            {
+                dataField: "TTYPEC",
+                caption: "Kode Jenis",
+                width: 0,
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "NAMA JENIS",
+                width: 75,
+            },
+
+            {
+                dataField: "HPOKOK",
+                caption: "Harga Pokok",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUAL",
+                caption: "Harga RJ",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUALRI",
+                caption: "Harga RI",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUALASKIN",
+                caption: "Harga BPJS",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUALSUKARELA",
+                caption: "Harga PERUSAHAAN",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "SATSTAND",
+                caption: "Satuan",
+                width: 50,
+            },
+            {
+                dataField: "satkemas",
+                caption: "Kemasan",
+                width: 50,
+            },
+            {
+                dataField: "satkecil",
+                caption: "Satuan Sedang",
+                width: 100,
+            },
+            {
+                dataField: "kstandart",
+                caption: "konversi satuan",
+                width: 50,
+            },
+            {
+                dataField: "kkecil",
+                caption: "konversi kecil",
+                width: 50,
+            },
+
+            {
+                dataField: "SUPPLIER_ID",
+                caption: "Suplier",
+                width: 0,
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "Nama Supplier",
+                width: 100,
+            },
+            {
+                dataField: "QTYMIN",
+                caption: "QTY MIN",
+                width: 50,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "QTYMAX",
+                caption: "QTY MAX",
+                width: 50,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "GENERIC",
+                caption: "GENERIC",
+                width: 0,
+            },
+            {
+                dataField: "OBATANGGOTA",
+                caption: "OBATANGGOTA",
+                width: 0,
+            },
+            {
+                dataField: "OBATASKES",
+                caption: "OBATASKES",
+                width: 0,
+            },
+            {
+                dataField: "OBATDROPING",
+                caption: "OBATDROPING",
+                width: 0,
+            },
+            {
+                dataField: "ZATADITIF",
+                caption: "Kandungan",
+                width: 200,
+            },
+            {
+                dataField: "KEKUATAN",
+                caption: "KEKUATAN",
+                dataType: "number",
+                width: 50,
+            },
+            {
+                dataField: "SATKEKUATAN",
+                caption: "SATKEKUATAN",
+                width: 50,
+            },
+            {
+                dataField: "NAMA",
+                caption: "Golongan",
+                width: 50,
+            },
+            {
+                dataField: "FMPNAME_SUPPL",
+                caption: "Pabrikan",
+                width: 100,
+            },
+            {
+                dataField: "FMLFKETERAGAN",
+                caption: "Lokasi",
+                width: 50,
+            },
+            {
+                dataField: "FMSSEDIAAN",
+                caption: "Sediaan",
+                width: 50,
+            },
+
+
+
+        ],
+        onRowClick: function (e) {
+            if (load_barang == 'unlock') {
+                Tampilkandata(e)
+            }
+        }
+    });
+}
+
+function Buka_barang2() {
+    DeathText2()
+    $("#dxGridDatabaranggudang").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        export: {
+            enabled: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/load_barang_stokmaxmin",
+                    method: "GET",
+                    data: {
+                        'kode_barang': $("#kode_barang").val(),
+                    },
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "BARANGID",
+                caption: "KODE",
+                width: 0,
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "NAMA",
+                width: 0,
+            },
+            {
+                dataField: "GUDANGID",
+                caption: "GUDANGID",
+                width: 0,
+            },
+            {
+                dataField: "NAME_WH",
+                caption: "Nama Gudang",
+                // width: 100,
+            },
+            {
+                dataField: "STOKMIN",
+                caption: "QTY MIN",
+                width: 150,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "STOKMAX",
+                caption: "QTY MAX",
+                width: 150,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+        ],
+        onRowClick: function (e) {
+            if (load_barang == 'unlock') {
+                Tampilkandatagudang(e)
+            }
+        }
+    })
+}
+
+function DeathText() {
+    setreadonly('kode_barang', 0)
+    setreadonly('kode_barcode', 0)
+    setreadonly('nama_barang', 0)
+    setreadonly('hargapokok_barang', 0)
+    setreadonly('margin_barang', 0)
+    setreadonly('marginri_barang', 0)
+    setreadonly('hargajual_barangri', 0)
+    setreadonly('hargajual_barang', 0)
+    setreadonly('hargabpjs_barang', 0)
+    setreadonly('hargaprh_barang', 0)
+
+    setreadonly('qtymax_barang', 0)
+    setreadonly('qtymin_barang', 0)
+    setreadonly('idsatuanstd', 0)
+    setreadonly('idsatuansedang', 0)
+    setreadonly('idkonversisatuansedangstd', 0)
+    setreadonly('idsatuankemas', 0)
+    setreadonly('idkonversikemassedang', 0)
+    setDisabled('inlineCheckboxaktif1', 0)
+
+    setreadonly('jenis_barang', 0)
+    setDisabled('Carijenis', 0)
+    setreadonly('golongan_barang', 0)
+    setDisabled('Findgolongan', 0)
+    setreadonly('sediaan_barang', 0)
+    setDisabled('Findsediaan', 0)
+    setreadonly('supplier_barang', 0)
+    setDisabled('Findsupplier', 0)
+    setreadonly('pabrikan_barang', 0)
+    setDisabled('Findpabrikan', 0)
+    setreadonly('lokasi_barang', 0)
+    setDisabled('Findlokasi', 0)
+
+    setreadonly('idsatkekuatan', 0)
+    setreadonly('idkekuatan', 0)
+    setreadonly('idindikasi', 0)
+    setreadonly('idpenyimpanan', 0)
+    setreadonly('idaturanpakai', 0)
+    setreadonly('idefekSamping', 0)
+    setreadonly('idcaraguna', 0)
+    setDisabled('inlineCheckboxGenerik', 0)
+    setDisabled('inlineCheckboxFormalarium', 0)
+    setDisabled('inlineCheckboxPRB', 0)
+    setDisabled('inlineCheckboxKerjasama', 0)
+    setDisabled('inlineCheckboxRetriksi', 0)
+    setreadonly('ideZatAktif', 0)
+}
+
+function DeathText2() {
+    setreadonly('idWh', 0)
+    setDisabled('FindWh', 0)
+    setreadonly('qtymaxwh_barang', 0)
+    setreadonly('qtyminwh_barang', 0)
+}
+
+function LiveText() {
+    setreadonly('kode_barang', 0)
+    setreadonly('kode_barcode', 1)
+    setreadonly('nama_barang', 1)
+
+    setreadonly('hargapokok_barang', 1)
+    setreadonly('margin_barang', 1)
+    setreadonly('marginri_barang', 1)
+    setreadonly('hargajual_barang', 1)
+    setreadonly('hargajual_barangri', 1)
+    setreadonly('hargabpjs_barang', 1)
+    setreadonly('hargaprh_barang', 1)
+
+    setreadonly('qtymax_barang', 1)
+    setreadonly('qtymin_barang', 1)
+    setreadonly('idsatuanstd', 1)
+    setreadonly('idsatuansedang', 1)
+    setreadonly('idkonversisatuansedangstd', 1)
+    setreadonly('idsatuankemas', 1)
+    setreadonly('idkonversikemassedang', 1)
+    setDisabled('inlineCheckboxaktif1', 1)
+
+    setreadonly('jenis_barang', 1)
+    setDisabled('Carijenis', 1)
+    setreadonly('golongan_barang', 1)
+    setDisabled('Findgolongan', 1)
+    setreadonly('sediaan_barang', 1)
+    setDisabled('Findsediaan', 1)
+    setreadonly('supplier_barang', 1)
+    setDisabled('Findsupplier', 1)
+    setreadonly('pabrikan_barang', 1)
+    setDisabled('Findpabrikan', 1)
+    setreadonly('lokasi_barang', 1)
+    setDisabled('Findlokasi', 1)
+
+    setreadonly('idsatkekuatan', 1)
+    setreadonly('idkekuatan', 1)
+    setreadonly('idindikasi', 1)
+    setreadonly('idpenyimpanan', 1)
+    setreadonly('idaturanpakai', 1)
+    setreadonly('idefekSamping', 1)
+    setreadonly('idcaraguna', 1)
+    setDisabled('inlineCheckboxGenerik', 1)
+    setDisabled('inlineCheckboxFormalarium', 1)
+    setDisabled('inlineCheckboxPRB', 1)
+    setDisabled('inlineCheckboxKerjasama', 1)
+    setDisabled('inlineCheckboxRetriksi', 1)
+    setreadonly('ideZatAktif', 1)
+    if ($("#kode_barang").val() == '') {
+        $('input[id=inlineCheckboxaktif1]').iCheck('check');
+    }
+
+
+}
+
+function LiveText2() {
+    setreadonly('idWh', 1)
+    setDisabled('FindWh', 1)
+    setreadonly('qtymaxwh_barang', 1)
+    setreadonly('qtyminwh_barang', 1)
+}
+
+function convertToAngka(rupiah) {
+    // return parseInt(rupiah.replace(',', ''));
+    return parseInt(rupiah.replace(/,/g, '').toString());
+}
+
+function ClearText() {
+    $("#kode_barang").val('')
+    $("#kode_barcode").val('')
+    $("#nama_barang").val('')
+    $("#hargapokok_barang").val('')
+    $("#margin_barang").val('')
+    $("#marginri_barang").val('')
+    $("#hargajual_barang").val('')
+    $("#hargajual_barangri").val('')
+    $("#hna_barang").val('')
+    $("#hargabpjs_barang").val('')
+    $("#hargaprh_barang").val('')
+    $("#qtymax_barang").val('')
+    $("#qtymin_barang").val('')
+
+    $("#idsatuanstd").val('')
+    $("#idkonversisatuanstdkemasan").val('')
+    $("#idsatuansedang").val('')
+    $("#idkonversisatuansedangstd").val('')
+    $("#idsatuankemas").val('')
+    $("#idkonversikemassedang").val('')
+
+    $("#jenis_barang").val('')
+    $("#jenisn_barang").val('')
+    $("#golongan_barang").val('')
+    $("#golongann_barang").val('')
+    $("#sediaan_barang").val('')
+    $("#sediaann_barang").val('')
+    $("#supplier_barang").val('')
+    $("#suppliern_barang").val('')
+    $("#pabrikan_barang").val('')
+    $("#pabrikann_barang").val('')
+    $("#lokasi_barang").val('')
+    $("#lokasin_barang").val('')
+
+    $("#idsatkekuatan").val('')
+    $("#idkekuatan").val('')
+    $("#idindikasi").val('')
+    $("#idpenyimpanan").val('')
+    $("#idaturanpakai").val('')
+    $("#idefekSamping").val('')
+    $("#idcaraguna").val('')
+    $("#ideZatAktif").val('')
+
+    $("#idWh").val('')
+    $("#idWhn").val('')
+    $("#qtymaxwh_barang").val('')
+    $("#qtyminwh_barang").val('')
+
+    $("#inlineCheckboxGenerik").prop('checked', false)
+    $("#inlineCheckboxRetriksi").prop('checked', false)
+    $("#inlineCheckboxFormalarium").prop('checked', false)
+    $("#inlineCheckboxKerjasama").prop('checked', false)
+    $("#inlineCheckboxPRB").prop('checked', false)
+
+
+}
+
+function ClearText2() {
+    $("#idWh").val('')
+    $("#idWhn").val('')
+    $("#qtymaxwh_barang").val('')
+    $("#qtyminwh_barang").val('')
+}

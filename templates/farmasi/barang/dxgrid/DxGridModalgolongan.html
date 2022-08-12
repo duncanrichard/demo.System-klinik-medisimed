@@ -1,0 +1,43 @@
+<div class="modal fade" id="DxGridModalgolongan" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="DxGridLabelgolongan"></h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-2">
+                                <input type="text" name="search_kode_golongan" id="search_kode_golongan"
+                                    class="form-control input-sm-lab grid-opt-golongan" placeholder="Kode">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="search_nama_golongan" id="search_nama_golongan"
+                                    class="form-control input-sm-lab grid-opt-golongan" placeholder="Nama">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carigolongan(event)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="DxgridDatagolongan2" style="height: 340px;font-size: 12px;line-height: 0.8;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

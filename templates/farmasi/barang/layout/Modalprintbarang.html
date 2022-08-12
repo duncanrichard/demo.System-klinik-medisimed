@@ -1,0 +1,115 @@
+<div class="modal fade" id="Modalprintbarang" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="DxGridLabelbarang"></h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="form-group col-md-12">
+                            <label class="col-md-2 control-label">KODE BARANG </label>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_dari" id="cetak_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode barang">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodebarang2">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_sampai" id="cetak_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode barang">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodebarang3">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-2 control-label">KODE PRODUCT </label>
+                            <div class="col-md-2">
+                                <input type="text" name="kodeproduk_dari" id="kodeproduk_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode produk">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carigolongan(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="kodeproduk_sampai" id="kodeproduk_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode produk">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carigolongan(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-2 control-label">KODE SUPPLIER </label>
+                            <div class="col-md-2">
+                                <input type="text" name="kodesuplier_dari" id="kodesuplier_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode suplier">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carisuplier(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="kodesuplier_sampai" id="kodesuplier_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode suplier">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carisuplier(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label class="col-md-2 control-label">KODE Pabrikan </label>
+                            <div class="col-md-2">
+                                <input type="text" name="kodepabrikan_dari" id="kodepabrikan_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode produk">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="caripabrikan(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="kodepabrikan_sampai" id="kodepabrikan_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode produk">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="caripabrikan(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-12">
+                                    <div id="dxGridPrintBarang"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="prosescetakbarang(event)">Proses</button>
+                <button type="button" class="btn btn-danger" onclick="cetakbarang(event)">Cetak</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,897 @@
+// Get barang
+var aktif = '0'
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    $("#cari_barang").keyup(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#DxgridDatabarang2").dxDataGrid("instance");
+
+        if (code == 27 || code == 13) {
+
+            if (dataGrid.getVisibleRows().length != 0) {
+                e.preventDefault()
+                $(this).blur()
+                dataGrid.focus(dataGrid.getCellElement(0, 'NAME_BRG'))
+                dataGrid.selectRowsByIndexes(0)
+            }
+
+        } else {
+            if ($("#cari_barang").val().length > 2) {
+                searchBarangByName($("#cari_barang").val(), null, aktif)
+            } else {
+                searchBarangByName('nullnone0', null, aktif)
+            }
+        }
+    });
+
+
+    $('#carikodebarang2').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        searchBarangByName($("#cari_barang").val(), 1)
+        $('#Findkodebarang').attr('onclick', 'carikodebarang(event,1)')
+    })
+    $('#Findkodebarang2').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        searchBarangByName($("#cari_barang").val(), 2)
+        $('#Findkodebarang').attr('onclick', 'carikodebarang(event,2)')
+    })
+    $('#Findkodebarang3').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        searchBarangByName($("#cari_barang").val(), 3)
+        // carikodebarang(e, 3)
+        $('#Findkodebarang').attr('onclick', 'carikodebarang(event,3)')
+    })
+
+    $('#jenis_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            if ($("#jenis_barang").val() != '') {
+                carijenis_barang2(event);
+                $('#hargapokok_barang').focus()
+            } else {
+                $('#hargapokok_barang').focus()
+            }
+        }
+    })
+
+    // iki perintah enter
+    $('#nama_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#hargapokok_barang').focus()
+        }
+    })
+
+    $('#hargapokok_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#hargapokok_barang').val(parseFloat(convertToAngka($('#hargapokok_barang').val())))
+            $('#hargapokok_barang').val(convertToRibuan($('#hargapokok_barang').val()));
+            perhitunganhargajual()
+            $('#margin_barang').focus()
+        }
+    })
+
+    $('#hargajual_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#hargajual_barang').val(parseFloat(convertToAngka($('#hargajual_barang').val())))
+            $('#hargajual_barang').val(convertToRibuan($('#hargajual_barang').val()));
+        }
+    })
+    $('#hargajual_barangri').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#hargajual_barangri').val(parseFloat(convertToAngka($('#hargajual_barangri').val())))
+            $('#hargajual_barangri').val(convertToRibuan($('#hargajual_barangri').val()));
+        }
+    })
+    $('#hargabpjs_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#hargabpjs_barang').val(parseFloat(convertToAngka($('#hargabpjs_barang').val())))
+            $('#hargabpjs_barang').val(convertToRibuan($('#hargabpjs_barang').val()));
+        }
+    })
+    $('#hargaprh_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#hargaprh_barang').val(parseFloat(convertToAngka($('#hargaprh_barang').val())))
+            $('#hargaprh_barang').val(convertToRibuan($('#hargaprh_barang').val()));
+        }
+    })
+    $('#margin_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitunganhargajual()
+            $('#marginri_barang').focus()
+        }
+    })
+    $('#marginri_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitunganhargajual()
+            $('#qtymax_barang').focus()
+        }
+    })
+    $('#qtymax_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#qtymax_barang').val(parseFloat(convertToAngka($('#qtymax_barang').val())))
+            $('#qtymax_barang').val(convertToRibuan($('#qtymax_barang').val()));
+            $('#qtymin_barang').focus()
+        }
+    })
+    $('#qtymin_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        e.stopImmediatePropagation()
+        if (keycode == '13') {
+            $('#qtymin_barang').val(parseFloat(convertToAngka($('#qtymin_barang').val())))
+            $('#qtymin_barang').val(convertToRibuan($('#qtymin_barang').val()));
+            $('#idsatuanstd').focus()
+        }
+    })
+    $('#idsatuanstd').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#idsatuansedang').focus()
+        } else {
+            $('#idsatuanstd2').val($('#idsatuanstd').val());
+            $('#idsatuanstd3').val($('#idsatuanstd').val());
+        }
+    })
+    $('#idsatuansedang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#idsatuankemas').focus()
+        } else {
+            $('#idsatuansedang2').val($('#idsatuansedang').val());
+            $('#idsatuansedang3').val($('#idsatuansedang').val());
+        }
+    })
+    $('#idsatuankemas').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#idkonversisatuansedangstd').focus()
+        } else {
+            $('#idsatuankemas2').val($('#idsatuankemas').val());
+            $('#idsatuankemas3').val($('#idsatuankemas').val());
+        }
+    })
+    $('#idkonversisatuansedangstd').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungankonversi()
+            $('#idkonversikemassedang').focus()
+        }
+    })
+    $('#idkonversikemassedang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            perhitungankonversi()
+            $('#idsatkekuatan').focus()
+        }
+    })
+    $('#idsatkekuatan').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#idkekuatan').focus()
+        }
+    })
+    $('#idkekuatan').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#ideZatAktif').focus()
+        }
+    })
+    $('#ideZatAktif').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#jenis_barang').focus()
+        }
+    })
+    $('#jenis_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#golongan_barang').focus()
+        }
+    })
+    $('#supplier_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#pabrikan_barang').focus()
+        }
+    })
+    $('#qtymaxwh_barang').keyup(function (e) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            $('#qtyminwh_barang').focus()
+        }
+    })
+
+    $('#menu_find,#nav_FRMBRG0301').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        aktif = 0
+        $('#dxGridModalbarang').modal('show');
+        $('#DxGridLabelbarang').html('Barang Farmasi');
+        searchBarangByName($("#cari_barang").val(), null, aktif)
+    })
+    $('#nav_FRMBRG0302').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        aktif = 1
+        $('#dxGridModalbarang').modal('show');
+        $('#DxGridLabelbarang').html('Barang Farmasi');
+        searchBarangByName($("#cari_barang").val(), null, aktif)
+    })
+
+    function perhitunganhargajual() {
+        console.log('tes')
+        var ppn = "{{ request.session.par_ppn }}"
+        console.log(ppn)
+        var hna_barang = parseFloat(convertToAngka($('#hargapokok_barang').val())) + parseFloat(convertToAngka($('#hargapokok_barang').val())) * (parseFloat(ppn) / 100)
+        $('#hna_barang').val(rupiah2(Math.round(hna_barang)));
+
+        var hargajual = parseFloat(convertToAngka(($('#hna_barang').val()))) + parseFloat(convertToAngka(($('#hna_barang').val()))) * (parseFloat($('#margin_barang').val()) / 100)
+        $('#hargajual_barang').val(rupiah2(Math.round(hargajual)));
+
+        var hargajualri = parseFloat(convertToAngka(($('#hna_barang').val()))) + parseFloat(convertToAngka(($('#hna_barang').val()))) * (parseFloat($('#marginri_barang').val()) / 100)
+        $('#hargajual_barangri').val(rupiah2(Math.round(hargajualri)));
+        $('#hargabpjs_barang').val(rupiah2(Math.round(hargajualri)));
+        $('#hargaprh_barang').val(rupiah2(Math.round(hargajualri)));
+    }
+
+    function perhitungankonversi() {
+        var konversisatuan = convertToAngka(($('#idkonversisatuansedangstd').val())) * convertToAngka(($('#idkonversikemassedang').val()))
+        $('#idkonversisatuanstdkemasan').val(rupiah2(konversisatuan));
+    }
+
+})
+
+function searchBarangByName(nama, param = null, aktif = 0) {
+    if (aktif == 0) {
+        url2 = host + "/load_barang"
+    } else {
+        url2 = host + "/load_barangNon"
+    }
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            'nama': nama,
+        },
+        success: function (datas) {
+            canEnterBarang = 1
+            $("#DxgridDatabarang2").dxDataGrid({
+                dataSource: datas,
+                keyExpr: 'BARANGC',
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 100
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                focusedRowEnabled: true,
+                columns: [{
+                        dataField: "BARANGC",
+                        caption: "KODE",
+                        width: 75,
+                    },
+                    {
+                        dataField: "NAME_BRG",
+                        caption: "NAMA",
+                        width: 320,
+                    },
+                    {
+                        dataField: "NAME_PRD",
+                        caption: "NAMA JENIS",
+                        width: 100,
+                    },
+
+                    {
+                        dataField: "HPOKOK",
+                        caption: "Harga Pokok",
+                        width: 100,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "HJUAL",
+                        caption: "Harga RJ",
+                        width: 100,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "HJUALRI",
+                        caption: "Harga RI",
+                        width: 100,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+
+                    {
+                        dataField: "SATSTAND",
+                        caption: "Satuan",
+                        width: 75,
+                    },
+                ],
+                onRowClick: function (e) {
+                    if (param == null) {
+                        Tampilkandata(e)
+                        $('#dxGridModalbarang').modal('hide');
+                    } else if (param == 2) {
+                        $("#cetak_dari").val(e.data.BARANGC)
+                    } else {
+                        $("#cetak_sampai").val(e.data.BARANGC)
+                    }
+                    $('#dxGridModalbarang').modal('hide');
+                },
+                onContentReady: function (e) {
+                    setTimeout(() => {
+                        $('#cari_barang').focus()
+                    }, 200);
+
+                }
+            });
+            // $("#dxGridDatabarang").dxDataGrid({
+            //     dataSource: datas,
+            //     keyExpr: 'BARANGC',
+            //     selection: {
+            //         mode: "single"
+            //     },
+            //     paging: {
+            //         pageSize: 100
+            //     },
+            //     rowAlternationEnabled: true,
+            //     hoverStateEnabled: true,
+            //     showBorders: true,
+            //     focusedRowEnabled: true,
+            //     columns: [{
+            //             dataField: "BARANGC",
+            //             caption: "KODE",
+            //             width: 75,
+            //         },
+            //         {
+            //             dataField: "NAME_BRG",
+            //             caption: "NAMA",
+            //             width: 320,
+            //         },
+            //         {
+            //             dataField: "NAME_PRD",
+            //             caption: "NAMA JENIS",
+            //             width: 100,
+            //         },
+
+            //         {
+            //             dataField: "HPOKOK",
+            //             caption: "Harga Pokok",
+            //             width: 100,
+            //             dataType: "number",
+            //             format: 'decimal fixedPoint',
+            //         },
+            //         {
+            //             dataField: "HJUAL",
+            //             caption: "Harga RJ",
+            //             width: 100,
+            //             dataType: "number",
+            //             format: 'decimal fixedPoint',
+            //         },
+            //         {
+            //             dataField: "HJUALRI",
+            //             caption: "Harga RI",
+            //             width: 100,
+            //             dataType: "number",
+            //             format: 'decimal fixedPoint',
+            //         },
+
+            //         {
+            //             dataField: "SATSTAND",
+            //             caption: "Satuan",
+            //             width: 75,
+            //         },
+            //     ],
+            // });
+        }
+    })
+}
+
+function carikodebarang(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatabarang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10000
+        },
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: false
+        },
+        dataSource: gridDatabarang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "BARANGC",
+                caption: "KODE",
+                width: 75,
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "NAMA",
+                width: 320,
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "NAMA JENIS",
+                width: 100,
+            },
+
+            {
+                dataField: "HPOKOK",
+                caption: "Harga Pokok",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUAL",
+                caption: "Harga RJ",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUALRI",
+                caption: "Harga RI",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+
+            {
+                dataField: "SATSTAND",
+                caption: "Satuan",
+                width: 75,
+            },
+        ],
+        onRowClick: function (e) {
+            console.log(param)
+            if (param == null) {
+                Tampilkandata(e)
+                $('#dxGridModalbarang').modal('hide');
+            } else if (param == 2) {
+                $("#cetak_dari").val(e.data.BARANGC)
+            } else {
+                $("#cetak_sampai").val(e.data.BARANGC)
+            }
+            $('#dxGridModalbarang').modal('hide');
+        },
+        onContentReady: function (e) {
+            setTimeout(() => {
+                $('#cari_barang').focus()
+            }, 200);
+
+        }
+    });
+}
+
+function Tampilkandata(e) {
+    $("#kode_barang").val(e.data.BARANGC)
+    $("#kode_barcode").val(e.data.BARCODE)
+    $("#nama_barang").val(e.data.NAME_BRG)
+    $("#hargapokok_barang").val(rupiah2(parseInt(e.data.HPOKOK)))
+    $("#hargajual_barang").val(rupiah2(parseInt(e.data.HJUAL)))
+    $("#hargajual_barangri").val(rupiah2(parseInt(e.data.HJUALRI)))
+    $("#hargabpjs_barang").val(rupiah2(parseInt(e.data.HJUALASKIN)))
+    $("#hargaprh_barang").val(rupiah2(parseInt(e.data.HJUALSUKARELA)))
+    var ppn = "{{ request.session.par_ppn }}"
+    ppn = (ppn / 100)
+    var hpokok = parseInt(e.data.HPOKOK)
+    var hna = parseInt(hpokok + hpokok * ppn)
+    var hjual = parseInt(e.data.HJUAL)
+    var hjualri = parseInt(e.data.HJUALRI)
+    marginrj = parseInt(((hjual - hna) / hna) * 100)
+    marginri = parseInt(((hjualri - hna) / hna) * 100)
+    $("#hna_barang").val(rupiah2(hna))
+    $("#margin_barang").val(rupiah2(marginrj))
+    $("#marginri_barang").val(rupiah2(marginri))
+    $("#idsatuanstd").val(e.data.SATSTAND)
+    $("#idsatuanstd2").val(e.data.SATSTAND)
+    $("#idsatuanstd3").val(e.data.SATSTAND)
+
+    $("#qtymax_barang").val(e.data.QTYMAX)
+    $("#qtymin_barang").val(e.data.QTYMIN)
+    $("#idsatuansedang").val(e.data.satkecil)
+    $("#idsatuansedang2").val(e.data.satkecil)
+    $("#idsatuansedang3").val(e.data.satkecil)
+    $("#idsatuankemas").val(e.data.satkemas)
+    $("#idsatuankemas2").val(e.data.satkemas)
+    $("#idsatuankemas3").val(e.data.satkemas)
+    var konversi = parseInt((e.data.kstandart)) * parseInt((e.data.kkecil))
+    $("#idkonversisatuanstdkemasan").val(konversi)
+    $("#idkonversisatuansedangstd").val(e.data.kstandart)
+    $("#idkonversikemassedang").val(e.data.kkecil)
+    console.log('ggg')
+    console.log(e)
+    if (parseInt(e.data.aktif) == 0) {
+        $("#inlineCheckboxaktif1").prop('checked', true)
+    } else {
+        $("#inlineCheckboxaktif1").prop('checked', false)
+    }
+    $("#idsatkekuatan").val(e.data.SATKEKUATAN)
+    $("#idkekuatan").val(e.data.KEKUATAN)
+    $("#ideZatAktif").val(e.data.ZATADITIF)
+
+    $("#jenis_barang").val(e.data.MERK_ID)
+    $("#jenisn_barang").val(e.data.NAMA)
+
+    $("#golongan_barang").val(e.data.TTYPEC)
+    $("#golongann_barang").val(e.data.NAME_PRD)
+
+    $("#sediaan_barang").val(e.data.FMSKODE)
+    $("#sediaann_barang").val(e.data.FMSSEDIAAN)
+    $("#supplier_barang").val(e.data.SUPPLIER_ID)
+    $("#suppliern_barang").val(e.data.NAME_SUPPL)
+    $("#pabrikan_barang").val(e.data.FMPSUPPLIERC)
+    $("#pabrikann_barang").val(e.data.FMPNAME_SUPPL)
+    $("#lokasi_barang").val(e.data.FMLFKODE)
+    $("#lokasin_barang").val(e.data.FMLFKETERAGAN)
+
+    $("#idindikasi").val(e.data.INDIKASI)
+    $("#idpenyimpanan").val(e.data.PENYIMPANAN)
+    $("#idaturanpakai").val(e.data.ATURANPAKAI)
+    $("#idefekSamping").val(e.data.EFEKSAMPING)
+    $("#idcaraguna").val(e.data.CARAPENGGUNAAN)
+
+    if (parseInt(e.data.GENERIC) == 1) {
+        $("#inlineCheckboxGenerik").prop('checked', true)
+    } else {
+        $("#inlineCheckboxGenerik").prop('checked', false)
+    }
+    if (parseInt(e.data.OBATDROPING) == 1) {
+        $("#inlineCheckboxFormalarium").prop('checked', true)
+    } else {
+        $("#inlineCheckboxFormalarium").prop('checked', false)
+    }
+    if (parseInt(e.data.KERJASAMA) == 1) {
+        $("#inlineCheckboxKerjasama").prop('checked', true)
+    } else {
+        $("#inlineCheckboxKerjasama").prop('checked', false)
+    }
+    if (parseInt(e.data.OBATANGGOTA) == 1) {
+        $("#inlineCheckboxNonGenerik").prop('checked', true)
+    } else {
+        $("#inlineCheckboxNonGenerik").prop('checked', false)
+    }
+    Buka_barang2()
+}
+
+function Tampilkandatagudang(e) {
+    $("#idWh").val(e.data.GUDANGID)
+    $("#idWhn").val(e.data.NAME_WH)
+    $("#qtymaxwh_barang").val(rupiah2(parseInt(e.data.STOKMAX)))
+    $("#qtyminwh_barang").val(rupiah2(parseInt(e.data.STOKMIN)))
+}
+
+function getDatajenis_barang(e) {
+    $.ajax({
+        url: host + "/getDatajenis_barang",
+        method: "GET",
+        data: {
+            "kode_jenis_barang": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_jenis_barang').val(datas.merk_id);
+            $('#nama_jenis_barang').val(datas.nama);
+        }
+    })
+}
+
+function carisupplier(e, param = null) {
+    var kode = $('#supplier_barang').val()
+    $.ajax({
+        url: host + "/getDatasuplier",
+        method: "GET",
+        data: {
+            "kode_suplier": kode,
+        },
+        success: function (datas) {
+            if (datas.status == 'ok') {
+                $("#supplier_barang").val(datas.data.SUPPLIERC)
+                $("#suppliern_barang").val(datas.data.NAME_SUPPL)
+            } else {
+                alert(datas.pesen)
+                $("#supplier_barang").val('')
+                $("#suppliern_barang").val('')
+            }
+
+        },
+        error: function (datas) {
+            alert('kode tidak ada')
+            $("#supplier_barang").val('')
+            $("#suppliern_barang").val('')
+        },
+
+    })
+}
+
+function cetakbarang(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+    var kodeproduk_dari = $('#kodeproduk_dari').val();
+    var kodeproduk_sampai = $('#kodeproduk_sampai').val();
+    var kodesuplier_dari = $('#kodesuplier_dari').val();
+    var kodesuplier_sampai = $('#kodesuplier_sampai').val();
+    var kodepabrikan_dari = $('#kodepabrikan_dari').val();
+    var kodepabrikan_sampai = $('#kodepabrikan_sampai').val();
+    var cetak = '0'
+    $.ajax({
+        url: host + "/cetak_barang",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+            'kodeproduk_dari': kodeproduk_dari,
+            'kodeproduk_sampai': kodeproduk_sampai,
+            'kodesuplier_dari': kodesuplier_dari,
+            'kodesuplier_sampai': kodesuplier_sampai,
+            'kodepabrikan_dari': kodepabrikan_dari,
+            'kodepabrikan_sampai': kodepabrikan_sampai,
+            'cetak': cetak,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintbarang').modal('show');
+}
+
+function prosescetakbarang(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+    var kodeproduk_dari = $('#kodeproduk_dari').val();
+    var kodeproduk_sampai = $('#kodeproduk_sampai').val();
+    var kodesuplier_dari = $('#kodesuplier_dari').val();
+    var kodesuplier_sampai = $('#kodesuplier_sampai').val();
+    var kodepabrikan_dari = $('#kodepabrikan_dari').val();
+    var kodepabrikan_sampai = $('#kodepabrikan_sampai').val();
+    var cetak = '1'
+    $("#dxGridPrintBarang").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10000
+        },
+        filterRow: {
+            visible: true
+        },
+        export: {
+            enabled: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/cetak_barang",
+                    method: "GET",
+                    data: {
+                        'start': dari,
+                        'finish': sd,
+                        'kodeproduk_dari': kodeproduk_dari,
+                        'kodeproduk_sampai': kodeproduk_sampai,
+                        'kodesuplier_dari': kodesuplier_dari,
+                        'kodesuplier_sampai': kodesuplier_sampai,
+                        'kodepabrikan_dari': kodepabrikan_dari,
+                        'kodepabrikan_sampai': kodepabrikan_sampai,
+                        'cetak': cetak,
+                    },
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Memuat Data..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "KODE_BARANG",
+                caption: "KODE",
+                width: 100,
+            },
+            {
+                dataField: "NAMA_BARANG",
+                caption: "NAMA",
+                width: 150,
+            },
+            {
+                dataField: "SATUAN",
+                caption: "SATUAN",
+                width: 70,
+            },
+            {
+                dataField: "KONVERSI",
+                caption: "KONVERSI",
+            },
+            {
+                dataField: "SATKEMAS",
+                caption: "SATKEMAS",
+            },
+            {
+                dataField: "SATKECIL",
+                caption: "SATKECIL",
+            },
+            {
+                dataField: "KONVERSI_KECIL",
+                caption: "KONVERSI_KECIL",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HARGA_RJ",
+                caption: "HARGA_RJ",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HARGA_RI",
+                caption: "HARGA_RI",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HPOKOK",
+                caption: "HPOKOK",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "HJUAL_BPJS",
+                caption: "HJUAL_BPJS",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "KANDUNGAN",
+                caption: "KANDUNGAN",
+            },
+            {
+                dataField: "PRB",
+                caption: "PRB",
+            },
+            {
+                dataField: "GENERIC",
+                caption: "GENERIC",
+            },
+            {
+                dataField: "FORMULARIUMRS",
+                caption: "FORMULARIUMRS",
+            },
+            {
+                dataField: "QTYMAX",
+                caption: "QTYMAX",
+            },
+            {
+                dataField: "QTYMIN",
+                caption: "QTYMIN",
+            },
+            {
+                dataField: "KELOMPOK",
+                caption: "KELOMPOK",
+            },
+            {
+                dataField: "GOLONGAN",
+                caption: "GOLONGAN",
+            },
+            {
+                dataField: "PBF",
+                caption: "PBF",
+            },
+            {
+                dataField: "PABRIKAN",
+                caption: "PABRIKAN",
+            },
+            {
+                dataField: "SEDIAAN",
+                caption: "SEDIAAN",
+            },
+
+        ],
+    })
+
+    $('#Modalprintbarang').modal('show');
+}
+
+function cetakgudang(e) {
+    var dari = $('#cetak_dariwh').val();
+    var sd = $('#cetak_sampaiwh').val();
+
+    $.ajax({
+        url: host + "/cetak_barangwh",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintgudang').modal('show');
+}
+
+
+
+//function converter jadi format ribuan
+function convertToRibuan(bilangan) {
+    var number_string = bilangan.toString(),
+        sisa = number_string.length % 3,
+        rupiah = number_string.substr(0, sisa),
+        ribuan = number_string.substr(sisa).match(/\d{3}/g);
+
+    if (ribuan) {
+        separator = sisa ? ',' : '';
+        rupiah += separator + ribuan.join(',');
+    }
+
+    return rupiah;
+}
+
+function rupiah2(angka, prefix) {
+    angka = String(angka)
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah2 = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    if (ribuan) {
+        separator = sisa ? ',' :
+            '';
+        rupiah2 += separator + ribuan.join(',');
+    }
+    rupiah2 = split[1] != undefined ? rupiah2 + ',' + split[1] : rupiah2;
+    return prefix == undefined ? rupiah2 : (rupiah2 ? 'Rp. ' + rupiah2 : '');
+}
+
+function convertToAngka(rupiah) {
+    return parseInt(rupiah.replace(/,/g, '').toString());
+}

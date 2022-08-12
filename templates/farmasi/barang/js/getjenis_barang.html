@@ -1,0 +1,90 @@
+$(document).ready(function () {
+    $('#Findjenis').click(function (e) {
+        gridFindJenis(e)
+    })
+
+})
+
+var gridDatajenis_barang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_jenis_barang = $('#search_kode_jenis_barang').val();
+        var search_nama_jenis_barang = $('#search_nama_jenis_barang').val();
+        return $.ajax({
+            url: host + "/getjenis_barang",
+            method: "GET",
+            data: {
+                "search_kode_jenis_barang": search_kode_jenis_barang,
+                "search_nama_jenis_barang": search_nama_jenis_barang
+            },
+        })
+    }
+});
+
+function gridFindJenis(e) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    carijenis_barang(event)
+}
+
+
+function carijenis_barang2(e, param = null) {
+    var kode = $('#jenis_barang').val()
+    $.ajax({
+        url: host + "/getjenis_barang2",
+        method: "GET",
+        data: {
+            "search_jenis_barang": kode,
+        },
+        success: function (datas) {
+            $("#jenis_barang").val(datas.merk_id)
+            $("#jenisn_barang").val(datas.nama)
+
+        }
+    })
+}
+
+function carijenis_barang(e, param = null) {
+    e.stopImmediatePropagation();
+    $('#DxGridModaljenis_barang').modal('show');
+    $('#DxGridLabeljenis_barang').html('Jenis Barang');
+    $("#DxgridDatajenis_barang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatajenis_barang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "merk_id",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "nama",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#jenis_barang").val(e.data.merk_id)
+                $("#jenisn_barang").val(e.data.nama)
+            } else if (param == 1) {
+                $("#cetak_dari").val(e.data.merk_id)
+            } else {
+                $("#cetak_sampai").val(e.data.merk_id)
+            }
+
+            $('#DxGridModaljenis_barang').modal('hide');
+        }
+    });
+}

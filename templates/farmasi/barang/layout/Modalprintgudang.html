@@ -1,0 +1,43 @@
+<div class="modal fade" id="Modalprintgudang" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="DxGridLabelgudang"></h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 col-md-offset-2">
+                                <input type="text" name="cetak_dariwh" id="cetak_dariwh"
+                                    class="form-control input-sm-lab grid-opt-gudang" placeholder="dari gudang">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodegudang2">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" name="cetak_sampaiwh" id="cetak_sampaiwh"
+                                    class="form-control input-sm-lab grid-opt-gudang" placeholder="s/d gudang">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodegudang3">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger"  onclick="cetakgudang(event)">Cetak</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

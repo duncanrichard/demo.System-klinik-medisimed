@@ -1,0 +1,41 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    GOLONGAN BARANG
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDataproduk_barang.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 340px;
+        }
+        div#DxgridDataproduk_barang2.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 340px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'farmasi/produk_barang/form_produk_barang.html' %}
+    {% include 'farmasi/produk_barang/layout/Modalprintproduk_barang.html' %}  
+    {% include 'farmasi/produk_barang/dxgrid/dxGridModalproduk_barang.html' %} 
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/produk_barang/js/init.html' %}
+{% include 'farmasi/produk_barang/js/dxgriddataproduk_barangjs.html' %}
+{% include 'farmasi/produk_barang/js/getproduk_barang.html' %}
+</script>
+{% endblock  %}
+

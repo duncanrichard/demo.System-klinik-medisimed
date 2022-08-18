@@ -471,7 +471,7 @@ def SP_AUD_BAYAR_TRANSAKSI(request):
     q = "SET NOCOUNT ON;"
     q += "EXEC IMD_AUD_PEMBAYARAN_KASIR "
     q += "'" + FH_BUKTI_ID + "',"
-    q += "'" + FH_NAMA_PEMBAYAR + "',"
+    q += " %s,"
     q += "'" + FH_DATE + "',"
     q += "'" + FH_DATE_PIUTANG + "',"
     q += "'" + FH_TUNAI + "',"
@@ -518,7 +518,7 @@ def SP_AUD_BAYAR_TRANSAKSI(request):
         
         Globals().create_log('Hapus LogDelete.txt', 'IMMODERMA', data, user)
     try:
-        result = Globals().getDataSP(q)
+        result = Globals().getDataSP(q,[FH_NAMA_PEMBAYAR])
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 

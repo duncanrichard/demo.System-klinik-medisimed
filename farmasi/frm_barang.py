@@ -92,17 +92,19 @@ def open_barang(request):
 
 def load_barang_stokmaxmin(request):
     kode_barang =request.GET['kode_barang']
+    ID_CABANG = request.session['kdCabang']
     q = "SELECT a.BARANGID, a.GUDANGID, a.STOKMAX, a.STOKMIN,B.NAME_BRG , C.NAME_WH "
     q +="FROM BARANG_STOKMAXMIN AS a INNER JOIN "
     q +="BARANG AS b ON a.BARANGID = b.BARANGC INNER JOIN "
-    q +="WAREHOUSE AS C ON a.GUDANGID = C.WH_ID where BARANGID= %s "
-    result = Globals().getDataQuery(q, [kode_barang])
+    q +="WAREHOUSE AS C ON a.GUDANGID = C.WH_ID and C.BRANCH= %s where BARANGID= %s "
+    result = Globals().getDataQuery(q, [ID_CABANG,kode_barang])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
 def getgudang(request):
-    q = "select WH_ID,NAME_WH from WAREHOUSE a where a.AKTIF=1 "
-    result = Globals().getDataQuery(q)
+    ID_CABANG = request.session['kdCabang']
+    q = "select WH_ID,NAME_WH from WAREHOUSE a where a.AKTIF=1 and BRANCH= %s "
+    result = Globals().getDataQuery(q,[ID_CABANG])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

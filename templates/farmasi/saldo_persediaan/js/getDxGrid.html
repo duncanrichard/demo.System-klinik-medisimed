@@ -1,0 +1,583 @@
+$(document).ready(function () {
+    setGridEmpty()
+});
+
+function setGridEmpty() {
+    $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 500
+        },
+
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 70,
+                allowSorting: false
+            },
+            {
+                dataField: "ID_BARANG",
+                caption: "KODE BARANG",
+                alignment: 'left',
+                width: 100,
+                allowEditing: true,
+                allowSorting: false
+            },
+            {
+                dataField: "NAMA_BARANG",
+                caption: "NAMA BARANG",
+                alignment: 'left',
+                width: 250,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "KODE_SUPP",
+                caption: "KODE SUPPLIER",
+                alignment: 'left',
+                width: 100,
+                allowEditing: true,
+                allowSorting: false
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA SUPPLIER",
+                alignment: 'left',
+                width: 200,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "SATUAN",
+                alignment: 'left',
+                caption: "SATUAN",
+                width: 75,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "HARGA_POKOK",
+                alignment: 'right',
+                caption: "HARGA POKOK",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 120,
+                allowEditing: true,
+                allowSorting: false
+            },
+            {
+                dataField: "QTY",
+                caption: "QTY",
+                alignment: 'right',
+                width: 60,
+                allowEditing: true,
+                allowSorting: false,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+            },
+            {
+                dataField: "TOTAL",
+                alignment: 'right',
+                caption: "TOTAL",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 175,
+                allowEditing: false,
+                allowSorting: false,
+                calculateCellValue: function (rowData) {
+                    var hjual = ''
+                    var qty = ''
+
+                    if (!rowData.HARGA_POKOK) {
+                        hjual = 0
+                    } else {
+                        hjual = parseInt(rowData.HARGA_POKOK)
+                    }
+
+                    if (!rowData.QTY) {
+                        qty = 0
+                    } else {
+                        qty = parseInt(rowData.QTY)
+                    }
+                    var hasil_1 = (hjual * qty)
+                    var res = hasil_1
+                    return parseInt(Math.ceil(res))
+                }
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            },
+
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 1) {
+                colIndex = "ID_BARANG"
+            } else if (colIndex == 3) {
+                colIndex = "KODE_SUPP"
+            } else if (colIndex == 7) {
+                colIndex = "QTY"
+            }
+
+        },
+        onRowUpdated: function (e) {
+            setAll()
+        },
+        onRowUpdating: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf QTY Tidak Dapat Diubah, Silahkan Pilih Edit')
+            }
+            //  else {
+            //     var dataGrid = $("#datagrid").dxDataGrid("instance");
+            //     if (e.newData.hasOwnProperty("QTY")) {
+            //         if (e.newData.QTY < 1 || e.newData.QTY === null) {
+            //             e.cancel = true
+            //             alert('QTY Tidak Boleh Kurang Dari 1');
+            //             dataGrid.cellValue(rowIndex, "QTY", '1');
+            //             dataGrid.saveEditData();
+            //         }
+            //     }
+            // }
+        },
+        onRowRemoved: function (e) {
+            setAll()
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Barang Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            } else {
+                setAll()
+            }
+        },
+
+        onKeyDown: function (d) {
+            if (colIndex == 'ID_BARANG' && d.event.originalEvent.which == 13) {
+                if (canAdd == 1) {
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    var id_barangKODE = dataGrid.cellValue(rowIndex, 'ID_BARANG')
+                    carikodebrgid(id_barangKODE)
+
+                }
+            }
+            if (colIndex == 'KODE_SUPP' && d.event.originalEvent.which == 13) {
+                if (canAdd == 1) {
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    var id_supp = dataGrid.cellValue(rowIndex, 'KODE_SUPP')
+                    openModalsupplier(id_supp)
+                }
+            }
+            if (colIndex == 'QTY' && d.event.originalEvent.which == 13) {
+                // kalo enter tambah row otomatis
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.saveEditData();
+                if (canAdd == 1) {
+                    error_in_field()
+                    if (Cekeror == true) {
+                        tambahrow()
+                    }
+                }
+            }
+
+        },
+    });
+}
+
+function getGridTablesaldo(no_bukti) {
+    $.ajax({
+        url: host + "/getsaldoByBukti",
+        method: "GET",
+        data: {
+            "no_bukti": no_bukti,
+        },
+        success: function (datas) {
+            $('#No_bukti').val(datas[0].BBBULAN);
+            $('#tanggal').val(datas[0].BBDATE.substr(0, 10));
+            $('#idWh').val(datas[0].BBWH_ID);
+            $('#idWhn').val(datas[0].NAME_WH);
+
+            setTotal();
+
+            $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                paging: {
+                    pageSize: 500
+                },
+
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 70,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "ID_BARANG",
+                        caption: "KODE BARANG",
+                        alignment: 'left',
+                        width: 100,
+                        allowEditing: true,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_BARANG",
+                        caption: "NAMA BARANG",
+                        alignment: 'left',
+                        // width: 250,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "KODE_SUPP",
+                        caption: "KODE SUPPLIER",
+                        alignment: 'left',
+                        width: 100,
+                        allowEditing: true,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAME_SUPPL",
+                        caption: "NAMA SUPPLIER",
+                        alignment: 'left',
+                        width: 200,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "SATUAN",
+                        alignment: 'left',
+                        caption: "SATUAN",
+                        width: 75,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "HARGA_POKOK",
+                        alignment: 'right',
+                        caption: "HARGA POKOK",
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 120,
+                        allowEditing: true,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "QTY",
+                        alignment: 'right',
+                        width: 60,
+                        allowEditing: true,
+                        allowSorting: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                    },
+                    {
+                        dataField: "TOTAL",
+                        alignment: 'right',
+                        caption: "TOTAL",
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 175,
+                        allowEditing: false,
+                        allowSorting: false,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+
+                            if (!rowData.HARGA_POKOK) {
+                                hjual = 0
+                            } else {
+                                hjual = parseInt(rowData.HARGA_POKOK)
+                            }
+
+                            if (!rowData.QTY) {
+                                qty = 0
+                            } else {
+                                qty = parseInt(rowData.QTY)
+                            }
+                            var hasil_1 = (hjual * qty)
+                            var res = hasil_1
+                            return parseInt(Math.ceil(res))
+                        }
+                    }
+                ],
+
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    },
+
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 1) {
+                        colIndex = "ID_BARANG"
+                    } else if (colIndex == 3) {
+                        colIndex = "KODE_SUPP"
+                    } else if (colIndex == 7) {
+                        colIndex = "QTY"
+                    }
+
+                },
+                onRowUpdated: function (e) {
+                    setAll()
+                },
+                onRowUpdating: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf JUMLAH Tidak Dapat Diubah, Silahkan Pilih Edit')
+                    } else {
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        if (e.newData.hasOwnProperty("JUMLAH")) {
+                            if (e.newData.JUMLAH < 1 || e.newData.JUMLAH === null) {
+                                e.cancel = true
+                                alert('JUMLAH Tidak Boleh Kurang Dari 1');
+                                dataGrid.cellValue(rowIndex, "JUMLAH", '1');
+                                dataGrid.saveEditData();
+                            }
+                        }
+                    }
+                },
+                onRowRemoved: function (e) {
+                    setAll()
+                },
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Barang Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    } else {
+                        setAll()
+                    }
+                },
+
+                onKeyDown: function (d) {
+                    if (colIndex == 'ID_BARANG' && d.event.originalEvent.which == 13) {
+                        if (canAdd == 1) {
+                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                            var id_barangKODE = dataGrid.cellValue(rowIndex, 'ID_BARANG')
+                            carikodebrgid(id_barangKODE)
+
+                        }
+                    }
+                    if (colIndex == 'KODE_SUPP' && d.event.originalEvent.which == 13) {
+                        if (canAdd == 1) {
+                            var dataGrid = $("#datagrid").dxDataGrid("instance");
+                            var id_supp = dataGrid.cellValue(rowIndex, 'KODE_SUPP')
+                            openModalsupplier(id_supp)
+                        }
+                    }
+                    if (colIndex == 'QTY' && d.event.originalEvent.which == 13) {
+                        // kalo enter tambah row otomatis
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        dataGrid.saveEditData();
+                        if (canAdd == 1) {
+                            error_in_field()
+                            if (Cekeror == true) {
+                                tambahrow()
+                            }
+                        }
+                    }
+
+                },
+                onContentReady: function (d) {
+                    setAll()
+                }
+            })
+
+        }
+    })
+}
+
+function cekDataSudahAda(kode) {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length - 1; i++) {
+        if (dataGrid.getVisibleRows()[i].data.ID_BARANG == kode) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
+function tambahrow() {
+    tempId = ''
+    tempNama = ''
+    tempkodesupp = ''
+    tempNamasupp = ''
+    temppqty = ''
+    tempSatuan = ''
+    tempHpokok = ''
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    dataGrid.addRow();
+    dataGrid.cellValue(0, "NO", generateNo());
+    dataGrid.cellValue(0, "ID_BARANG", tempId);
+    dataGrid.cellValue(0, "NAMA_BARANG", tempNama);
+    dataGrid.cellValue(0, "SUPPLIER_ID", tempkodesupp);
+    dataGrid.cellValue(0, "NAME_SUPPL", tempNamasupp);
+    dataGrid.cellValue(0, "SATUAN", tempSatuan);
+    dataGrid.cellValue(0, "HARGA_POKOK", tempHpokok);
+    dataGrid.cellValue(0, "QTY", temppqty);
+    $.when(dataGrid.saveEditData()).done(function () {
+        setFocusID_BARANG()
+    })
+}
+
+function setFocusID_BARANG() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    dataGrid.editCell(qtyIndex, 'ID_BARANG')
+}
+
+
+function generateNo() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var last_number = parseInt(dataGrid.cellValue((dataGrid.getVisibleRows().length - 1), "NO"))
+    if (!last_number) {
+        return 1
+    } else {
+        return (last_number + 1)
+    }
+}
+
+function error_in_field() {
+    Cekeror = true;
+    if ($('#tanggal').val() == '') {
+        alert('Silahkan Pilih Tanggal ')
+        Cekeror = false;
+    }
+    if ($("#idWh").val() == '') {
+        alert('Silahkan Pilih gudang')
+        Cekeror = false;
+    }
+    if (canAdd == 1) {
+        var dataGrid = $("#datagrid").dxDataGrid("instance");
+        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+            if (dataGrid.getVisibleRows()[i].data.NAMA_BARANG == '') {
+                alert('Silahkan isi kode barang ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.NAMA_SUPPLIER == '') {
+                alert('Silahkan isi kode supplier ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.QTY == 0) {
+                alert('Silahkan isi Qty ')
+                Cekeror = false;
+            };
+
+            if (dataGrid.getVisibleRows()[i].data.TOTAL == '') {
+                alert('Silahkan isi Qty dan Harga pokok ')
+                Cekeror = false;
+            };
+        }
+    }
+    return Cekeror;
+}
+
+function setAll() {
+    setTotal()
+}
+
+function setTotal() {
+    $('#total').val(rupiah2(getTotal()))
+}
+
+function getTotal() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var result = 0;
+    var res = 0;
+    var harga = 0;
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.HARGA_POKOK))) {
+            harga = 0
+        } else {
+            harga = parseInt(dataGrid.getVisibleRows()[i].data.HARGA_POKOK)
+        }
+
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.QTY))) {
+            qty = 0
+        } else {
+            qty = parseInt(dataGrid.getVisibleRows()[i].data.QTY)
+        }
+
+        hasil_1 = (harga * qty)
+        res = hasil_1
+
+        result += res
+    }
+    return parseInt(desimal2(Math.ceil(result)))
+}
+
+function desimal2(rupiah) {
+    return parseInt(rupiah.toString().replace(/,/g, ''));
+}
+
+function rupiah2(angka, prefix) {
+    angka = String(angka)
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah2 = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    if (ribuan) {
+        separator = sisa ? ',' :
+            '';
+        rupiah2 += separator + ribuan.join(',');
+    }
+    rupiah2 = split[1] != undefined ? rupiah2 + ',' + split[1] : rupiah2;
+    return prefix == undefined ? rupiah2 : (rupiah2 ? 'Rp. ' + rupiah2 : '');
+}

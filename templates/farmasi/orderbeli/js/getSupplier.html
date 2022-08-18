@@ -1,0 +1,60 @@
+// Get Supplier
+$(document).ready(function () {
+    $('#cari_supplier').click(function (e) {
+        $('#dxGridModalSupplier').modal('show');
+        cariSupplier()
+    })
+})
+
+function cariSupplier() {
+    $("#DxGridDataSupplier").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 500
+        },
+        filterRow: {
+            visible: true
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getSupplier",
+                    method: "GET",
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "SUPPLIERC",
+                caption: "KODE SUPPLIER",
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA SUPPLIER",
+            },
+            {
+                dataField: "ADDRESS1",
+                caption: "ALAMAT",
+            },
+            {
+                dataField: "CITYC",
+                caption: "KOTA",
+            },
+        ],
+        onRowClick: function (e) {
+            $('#kode_supplier').val(e.data.SUPPLIERC);
+            $('#nama_supplier').val(e.data.NAME_SUPPL);
+            $('#dxGridModalSupplier').modal('hide');
+        }
+    });
+}

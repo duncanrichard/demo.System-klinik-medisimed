@@ -1,0 +1,141 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-row">
+            <label class="col-md-2 control-label">No. PO</label>
+            <div class="col-md-5">
+                <input id="no_po" readonly type="text" class="form-control input-sm">
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="col-md-2 control-label">Supplier</label>
+            <div class="col-md-3">
+                <input id="kode_supplier" type="text" class="form-control input-sm" readonly
+                    style="background-color: white;">
+            </div>
+            <div class="col-md-6">
+                <input id="nama_supplier" type="text" class="form-control input-sm" readonly
+                    style="background-color: white;">
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-success btn-xs" id="cari_supplier">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="col-md-2 control-label">Sistem Bayar</label>
+            <div class="col-md-3">
+                <input id="kode_tpay" type="text" class="form-control input-sm" readonly
+                    style="background-color: white;">
+            </div>
+            <div class="col-md-6">
+                <input id="nama_tpay" type="text" class="form-control input-sm" readonly
+                    style="background-color: white;">
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-success btn-xs" id="cari_tpay">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="col-md-2 control-label">Keterangan</label>
+            <div class="col-md-9">
+                <input id="keterangan" type="text" class="form-control input-sm">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-row">
+            <label class="col-md-3 control-label">Tanggal</label>
+            <div class="col-md-4">
+                <input id="tanggal" type="date" class="form-control input-sm today">
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="col-md-3 control-label">Tgl. Jatuh Tempo</label>
+            <div class="col-md-4">
+                <input id="tanggaljth" type="date" class="form-control input-sm today">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-2" style="background:#ed55657a;">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckboxclose" name="inlineCheckboxclose" value="0"
+                        disabled>Validasi
+                </label>
+            </div>
+            <div class="col-md-2" style="background:#55ed887a;">
+                <label class="checkbox-inline">
+                    <input type="checkbox" id="inlineCheckboxclose2" name="inlineCheckboxclose2" value="0"
+                        disabled>Close
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="row" style="margin-top:5px;margin-bottom: 5px;">
+        <div class="col-md-12">
+            <button class="btn btn-xs btn-primary" id="btn_tambah_barang" style="display: none;">Tambah
+                Produk</button>
+            <div style="height: 240px;overflow-y: auto;" class="mt-7">
+                <div id="datagrid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4">
+            <div id="dxGridStockBarang"></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <label class="form-row control-label">Historical Pembelian </label>
+        <div style="height: 240px;overflow-y: auto;" class="mt-7">
+
+            <div id="dxGridHistory"></div>
+        </div>
+
+    </div>
+    <div class="col-md-4">
+        <div class="form-row">
+            <label class="col-md-6 control-label">Dasar Pengenaan Pajak </label>
+            <div class="col-md-1">
+                : Rp
+            </div>
+            <div class="col-md-5">
+                <input type="text" id="pajak" value="0" class="form-control input-sm inputText" readonly
+                    style="background-color: white;text-align: right">
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="col-md-3 control-label">PPN </label>
+            <div class="col-md-2">
+                <input type="text" id="ppn" value="{{ request.session.par_ppn }}"
+                    class="form-control input-sm inputText">
+            </div>
+            <div class="col-md-1">
+                %
+            </div>
+            <div class="col-md-1">
+                : Rp
+            </div>
+            <div class="col-md-5">
+                <input type="text" id="hasil_ppn" value="0" class="form-control input-sm inputText" readonly
+                    style="background-color: white;text-align: right">
+            </div>
+        </div>
+        <div class="form-row">
+            <label class="col-md-6 control-label">T O T A L </label>
+            <div class="col-md-1">
+                : Rp
+            </div>
+            <div class="col-md-5">
+                <input type="text" id="total" value="0" class="form-control input-sm inputText" readonly
+                    style="background-color: white;text-align: right">
+            </div>
+        </div>
+    </div>
+</div>

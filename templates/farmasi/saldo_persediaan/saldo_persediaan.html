@@ -1,0 +1,62 @@
+{% extends "layout/master.html" %}
+{% block title %}
+Saldo Rekening
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+    div#datagrid.dx-widget {
+        font-size: 12px;
+        line-height: 1.2;
+        /* height: 240px; */
+    }
+    .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class=''>
+    <div class="wrapper wrapper-content entry">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                        <h3 style="text-align: center">SALDO AWAL PERSEDIAAN BARANG</h3>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            {% csrf_token %}
+                            {% include 'farmasi/saldo_persediaan/form_saldo_persediaan.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'farmasi/saldo_persediaan/modal/ModalSaldo.html' %}
+{% include 'farmasi/saldo_persediaan/modal/ModalLoading.html' %}
+{% include 'farmasi/saldo_persediaan/modal/ModalBarang.html' %}
+{% include 'farmasi/saldo_persediaan/dxgrid/DxGridModalgudang.html' %}
+{% include 'farmasi/saldo_persediaan/dxgrid/dxGridModalsupplier.html' %}
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+
+{% include 'farmasi/saldo_persediaan/js/getSupplier.html' %}
+{% include 'farmasi/saldo_persediaan/js/getBarang.html' %} 
+{% include 'farmasi/saldo_persediaan/js/getGudang.html' %} 
+{% include 'farmasi/saldo_persediaan/js/getDxGrid.html' %} 
+{% include 'farmasi/saldo_persediaan/js/init.html' %} 
+
+
+
+</script>
+{% endblock  %}

@@ -1,0 +1,114 @@
+// Get Gudang
+$(document).ready(function () {
+    $('#cari_supplier').click(function (e) {
+        $('#dxGridModalsupplier').modal('show');
+        carisupplier(event)
+    })
+    $('#Findsupplier2').click(function (e) {
+        $('#dxGridModalsupplier').modal('show');
+        carisupplier(e,2)
+    })
+    $('#Findsupplier3').click(function (e) {
+        $('#dxGridModalsupplier').modal('show');
+        carisupplier(e,3)
+    })
+})
+
+
+var gridDatasupplier = new DevExpress.data.DataSource({
+    load: function (values) {
+        return $.ajax({
+            url: host + "/getsupplier",
+            method: "GET",
+            data: {
+            },
+            success: function (datas) {
+                $('#DxGridModalsupplier').modal('show');
+            }
+        })
+    }
+});
+function openModalsupplier(e){
+    carisupplierid(e)
+}
+
+function carisupplierid(e) {
+    console.log('tes')
+    console.log(e)
+    $.ajax({
+        url: host + "/getidsupplier",
+        method: "GET",
+        data: {
+            "kode": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.status=='ok'){
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex,'NAME_SUPPL',datas.data.NAME_SUPPL)
+            } else {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex,'KODE_SUPP','')
+                dataGrid.cellValue(rowIndex,'NAME_SUPPL','')
+                $('#Findsupplier').attr('onclick','carisupplier(event,1)')
+                $('#DxGridModalsupplier').modal('show');
+                carisupplier(e,1)
+            }
+        }
+    })
+}
+
+function carisupplier(e, param = null) {
+    $("#DxgridDatasupplier2").dxDataGrid({
+        dataSource: gridDatasupplier,
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        scrolling: {
+            mode: "virtual"
+        },
+        filterRow: {
+            visible: false
+        },
+ 
+        searchPanel : { visible: true },
+        
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+            dataField: "SUPPLIERC",
+            caption: "KODE",
+            width: 150,
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA",
+                width: 220,
+            }
+        ],
+        onRowClick: function (e) {
+            console.log(param)
+            if (param == null) {
+                $("#kode_supplier").val(e.data.SUPPLIERC)
+                $("#nama_supplier").val(e.data.NAME_SUPPL)
+            } else if (param == 1) {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex,'KODE_SUPP',e.data.SUPPLIERC)
+                dataGrid.cellValue(rowIndex,'NAME_SUPPL',e.data.NAME_SUPPL)
+                dataGrid.saveEditData();
+                setFocuskodeidbarang()
+            }  
+            $('#DxGridModalsupplier').modal('hide');
+        }
+    });
+}
+function setFocuskodeidbarang() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    dataGrid.editCell(qtyIndex, 'ID_BARANG')
+}

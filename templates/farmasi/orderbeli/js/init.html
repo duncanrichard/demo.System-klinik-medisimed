@@ -1,0 +1,800 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+
+var todays = ''
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var qtyIndex = ''
+var data = ''
+
+var tempId = ''
+var tempNama = ''
+var tempIdPrd = ''
+var tempSatuan = ''
+var tempKonversi = ''
+var tempHpokok = ''
+var tempHrupiah = ''
+
+var canEnterBarang = 0
+var dataValidasMutasi = [];
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    // set tanggal hari ini
+    $("#inlineRadiokreteria1").prop('checked', true)
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+
+    $(".today").val(today)
+
+    setAwal()
+    $("#menu_tambah,#FRMORD00101").click(function () {
+        livetext()
+        cleartext()
+        $('#btn_tambah_barang').css("display", 'block');
+        canAdd = 1
+        setGridEmpty()
+    })
+
+    $('#btn_tambah_barang').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            tambahrow()
+        }
+    })
+
+    $("#menu_edit,#FRMORD00102").click(function () {
+
+        if ($("#no_po").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah divalidasi")
+        } else if (($("#inlineCheckboxclose2").prop('checked') == true)) {
+            alert("Transaksi sudah close")
+        } else {
+            livetext()
+            $('#btn_tambah_barang').css("display", 'block');
+            canAdd = 1
+        }
+
+    })
+
+    $("#menu_hapus,#FRMORD00103").click(function () {
+        if ($("#no_po").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah divalidasi")
+        } else if (($("#inlineCheckboxclose2").prop('checked') == true)) {
+            alert("Transaksi sudah close")
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                if ($("#ppn").val() == '') {
+                    $("#ppn").val('0')
+                }
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                var FDPONO = []
+                var FDPOPRD_ID = []
+                var FDPOBRG_ID = []
+                var FDPOBRGN = []
+                var FDPOSATUAN = []
+                var FDPOHARGA = []
+                var FDPOQTY = []
+                var FDPODISC1 = []
+                var FDPODISC2 = []
+                var FDPODISC3 = []
+                var FDPOTOTAL = []
+
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+
+                    FDPONO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                    FDPOPRD_ID.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                    FDPOBRG_ID.push("" + dataGrid.getVisibleRows()[i].data.ID_BARANG)
+                    FDPOBRGN.push("" + dataGrid.getVisibleRows()[i].data.NAMA_BARANG)
+                    FDPOSATUAN.push("" + dataGrid.getVisibleRows()[i].data.SATUAN)
+                    FDPOHARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA_POKOK)
+                    FDPOQTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                    FDPODISC1.push("" + dataGrid.getVisibleRows()[i].data.DISC_1)
+                    FDPODISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC_2)
+                    FDPODISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC_RP)
+                    FDPOTOTAL.push("" + dataGrid.getVisibleRows()[i].data.TOTAL)
+                }
+                var status_aud = 'D'
+
+                $.ajax({
+                    url: host + "/SP_AUD_ORDER",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "FDPONO": JSON.stringify(FDPONO),
+                        "FDPOPRD_ID": JSON.stringify(FDPOPRD_ID),
+                        "FDPOBRG_ID": JSON.stringify(FDPOBRG_ID),
+                        "FDPOBRGN": JSON.stringify(FDPOBRGN),
+                        "FDPOSATUAN": JSON.stringify(FDPOSATUAN),
+                        "FDPOHARGA": JSON.stringify(FDPOHARGA),
+                        "FDPOQTY": JSON.stringify(FDPOQTY),
+                        "FDPODISC1": JSON.stringify(FDPODISC1),
+                        "FDPODISC2": JSON.stringify(FDPODISC2),
+                        "FDPODISC3": JSON.stringify(FDPODISC3),
+                        "FDPOTOTAL": JSON.stringify(FDPOTOTAL),
+
+                        "FHPOBUKTI_ID": $("#no_po").val(),
+                        "FHPOTGL": $("#tanggal").val(),
+                        "FHPOTGLKIRIM": $("#tanggaljth").val(),
+                        "FHPOSUPP_ID": $("#kode_supplier").val(),
+                        "FHPOTPAY_ID": $("#kode_tpay").val(),
+                        "FHPOREMARK": $("#keterangan").val(),
+                        "FHPODPP": desimal2($("#pajak").val()),
+                        "FHPOPPN": $("#ppn").val(),
+                        "FHPOPPNRP": desimal2($("#hasil_ppn").val()),
+                        "FHPOJUMLAH": desimal2($("#total").val()),
+                        "StatusAUD": status_aud,
+                    },
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE)
+                        setAwal()
+                        deathtext()
+                    }
+                })
+            }
+        }
+
+    })
+
+    $('#menu_simpan,#FRMORD00201').click(function () {
+        canAdd = 0
+        error_in_field()
+        if (Cekeror == true) {
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            if (dataGrid.getVisibleRows().length == 0) {
+                alert('Data Barang Masih Kosong')
+            } else {
+                var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+                if ($("#ppn").val() == '') {
+                    $("#ppn").val('0')
+                }
+                if (c) {
+
+                    var FDPONO = []
+                    var FDPOPRD_ID = []
+                    var FDPOBRG_ID = []
+                    var FDPOBRGN = []
+                    var FDPOSATUAN = []
+                    var FDPOHARGA = []
+                    var FDPOQTY = []
+                    var FDPODISC1 = []
+                    var FDPODISC2 = []
+                    var FDPODISC3 = []
+                    var FDPOTOTAL = []
+
+                    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                        if (dataGrid.getVisibleRows()[i].data.NAMA_BARANG != '') {
+                            FDPONO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                            FDPOPRD_ID.push("" + dataGrid.getVisibleRows()[i].data.ID_PRODUK)
+                            FDPOBRG_ID.push("" + dataGrid.getVisibleRows()[i].data.ID_BARANG)
+                            FDPOBRGN.push("" + dataGrid.getVisibleRows()[i].data.NAMA_BARANG)
+                            FDPOSATUAN.push("" + dataGrid.getVisibleRows()[i].data.SATUAN)
+                            FDPOHARGA.push("" + dataGrid.getVisibleRows()[i].data.HARGA_POKOK)
+                            FDPOQTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                            FDPODISC1.push("" + dataGrid.getVisibleRows()[i].data.DISC_1)
+                            FDPODISC2.push("" + dataGrid.getVisibleRows()[i].data.DISC_2)
+                            FDPODISC3.push("" + dataGrid.getVisibleRows()[i].data.DISC_RP)
+                            FDPOTOTAL.push("" + dataGrid.getVisibleRows()[i].data.TOTAL)
+                        }
+                    }
+                    var status_aud = 'A'
+                    $.ajax({
+                        url: host + "/SP_AUD_ORDER",
+                        method: "POST",
+                        data: {
+                            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                            "FDPONO": JSON.stringify(FDPONO),
+                            "FDPOPRD_ID": JSON.stringify(FDPOPRD_ID),
+                            "FDPOBRG_ID": JSON.stringify(FDPOBRG_ID),
+                            "FDPOBRGN": JSON.stringify(FDPOBRGN),
+                            "FDPOSATUAN": JSON.stringify(FDPOSATUAN),
+                            "FDPOHARGA": JSON.stringify(FDPOHARGA),
+                            "FDPOQTY": JSON.stringify(FDPOQTY),
+                            "FDPODISC1": JSON.stringify(FDPODISC1),
+                            "FDPODISC2": JSON.stringify(FDPODISC2),
+                            "FDPODISC3": JSON.stringify(FDPODISC3),
+                            "FDPOTOTAL": JSON.stringify(FDPOTOTAL),
+
+                            "FHPOBUKTI_ID": $("#no_po").val(),
+                            "FHPOTGL": $("#tanggal").val(),
+                            "FHPOTGLKIRIM": $("#tanggaljth").val(),
+                            "FHPOSUPP_ID": $("#kode_supplier").val(),
+                            "FHPOTPAY_ID": $("#kode_tpay").val(),
+                            "FHPOREMARK": $("#keterangan").val(),
+                            "FHPODPP": desimal2($("#pajak").val()),
+                            "FHPOPPN": $("#ppn").val(),
+                            "FHPOPPNRP": desimal2($("#hasil_ppn").val()),
+                            "FHPOJUMLAH": desimal2($("#total").val()),
+                            "StatusAUD": status_aud,
+                        },
+                        success: function (e) {
+                            alert(e[0].STATUS + ' - ' + e[0].STATE)
+                            $("#no_po").val(e[0].no_trans)
+                            deathtext()
+                            $('#btn_tambah_barang').css("display", 'none');
+                            canAdd = 0
+                        }
+                    })
+                }
+            }
+        }
+    })
+    $("#menu_cancel,#FRMORD00202").click(function () {
+        setAwal()
+    })
+
+
+    $('#select_mutasi_validasi').change(function () {
+        cari_Validasimutasi()
+    });
+    //select_cetak_validasi
+
+    $('#select_cetak_validasi').change(function () {
+        cari_ValidOrder()
+    });
+
+    $("#FRMORD00203").click(function () {
+        $('#ModalValidasiorder').modal('show')
+        $('#mutasi_tanggal_dr').val(todays);
+        $('#mutasi_tanggal_sd').val(todays);
+        $("#select_mutasi").val('mutasi_by_belum');
+        cari_Validasimutasi()
+    })
+
+    $("#FRMORD00204").click(function () {
+        $('#ModalCetakValidasi').modal('show')
+        $('#tgl_awal_mutasi').val(todays);
+        $('#tgl_mutasi_akhir').val(todays);
+        $("#select_cetak_validasi").val('mutasi_by_belum');
+        cari_ValidOrder()
+    })
+
+    $("#btn_validasi_mutasi").click(function () {
+        cari_Validasimutasi()
+    })
+
+    $("#btn_cari_valid").click(function () {
+        cari_ValidOrder()
+    })
+
+    $('#btn_simpan_validasi').click(function (e) {
+        var dataGrid = $("#DataValidasiOrder").dxDataGrid("instance");
+        if (dataGrid.getVisibleRows().length == 0) {
+            alert('Data  Masih Kosong')
+        } else {
+            var i = 0;
+            var FHPOBUKTI_ID = []
+            var FKUNCI = []
+            var today = new Date();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            users = '{{request.session.user_id}}'
+            updaters = $("#tanggal").val() + ' ' + time
+            for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                // console.log('produk : ' + dataGrid.getVisibleRows()[i].data.FHPOBUKTI_ID)
+                // console.log('produk : ' + dataGrid.getVisibleRows()[i].data.FKUNCI)
+                FHPOBUKTI_ID.push("" + dataGrid.getVisibleRows()[i].data.FHPOBUKTI_ID)
+                FKUNCI.push("" + dataGrid.getVisibleRows()[i].data.FKUNCI)
+            };
+
+            $.ajax({
+                url: host + "/SPValidasiMutasi",
+                method: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                    "users": users,
+                    "updaters": updaters,
+                    "No_faktur": JSON.stringify(FHPOBUKTI_ID),
+                    "FKUNCI": JSON.stringify(FKUNCI),
+                },
+                success: function (datas) {
+                    console.log(datas)
+                    if (datas.status == 'sukses') {
+                        alert('Berhasil Disimpan')
+                        cari_Validasimutasi()
+                        // $('#ModalValidasiorder').modal('hide');
+                    } else {
+                        alert('Gagal Disimpan')
+                    }
+                }
+            })
+        }
+    })
+
+
+    $("#menu_find,#FRMORD00301").click(function () {
+        $('#ModalOrderbeli').modal('show')
+        $('#order_pembelian_tanggal').val(todays);
+        $("#select_order_pembelian").val('order_pembelian_by_tanggal');
+        $('#order_pembelian_bukti').val('');
+        $('#order_pembelian_supplier').val('');
+        cari_Order_pembelian()
+    })
+
+    $("#btn_cari_order_pembelian").click(function () {
+        cari_Order_pembelian()
+    })
+    $("#order_pembelian_tanggal").change(function () {
+        cari_Order_pembelian()
+    })
+
+    $("#select_order_pembelian").change(function () {
+        cari_Order_pembelian()
+    })
+    $('#btn_ok_data_barang').click(function () {
+        pilihBarang()
+    })
+
+    $("#menu_cetak").click(function () {
+        if ($("#no_po").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else if (($("#inlineCheckboxclose").prop('checked') == false)) {
+            alert("Transaksi belum divalidasi")
+        } else {
+            var no_bukti = $('#no_po').val();
+            $.ajax({
+                url: host + "/cetak_order",
+                method: "GET",
+                data: {
+                    'no_bukti': no_bukti,
+                },
+                dataType: "json",
+                beforeSend: function () {
+                    $('#ModalLoading').modal('show');
+                    $('#loading_title').html('Proses Cetak..');
+                    $('#loading_text').html('Tunggu Sebentar');
+                },
+                complete: function () {
+                    $('#ModalLoading').modal('hide');
+                },
+                success: function (datas) {
+                    window.open(datas.pdf, '_blank');
+                },
+            })
+        }
+    })
+    $("#FRMORD00401").click(function () {
+        if ($("#no_po").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            var no_bukti = $('#no_po').val();
+            $.ajax({
+                url: host + "/cetak_orderinternal",
+                method: "GET",
+                data: {
+                    'no_bukti': no_bukti,
+                },
+                dataType: "json",
+                beforeSend: function () {
+                    $('#ModalLoading').modal('show');
+                    $('#loading_title').html('Proses Cetak..');
+                    $('#loading_text').html('Tunggu Sebentar');
+                },
+                complete: function () {
+                    $('#ModalLoading').modal('hide');
+                },
+                success: function (datas) {
+                    window.open(datas.pdf, '_blank');
+                },
+            })
+        }
+    })
+
+    $("#FRMORD00402").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        e.stopImmediatePropagation();
+        $("#hide_radio").hide()
+        $('#ModalprintOrderBeli').modal('show');
+        $('#paramprint').val(1)
+    })
+    $("#FRMORD00403").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        e.stopImmediatePropagation();
+        $("#hide_radio").show()
+        $('#ModalprintOrderBeli').modal('show');
+        $('#paramprint').val(2)
+    })
+
+})
+
+function error_in_field() {
+    Cekeror = true;
+    if ($("#kode_supplier").val() == '') {
+        alert('Silahkan Pilih Supplier')
+        Cekeror = false;
+    }
+    if ($('#kode_tpay').val() == '') {
+        alert('Silahkan Pilih Sistem Bayar')
+        Cekeror = false;
+    }
+
+    if ($('#tanggal').val() == '') {
+        alert('Silahkan Pilih Tanggal')
+        Cekeror = false;
+    }
+    if ($('#tanggaljth').val() == '') {
+        alert('Silahkan Pilih Tanggal TEMPO')
+        Cekeror = false;
+    }
+    if (canAdd == 1) {
+        var dataGrid = $("#datagrid").dxDataGrid("instance");
+        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+            if (dataGrid.getVisibleRows()[i].data.ID_BARANG == '') {
+                alert('Silahkan isi kode barang ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.NAMA_BARANG == '') {
+                alert('Silahkan isi nama barang ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.QTY == 0) {
+                alert('Silahkan isi QTY ')
+                Cekeror = false;
+            };
+        }
+    }
+
+    return Cekeror;
+
+}
+
+function cari_Order_pembelian() {
+    $("#DataOrderPembelian").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getOrder_Pembelian",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#order_pembelian_tanggal').val(),
+                        'tipe': $('#select_order_pembelian').val(),
+                        'no_bukti': $('#order_pembelian_bukti').val(),
+                        'supplier': $('#order_pembelian_supplier').val(),
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHPOBUKTI_ID",
+                caption: "NO BUKTI",
+            },
+            {
+                dataField: "FHPOTGL",
+                caption: "TANGGAL",
+                alignment: 'center',
+                dataType: 'date',
+                format: 'dd/MMM/yyyy',
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "SUPPLIER",
+            },
+            {
+                dataField: "FHPOTOTAL",
+                caption: "Jumlah",
+                dataType: "number",
+                width: 100,
+                format: 'decimal fixedPoint',
+
+            },
+            {
+                dataField: "FHPOREMARK",
+                caption: "KETERANGAN",
+            },
+
+        ],
+        onRowClick: function (e) {
+            getGridTableBarang(e.data.FHPOBUKTI_ID)
+            $('#ModalOrderbeli').modal('hide')
+        }
+    });
+}
+
+function cari_Validasimutasi() {
+    // dataValidasMutasi=[];
+    // debugger;
+    $.ajax({
+        url: host + "/getvalidasiOrder",
+        method: "GET",
+        data: {
+            'tanggalawal': $('#mutasi_tanggal_dr').val(),
+            'tanggalakhir': $('#mutasi_tanggal_sd').val(),
+            'tipe': $('#select_mutasi_validasi').val(),
+        },
+        success: function (datas) {
+            dataValidasMutasi = datas;
+            setupDxGridValidasi();
+            //setupDxGridCetakValidasi();
+        }
+    });
+}
+
+function cari_ValidOrder() {
+    // dataValidasMutasi=[];
+    // debugger;
+    $.ajax({
+        url: host + "/getvalidasiOrder",
+        method: "GET",
+        data: {
+            'tanggalawal': $('#tgl_awal_mutasi').val(),
+            'tanggalakhir': $('#tgl_mutasi_akhir').val(),
+            'tipe': $('#select_cetak_validasi').val(),
+        },
+        success: function (datas) {
+            dataValidasMutasi = datas;
+            setupDxGridCetakValidasi();
+        }
+    });
+}
+
+function setupDxGridValidasi() {
+    $("#DataValidasiOrder").dxDataGrid({
+
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: true
+        },
+        selection: {
+            mode: "single"
+        },
+
+        //searchPanel : { visible: true },
+        dataSource: dataValidasMutasi,
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHPOBUKTI_ID",
+                caption: "NO BUKTI",
+            },
+            {
+                dataField: "FHPOTGL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                format: 'dd/MMM/yyyy'
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "supplier",
+            },
+            {
+                dataField: "FHPOREMARK",
+                caption: "Keterangan",
+            },
+            {
+                dataField: "FKUNCI",
+                caption: "Cek",
+                dataType: "boolean"
+            },
+        ],
+        editing: {
+            allowUpdating: true,
+            mode: "Row"
+        },
+        onEditorPreparing: function (e) {
+            if (e.parentType === "dataRow" && e.dataField === "FKUNCI") {
+                e.editorElement.dxCheckBox({
+                    value: e.value,
+                    readOnly: e.readOnly,
+                    onValueChanged: function (ea) {
+                        // debugger;
+                        if (ea.value) {
+                            e.setValue(1);
+
+                        } else {
+                            e.setValue(0);
+                        }
+                    },
+                    update: function (key, values) {
+                        console.log(key);
+                        console.log(values);
+                    }
+                });
+                e.cancel = true;
+            }
+        },
+    });
+}
+
+function setupDxGridCetakValidasi() {
+    $("#DataCetakValidasi").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: true
+        },
+        selection: {
+            mode: "single"
+        },
+
+        //searchPanel : { visible: true },
+        dataSource: dataValidasMutasi,
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHPOBUKTI_ID",
+                caption: "NO BUKTI",
+            },
+            {
+                dataField: "FHPOTGL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                format: 'dd/MMM/yyyy'
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "supplier",
+            },
+        ],
+        editing: {
+            allowUpdating: false,
+            mode: "Row"
+        },
+    });
+}
+
+function setAwal() {
+    deathtext()
+    cleartext()
+    $('#btn_tambah_barang').css("display", 'none');
+    canAdd = 0
+    setGridEmpty()
+    setGridHistory()
+}
+
+function deathtext() {
+    setMenu('menu_tambah', 1)
+    setMenu('menu_edit', 1)
+    setMenu('menu_hapus', 1)
+    setMenu('menu_simpan', 0)
+    setMenu('menu_cancel', 0)
+    setMenu('menu_find', 1)
+    setMenu('menu_cetak', 1)
+    setDisabled('cari_gudang', 0)
+    setDisabled('cari_supplier', 0)
+    setDisabled('cari_tpay', 0)
+
+    setReadOnly('nomor', 1)
+    setReadOnly('tanggal', 1)
+    setReadOnly('tanggaljth', 1)
+    setReadOnly('keterangan', 1)
+}
+
+function livetext() {
+    setMenu('menu_tambah', 0)
+    setMenu('menu_edit', 0)
+    setMenu('menu_hapus', 0)
+    setMenu('menu_simpan', 1)
+    setMenu('menu_cancel', 1)
+    setMenu('menu_find', 0)
+    setMenu('menu_cetak', 0)
+    setDisabled('cari_gudang', 1)
+    setDisabled('cari_supplier', 1)
+    setDisabled('cari_tpay', 1)
+
+    setReadOnly('nomor', 1)
+    setReadOnly('tanggal', 1)
+    setReadOnly('tanggaljth', 0)
+    setReadOnly('keterangan', 0)
+}
+
+function cleartext() {
+    $('#tanggal').val(todays);
+    $('#tanggaljth').val(todays);
+    $('#no_po').val('');
+    $('#kode_supplier').val('');
+    $('#nama_supplier').val('');
+    $('#kode_tpay').val('');
+    $('#nama_tpay').val('');
+    $('#keterangan').val('');
+    $("#total").val('0')
+    $("#inlineCheckboxclose").prop('checked', false)
+}
+
+function setMenu(id, enable = 1) {
+    if (enable == 0) {
+        $('#' + id).addClass('disabled')
+    } else {
+        $('#' + id).removeClass('disabled')
+    }
+}
+
+function setDisabled(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("disabled", false);
+    } else {
+        $('#' + id).attr("disabled", true);
+    }
+}
+
+function setReadOnly(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("readonly", true);
+        $('#' + id).css("background-color", 'white');
+    } else {
+        $('#' + id).attr("readonly", false);
+    }
+}
+
+function cetakorder1(e, param) {
+    T = param;
+    if (T == 1) {
+        url2 = host + "/cetak_lap_rekap_supplier"
+    } else if (T == 2 && $("#inlineRadiokreteria1:checked").val() == '1') {
+        url2 = host + "/cetak_lap_rekap"
+    } else if (T == 2 && $("#inlineRadiokreteria2:checked").val() == '2') {
+        url2 = host + "/cetak_lap_rekap02"
+    } else if (T == 2 && $("#inlineRadiokreteria3:checked").val() == '3') {
+        url2 = host + "/cetak_lap_rekap03"
+    }
+
+    var dari = $('#Cetak_mutasi_tanggal_dr').val();
+    var sd = $('#Cetak_mutasi_tanggal_sd').val();
+
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#ModalprintOrderBeli').modal('show');
+}

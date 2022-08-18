@@ -7,6 +7,10 @@ from . import frm_jenis
 from . import frm_produk
 from . import frm_sediaan
 from . import frm_lokasi
+from . import frm_saldopersedian
+from . import frm_order
+from . import frm_beli
+from . import modul_stock
 
 urlpatterns = [
     url(r'^frm_suplier/', include([
@@ -84,4 +88,46 @@ urlpatterns = [
         url(r'^cetak_barang', frm_barang.cetak_barang, name='cetak_barang'),
         url(r'^barangwh_simpan', frm_barang.barangwh_simpan, name='barangwh_simpan'),
     ])),
+    url(r'^frm_saldopersedian/', include([
+        url(r'^$', frm_saldopersedian.frm_saldopersedian, name='frm_saldopersedian'),
+        url(r'^exit', frm_saldopersedian.exit, name='exitfrm_saldopersedian'),
+        url(r'^getgudang', frm_barang.getgudang,name='getgudang'),
+        url(r'^getIdDataBarang', frm_saldopersedian.getIdDataBarang,name='getIdDataBarang'),
+        url(r'^getDataBarang', frm_saldopersedian.getDataBarang,name='getDataBarang'),
+        url(r'^getidsupplier', frm_saldopersedian.getidsupplier,name='getidsupplier'),
+        url(r'^getsupplier', frm_saldopersedian.getsupplier,name='getsupplier'),
+        url(r'^SP_AUD_SALDO', frm_saldopersedian.SP_AUD_SALDO, name='SP_AUD_SALDO'),
+        url(r'^load_saldorekening', frm_saldopersedian.load_saldorekening, name='load_saldorekening'),
+        url(r'^getsaldoByBukti', frm_saldopersedian.getsaldoByBukti, name='getsaldoByBukti'),
+        url(r'^cetaksaldo', frm_saldopersedian.cetaksaldo, name='cetaksaldo'),
+    ])),
+    url(r'^frm_order/', include([
+        url(r'^$', frm_order.frm_order, name='frm_order'),
+        url(r'^exit', frm_order.exit, name='exitorder'),
+        url(r'^getSupplier', frm_order.getSupplier, name='getSupplier'),
+        url(r'^getTpay', frm_order.getTpay, name='getTpay'),
+        url(r'^getIdDataBarang', frm_beli.getIdDataBarang, name='getIdDataBarang'),
+        url(r'^getDataBarang', frm_order.getDataBarang, name='getDataBarang'),
+        url(r'^getDataStatus', frm_order.getDataStatus, name='getDataStatus'),
+        url(r'^getHistoryBarang', modul_stock.getHistoryBarang,name='getHistoryBarang'),
+        url(r'^getHistoryBeliBarang', modul_stock.getHistoryBeliBarang,name='getHistoryBeliBarang'),
+        url(r'^SP_AUD_ORDER', frm_order.SP_AUD_ORDER, name='SP_AUD_ORDER'),
+        url(r'^getOrder_Pembelian', frm_order.getOrder_Pembelian,name='getOrder_Pembelian'),
+        url(r'^getorderBarangByBuktiPembelian', frm_order.getorderBarangByBuktiPembelian,name='getorderBarangByBuktiPembelian'),
+        url(r'^getSupPay', frm_order.getSupPay, name='getSupPay'),
+        url(r'^getvalidasiOrder', frm_order.getvalidasiOrder,name='getvalidasiOrder'),
+        url(r'^SPValidasiMutasi', frm_order.SPValidasiMutasi,name='SPValidasiMutasi'),
+        url(r'^cetak_orderinternal', frm_order.cetak_orderinternal, name='cetak_orderinternal'),
+        url(r'^cetak_order', frm_order.cetak_order, name='cetak_order'),
+        url(r'^cetak_lap_rekap_supplier', frm_order.cetak_lap_rekap_supplier,name='cetak_lap_rekap_supplier'),
+        url(r'^cetak_lap_rekap03', frm_order.cetak_lap_rekap03, name='cetak_lap_rekap03'),
+        url(r'^cetak_lap_rekap02', frm_order.cetak_lap_rekap02, name='cetak_lap_rekap02'),
+        url(r'^cetak_lap_rekap', frm_order.cetak_lap_rekap, name='cetak_lap_rekap'),
+        url(r'^getDiscSuppBarang', frm_order.getDiscSuppBarang, name='getDiscSuppBarang'),
+        url(r'^getcloseOrder', frm_order.getcloseOrder, name='getcloseOrder'),
+        url(r'^SPcloseorder', frm_order.SPcloseorder, name='SPcloseorder'),
+        url(r'^UNSPcloseorder', frm_order.UNSPcloseorder, name='UNSPcloseorder'),
+
+    ])),
+
 ]

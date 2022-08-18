@@ -1,0 +1,57 @@
+<div class="panel-body default-panel">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-row">
+                <label class="col-md-2 control-label">Nomor Bukti</label>
+                <div class="col-md-5">
+                    <input id="No_bukti" type="text" class="form-control input-sm" readonly style="background-color: white;">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Tgl. Bukti</label>
+                <div class="col-md-3">
+                    <input id="tanggal" type="date" class="form-control input-sm today">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Gudang </label>
+                <div class="col-md-2">
+                    <input id="idWh" type="text" class="form-control input-sm">
+                </div>
+                <div class="col-md-6">
+                    <input id="idWhn" type="text" class="form-control input-sm" readonly> 
+                </div>
+                <div class="col-md-1">
+                    <button id="FindWh" class="btn btn-success btn-xs" >
+                        Cari
+                    </button>
+                </div>
+            </div>
+        </div>
+           
+    </div>
+    <div class="row">
+        <div class="form-row">
+            <button class="btn btn-primary btn-xs mt-10" id="btn_tambah_brg">Tambah Detail Transaksi</button>
+        </div>
+        <div class="form-row">
+            <div style="height: 240px;overflow-y: auto;">
+                <div id="datagrid"></div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-md-4 col-md-offset-7">
+            <div class="form-row">
+                <label class="col-md-4 control-label">T O T A L </label>
+                <div class="col-md-1">
+                    : Rp
+                </div>
+                <div class="col-md-6 col-md-offset-1">
+                    <input type="text" id="total" value="0" class="form-control input-sm inputText" readonly
+                        style="background-color: f0e6e6;text-align: right;height: 29;font-size: medium;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

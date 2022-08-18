@@ -1,0 +1,324 @@
+$(document).ready(function () {
+    $("#cari_barang").keyup(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#dataModalBrg").dxDataGrid("instance");
+
+        if (code == 27 || code == 13) {
+            if (canEnterBarang == 1) {
+                if (dataGrid.getVisibleRows().length != 0) {
+                    e.preventDefault()
+                    $(this).blur()
+                    dataGrid.focus(dataGrid.getCellElement(0, 'NAME_BRG'))
+                    dataGrid.selectRowsByIndexes(0)
+                }
+            }
+        } else {
+            if ($("#cari_barang").val().length > 2) {
+                searchBarangByName($("#cari_barang").val())
+            } else {
+                searchBarangByName('nullnone0')
+            }
+        }
+    });
+
+    $('#btn_ok_data_barang').click(function () {
+        if (data) {
+            pilihBarang()
+        }
+    })
+})
+
+function carikodebrgid(e) {
+
+    $("#cari_barang").val(e)
+    $.ajax({
+        url: host + "/getIdDataBarang",
+        method: "GET",
+        data: {
+            "kode": e,
+            "tarifobat": $("#far_jenis_tarifobat").val()
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.status == 'ok') {
+                tempId = datas.data.BARANGC
+                tempNama = datas.data.NAME_BRG
+                tempSatuan = datas.data.SATSTAND
+                tempHpokok = datas.data.HPOKOK
+                temppqty = 1
+                tempdisc = 0
+                tempdisc2 = 0
+                tempdiscRP = 0
+                tempIdPrd = datas.data.TTYPEC
+                // cari master discount
+                Caridiscount()
+
+
+            } else {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, "TGL_EXPIRED", '');
+                dataGrid.cellValue(rowIndex, "ID_BARANG", '');
+                dataGrid.cellValue(rowIndex, "NAMA_BARANG", '');
+                dataGrid.cellValue(rowIndex, "SATUAN", '');
+                dataGrid.cellValue(rowIndex, "NO_BATCH", '');
+                dataGrid.cellValue(rowIndex, "HARGA_POKOK", '');
+                dataGrid.cellValue(rowIndex, "QTY", '');
+                dataGrid.cellValue(rowIndex, "DISC_1", '');
+                dataGrid.cellValue(rowIndex, "DISC_2", '');
+                dataGrid.cellValue(rowIndex, "DISC_RP", '');
+                dataGrid.cellValue(rowIndex, "TOTAL", '');
+                dataGrid.cellValue(rowIndex, "KRSM", '');
+                dataGrid.cellValue(rowIndex, "ID_PRODUK", '');
+                dataGrid.cellValue(rowIndex, "KONVERSI", '');
+                dataGrid.cellValue(rowIndex, "SATSTAND", '');
+                openModalBrg()
+                if ($("#cari_barang").val().length > 2) {
+                    searchBarangByName($("#cari_barang").val())
+                } else {
+                    searchBarangByName('nullnone0')
+                }
+            }
+        }
+    })
+}
+
+function openModalBrg() {
+    try {
+        var dxgridbarang = $("#dataModalBrg").dxDataGrid('instance');
+        dxgridbarang.clearSelection();
+    } catch (err) {}
+    if (canAdd == 1) {
+        tempId = ''
+        tempNama = ''
+        tempIdPrd = ''
+        tempSatuan = ''
+        tempKonversi = ''
+        tempHpokok = ''
+        tempHrupiah = ''
+
+        $('#modalBarang').modal('show')
+        $('#cari_barang').val()
+        $('#modalBarang').on('shown.bs.modal', function () {
+            $('#cari_barang').focus()
+        })
+        $("#dataModalBrg").dxDataGrid({
+            dataSource: [],
+            keyExpr: 'BARANGC',
+            selection: {
+                mode: "single"
+            },
+            paging: {
+                pageSize: 100
+            },
+            rowAlternationEnabled: true,
+            hoverStateEnabled: true,
+            showBorders: true,
+            focusedRowEnabled: true,
+            focusedRowIndex: 0,
+            focusedColumnIndex: 0,
+            focusedRowKey: 1,
+            columns: [{
+                dataField: "BARANGC",
+                caption: "ID BARANG",
+                alignment: 'center',
+                width: 80
+            }, {
+                dataField: "NAME_BRG",
+                caption: "NAMA BARANG",
+            }, {
+                dataField: "SATSTAND",
+                caption: "SATUAN",
+                width: 80,
+                alignment: 'center',
+            }, {
+                dataField: "HARGA_RUPIAH",
+                caption: "HARGA",
+                width: 80,
+                alignment: 'right',
+            }],
+        });
+    }
+}
+
+
+function searchBarangByName(nama) {
+    $.ajax({
+        url: host + "/getDataBarang",
+        method: "GET",
+        data: {
+            'nama': nama,
+            "tarifobat": $("#far_jenis_tarifobat").val()
+        },
+        beforeSend: function () {
+            canEnterBarang = 0
+            if (nama != 'nullnone0') {
+                $('#loadDataText').css("display", 'block');
+            }
+        },
+        complete: function () {
+            $('#loadDataText').css("display", 'none');
+            canEnterBarang = 1
+        },
+        success: function (datas) {
+            canEnterBarang = 1
+            $("#dataModalBrg").dxDataGrid({
+                dataSource: datas,
+                keyExpr: 'BARANGC',
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 100
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                focusedRowEnabled: true,
+                columns: [{
+                    dataField: "BARANGC",
+                    caption: "ID BARANG",
+                    alignment: 'left',
+                    width: 90,
+                    allowSorting: false
+                }, {
+                    dataField: "NAME_BRG",
+                    caption: "NAMA BARANG",
+                    allowSorting: false
+                }, {
+                    dataField: "SATSTAND",
+                    caption: "SATUAN",
+                    width: 80,
+                    alignment: 'left',
+                    allowSorting: false
+                }, {
+                    dataField: "HPOKOK",
+                    caption: "HARGA POKOK",
+                    allowEditing: true,
+                    width: 120,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                }],
+                onFocusedCellChanged: function (e) {
+                    if (e.row.data) {
+                        tempId = e.row.data.BARANGC
+                        tempNama = e.row.data.NAME_BRG
+                        tempSatuan = e.row.data.SATSTAND
+                        tempHpokok = e.row.data.HPOKOK
+                        temppqty = 1
+                        tempdisc = 0
+                        tempdisc2 = 0
+                        tempdiscRP = 0
+                        tempIdPrd = e.row.data.TTYPEC
+                    }
+
+                },
+                onSelectionChanged: function (r) {
+                    if (r.selectedRowsData.length > 0) {
+                        tempId = r.selectedRowsData[0].BARANGC
+                        tempNama = r.selectedRowsData[0].NAME_BRG
+                        tempSatuan = r.selectedRowsData[0].SATSTAND
+                        tempHpokok = r.selectedRowsData[0].HPOKOK
+                        temppqty = 1
+                        tempdisc = 0
+                        tempdisc2 = 0
+                        tempdiscRP = 0
+                        tempIdPrd = r.selectedRowsData[0].TTYPEC
+                    }
+                },
+                onKeyDown: function (e) {
+                    if (e.event.originalEvent.which == 13) {
+                        // cari master discount
+                        Caridiscount()
+                    }
+                },
+                onContentReady: function (e) {
+                    setTimeout(() => {
+                        $('#cari_barang').focus()
+                    }, 200);
+                }
+            });
+        }
+    })
+}
+
+function Caridiscount() {
+    if (tempNama != '') {
+        $.ajax({
+            url: host + "/getDiscSuppBarang",
+            method: "GET",
+            data: {
+                'kode_barang': tempId,
+                'kode_supplier': $("#kode_supplier").val(),
+            },
+            success: function (datas) {
+                if (datas.length != 0) {
+                    tempdisc = datas[0].FMSDDISC01
+                    tempdisc2 = datas[0].FMSDDISC02
+                }
+                pilihBarang()
+            }
+        })
+
+
+    }
+
+}
+
+function pilihBarang() {
+    if (tempId != '') {
+        if (!cekDataSudahAda(tempId)) {
+            alert('Maaf Barang ' + tempNama + ' Sudah Ada')
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            dataGrid.cellValue(rowIndex, "TGL_EXPIRED", '');
+            dataGrid.cellValue(rowIndex, "ID_BARANG", '');
+            dataGrid.cellValue(rowIndex, "NAMA_BARANG", '');
+            dataGrid.cellValue(rowIndex, "SATUAN", '');
+            dataGrid.cellValue(rowIndex, "NO_BATCH", '');
+            dataGrid.cellValue(rowIndex, "HARGA_POKOK", '');
+            dataGrid.cellValue(rowIndex, "QTY", '');
+            dataGrid.cellValue(rowIndex, "DISC_1", '');
+            dataGrid.cellValue(rowIndex, "DISC_2", '');
+            dataGrid.cellValue(rowIndex, "DISC_RP", '');
+            dataGrid.cellValue(rowIndex, "TOTAL", '');
+            dataGrid.cellValue(rowIndex, "KRSM", '');
+            dataGrid.cellValue(rowIndex, "ID_PRODUK", '');
+            dataGrid.cellValue(rowIndex, "KONVERSI", '');
+            dataGrid.cellValue(rowIndex, "SATSTAND", '');
+            openModalBrg()
+            searchBarangByName(tempNama)
+        } else {
+            $('#cari_barang').val('')
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            dataGrid.cellValue(rowIndex, "ID_BARANG", tempId);
+            dataGrid.cellValue(rowIndex, "NAMA_BARANG", tempNama);
+            dataGrid.cellValue(rowIndex, "SATUAN", tempSatuan);
+            dataGrid.cellValue(rowIndex, "HARGA_POKOK", tempHpokok);
+            dataGrid.cellValue(rowIndex, "QTY", temppqty);
+            dataGrid.cellValue(rowIndex, "DISC_1", tempdisc);
+            dataGrid.cellValue(rowIndex, "DISC_2", tempdisc2);
+            dataGrid.cellValue(rowIndex, "DISC_RP", tempdiscRP);
+            dataGrid.cellValue(rowIndex, "TOTAL", tempHpokok);
+            dataGrid.cellValue(rowIndex, "ID_PRODUK", tempIdPrd);
+            dataGrid.cellValue(rowIndex, "KONVERSI", 1);
+            dataGrid.cellValue(rowIndex, "SATSTAND", tempSatuan);
+            dataGrid.saveEditData();
+            $.when(dataGrid.saveEditData()).done(function () {
+                setFocusQTY()
+            })
+            setGridStock(tempId)
+            setGridHistory(tempId)
+            $('#modalBarang').modal('hide')
+        }
+    } else {
+        alert('Silahkan Pilih Barang')
+    }
+}
+
+function setFocusQTY() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    $(dataGrid.focus(dataGrid.getCellElement(qtyIndex, 'QTY'))).promise().done(function () {
+        dataGrid.editCell(qtyIndex, 'QTY')
+    })
+}

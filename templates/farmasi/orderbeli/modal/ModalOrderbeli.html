@@ -1,0 +1,53 @@
+<div class="modal fade" id="ModalOrderbeli" data-keyboard="false" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">Data Order Pembelian</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="date" id="order_pembelian_tanggal"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control input-sm-lab" id="select_order_pembelian">
+                                    <option value="order_pembelian_by_tanggal">order Pembelian Per Tanggal</option>
+                                    <option value="order_pembelian_by_bulan">order Pembelian Per Bulan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="order_pembelian_bukti"
+                                    class="form-control input-sm-lab enter-cari-pembelian" placeholder="No Bukti">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="order_pembelian_supplier"
+                                    class="form-control input-sm-lab enter-cari-pembelian" placeholder="Supplier">
+                            </div>
+                            <!-- <div class="col-md-2">
+                                <input type="text" id="order_pembelian_gudang"
+                                    class="form-control input-sm-lab enter-cari-pembelian" placeholder="Gudang">
+                            </div> -->
+                            <div class="col-md-1">
+                                <button class="btn btn-sm btn-primary btn-block" id="btn_cari_order_pembelian">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-10">
+                            <div id="DataOrderPembelian"style="height: 340px;font-size: 12px;line-height: 0.8;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

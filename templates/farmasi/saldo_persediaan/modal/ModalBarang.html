@@ -1,0 +1,33 @@
+<div class="modal fade" id="modalBarang" data-keyboard="false" tabindex="-1" role="dialog" data-backdrop="static"
+    data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Data Barang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="form-group col-md-12">
+                            <div class="col-md-3">
+                                <input id="cari_barang" name="cari_barang" type="text" class="form-control input-sm-lab"
+                                    placeholder="Cari" style="background-color: white">
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mt-5" id="loadDataText" style="display: none;">Memuat Data..</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dataModalBrg"style="height: 340px;font-size: 12px;line-height: 0.8;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btn_ok_data_barang">OK</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

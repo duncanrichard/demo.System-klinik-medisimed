@@ -1,0 +1,53 @@
+<div class="modal fade" id="ModalSaldo" data-keyboard="false" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Data Saldo Persediaan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="date" id="saldo_tanggal"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control input-sm-lab" id="select_saldo">
+                                    <option value="saldo_by_tanggal">Saldo Persediaan Per Tanggal</option>
+                                    <option value="saldo_by_bulan">Saldo Persediaan Per Bulan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="saldo_bukti"
+                                    class="form-control input-sm-lab enter-cari-saldo" placeholder="No Bukti">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="saldo_supp"
+                                    class="form-control input-sm-lab enter-cari-saldo" placeholder="Supplier">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="saldo_gudang"
+                                    class="form-control input-sm-lab enter-cari-saldo" placeholder="Gudang">
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-sm btn-primary btn-block" id="btn_cari_saldo">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-12">
+                            <div id="Datasaldo"style="height: 340px;font-size: 12px;line-height: 0.8;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

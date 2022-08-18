@@ -1,0 +1,281 @@
+$(document).ready(function () {
+    $("#nav_FRMORD00205").click(function () {
+        $('#ModalCloseOrderbeli').modal('show')
+        $('#order_tanggal_dr').val(todays);
+        $('#order_tanggal_sd').val(todays);
+        $("#select_order").val('order_by_belum');
+        cari_closeorder()
+    })
+    $('#select_order_close').change(function () {
+        cari_closeorder()
+    });
+
+    $("#btn_close_order").click(function () {
+        cari_closeorder()
+    })
+
+    $('#btn_simpan_close').click(function (e) {
+        if (selectedProduk.length != 0) {
+            SPcloseorder(selectedProduk, function () {
+                $('#select_order_close').val("order_by_sudah")
+                cari_closeorder()
+            })
+
+            // $('#ModalclosePembelian').modal('hide');
+        } else {
+            e.preventDefault()
+            alert('Anda belum memilih faktur')
+        }
+
+    })
+
+    $('#btn_batal_close').click(function (e) {
+        if (selectedProduk.length != 0) {
+            UNSPcloseorder(selectedProduk, function () {
+                $('#select_order_close').val("order_by_belum")
+                cari_closeorder()
+            })
+
+
+            // $('#ModalclosePembelian').modal('hide');
+        } else {
+            e.preventDefault()
+            alert('Anda belum memilih faktur')
+        }
+
+    })
+
+})
+
+var selectedProduk = ''
+
+function cari_closeorder() {
+    $("#DataCloseOrder").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        selection: {
+            mode: "multiple"
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getcloseOrder",
+                    method: "GET",
+                    data: {
+                        'tanggalawal': $('#order_tanggal_dr').val(),
+                        'tanggalakhir': $('#order_tanggal_sd').val(),
+                        'tipe': $('#select_order_close').val(),
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHPOBUKTI_ID",
+                caption: "NO BUKTI",
+            },
+            {
+                dataField: "FHPOTGL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                format: 'dd/MMM/yyyy'
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAME_SUPPL",
+            },
+            {
+                dataField: "FHPOREMARK",
+                caption: "KETERANGAN",
+                dataType: "number",
+            },
+        ],
+        onSelectionChanged: function (selectedItems) {
+            // console.log(selectedItems.selectedRowsData)
+            selectedProduk = selectedItems.selectedRowsData
+        }
+    });
+
+
+}
+
+var arrIdxStoreProduk = 0;
+var i = 0;
+
+function SPcloseorder(arrData, callback = null) {
+    console.log()
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    // console.log('array : ' + arrData)
+    // console.log('jml : ' + arrData.length)
+    // console.log('counter : ' + i)
+    console.log('produk : ' + arrData[i].FHPOBUKTI_ID)
+    // contoh model bukan type data tabel
+    if (arrIdxStoreProduk < arrData.length) {
+        users = '{{request.session.user_id}}'
+        updaters = $("#tanggal").val() + ' ' + time
+
+        No_faktur = arrData[arrIdxStoreProduk].FHPOBUKTI_ID
+        $.ajax({
+            url: host + "/SPcloseorder",
+            method: "POST",
+            data: {
+                "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                "users": users,
+                "updaters": updaters,
+                "No_faktur": No_faktur,
+            },
+            beforeSend: function () {
+                $('#ModalLoading').modal('show');
+                $('#loading_title').html('Proses Simpan..');
+                $('#loading_text').html('Tunggu Sebentar');
+            },
+            complete: function () {
+                $('#ModalLoading').modal('hide');
+            },
+            success: function (datas) {
+                //genarateNoTrans = datas
+                arrIdxStoreProduk++
+                SPcloseorder(arrData, callback)
+            }
+        })
+    } else {
+        console.log(callback)
+        arrIdxStoreProduk = 0
+        if (callback != null) {
+            callback()
+        }
+    }
+}
+
+function UNSPcloseorder(arrData, callback = null) {
+    var today = new Date();
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    // console.log('array : ' + arrData)
+    // console.log('jml : ' + arrData.length)
+    // console.log('counter : ' + i)
+    console.log('produk : ' + arrData[i].FHPOBUKTI_ID)
+    // contoh model bukan type data tabel
+    if (arrIdxStoreProduk < arrData.length) {
+        users = '{{request.session.user_id}}'
+        updaters = $("#tanggal").val() + ' ' + time
+
+        No_faktur = arrData[arrIdxStoreProduk].FHPOBUKTI_ID
+        $.ajax({
+            url: host + "/UNSPcloseorder",
+            method: "POST",
+            data: {
+                "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                "users": users,
+                "updaters": updaters,
+                "No_faktur": No_faktur,
+            },
+            beforeSend: function () {
+                $('#ModalLoading').modal('show');
+                $('#loading_title').html('Proses Simpan..');
+                $('#loading_text').html('Tunggu Sebentar');
+            },
+            complete: function () {
+                $('#ModalLoading').modal('hide');
+            },
+            success: function (datas) {
+                //genarateNoTrans = datas
+                arrIdxStoreProduk++
+                UNSPcloseorder(arrData, callback)
+            }
+        })
+    } else {
+        arrIdxStoreProduk = 0
+        if (callback != null) {
+            callback()
+        }
+    }
+}
+
+
+function setupDxGridclose() {
+    $("#DatacloseOrder").dxDataGrid({
+
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        selection: {
+            mode: "single"
+        },
+
+        //searchPanel : { visible: true },
+        dataSource: dataValidasorder,
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHPOBUKTI_ID",
+                caption: "NO BUKTI",
+            },
+            {
+                dataField: "FHPOPTGL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                format: 'dd/MMM/yyyy'
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "supplier",
+            },
+            {
+                dataField: "FHPOREMARK",
+                caption: "Keterangan",
+            },
+            {
+                dataField: "FKUNCI",
+                caption: "Cek",
+                dataType: "boolean"
+            },
+        ],
+        editing: {
+            allowUpdating: true,
+            mode: "Row"
+        },
+        onEditorPreparing: function (e) {
+            if (e.parentType === "dataRow" && e.dataField === "FKUNCI") {
+                e.editorElement.dxCheckBox({
+                    value: e.value,
+                    readOnly: e.readOnly,
+                    onValueChanged: function (ea) {
+                        // debugger;
+                        console.log(e);
+                        if (ea.value) {
+                            e.setValue(1);
+
+                        } else {
+                            e.setValue(0);
+                        }
+                    },
+                    update: function (key, values) {
+                        console.log(key);
+                        console.log(values);
+                    }
+                });
+                e.cancel = true;
+            }
+        },
+    });
+}

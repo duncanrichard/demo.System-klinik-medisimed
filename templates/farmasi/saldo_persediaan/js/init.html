@@ -1,0 +1,372 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+
+var todays = ''
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var qtyIndex = ''
+var data = ''
+var tempId = ''
+var tempNama = ''
+var tempkodesupp = ''
+var tempNamasupp = ''
+var temppqty = ''
+var tempSatuan = ''
+var tempHpokok = ''
+
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    setAwal()
+
+    $('#btn_tambah_brg').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            tambahrow()
+        }
+    })
+    $("#menu_tambah,#nav_FRMSLDBRG0101").click(function () {
+        livetext()
+        cleartext()
+        $('#btn_tambah_brg').css("display", 'block');
+        canAdd = 1
+        setGridEmpty()
+    })
+    $("#menu_edit,#nav_FRMSLDBRG0102").click(function () {
+        if ($("#No_bukti").val() == '') {
+            alert("Nomor Bukti Masih Kosong")
+        } else {
+            livetext()
+            setReadOnly('No_bukti', 1)
+            $('#btn_tambah_brg').css("display", 'block');
+            canAdd = 1
+        }
+    })
+    $("#menu_simpan,#nav_FRMSLDBRG0201").click(function () {
+        canAdd = 0
+        error_in_field()
+        if (Cekeror == true) {
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            if (dataGrid.getVisibleRows().length == 0) {
+                alert('Data detail Masih Kosong')
+            } else {
+                var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+                if (c) {
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    var FDETNO = []
+                    var FDET_BARANG = []
+                    var FDET_BARANGN = []
+                    var FDET_SUPP = []
+                    var FDET_SUPPN = []
+                    var FDET_SATUAN = []
+                    var FDET_HPOKOK = []
+                    var FDET_QTY = []
+                    var status_aud = 'A'
+                    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                        if (dataGrid.getVisibleRows()[i].data.ID_BARANG != '') {
+                            FDETNO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                            FDET_BARANG.push("" + dataGrid.getVisibleRows()[i].data.ID_BARANG)
+                            FDET_BARANGN.push("" + dataGrid.getVisibleRows()[i].data.NAMA_BARANG)
+                            FDET_SUPP.push("" + dataGrid.getVisibleRows()[i].data.KODE_SUPP)
+                            FDET_SUPPN.push("" + dataGrid.getVisibleRows()[i].data.NAME_SUPPL)
+                            FDET_SATUAN.push("" + dataGrid.getVisibleRows()[i].data.SATUAN)
+                            FDET_HPOKOK.push("" + dataGrid.getVisibleRows()[i].data.HARGA_POKOK)
+                            FDET_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                        }
+                    }
+                    $.ajax({
+                        url: host + "/SP_AUD_SALDO",
+                        method: "POST",
+                        data: {
+                            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                            "FDETNO": JSON.stringify(FDETNO),
+                            "FDET_BARANG": JSON.stringify(FDET_BARANG),
+                            "FDET_BARANGN": JSON.stringify(FDET_BARANGN),
+                            "FDET_SUPP": JSON.stringify(FDET_SUPP),
+                            "FDET_SUPPN": JSON.stringify(FDET_SUPPN),
+                            "FDET_SATUAN": JSON.stringify(FDET_SATUAN),
+                            "FDET_HPOKOK": JSON.stringify(FDET_HPOKOK),
+                            "FDET_QTY": JSON.stringify(FDET_QTY),
+
+                            "FHEADBUKTI_ID": $("#No_bukti").val(),
+                            "FHEADDATE": $("#tanggal").val(),
+                            "FHEADWHID": $("#idWh").val(),
+                            "StatusAUD": status_aud,
+                        },
+                        success: function (datas) {
+                            alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                            $("#No_bukti").val(datas[0].no_trans.trim())
+                            deathtext()
+                            $('#btn_tambah_brg').css("display", 'none');
+                            canAdd = 0
+                        }
+                    })
+                }
+            }
+        }
+
+    })
+
+    $('#menu_hapus,#nav_FRMSLDBRG0103').click(function () {
+        if ($("#No_bukti").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                var FDETNO = []
+                var FDET_BARANG = []
+                var FDET_BARANGN = []
+                var FDET_SUPP = []
+                var FDET_SUPPN = []
+                var FDET_SATUAN = []
+                var FDET_HPOKOK = []
+                var FDET_QTY = []
+                var status_aud = 'D'
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    if (dataGrid.getVisibleRows()[i].data.ID_BARANG != '') {
+                        FDETNO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                        FDET_BARANG.push("" + dataGrid.getVisibleRows()[i].data.ID_BARANG)
+                        FDET_BARANGN.push("" + dataGrid.getVisibleRows()[i].data.NAMA_BARANG)
+                        FDET_SUPP.push("" + dataGrid.getVisibleRows()[i].data.KODE_SUPP)
+                        FDET_SUPPN.push("" + dataGrid.getVisibleRows()[i].data.NAME_SUPPL)
+                        FDET_SATUAN.push("" + dataGrid.getVisibleRows()[i].data.SATUAN)
+                        FDET_HPOKOK.push("" + dataGrid.getVisibleRows()[i].data.HARGA_POKOK)
+                        FDET_QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                    }
+                }
+                $.ajax({
+                    url: host + "/SP_AUD_SALDO",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "FDETNO": JSON.stringify(FDETNO),
+                        "FDET_BARANG": JSON.stringify(FDET_BARANG),
+                        "FDET_BARANGN": JSON.stringify(FDET_BARANGN),
+                        "FDET_SUPP": JSON.stringify(FDET_SUPP),
+                        "FDET_SUPPN": JSON.stringify(FDET_SUPPN),
+                        "FDET_SATUAN": JSON.stringify(FDET_SATUAN),
+                        "FDET_HPOKOK": JSON.stringify(FDET_HPOKOK),
+                        "FDET_QTY": JSON.stringify(FDET_QTY),
+
+                        "FHEADBUKTI_ID": $("#No_bukti").val(),
+                        "FHEADDATE": $("#tanggal").val(),
+                        "FHEADWHID": $("#idWh").val(),
+                        "StatusAUD": status_aud,
+                    },
+                    success: function (datas) {
+                        alert(datas[0].STATUS + ' - ' + datas[0].STATE)
+                        $("#No_bukti").val(datas[0].no_trans.trim())
+                        setAwal()
+                        deathtext()
+                    }
+                })
+            }
+        }
+
+    })
+    $("#menu_cetak,#nav_FRMSLDBRG04").click(function () {
+        if ($("#No_bukti").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            var no_bukti = $('#No_bukti').val();
+            $.ajax({
+                url: host + "/cetaksaldo",
+                method: "GET",
+                data: {
+                    'no_bukti': no_bukti,
+                },
+                dataType: "json",
+                beforeSend: function () {
+                    $('#ModalLoading').modal('show');
+                    $('#loading_title').html('Proses Cetak..');
+                    $('#loading_text').html('Tunggu Sebentar');
+                },
+                complete: function () {
+                    $('#ModalLoading').modal('hide');
+                },
+                success: function (datas) {
+                    window.open(datas.pdf);
+                }
+            })
+        }
+    })
+
+    $("#menu_cancel,#nav_FRMSLDBRG0202").click(function () {
+        setAwal()
+    })
+    $("#menu_find,#nav_FRMSLDBRG0301").click(function () {
+        $('#ModalSaldo').modal('show');
+        $('#saldo_tanggal').val(todays);
+        $("#select_saldo").val('saldo_by_bulan');
+        $('#No_bukti').val('');
+        cari_saldo()
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+    $("#btn_cari_saldo").click(function () {
+        cari_saldo()
+    })
+    $("#saldo_tanggal").change(function () {
+        cari_saldo()
+    })
+
+    $("#select_saldo").change(function () {
+        cari_saldo()
+    })
+})
+
+function cari_saldo() {
+    $("#Datasaldo").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/load_saldorekening",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#saldo_tanggal').val(),
+                        'tipe': $('#select_saldo').val(),
+                        'no_bukti': $('#saldo_bukti').val(),
+                        'supplier': $('#saldo_supp').val(),
+                        'saldo_gudang': $('#saldo_gudang').val(),
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "BBBULAN",
+                caption: "NO BUKTI",
+                width: 150,
+            },
+            {
+                dataField: "BBDATE",
+                caption: "TANGGAL",
+                alignment: 'center',
+                width: 100,
+                dataType: 'date',
+                format: 'dd/MMM/yyyy',
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "SUPPLIER",
+                alignment: 'center',
+                width: 250,
+            },
+            {
+                dataField: "NAME_WH",
+                caption: "GUDANG",
+                alignment: 'center',
+                width: 250,
+            },
+        ],
+        onRowClick: function (e) {
+            getGridTablesaldo(e.data.BBBULAN)
+            $('#ModalSaldo').modal('hide')
+        }
+    });
+}
+
+
+function setAwal() {
+    deathtext()
+    cleartext()
+    $('#btn_tambah_brg').css("display", 'none');
+    canAdd = 0
+    setGridEmpty()
+}
+
+function deathtext() {
+    setMenu('menu_tambah', 1)
+    setMenu('menu_edit', 1)
+    setMenu('menu_hapus', 1)
+    setMenu('menu_simpan', 0)
+    setMenu('menu_cancel', 0)
+    setMenu('menu_find', 1)
+    setMenu('menu_cetak', 1)
+    setReadOnly('No_bukti', 1)
+    setReadOnly('tanggal', 1)
+    setReadOnly('idWh', 1)
+    setDisabled('FindWh', 0)
+
+
+}
+
+function livetext() {
+    setMenu('menu_tambah', 0)
+    setMenu('menu_edit', 0)
+    setMenu('menu_hapus', 0)
+    setMenu('menu_simpan', 1)
+    setMenu('menu_cancel', 1)
+    setMenu('menu_find', 0)
+    setMenu('menu_cetak', 0)
+    setReadOnly('No_bukti', 0)
+    setReadOnly('tanggal', 0)
+    setReadOnly('idWh', 0)
+    setDisabled('FindWh', 1)
+
+}
+
+
+function cleartext() {
+    $('#tanggal').val(todays);
+    $('#No_bukti').val('');
+    $('#idWh').val('');
+    $('#idWhn').val('');
+
+}
+
+function setMenu(id, enable = 1) {
+    if (enable == 0) {
+        $('#' + id).addClass('disabled')
+    } else {
+        $('#' + id).removeClass('disabled')
+    }
+}
+
+function setDisabled(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("disabled", false);
+    } else {
+        $('#' + id).attr("disabled", true);
+    }
+}
+
+function setReadOnly(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("readonly", true);
+        $('#' + id).css("background-color", 'white');
+    } else {
+        $('#' + id).attr("readonly", false);
+    }
+}

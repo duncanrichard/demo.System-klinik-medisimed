@@ -1,0 +1,114 @@
+<div class="modal fade" id="dxGridModalreport" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="DxGridLabeldivisi"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="form-row">
+                            <label class="col-md-2 control-label">Dari Tanggal </label>
+                            <div class="col-md-3">
+                                <input type="date" id="Cetak_mutasi_tanggal_dr2"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <label class="col-md-2 control-label">s/d Tanggal </label>
+                            <div class="col-md-3">
+                                <input type="date" id="Cetak_mutasi_tanggal_sd2"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <input type="hidden" id="paramprint">
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-2 control-label">Dari Supplier </label>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_dari2" id="cetak_dari2"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="cariSupplier(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_sampai2" id="cetak_sampai2"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="cariSupplier(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-2 control-label">Dari Pabrikan </label>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_dariPabrikan" id="cetak_dariPabrikan"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="cariPabrikan(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_sampaiPabrikan" id="cetak_sampaiPabrikan"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="cariPabrikan(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-2 control-label">Dari Gudang </label>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_dariGudang" id="cetak_dariGudang"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="caridivisi(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_sampaiGudang" id="cetak_sampaiGudang"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="caridivisi(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="panel-body">
+                            <div class="col-md-12  mt-15"
+                                style="background-color:#afece7;padding-top:10px;border-radius: 5px">
+                                <div style="height: 250px;overflow-y: auto;">
+                                    <div id="datagridreport"></div>
+                                </div>
+                                <div class="options">
+                                    <div class="caption">Options</div>
+                                    <div class="option">
+                                        <div id="autoExpand"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="Prosescetak">Proses</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

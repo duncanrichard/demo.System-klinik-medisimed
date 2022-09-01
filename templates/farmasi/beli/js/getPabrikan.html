@@ -1,0 +1,72 @@
+// Get Pabrikan
+$(document).ready(function () {
+    $('#cari_Pabrikan').click(function (e) {
+        $('#dxGridModalPabrikan').modal('show');
+        cariPabrikan()
+    })
+})
+
+function cariPabrikan(e, param = null) {
+    console.log('menu cari clicked roti')
+    $('#dxGridModalPabrikan').modal('show');
+    $("#DxGridDataPabrikan").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getPabrikan",
+                    method: "GET",
+                    data: {
+                        'kode': '',
+                        'tipe': ''
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMPSUPPLIERC",
+                caption: "KODE Pabrikan",
+            },
+            {
+                dataField: "FMPNAME_SUPPL",
+                caption: "NAMA Pabrikan",
+            },
+            {
+                dataField: "FMPADDRESS1",
+                caption: "ALAMAT",
+            },
+            {
+                dataField: "FMPCITYC",
+                caption: "KOTA",
+            },
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $('#kode_Pabrikan').val(e.data.FMPSUPPLIERC);
+                $('#nama_Pabrikan').val(e.data.FMPNAME_SUPPL);
+            } else if (param == 1) {
+                $("#cetak_dariPabrikan").val(e.data.FMPSUPPLIERC)
+            } else {
+                $("#cetak_sampaiPabrikan").val(e.data.FMPSUPPLIERC)
+            }
+            $('#dxGridModalPabrikan').modal('hide');
+        }
+    });
+}

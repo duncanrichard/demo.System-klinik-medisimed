@@ -805,8 +805,8 @@ function getGridTableBarang(no_bukti) {
                 $("#opt_resep2").prop('checked', true)
             }
 
-            $('#kode_transfer_apt').val(datas[0].FHFJTPAY_ID);
-            $('#nama_transfer_apt').val(datas[0].FHFJTPAYN);
+            // $('#kode_transfer_apt').val(datas[0].FHFJTPAY_ID);
+            // $('#nama_transfer_apt').val(datas[0].FHFJTPAYN);
             $('#iur_askes').val(rupiah2(parseInt(datas[0].FHFJIURASKES)));
             var iur_pasien = parseInt(datas[0].FHFJTOTAL) - parseInt(datas[0].FHFJIURASKES)
             $('#iur_pasien').val(rupiah2(iur_pasien));
@@ -1212,6 +1212,13 @@ function getGridTableBarang(no_bukti) {
             "no_bukti": no_bukti,
         },
         success: function (data) {
+            console.log('ffff')
+            if (data.length == 0) {
+                $("#nama_transfer_apt").val('')
+
+            } else {
+                $("#nama_transfer_apt").val('Lunas')
+            }
             $("#datagridbayar").dxDataGrid({
                 dataSource: data,
                 selection: {

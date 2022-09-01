@@ -223,6 +223,7 @@ def getParameter(request):
 	return HttpResponse(json_data, content_type="application/json")
 
 def getHistoryBarang(request):
+    cabang_id = request.session['kdCabang']
     kode_barang = request.GET['kode_barang']
     q = "select c.NAME_WH,a.BARANGC, a.NAME_BRG, a.SATSTAND, "
     q += "CAST(((isnull(b.FSBSALDO_AWAL,0)+isnull(b.FSBRPENJUALAN,0)+isnull(b.FSBPEMBELIAN,0)+isnull(b.FSBLAIN_MASUK,0)+isnull(b.FSBRKANVAS,0)) - "
@@ -539,3 +540,123 @@ def cetakBillingFarmasi(request):
 	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
+def cetakKwitansiFarmasi(request):
+	nomor = request.GET['no_bukti']
+	terbilang= request.GET['terbilang']
+	kw_nama_pembayar= request.GET['kw_nama_pembayar']
+	kw_Keterangan= request.GET['kw_Keterangan']
+	tanggal_waktu_cetak = datetime.now().strftime('%Y-%m-%d')
+	jam = str(datetime.now().strftime('%H:%M:%S'))
+	user = request.session['user_priv']
+	# pilihcetak=request.GET['pilihcetak']
+	pdf_file = Globals().generateReportDB(
+		"Kwitansifarmasi.jrxml", 
+		'Kwitansifarmasi', 
+		user,
+		{
+			'nomor': nomor,
+			'nama_rs': request.session['nama_cabang'],
+			'tanggal_waktu_cetak': Globals().tanggalIndo(tanggal_waktu_cetak),
+			'terbilang': terbilang,
+			'kw_nama_pembayar':kw_nama_pembayar,
+			'kw_Keterangan':kw_Keterangan,
+			'user': user,
+
+		} ,
+		# list_format=[pilihcetak]
+	)
+	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def cetak_lap_resep(request):
+	start = request.GET['start']
+	finish = request.GET['finish']
+	dariDivisi = request.GET['dariDivisi']
+	sdDivisi = request.GET['sdDivisi']
+	dari_Tgl_minta = request.GET['dari_Tgl_minta']
+	sd_Tgl_minta = request.GET['sd_Tgl_minta']
+	STSJENIS=request.GET['STSJENIS']
+	pilihcetak=request.GET['pilihcetak']
+
+	tanggal = datetime.now().strftime('%Y-%m-%d')
+	jam = str(datetime.now().strftime('%H:%M:%S'))
+	user = request.session['user_priv']
+	pdf_file = Globals().generateReportDB(
+		"FJUAL2.jrxml", 
+		'FJUAL2', 
+		user,
+		{
+			'start': start,
+			'finish': finish,
+			'dariDivisi': dariDivisi,
+			'sdDivisi': sdDivisi,
+			'STSJENIS': STSJENIS,
+            'kdCabang':request.session['kdCabang'],
+			'nama_rs':request.session['nama_cabang'],
+		},
+		list_format=[pilihcetak]
+	)
+	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def cetak_tt_resep(request):
+	start = request.GET['start']
+	finish = request.GET['finish']
+	dariDivisi = request.GET['dariDivisi']
+	sdDivisi = request.GET['sdDivisi']
+	dari_Tgl_minta = request.GET['dari_Tgl_minta']
+	sd_Tgl_minta = request.GET['sd_Tgl_minta']
+	STSJENIS=request.GET['STSJENIS']
+	pilihcetak=request.GET['pilihcetak']
+
+	tanggal = datetime.now().strftime('%Y-%m-%d')
+	jam = str(datetime.now().strftime('%H:%M:%S'))
+	user = request.session['user_priv']
+	pdf_file = Globals().generateReportDB(
+		"TTFJUAL2.jrxml", 
+		'TTFJUAL2', 
+		user,
+		{
+			'start': start,
+			'finish': finish,
+			'dariDivisi': dariDivisi,
+			'sdDivisi': sdDivisi,
+			'STSJENIS': STSJENIS,
+            'kdCabang':request.session['kdCabang'],
+			'nama_rs':request.session['nama_cabang'],
+		},
+		list_format=[pilihcetak]
+	)
+	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def cetak_resep_ambil(request):
+	start = request.GET['start']
+	finish = request.GET['finish']
+	dariDivisi = request.GET['dariDivisi']
+	sdDivisi = request.GET['sdDivisi']
+	dari_Tgl_minta = request.GET['dari_Tgl_minta']
+	sd_Tgl_minta = request.GET['sd_Tgl_minta']
+	STSJENIS=request.GET['STSJENIS']
+	pilihcetak=request.GET['pilihcetak']
+
+	tanggal = datetime.now().strftime('%Y-%m-%d')
+	jam = str(datetime.now().strftime('%H:%M:%S'))
+	user = request.session['user_priv']
+	pdf_file = Globals().generateReportDB(
+		"TTFJUAL4.jrxml", 
+		'TTFJUAL4', 
+		user,
+		{
+			'start': start,
+			'finish': finish,
+			'dariDivisi': dariDivisi,
+			'sdDivisi': sdDivisi,
+			'STSJENIS': STSJENIS,
+            'kdCabang':request.session['kdCabang'],
+			'nama_rs':request.session['nama_cabang'],
+		},
+		list_format=[pilihcetak]
+	)
+	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")

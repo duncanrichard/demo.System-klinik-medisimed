@@ -1,0 +1,57 @@
+{% extends "layout/master.html" %}
+{% block title %}
+Mutasi Masuk Farmasi
+{% endblock %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+    div#datagrid.dx-widget {
+        font-size: 12px;
+        line-height: 0.8;
+        /* height: 240px; */
+    }
+    .form-group {
+        margin-bottom: 0.9rem;
+        padding: unset;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class=''>
+    <div class="wrapper wrapper-content entry">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                        <h3 style="text-align: center">Mutasi Masuk Farmasi</h3>
+                    </div>
+                    <div class="ibox-content">
+                        {% csrf_token %}
+                        {% include 'farmasi/mutasi_masuk/form_mutasimasuk.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'farmasi/mutasi_masuk/modal/ModalprintMutasiMasuk.html' %}
+{% include 'farmasi/mutasi_masuk/modal/ModalMutasiMasuk.html' %}
+{% include 'farmasi/mutasi_masuk/modal/ModalBarang.html' %}
+{% include 'farmasi/mutasi_masuk/dxgrid/dxGridModaldivisi.html' %}
+{% include 'farmasi/mutasi_masuk/dxgrid/dxGridModalSupplier.html' %}
+{% include 'farmasi/beli/dxgrid/dxGridModalSetSatuan.html' %}
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/mutasi_masuk/js/getBarang.html' %}
+{% include 'farmasi/mutasi_masuk/js/init.html' %} 
+{% include 'farmasi/mutasi_masuk/js/getDxGrid.html' %}
+{% include 'farmasi/mutasi_masuk/js/getSupplier.html' %}
+{% include 'farmasi/mutasi_masuk/js/getDivisi.html' %} 
+</script>
+{% endblock  %}

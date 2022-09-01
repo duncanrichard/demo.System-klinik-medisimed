@@ -1,0 +1,61 @@
+<div class="modal fade px-0" id="ModalKwitansi" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h4 class="modal-title">Cetak Kwitansi Farmasi Rawat Jalan</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body pb-0">
+                <div class="form-group form-group-custom row">
+                    <label class="col-md-4 font-bold">Nomor Bukti</label>
+                    <div class="col-md-6 pr-0">
+                        <input id="kw_nomor_bukti" type="text" class="form-control input-sm" readonly>
+                    </div>
+                </div>
+                <div class="form-group form-group-custom row">
+                    <label class="col-md-4 font-bold">Tanggal</label>
+                    <div class="col-md-8">
+                        <input id="kw_tanggal" type="text" class="form-control input-sm py-0" readonly>
+                    </div>
+                </div>
+                <div class="form-group form-group-custom row">
+                    <label class="col-md-4 font-bold">Untuk Pasien </label>
+                    <div class="col-md-8">
+                        <input id="kw_pasien_id" type="text" class="form-control input-sm" readonly>
+                    </div>
+                </div>
+                <div class="form-group form-group-custom row">
+                    <label class="col-md-4 font-bold">Nama Pembayar</label>
+                    <div class="col-md-8">
+                        <textarea id="kw_nama_pembayar" class="form-control" style="resize: none; font-size: 11px; border-radius: 3px; background-color: white;" rows="1" ></textarea>
+                    </div>
+                </div>
+                <div class="form-group form-group-custom row">
+                    <label class="col-md-4 font-bold">Keterangan</label>
+                    <div class="col-md-8">
+                        <textarea id="kw_Keterangan" class="form-control" style="resize: none; font-size: 11px; border-radius: 3px; background-color: white;" rows="1" ></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group form-group-custom row">
+                    <label class="col-md-4 font-bold">Total </label>
+                    <div class="col-md-8">
+                        <input id="kw_Total" type="text" class="form-control input-sm" readonly>
+                    </div>
+                </div>
+                
+                <div class="form-group form-group-custom row pb-2">
+                    <label class="col-md-4 font-bold">Terbilang</label>
+                    <div class="col-md-8">
+                        <textarea id="kw_terbilang" class="form-control" style="resize: none; font-size: 11px; border-radius: 3px; background-color: white;" rows="1" readonly style="background-color: white !important;"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer py-1">
+                <button type="button" class="btn btn-primary" id="btn_cetak_kwitansi">Cetak</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

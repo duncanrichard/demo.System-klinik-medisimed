@@ -11,6 +11,7 @@ from . import frm_saldopersedian
 from . import frm_order
 from . import frm_beli
 from . import modul_stock
+from . import frm_mutasi_M
 
 urlpatterns = [
     url(r'^frm_suplier/', include([
@@ -67,7 +68,7 @@ urlpatterns = [
         url(r'^getlokasi', frm_lokasi.getlokasi, name='getlokasi'),
         url(r'^cetak_lokasi', frm_lokasi.cetak_lokasi,name='cetak_lokasi'),
     ])),
-     url(r'^frm_barang/', include([
+    url(r'^frm_barang/', include([
         url(r'^$', frm_barang.frm_barang, name='frm_barang'),
         url(r'^exit', frm_barang.exit, name='exitbarang'),
         url(r'^load_barang_stokmaxmin', frm_barang.load_barang_stokmaxmin, name='load_barang_stokmaxmin'),
@@ -129,5 +130,49 @@ urlpatterns = [
         url(r'^UNSPcloseorder', frm_order.UNSPcloseorder, name='UNSPcloseorder'),
 
     ])),
+    url(r'^frm_beli/', include([
+        url(r'^$', frm_beli.frm_beli, name='frm_beli'),
+        url(r'^exit', frm_beli.exit, name='exitbeli'),
+        url(r'^getSupplier', frm_beli.getSupplier, name='getSupplier'),
+        url(r'^getPabrikan', frm_beli.getPabrikan, name='getPabrikan'),
+        url(r'^getDataStatus', frm_order.getDataStatus, name='getDataStatus'),
+        url(r'^getTpay', frm_beli.getTpay, name='getTpay'),
+        url(r'^getdivisi', frm_beli.getdivisi, name='getdivisi'),
+        url(r'^getIdDataBarang', frm_beli.getIdDataBarang, name='getIdDataBarang'),
+        url(r'^getDataBarang', frm_order.getDataBarang, name='getDataBarang'),
+        url(r'^getPembelianByBuktiPembelian', frm_beli.getPembelianByBuktiPembelian,name='getPembelianByBuktiPembelian'),
+        url(r'^getHistoryBeliBarang', modul_stock.getHistoryBeliBarang,name='getHistoryBeliBarang'),
+        url(r'^SP_AUD_BELI', frm_beli.SP_AUD_BELI, name='SP_AUD_BELI'),
+        url(r'^getPembelian', frm_beli.getPembelian, name='getPembelian'),
+        url(r'^getBarangByBuktiPembelian', frm_beli.getBarangByBuktiPembelian,name='getBarangByBuktiPembelian'),
+        url(r'^cetakPembelian', frm_beli.cetakPembelian, name='cetakPembelian'),
+        url(r'^getOrder_Pembelian', frm_beli.getOrder_Pembelian,name='getOrder_Pembelian'),
+        url(r'^getorderBarangByBuktiPembelian', frm_beli.getorderBarangByBuktiPembelian,name='getorderBarangByBuktiPembelian'),
+        url(r'^getvalidasiPembelian', frm_beli.getvalidasiPembelian,name='getvalidasiPembelian'),
+        url(r'^SPValidasiMutasi', frm_beli.SPValidasiMutasi,name='SPValidasiMutasi'),
+        url(r'^UNSPValidasiMutasi', frm_beli.UNSPValidasiMutasi,name='UNSPValidasiMutasi'),
+        url(r'^SPPerubahanfaktur', frm_beli.SPPerubahanfaktur,name='SPPerubahanfaktur'),
+        url(r'^cetak_lap_rekap_supplier', frm_beli.cetak_lap_rekap_supplier,name='cetak_lap_rekap_supplier'),
+        url(r'^cetak_lap_rekap', frm_beli.cetak_lap_rekap, name='cetak_lap_rekap'),
+        url(r'^cetak_supp_pabrik_gudang', frm_beli.cetak_supp_pabrik_gudang, name='cetak_supp_pabrik_gudang'),
+        url(r'^cetak_lap_Pembelian', frm_beli.cetak_lap_Pembelian, name='cetak_lap_Pembelian'),
+    ])),
+    url(r'^frm_mutasi_M/', include([
+        url(r'^$', frm_mutasi_M.frm_mutasi_M, name='frm_mutasi_M'),
+        url(r'^exit', frm_mutasi_M.exit, name='exitfrm_mutasi_M'),
+        url(r'^getSupplier', frm_mutasi_M.getSupplier, name='getSupplier'),
+        url(r'^getdivisi', frm_mutasi_M.getdivisi, name='getdivisi'),
+        url(r'^getDataStatus', frm_order.getDataStatus, name='getDataStatus'),
+        url(r'^getIdDataBarang', frm_beli.getIdDataBarang, name='getIdDataBarang'),
+        url(r'^getDataBarangKeluar', modul_stock.getDataBarangKeluar,name='getDataBarangKeluar'),
+        url(r'^getHistoryBarang', modul_stock.getHistoryBarang,name='getHistoryBarang'),
+        url(r'^SP_AUD_CLAIMS', frm_mutasi_M.SP_AUD_CLAIMS, name='SP_AUD_CLAIMS'),
+        url(r'^getMutasiMasuk', frm_mutasi_M.getMutasiMasuk, name='getMutasiMasuk'),
+        url(r'^getBarangByBukti', frm_mutasi_M.getBarangByBukti,name='getBarangByBukti'),
+        url(r'^cetakBarang', frm_mutasi_M.cetakBarang, name='cetakBarang'),
+        url(r'^cetak_lap_rekap_divisi', frm_mutasi_M.cetak_lap_rekap_divisi,name='cetak_lap_rekap_divisi'),
+
+    ])),
+
 
 ]

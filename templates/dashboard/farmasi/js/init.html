@@ -64,7 +64,7 @@ $(document).ready(function () {
             tambahrow()
         }
     })
-    $("#menu_tambah").click(function () {
+    $("#menu_tambah,#FRMRSPRJ00101").click(function () {
         livetext()
         cleartext()
         setGridEmpty()
@@ -76,7 +76,7 @@ $(document).ready(function () {
 
 
     })
-    $("#menu_edit,#nav_FRMRSPRJ00102").click(function () {
+    $("#menu_edit,#FRMRSPRJ00102").click(function () {
         if ($("#no_fakturid").val() == '') {
             alert("Nomor Masih Kosong")
         } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
@@ -89,10 +89,10 @@ $(document).ready(function () {
             Cekeror = true;
         }
     })
-    $("#menu_cancel").click(function () {
+    $("#menu_cancel,#FRMRSPRJ00202").click(function () {
         setAwal()
     })
-    $('#menu_simpan,#nav_FRMRSPRJ00201').click(function () {
+    $('#menu_simpan,#FRMRSPRJ00201').click(function () {
         canAdd = 0
         error_in_field()
         if (Cekeror == true) {
@@ -219,7 +219,7 @@ $(document).ready(function () {
             }
         }
     })
-    $("#menu_hapus,#nav_FRMRSPRJ00103").click(function () {
+    $("#menu_hapus,#FRMRSPRJ00103").click(function () {
         if ($("#no_fakturid").val() == '') {
             alert('Nomor Masih Kosong')
         } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
@@ -342,7 +342,7 @@ $(document).ready(function () {
             }
         }
     })
-    $("#menu_find,#nav_FRMRSPRJ00301").click(function () {
+    $("#menu_find,#FRMRSPRJ00301").click(function () {
         $('#ModalResepRJ').modal('show')
         $('#mutasi_tanggal').val(todays);
         $("#select_mutasi").val('mutasi_by_tanggal');
@@ -503,7 +503,7 @@ $(document).ready(function () {
             $('#nominal_fisik').focus()
         }
     })
-    $("#menu_cetak,#nav_FRMRSPRJ00401").click(function () {
+    $("#menu_cetak,#FRMRSPRJ00401").click(function () {
         if ($("#no_fakturid").val() == '') {
             alert('Nomor Masih Kosong')
         } else {
@@ -511,11 +511,128 @@ $(document).ready(function () {
             Prosescetak()
         }
     })
+    $("#btn_cetak_kwitansi").click(function (e) {
+        Cetakkwitansi()
+    });
+    $("#menu_kwitansi,#FRMRSPRJ00402").click(function (e) {
+        if ($("#no_fakturid").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else if ($("#nama_transfer_apt").val() == '') {
+            alert('Pembayaran harus di bayar dahulu')
+        } else {
+            e.preventDefault();
+            $("#kw_nomor_bukti").val($("#no_fakturid").val());
+            $("#kw_tanggal").val($("#far_tanggal").val());
+            $("#kw_pasien_id").val($('#far_kode_pasien').val() + ' - ' + $('#far_nama_pasien').val());
+            $("#kw_nama_pembayar").val($('#far_nama_pasien').val())
+            $("#kw_Keterangan").val('');
+            var terbilang = (angkaTerbilang(String(desimal2($('#netto').val()))).toUpperCase() + " RUPIAH ")
+            $("#kw_Total").val($('#netto').val());
+            $("#kw_terbilang").val(terbilang);
+            e.stopImmediatePropagation();
+            $('#ModalKwitansi').modal('show');
+            $('#paramprint').val(5)
+        }
+
+    })
+    $("#FRMRSPRJ00403").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        $("#cetak_dari").val('0')
+        $("#cetak_sampai").val('ZZZ')
+        $("#Cetak_mutasi_tanggal_dr2").val(todays);
+        $("#Cetak_mutasi_tanggal_sd2").val(todays);
+        $('#label_Cetak_mutasi_tanggal').css("display", 'none');
+        e.stopImmediatePropagation();
+        $('#ModalprintMutasiKeluar').modal('show');
+        $('#paramprint').val(1)
+    })
+    $("#FRMRSPRJ00404").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        $("#cetak_dari").val('0')
+        $("#cetak_sampai").val('ZZZ')
+        $("#Cetak_mutasi_tanggal_dr2").val(todays);
+        $("#Cetak_mutasi_tanggal_sd2").val(todays);
+        $('#label_Cetak_mutasi_tanggal').css("display", 'none');
+        e.stopImmediatePropagation();
+        $('#ModalprintMutasiKeluar').modal('show');
+        $('#paramprint').val(3)
+    })
+    $("#FRMRSPRJ00405").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        $("#cetak_dari").val('0')
+        $("#cetak_sampai").val('ZZZ')
+        $('#label_gudang').css("display", 'none');
+        $("#Cetak_mutasi_tanggal_dr2").val(todays);
+        $("#Cetak_mutasi_tanggal_sd2").val(todays);
+        $('#label_Cetak_mutasi_tanggal').css("display", 'none');
+        e.stopImmediatePropagation();
+        $('#ModalprintMutasiKeluar').modal('show');
+        $('#paramprint').val(4)
+    })
+    $("#FRMRSPRJ00406").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        $("#cetak_dari").val('0')
+        $("#cetak_sampai").val('ZZZ')
+        $("#Cetak_mutasi_tanggal_dr2").val(todays);
+        $("#Cetak_mutasi_tanggal_sd2").val(todays);
+        $('#label_Cetak_mutasi_tanggal').css("display", 'none');
+        e.stopImmediatePropagation();
+        $('#ModalprintMutasiKeluar').modal('show');
+        $('#paramprint').val(2)
+    })
+    $("#FRMRSPRJ00407").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_resep_tanggal_dr").val(todays);
+        $("#Cetak_resep_tanggal_sd").val(todays);
+        $("#gudang_dari").val('0')
+        $("#gudang_sampai").val('ZZZ')
+        $('#DxGridLabelInforesep').html('Informasi Resep per pasien');
+        e.stopImmediatePropagation();
+        $('#dxGridModalInforesep').modal('show');
+        $('#paramprint').val(2)
+    })
+
 
     $('#menu_keluar').click(function () {
         window.open('/', "_self");
     })
 })
+
+function Cetakkwitansi() {
+    var terbilang = (angkaTerbilang(String(desimal2($('#netto').val()))).toUpperCase() + " RUPIAH ")
+    var kw_nama_pembayar = $("#kw_nama_pembayar").val()
+    var kw_Keterangan = $("#kw_Keterangan").val()
+    $.ajax({
+        url: host + "/cetakKwitansiFarmasi",
+        method: "GET",
+        data: {
+            'no_bukti': $("#no_fakturid").val(),
+            'terbilang': terbilang,
+            'kw_nama_pembayar': kw_nama_pembayar,
+            'kw_Keterangan': kw_Keterangan,
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            window.open(datas.pdf);
+        },
+    })
+}
 
 function Prosescetak() {
     var terbilang = (angkaTerbilang(String(desimal2($('#netto').val()))).toUpperCase() + " RUPIAH ")
@@ -538,6 +655,90 @@ function Prosescetak() {
             window.open(datas.pdf);
         },
     })
+}
+
+function pilihancetak(param = null) {
+    pilihcetak = ''
+    Swal.fire({
+        title: 'Pilih cetak ?',
+        text: "",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#28a745',
+        confirmButtonText: 'PDF',
+        cancelButtonText: 'EXCEL',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // window.open(datas.pdf);
+            pilihcetak = 'pdf'
+        } else {
+            // window.open(datas.xls);
+            pilihcetak = 'xls'
+        }
+        if (param == 1) {
+            Prosescetak()
+        } else {
+            cetaklaporan()
+        }
+    })
+}
+
+function cetakMutasikeluar1(e, param) {
+    T = param;
+    pilihancetak(2)
+}
+
+function cetaklaporan() {
+    if (T == 1) {
+        url2 = host + "/cetak_lap_resep"
+    } else if (T == 2) {
+        url2 = host + "/cetak_tt_resep"
+    } else if (T == 3) {
+        url2 = host + "/cetak_resep_ambil"
+    } else if (T == 4) {
+        url2 = host + "/cetak_respontime_antrian"
+    }
+
+    var dari = $('#Cetak_mutasi_tanggal_dr').val();
+    var sd = $('#Cetak_mutasi_tanggal_sd').val();
+    var dariDivisi = $('#cetak_dari').val();
+    var sdDivisi = $('#cetak_sampai').val();
+    var dari_Tgl_minta = $('#Cetak_mutasi_tanggal_dr2').val();
+    var sd_Tgl_minta = $('#Cetak_mutasi_tanggal_sd2').val();
+    var STSJENIS = 'J01'
+
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+            'dariDivisi': dariDivisi,
+            'sdDivisi': sdDivisi,
+            'dari_Tgl_minta': dari_Tgl_minta,
+            'sd_Tgl_minta': sd_Tgl_minta,
+            'STSJENIS': STSJENIS,
+            'pilihcetak': pilihcetak,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            if (pilihcetak == 'pdf') {
+                window.open(datas.pdf);
+            } else {
+                window.open(datas.xls);
+            };
+        },
+    })
+    $('#ModalprintMutasiKeluar').modal('show');
 }
 
 function perhitungan() {

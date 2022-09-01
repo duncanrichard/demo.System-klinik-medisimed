@@ -1,0 +1,61 @@
+<div class="modal fade" id="ModalprintBeli" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="DxGridLabelModalprintMinta"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-row">
+                                    <label class="col-md-2 control-label">Dari Tanggal </label>
+                                    <div class="col-md-3">
+                                        <input type="date" id="Cetak_mutasi_tanggal_dr"
+                                            class="form-control input-sm-lab today formdate2">
+                                    </div>
+                                    <label class="col-md-2 control-label">s/d Tanggal </label>
+                                    <div class="col-md-3">
+                                        <input type="date" id="Cetak_mutasi_tanggal_sd"
+                                            class="form-control input-sm-lab today formdate2">
+                                    </div>
+                                    <input type="hidden" id="paramprint">
+                                </div>
+                                <div class="form-row">
+                                    <label class="col-md-2 control-label">Dari Supplier </label>
+                                    <div class="col-md-3">
+                                        <input type="text" name="cetak_dari" id="cetak_dari"
+                                            class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-sm btn-block btn-primary" onclick="cariSupplier(event, 1)">
+                                            <span class="fa fa-search"></span> Cari
+                                        </button>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" name="cetak_sampai" id="cetak_sampai"
+                                            class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-sm btn-block btn-primary" onclick="cariSupplier(event, 2)">
+                                            <span class="fa fa-search"></span> Cari
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger"  onclick="cetakbeli1(event,$('#paramprint').val())">Cetak</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

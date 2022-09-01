@@ -55,7 +55,7 @@ def getDataBarang(request):
         return HttpResponse(json_data, content_type="application/json")
 
     else:
-        q = "select * from BARANG where AKTIF<>1 and  name_brg like %s order by NAME_BRG"
+        q = "select *,KERJASAMA as STATUS from BARANG where AKTIF<>1 and  name_brg like %s order by NAME_BRG"
         result = Globals().getDataQuery(q, [nama])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
@@ -270,8 +270,8 @@ def cetak_order(request):
         user,
         {
             'no_bukti': no_bukti,
-            'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-            'tanggal': Globals().dateIndo(tanggal),
+            'nama_rs':  request.session['nama_cabang'],
+			'tanggal': Globals().tanggalIndo(tanggal),
             'jam': jam,
         }
     )
@@ -289,8 +289,8 @@ def cetak_orderinternal(request):
         user,
         {
             'no_bukti': no_bukti,
-            'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-            'tanggal': Globals().dateIndo(tanggal),
+            'nama_rs':  request.session['nama_cabang'],
+			'tanggal': Globals().tanggalIndo(tanggal),
             'jam': jam,
         }
     )
@@ -311,9 +311,9 @@ def cetak_lap_rekap_supplier(request):
         {
             'start': start,
             'finish': finish,
-            'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-            'alamat_rs': Globals().getDataCabang('ALAMAT1'),
-            'tanggal': Globals().dateIndo(tanggal),
+            'nama_rs':  request.session['nama_cabang'],
+			'tanggal': Globals().tanggalIndo(tanggal),
+			'alamat_rs':  request.session['alamat_cabang'],
             'jam': jam,
         }
     )
@@ -336,9 +336,9 @@ def cetak_lap_rekap(request):
         {
             'start': start,
             'finish': finish,
-            'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-            'alamat_rs': Globals().getDataCabang('ALAMAT1'),
-            'tanggal': Globals().dateIndo(tanggal),
+            'nama_rs':  request.session['nama_cabang'],
+            'alamat_rs':  request.session['alamat_cabang'],
+            'tanggal': Globals().tanggalIndo(tanggal),
             'jam': jam,
         }
     )
@@ -361,9 +361,9 @@ def cetak_lap_rekap02(request):
         {
             'start': start,
             'finish': finish,
-            'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-            'alamat_rs': Globals().getDataCabang('ALAMAT1'),
-            'tanggal': Globals().dateIndo(tanggal),
+            'nama_rs':  request.session['nama_cabang'],
+            'alamat_rs':  request.session['alamat_cabang'],
+            'tanggal': Globals().tanggalIndo(tanggal),
             'jam': jam,
         }
     )
@@ -386,9 +386,9 @@ def cetak_lap_rekap03(request):
         {
             'start': start,
             'finish': finish,
-            'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
-            'alamat_rs': Globals().getDataCabang('ALAMAT1'),
-            'tanggal': Globals().dateIndo(tanggal),
+            'nama_rs':  request.session['nama_cabang'],
+            'alamat_rs':  request.session['alamat_cabang'],
+            'tanggal': Globals().tanggalIndo(tanggal),
             'jam': jam,
         }
     )

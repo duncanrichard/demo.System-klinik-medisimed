@@ -219,6 +219,10 @@ urlpatterns = [
         url(r'^getVoucherPay', kasir_rj.getVoucherPay),
         url(r'^SP_AUD_BAYAR_TRANSAKSI', kasir_rj.SP_AUD_BAYAR_TRANSAKSI),
         url(r'^cetakBillingFarmasi', farmasi.cetakBillingFarmasi),
+        url(r'^cetakKwitansiFarmasi', farmasi.cetakKwitansiFarmasi),
+        url(r'^cetak_lap_resep', farmasi.cetak_lap_resep),
+        url(r'^cetak_tt_resep', farmasi.cetak_tt_resep),
+        url(r'^cetak_resep_ambil', farmasi.cetak_resep_ambil),
     ])),
     url(r'^jasamedis001/', include ([
         url(r'^$',jasamedis001.jasamedis001, name='jasamedis001'),

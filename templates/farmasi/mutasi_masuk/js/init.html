@@ -1,0 +1,590 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+// console.log(host)
+
+var todays = ''
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var qtyIndex = ''
+var data = ''
+
+var tempId = ''
+var tempNama = ''
+var tempIdPrd = ''
+var tempSatuan = ''
+var tempHpokok = ''
+var tempHrupiah = ''
+var tempstatusproduk = ''
+var tempKonversi = ''
+var kondisi_gudang = '{{kondisi_gudang}}'
+
+var canEnterBarang = 0
+
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+
+    $(".today").val(today)
+
+    $('.i-checks').iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green',
+    });
+
+    setAwal()
+
+    $("#menu_tambah,#nav_FRMMTM00101").click(function () {
+        livetext()
+        cleartext()
+        $('#btn_tambah_barang').css("display", 'block');
+        $('#btn_hapus_semua_barang').css("display", 'block');
+        canAdd = 1
+        setGridEmpty()
+        Cekeror = true;
+    })
+
+    $("#menu_edit,#nav_FRMMTM00102").click(function () {
+        if ($("#no_bhp").val() == '') {
+            alert("Nomor Masih Kosong")
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            livetext()
+            $('#btn_tambah_barang').css("display", 'block');
+            $('#btn_hapus_semua_barang').css("display", 'block');
+            canAdd = 1
+            Cekeror = true;
+        }
+    })
+
+    $("#menu_hapus,#nav_FRMMTM00103").click(function () {
+        if ($("#no_bhp").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+
+                var NO = []
+                var TTYPEC = []
+                var BARANGC = []
+                var NAME_BRG = []
+                var SATSTAND = []
+                var HPOKOK = []
+                var QTY = []
+                var TOTAL = []
+                var KONVERSI = []
+                var SATUANSTD = []
+                var BUKTI_ID = []
+                var SUPPL_ID = []
+
+                var tot = ''
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                    TTYPEC.push("" + dataGrid.getVisibleRows()[i].data.TTYPEC)
+                    BARANGC.push("" + dataGrid.getVisibleRows()[i].data.BARANGC)
+                    NAME_BRG.push("" + dataGrid.getVisibleRows()[i].data.NAME_BRG)
+                    SATSTAND.push("" + dataGrid.getVisibleRows()[i].data.SATSTAND)
+                    HPOKOK.push("" + parseInt(dataGrid.getVisibleRows()[i].data.HPOKOK))
+                    QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                    tot = dataGrid.getVisibleRows()[i].cells[7].value
+                    TOTAL.push("" + parseInt(tot.replace(',', '')))
+                    KONVERSI.push("" + dataGrid.getVisibleRows()[i].data.KONVERSI)
+                    SATUANSTD.push("" + dataGrid.getVisibleRows()[i].data.SATUANSTD)
+                    BUKTI_ID.push($("#no_bhp").val())
+                    SUPPL_ID.push($("#kode_supplier").val())
+                }
+
+                $.ajax({
+                    url: host + "/SP_AUD_CLAIMS",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "NO": JSON.stringify(NO),
+                        "TTYPEC": JSON.stringify(TTYPEC),
+                        "BARANGC": JSON.stringify(BARANGC),
+                        "NAME_BRG": JSON.stringify(NAME_BRG),
+                        "SATSTAND": JSON.stringify(SATSTAND),
+                        "HPOKOK": JSON.stringify(HPOKOK),
+                        "QTY": JSON.stringify(QTY),
+                        "TOTAL": JSON.stringify(TOTAL),
+                        "KONVERSI": JSON.stringify(KONVERSI),
+                        "SATUANSTD": JSON.stringify(SATUANSTD),
+                        "BUKTI_ID": JSON.stringify(BUKTI_ID),
+                        "SUPPL_ID": JSON.stringify(SUPPL_ID),
+
+                        "FHCLMBUKTI_ID": $("#no_bhp").val(),
+                        "FHCLMTGL": $("#tanggal").val(),
+                        "FHCLMCUST_ID": $("#kode_supplier").val(),
+                        "FHCLMCUSTN": $("#nama_supplier").val(),
+                        "FHCLMWH_ID": $("#kode_divisi").val(),
+                        "FHCLMWHN": $("#nama_divisi").val(),
+                        "FHCLMREMARK": $("#keterangan").val(),
+                        "JENIS": 'C02',
+                        "StatusAUD": 'D',
+                    },
+                    success: function (datas) {
+                        if (datas.status == 'sukses') {
+                            alert('Berhasil Dihapus')
+                            setAwal()
+                        } else {
+                            alert('Gagal Dihapus, ' + datas.data)
+                        }
+                    }
+                })
+            }
+        }
+    })
+
+    $('#menu_simpan,#nav_FRMMTM00201').click(function () {
+        canAdd = 0
+        error_in_field()
+        if (Cekeror == true) {
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            if (dataGrid.getVisibleRows().length == 0) {
+                alert('Data Barang Masih Kosong')
+            } else {
+                var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+                if (c) {
+                    var NO = []
+                    var TTYPEC = []
+                    var BARANGC = []
+                    var NAME_BRG = []
+                    var SATSTAND = []
+                    var HPOKOK = []
+                    var QTY = []
+                    var TOTAL = []
+                    var KONVERSI = []
+                    var SATUANSTD = []
+                    var BUKTI_ID = []
+                    var SUPPL_ID = []
+
+                    var tot = ''
+                    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                        if (dataGrid.getVisibleRows()[i].data.NAME_BRG != '' && dataGrid.getVisibleRows()[i].data.QTY != '') {
+                            NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                            TTYPEC.push("" + dataGrid.getVisibleRows()[i].data.TTYPEC)
+                            BARANGC.push("" + dataGrid.getVisibleRows()[i].data.BARANGC)
+                            NAME_BRG.push("" + dataGrid.getVisibleRows()[i].data.NAME_BRG)
+                            SATSTAND.push("" + dataGrid.getVisibleRows()[i].data.SATSTAND)
+                            HPOKOK.push("" + parseInt(dataGrid.getVisibleRows()[i].data.HPOKOK))
+                            QTY.push("" + dataGrid.getVisibleRows()[i].data.QTY)
+                            tot = dataGrid.getVisibleRows()[i].cells[7].value
+                            TOTAL.push("" + parseInt(tot.replace(',', '')))
+                            KONVERSI.push("" + dataGrid.getVisibleRows()[i].data.KONVERSI)
+                            SATUANSTD.push("" + dataGrid.getVisibleRows()[i].data.SATUANSTD)
+                            BUKTI_ID.push($("#no_bhp").val())
+                            SUPPL_ID.push($("#kode_supplier").val())
+                        }
+                    }
+                    $.ajax({
+                        url: host + "/SP_AUD_CLAIMS",
+                        method: "POST",
+                        data: {
+                            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                            "NO": JSON.stringify(NO),
+                            "TTYPEC": JSON.stringify(TTYPEC),
+                            "BARANGC": JSON.stringify(BARANGC),
+                            "NAME_BRG": JSON.stringify(NAME_BRG),
+                            "SATSTAND": JSON.stringify(SATSTAND),
+                            "HPOKOK": JSON.stringify(HPOKOK),
+                            "QTY": JSON.stringify(QTY),
+                            "TOTAL": JSON.stringify(TOTAL),
+                            "KONVERSI": JSON.stringify(KONVERSI),
+                            "SATUANSTD": JSON.stringify(SATUANSTD),
+                            "BUKTI_ID": JSON.stringify(BUKTI_ID),
+                            "SUPPL_ID": JSON.stringify(SUPPL_ID),
+
+                            "FHCLMBUKTI_ID": $("#no_bhp").val(),
+                            "FHCLMTGL": $("#tanggal").val(),
+                            "FHCLMCUST_ID": $("#kode_supplier").val(),
+                            "FHCLMCUSTN": $("#nama_supplier").val(),
+                            "FHCLMWH_ID": $("#kode_divisi").val(),
+                            "FHCLMWHN": $("#nama_divisi").val(),
+                            "FHCLMREMARK": $("#keterangan").val(),
+                            "JENIS": 'C02',
+                            "StatusAUD": 'A',
+                        },
+                        success: function (e) {
+                            alert(e[0].STATUS + ' - ' + e[0].STATE)
+                            $("#no_bhp").val(e[0].no_trans)
+                            deathtext()
+                        }
+                    })
+                }
+            }
+        }
+    })
+
+    $("#menu_cancel,#nav_FRMMTM00202").click(function () {
+        setAwal()
+    })
+
+    $("#menu_find,#nav_FRMMTM00301").click(function () {
+        console.log('tes')
+        $('#ModalMutasiMasuk').modal('show')
+        $("#select_mutasi").val('mutasi_by_tanggal');
+        $('#mutasi_bukti').val('');
+        $('#mutasi_supplier').val('');
+        $('#mutasi_gudang').val('');
+        cari_mutasi()
+    })
+
+    $("#btn_cari_mutasi").click(function () {
+        cari_mutasi()
+    })
+
+    $("#btn_cari_mutasi").click(function () {
+        cari_mutasi()
+    })
+
+    $("#mutasi_tanggal").change(function () {
+        cari_mutasi()
+    })
+
+    $("#select_mutasi").change(function () {
+        cari_mutasi()
+    })
+
+    $('.enter-cari-mutasi').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            cari_mutasi()
+        }
+    });
+
+    $("#menu_cetak,#nav_FRMMTM00401").click(function () {
+        if ($("#no_bhp").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else {
+            pilihancetak(1)
+
+        }
+    })
+
+    $("#nav_FRMMTM00402").click(function (e) {
+        e.preventDefault();
+        $("#Cetak_mutasi_tanggal_dr").val(todays);
+        $("#Cetak_mutasi_tanggal_sd").val(todays);
+        $("#cetak_dari").val('0')
+        $("#cetak_sampai").val('ZZZ')
+        e.stopImmediatePropagation();
+        $('#ModalprintMutasiMasuk').modal('show');
+        $('#paramprint').val(1)
+    })
+
+
+    $('#btn_hapus_semua_barang').click(function () {
+        var dataGrid = $("#datagrid").dxDataGrid("instance");
+        if (dataGrid.getVisibleRows().length != 0) {
+            var c = confirm('Yakin Ingin Menghapus Semua Barang ?')
+            if (c) {
+                setGridEmpty()
+            }
+        }
+    })
+
+    $('#btn_tambah_barang').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            tambahrow()
+        }
+    })
+
+    $('#btn_ok_data_barang').click(function () {
+        pilihBarang()
+    })
+})
+
+function pilihancetak(param = null) {
+    pilihcetak = ''
+    Swal.fire({
+        title: 'Pilih cetak ?',
+        text: "",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#28a745',
+        confirmButtonText: 'PDF',
+        cancelButtonText: 'EXCEL',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // window.open(datas.pdf);
+            pilihcetak = 'pdf'
+        } else {
+            // window.open(datas.xls);
+            pilihcetak = 'xls'
+        }
+        if (param == 1) {
+            Prosescetak()
+        } else {
+            cetaklaporan()
+        }
+    })
+}
+
+function Prosescetak() {
+    $.ajax({
+        url: host + "/cetakBarang",
+        method: "POST",
+        data: {
+            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+            'nomor': $("#no_bhp").val(),
+            'pilihcetak': pilihcetak,
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            if (pilihcetak == 'pdf') {
+                window.open(datas.pdf);
+            } else {
+                window.open(datas.xls);
+            }
+        },
+    })
+}
+
+function cetakMutasimasuk1(e, param) {
+    T = param;
+    pilihancetak(2)
+}
+
+function cetaklaporan() {
+    if (T == 1) {
+        url2 = host + "/cetak_lap_rekap_divisi"
+    }
+
+    var dari = $('#Cetak_mutasi_tanggal_dr').val();
+    var sd = $('#Cetak_mutasi_tanggal_sd').val();
+    var dariDivisi = $('#cetak_dari').val();
+    var sdDivisi = $('#cetak_sampai').val();
+
+
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+            'dariDivisi': dariDivisi,
+            'sdDivisi': sdDivisi,
+            'pilihcetak': pilihcetak,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            if (pilihcetak == 'pdf') {
+                window.open(datas.pdf);
+            } else {
+                window.open(datas.xls);
+            }
+        },
+    })
+    $('#ModalprintMutasiMasuk').modal('show');
+}
+
+function error_in_field() {
+    Cekeror = true;
+    if ($('#kode_divisi').val() == '') {
+        alert('Silahkan Pilih Gudang asal ')
+        Cekeror = false;
+    }
+
+    if ($('#kode_supplier').val() == '') {
+        alert('Silahkan Pilih Supplier')
+        Cekeror = false;
+    }
+
+    if ($('#tanggal').val() == '') {
+        alert('Silahkan Pilih Tanggal')
+        Cekeror = false;
+    }
+    if (canAdd == 1) {
+        var dataGrid = $("#datagrid").dxDataGrid("instance");
+        for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+            if (dataGrid.getVisibleRows()[i].data.BARANGC == '') {
+                alert('Silahkan isi kode barang ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.NAME_BRG == '') {
+                alert('Silahkan isi nama barang ')
+                Cekeror = false;
+            };
+            if (dataGrid.getVisibleRows()[i].data.QTY == 0) {
+                alert('Silahkan isi QTY ')
+                Cekeror = false;
+            };
+        }
+    }
+
+    return Cekeror;
+
+}
+
+function cari_mutasi() {
+    $("#DataMutasiMasuk").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getMutasiMasuk",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'supplier': $('#mutasi_supplier').val(),
+                        'gudang': $('#mutasi_gudang').val(),
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHCLMBUKTI_ID",
+                caption: "NO BUKTI",
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+            },
+            {
+                dataField: "FHCLMCUSTN",
+                caption: "SUPPLIER",
+            },
+            {
+                dataField: "FHCLMWHN",
+                caption: "GUDANG",
+            },
+        ],
+        onRowClick: function (e) {
+            getGridTableBarang(e.data.FHCLMBUKTI_ID)
+            $('#ModalMutasiMasuk').modal('hide')
+        }
+    });
+}
+
+function setAwal() {
+    deathtext()
+    cleartext()
+    $('#btn_tambah_barang').css("display", 'none');
+    $('#btn_hapus_semua_barang').css("display", 'none');
+    canAdd = 0
+    setGridEmpty()
+}
+
+function deathtext() {
+    setMenu('menu_tambah', 1)
+    setMenu('menu_edit', 1)
+    setMenu('menu_hapus', 1)
+    setMenu('menu_simpan', 0)
+    setMenu('menu_cancel', 0)
+    setMenu('menu_find', 1)
+    setMenu('menu_cetak', 1)
+    setDisabled('cari_divisi', 0)
+    setDisabled('cari_supplier', 0)
+    setReadOnly('tanggal', 1)
+    setReadOnly('keterangan', 1)
+    setDisabled('inlineCheckboxclose', 0)
+    $("#datagrid").dxDataGrid({
+        disabled: true,
+    })
+}
+
+function livetext() {
+    setMenu('menu_tambah', 0)
+    setMenu('menu_edit', 0)
+    setMenu('menu_hapus', 0)
+    setMenu('menu_simpan', 1)
+    setMenu('menu_cancel', 1)
+    setMenu('menu_find', 0)
+    setMenu('menu_cetak', 0)
+    setDisabled('cari_divisi', 1)
+    setDisabled('cari_supplier', 1)
+    setReadOnly('tanggal', 0)
+    setReadOnly('keterangan', 0)
+    $("#datagrid").dxDataGrid({
+        disabled: false,
+    })
+}
+
+function cleartext() {
+    $('#tanggal').val(todays);
+    $('#no_bhp').val('');
+    $('#kode_supplier').val('');
+    $('#nama_supplier').val('');
+    // $('#kode_divisi').val('');
+    // $('#nama_divisi').val('');
+    $('#keterangan').val('');
+    $("#inlineCheckboxclose").prop('checked', false)
+}
+
+function setMenu(id, enable = 1) {
+    if (enable == 0) {
+        $('#' + id).addClass('disabled')
+    } else {
+        $('#' + id).removeClass('disabled')
+    }
+}
+
+function setDisabled(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("disabled", false);
+    } else {
+        $('#' + id).attr("disabled", true);
+    }
+}
+
+function setReadOnly(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("readonly", true);
+        $('#' + id).css("background-color", 'white');
+    } else {
+        $('#' + id).attr("readonly", false);
+    }
+}

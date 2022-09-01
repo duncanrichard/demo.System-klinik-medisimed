@@ -1,0 +1,56 @@
+// Get Tpay
+$(document).ready(function () {
+    $('#cari_tpay').click(function (e) {
+        $('#dxGridModalTpay').modal('show');
+        cariTpay()
+    })
+})
+
+function cariTpay() {
+    $("#DxGridDataTpay").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getTpay",
+                    method: "GET",
+                    data: {
+                        'kode': '',
+                        'tipe': ''
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "KODE",
+                caption: "KODE PEMBAYARAN",
+            },
+            {
+                dataField: "NAMA_MERK",
+                caption: "NAMA PEMBAYARAN",
+            },
+        ],
+        onRowClick: function (e) {
+            $('#kode_tpay').val(e.data.KODE);
+            $('#nama_tpay').val(e.data.NAMA_MERK);
+            $('#dxGridModalTpay').modal('hide');
+        }
+    });
+}

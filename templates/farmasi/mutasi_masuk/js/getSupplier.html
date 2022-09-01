@@ -1,0 +1,72 @@
+// Get Supplier
+$(document).ready(function () {
+    $('#cari_supplier').click(function (e) {
+        $('#dxGridModalSupplier').modal('show');
+        cariSupplier()
+    })
+})
+
+function cariSupplier(e, param = null) {
+    console.log('menu cari clicked roti')
+    $('#dxGridModalSupplier').modal('show');
+    $("#DxGridDataSupplier").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: true
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                return $.ajax({
+                    url: host + "/getSupplier",
+                    method: "GET",
+                    data: {
+                        'kode': '',
+                        'tipe': ''
+                    },
+                    success: function (datas) {
+
+                    }
+                })
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "SUPPLIERC",
+                caption: "KODE SUPPLIER",
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "NAMA SUPPLIER",
+            },
+            {
+                dataField: "ADDRESS1",
+                caption: "ALAMAT",
+            },
+            {
+                dataField: "CITYC",
+                caption: "KOTA",
+            },
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $('#kode_supplier').val(e.data.SUPPLIERC);
+                $('#nama_supplier').val(e.data.NAME_SUPPL);
+            } else if (param == 1) {
+                $("#cetak_dari").val(e.data.SUPPLIERC)
+            } else {
+                $("#cetak_sampai").val(e.data.SUPPLIERC)
+            }
+            $('#dxGridModalSupplier').modal('hide');
+        }
+    });
+}

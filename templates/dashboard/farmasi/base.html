@@ -36,6 +36,9 @@ F A R M A S I / PRODUK
     .form-group {
     margin-bottom: 0.2rem;
     }
+    .swal2-container {
+    z-index: 3000 !important;
+    }
     .btn-xs {
     font-size: 12px;
     padding: 1px 5px;
@@ -53,6 +56,8 @@ F A R M A S I / PRODUK
 {% block content %}
 {% csrf_token %}
 
+{% include 'dashboard/farmasi/modal/ModalprintMutasiKeluar.html'%}
+{% include 'dashboard/farmasi/modal/ModalKwitansi.html'%}
 {% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}
 {% include 'dashboard/farmasi/modal/ModalTransferRj.html' %}
 {% include 'dashboard/kasir/dxgrid/DxGridModaltpay.html'%}

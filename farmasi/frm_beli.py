@@ -71,41 +71,35 @@ def getTpay(request):
 	return HttpResponse(json_data, content_type="application/json")
 
 def getdivisi(request):
-	
 	tipe = request.GET['tipe']
+	ID_CABANG = request.session['kdCabang']
 	if(tipe == 'Divisi'):
 		kode = request.GET['kode']
 		q = "SELECT WH_ID, NAME_WH "
-		q += "FROM WAREHOUSE  "
-		q += "WHERE (WH_ID LIKE %s) AND aktif=1 "
-		result = Globals().getDataQuery(q,[kode])
+		q += "FROM WAREHOUSE c "
+		q += "WHERE (WH_ID LIKE %s) AND aktif=1 and c.BRANCH=%s"
+		result = Globals().getDataQuery(q,[kode,ID_CABANG])
 	else:
 		kode_divisi = '%'+request.GET['search_kode_divisi']+'%'
 		nama_divisi = '%'+request.GET['search_nama_divisi']+'%'
 		q = "SELECT WH_ID, NAME_WH "
-		q += "FROM WAREHOUSE  "
-		q += "WHERE (WH_ID LIKE %s) AND (NAME_WH LIKE %s)  AND aktif=1  "
-		result = Globals().getDataQuery(q, [kode_divisi,nama_divisi])
-	
-	
+		q += "FROM WAREHOUSE c "
+		q += "WHERE (WH_ID LIKE %s) AND (NAME_WH LIKE %s)  AND aktif=1 and c.BRANCH=%s "
+		result = Globals().getDataQuery(q, [kode_divisi,nama_divisi,ID_CABANG])
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
-	
 	return HttpResponse(json_data, content_type="application/json")
 
 def getIdDataBarang(request):
-	
 	kode = request.GET['kode']
 	if len(kode)==0:
-		q = " SELECT A.BARANGC,NAME_BRG,SATSTAND,HPOKOK,TTYPEC  "
+		q = " SELECT A.BARANGC,NAME_BRG,SATSTAND,HPOKOK,TTYPEC,KERJASAMA as STATUS  "
 		q +=" FROM BARANG A  where AKTIF<>1 and BARANGC=%s  order by BARANGC "
 		result = Globals().getDataQuery(q, [kode])
 	else:
-		q = " SELECT A.BARANGC,NAME_BRG,SATSTAND,HPOKOK,TTYPEC  "
+		q = " SELECT A.BARANGC,NAME_BRG,SATSTAND,HPOKOK,TTYPEC,KERJASAMA as STATUS  "
 		q +=" FROM BARANG A  where AKTIF<>1 and BARANGC=%s or BARCODE=%s order by BARANGC "
 		result = Globals().getDataQuery(q, [kode,kode])
 
-
-	
 	if len(result)==0:
 		data={
 			'status':'gagal',
@@ -119,7 +113,6 @@ def getIdDataBarang(request):
 			'data':result[0]
 		}
 	json_data = json.dumps(data, cls=DjangoJSONEncoder)
-	
 	return HttpResponse(json_data, content_type="application/json")
 
 def getPembelianByBuktiPembelian(request):
@@ -151,7 +144,7 @@ def getPembelianByBuktiPembelian(request):
 	return HttpResponse(json_data, content_type="application/json")
 
 def SP_AUD_BELI(request):
-	
+	ID_CABANG = request.session['kdCabang']
 	# DETAIL
 	FDFBNOM = json.loads(request.POST['FDFBNOM'])
 	FDFBPRD_ID = json.loads(request.POST['FDFBPRD_ID'])
@@ -196,7 +189,7 @@ def SP_AUD_BELI(request):
 	FKUNCIBPJS = request.POST['FKUNCIBPJS']
 	StatusAUD = request.POST['StatusAUD']
 
-	q = "DECLARE @LIST_RESEP FBELID;"
+	q = "SET NOCOUNT ON;DECLARE @LIST_RESEP FBELID;"
 	q += "DECLARE @NOW datetime; "
 	q += "SET @NOW = GETDATE(); "
 
@@ -251,6 +244,7 @@ def SP_AUD_BELI(request):
 	q += "'" + FHFBSP + "',"
 	q += "'" + FKUNCIBPJS + "',"
 	q += "'" + StatusAUD + "',"
+	q += "'" + ID_CABANG + "',"
 	q += "@LIST_RESEP,"
 	q += "''"
 
@@ -266,28 +260,12 @@ def SP_AUD_BELI(request):
 		Globals().create_log('Hapus LogDelete.txt', 'FARMASI', data, user)
 	
 	
-	# print (q % tuple(proc_param))
-	result = Globals().getDataQuery(q,proc_param)
-	
-	
-	result = None
-	while result is None:
-		try:
-			result = cursor.fetchall()
-			break
-		except ProgrammingError as e:
-			cursor.nextset()
-
-	if result[0][0] != 0:
-		json_data = json.dumps({'status':'gagal', 'data':result[0][1]}, cls=DjangoJSONEncoder)
-	else:
-		json_data = json.dumps({'status':'sukses', 'data':result[0][1]}, cls=DjangoJSONEncoder)
-		
-	
+	result = Globals().getDataSP(q,proc_param)
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
 def getPembelian(request):
-	
+	ID_CABANG = request.session['kdCabang']
 	no_bukti = '%'+request.GET['no_bukti']+'%'
 	supplier = '%'+request.GET['supplier']+'%'
 	gudang = '%'+request.GET['gudang']+'%'
@@ -299,15 +277,15 @@ def getPembelian(request):
 		q += "from FBELI a inner join SUPPLIER b on a.FHFBSUPPL_ID = b.SUPPLIERC "
 		q += "inner join WAREHOUSE c on a.FHFBWH_ID = c.WH_ID "
 		q += "where (a.FHFBBUKTI_ID like %s) and (b.NAME_SUPPL like %s) and "
-		q += "(c.NAME_WH like %s) and (YEAR(FHFBDATE) = %s) and (MONTH(FHFBDATE) = %s) "
-		result = Globals().getDataQuery(q, [no_bukti, supplier, gudang, tanggal.year, tanggal.month])
+		q += "(c.NAME_WH like %s) and (YEAR(FHFBDATE) = %s) and (MONTH(FHFBDATE) = %s) and FHFBBRANCH= %s "
+		result = Globals().getDataQuery(q, [no_bukti, supplier, gudang, tanggal.year, tanggal.month,ID_CABANG])
 	else:
 		q = "select top 100 a.*, b.NAME_SUPPL, c.NAME_WH, convert(varchar, a.FHFBDATE, 23) as TANGGAL,FHFBJUMLAH "
 		q += "from FBELI a inner join SUPPLIER b on a.FHFBSUPPL_ID = b.SUPPLIERC "
 		q += "inner join WAREHOUSE c on a.FHFBWH_ID = c.WH_ID "
 		q += "where (a.FHFBBUKTI_ID like %s) and (b.NAME_SUPPL like %s) and "
-		q += "(c.NAME_WH like %s) and FHFBDATE = %s"
-		result = Globals().getDataQuery(q, [no_bukti, supplier, gudang, tanggal])
+		q += "(c.NAME_WH like %s) and FHFBDATE = %s and FHFBBRANCH= %s"
+		result = Globals().getDataQuery(q, [no_bukti, supplier, gudang, tanggal,ID_CABANG])
 
 	
 	
@@ -332,9 +310,6 @@ def getBarangByBuktiPembelian(request):
 	return HttpResponse(json_data, content_type="application/json")
 
 def cetakPembelian(request):
-	
-	cursor2 = connection.cursor()
-	
 	nama_rs = ''
 	nomor = request.POST['nomor']
 	lpb = request.POST['lpb']
@@ -353,14 +328,7 @@ def cetakPembelian(request):
 	netto = request.POST['netto']
 	pilihcetak=request.POST['pilihcetak']
 	no_po=request.POST['no_so']
-
-	# q = 'update FBELI set FKUNCIREGRISTASI = 1, FHFBTGL_REGRISTASI = GETDATE() '
-	# q += 'where FHFBBUKTI_ID = %s and FHFBLPB = %s'
-	# result = Globals().getDataQuery(q, [nomor, lpb])
-
-	qcabang = "select * from CABANG"
-	cursor2.execute(qcabang)
-	cabang = Globals().dictfetchall(cursor2)
+	cabang = request.session['nama_cabang']
 
 	nomor_nama_file = nomor.replace("/", "-")
 	nomor_nama_file = nomor.replace("\\", "-")
@@ -381,7 +349,7 @@ def cetakPembelian(request):
 		'faktur_pembelian', 
 		user,
 		{
-			'nama_rs': cabang[0]['PERUSAHAAN'],
+			'nama_rs': request.session['nama_cabang'],
 			'no_faktur_beli': nomor,
 			'nama_supplier': nama_supplier,
 			'nama_gudang': nama_gudang,
@@ -403,8 +371,6 @@ def cetakPembelian(request):
 	)
 
 	json_data = json.dumps(pdf_file, cls=DjangoJSONEncoder)
-	
-	cursor2.close()
 	return HttpResponse(json_data, content_type="application/json")
 
 def getvalidasiPembelian(request):
@@ -434,9 +400,6 @@ def getvalidasiPembelian(request):
 		q += "( FHFBDATE <= %s) and fkunci=1 "
 
 	result = Globals().getDataQuery(q, [tanggalawal, tanggalakhir])
-
-	
-	
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
@@ -448,8 +411,7 @@ def SPPerubahanfaktur(request):
 	No_faktur_lama = request.POST['No_faktur_lama']
 	# dgn Store procedure
 	q = "exec FRM_UPDATEFAKTUR_BELI  %s, %s, %s, %s "
-	result = Globals().getDataQuery(q, [No_faktur_baru, No_faktur_lama, users, updaters])
-	result = cursor.fetchall()
+	Globals().executeQuery(q, [No_faktur_baru, No_faktur_lama, users, updaters])
 	json_data = json.dumps({'pesan':'ok'}, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
@@ -460,9 +422,8 @@ def SPValidasiMutasi(request):
 	No_faktur = request.POST['No_faktur']
 
 	q = "UPDATE  FBELI  SET FKUNCI = 1 WHERE   FHFBBUKTI_ID = %s"
-	result = Globals().getDataQuery(q, [No_faktur])
+	Globals().executeQuery(q, [No_faktur])
 	json_data = json.dumps({"pesan":"Berhasil Di validasi"}, cls=DjangoJSONEncoder)
-	
 	return HttpResponse(json_data, content_type="application/json")
 
 def UNSPValidasiMutasi(request):
@@ -472,7 +433,7 @@ def UNSPValidasiMutasi(request):
 	No_faktur = request.POST['No_faktur']
 
 	q = "UPDATE  FBELI  SET FKUNCI = 0 WHERE   FHFBBUKTI_ID = %s"
-	result = Globals().getDataQuery(q, [No_faktur])
+	Globals().executeQuery(q, [No_faktur])
 	json_data = json.dumps({"pesan":"Berhasil Di Batalkan"}, cls=DjangoJSONEncoder)
 	
 	return HttpResponse(json_data, content_type="application/json")
@@ -498,7 +459,7 @@ def cetak_lap_rekap_supplier(request):
 			'finish': finish,
 			'dariSupp': dariSupp,
 			'sdSupp': sdSupp,
-			'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
+			'nama_rs': request.session['nama_cabang'],
 		},
 		list_format=[pilihcetak]
 	)
@@ -526,7 +487,7 @@ def cetak_lap_rekap(request):
 			'finish': finish,
 			'dariSupp': dariSupp,
 			'sdSupp': sdSupp,
-			'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
+			'nama_rs': request.session['nama_cabang'],
 		},
 		list_format=[pilihcetak]
 	)
@@ -544,7 +505,7 @@ def cetak_lap_Pembelian(request):
 	user = request.session['user_priv']
 	pilihcetak=request.GET['pilihcetak']
 	# proses cetak
-	# print(finish) 
+	# print(sdSupp) 
 	pdf_file = Globals().generateReportDB(
 		"faktur_pembelian002.jrxml", 
 		'faktur_pembelian002', 
@@ -554,7 +515,7 @@ def cetak_lap_Pembelian(request):
 			'finish': finish,
 			'dariSupp': dariSupp,
 			'sdSupp': sdSupp,
-			'nama_rs': Globals().getDataCabang('PERUSAHAAN'),
+			'nama_rs': request.session['nama_cabang'],
 		},
 		list_format=[pilihcetak]
 	)
@@ -562,7 +523,6 @@ def cetak_lap_Pembelian(request):
 	return HttpResponse(json_data, content_type="application/json")
 
 def cetak_supp_pabrik_gudang(request):
-	
 	start = request.GET['start']
 	finish = request.GET['finish']
 	dariSupp = request.GET['dariSupp']
@@ -571,8 +531,6 @@ def cetak_supp_pabrik_gudang(request):
 	sdPabrikan = request.GET['sdPabrikan']
 	dariGudang = request.GET['dariGudang']
 	sdGudang = request.GET['sdGudang']
-	
-
 	q = "select a.FHFBBUKTI_ID as NO_BUKTI,A.FHFBDATE as TANGGAL_TERIMA,A.FHFBEXPIRE AS TANGGAL_BELI,A.FHFBDATE_TEMPO AS TANGGAL_TEMPO,D.NAME_SUPPL AS NAMA_SUPLIER,E.FMPNAME_SUPPL AS PABRIKAN,  "
 	q += "f.NAME_WH AS NAMA_GUDANG,g.NAMA as CARA_BAYAR, "
 	q += "A.FHFBDPP AS DPP,A.FHFBPPNPERCENT,A.FHFBPPN AS PPN,A.FHFBJUMLAH AS NETTO,A.FHFBLPB as LPB, "
@@ -593,13 +551,11 @@ def cetak_supp_pabrik_gudang(request):
 	q += "order by A.FHFBDATE, A.FHFBBUKTI_ID, b.FDFBNOM"
 
 	result = Globals().getDataQuery(q, [dariPabrikan,sdPabrikan,start,finish,dariSupp,sdSupp,dariGudang,sdGudang])
-	
-	
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
 def getOrder_Pembelian(request):
-	
+	ID_CABANG = request.session['kdCabang']
 	no_bukti = '%'+request.GET['no_bukti']+'%'
 	supplier = '%'+request.GET['supplier']+'%'
 	tipe = request.GET['tipe']
@@ -609,17 +565,17 @@ def getOrder_Pembelian(request):
 		q = "select top 100 a.*, b.NAME_SUPPL, convert(varchar, a.FHPOTGL, 23) as TANGGAL "
 		q += "from H_POB a inner join SUPPLIER b on a. FHPOSUPP_ID = b.SUPPLIERC "
 		q += "where (a.FHPOBUKTI_ID like %s) and (b.NAME_SUPPL like %s) and FKUNCI=1 and ISNULL(FCLOSE,0)<>1 and "
-		q += "(YEAR(FHPOTGL) = %s) and (MONTH(FHPOTGL) = %s) "
-		result = Globals().getDataQuery(q, [no_bukti, supplier, tanggal.year, tanggal.month])
+		q += "(YEAR(FHPOTGL) = %s) and (MONTH(FHPOTGL) = %s) and a.FHPOBRANCH= %s "
+		result = Globals().getDataQuery(q, [no_bukti, supplier, tanggal.year, tanggal.month,ID_CABANG])
 	else:
 		q = "select top 100 a.*, b.NAME_SUPPL, convert(varchar, a.FHPOTGL, 23) as TANGGAL "
 		q += "from H_POB a inner join SUPPLIER b on a. FHPOSUPP_ID = b.SUPPLIERC "
 		q += "where (a.FHPOBUKTI_ID like %s) and (b.NAME_SUPPL like %s) and FKUNCI=1 and ISNULL(FCLOSE,0)<>1 and  "
-		q += "FHPOTGL = %s"
-		result = Globals().getDataQuery(q, [no_bukti, supplier, tanggal])
+		q += "FHPOTGL = %s and a.FHPOBRANCH= %s"
+		result = Globals().getDataQuery(q, [no_bukti, supplier, tanggal,ID_CABANG])
 
 
-	
+	print (q)
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
@@ -634,7 +590,7 @@ def getorderBarangByBuktiPembelian(request):
 	q += "(select kstandart from BARANG d where d.BARANGC= b.FDPOBRG_ID and d.satkecil= b.FDPOSATUAN "
 	q += "union select KSTANDART*KKECIL as KONVERSI from BARANG e where e.BARANGC= b.FDPOBRG_ID and e.satkemas= b.FDPOSATUAN "
 	q += "union select 1 as KONVERSI from BARANG F where F.BARANGC= b.FDPOBRG_ID and F.SATSTAND= b.FDPOSATUAN) as KONVERSI, "
-	q += "c.SATSTAND  as SATSTAND "
+	q += "c.SATSTAND  as SATSTAND,IIF(ISNULL(KERJASAMA,0)=0,'KRSM','Non') as KRSM "
 	q += "from H_POB a inner join D_POB b on a.FHPOBUKTI_ID = b.FDPOBUKTI_ID "
 	q += "inner join BARANG c on b.FDPOBRG_ID=c.barangc "
 	q += "inner join SUPPLIER d on a.FHPOSUPP_ID=d.SUPPLIERC "

@@ -183,6 +183,7 @@ urlpatterns = [
         url(r'^getTpay', kasir_rj.getTpay),
         url(r'^getVoucherPay', kasir_rj.getVoucherPay),
         url(r'^SP_BATAL_BAYAR', kasir_rj.SP_BATAL_BAYAR),
+        url(r'^SP_UBAH_PAKET', kasir_rj.SP_UBAH_PAKET),
         url(r'^getpaketbayar', daftar_paket.getpaketbayar),
     ])),
     url(r'^paket_produk/', include ([

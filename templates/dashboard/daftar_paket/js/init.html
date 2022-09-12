@@ -344,8 +344,6 @@ $(document).ready(function () {
     $('#menu_ubah_paket').click(function () {
         if ($("#no_trans").val() == '') {
             alert("Nomor Masih Kosong")
-        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
-            alert("Transaksi sudah ditutup")
         } else if (($("#deposit_tunai_on").prop('checked') == true)) {
             alert("Transaksi sudah deposit uang")
         } else {
@@ -360,14 +358,12 @@ $(document).ready(function () {
                     if (data.length != 0) {
                         var c = confirm('Yakin Ingin mengubah menjadi Deposit Tunai ?')
                         if (c) {
-                            status_aud = 'D'
                             $.ajax({
-                                url: host + "/SP_BATAL_BAYAR",
+                                url: host + "/SP_UBAH_PAKET",
                                 method: "POST",
                                 data: {
                                     "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
                                     "FH_BUKTI_ID": $("#no_trans").val(),
-                                    "StatusAUD": status_aud,
                                 },
                                 success: function (e) {
                                     alert(e[0].STATUS + ' - ' + e[0].STATE)

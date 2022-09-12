@@ -643,6 +643,34 @@ def SP_BATAL_BAYAR(request):
     except ValueError:
         print(q)
 
+def SP_UBAH_PAKET(request):
+    FH_BUKTI_ID = request.POST['FH_BUKTI_ID']
+    USERRS = request.session['user_id']
+
+    q = "SET NOCOUNT ON;"
+    q += "EXEC IMD_UBAH_PAKET "
+    q += "'" + FH_BUKTI_ID + "',"
+    q += "'" + USERRS + "' "
+
+
+    user = {
+    'user_id': request.session['user_id'],
+    'user_name': request.session['user_name'],
+    'user_priv': request.session['user_priv'],
+    }
+    data = []
+    data.append({"query": "select * from DEPOSIT_PAKET a left join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT where FDPNO_DEPOSIT = '" + FH_BUKTI_ID + "'"})
+    
+    Globals().create_log('Hapus LogDelete.txt', 'IMMODERMA', data, user)
+
+    try:
+        result = Globals().getDataSP(q)
+        json_data = json.dumps(result, cls=DjangoJSONEncoder)
+        return HttpResponse(json_data, content_type="application/json")
+
+    except ValueError:
+        print(q)
+
 def Cekdepositfarmasi(request):
     bukti = request.GET['bukti']
     KD_CABANG= request.session['kdCabang']

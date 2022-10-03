@@ -553,7 +553,7 @@ function getGridTable() {
                             if (!rowData.FEE_MEDIS) {
                                 fee_dokter = 0
                             } else {
-                                fee_dokter = parseInt(rowData.FEE_MEDIS)
+                                fee_dokter = parseFloat(rowData.FEE_MEDIS)
                             }
                             var amount = (hjual * qty)
                             var totdisckonsumen = amount * (disckonsumen / 100)
@@ -591,7 +591,8 @@ function getGridTable() {
         complete: function () {
             setTimeout(function () {
                 $('#ModalLoading').modal('hide');
-            }, 500);$('#ModalLoading').modal('hide');
+            }, 500);
+            $('#ModalLoading').modal('hide');
         },
     })
 }

@@ -592,8 +592,8 @@ def getGridPaketprodukpasien(request):
     result = Globals().getDataQuery(q , [KD_CABANG])
 
 
-    q = "select ROW_NUMBER() OVER (ORDER BY FDPNO_DEPOSIT) AS NO,A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
-    q += " IIF(FDP_JENIS_DEPOSITO=1,0,%s) as JAMINAN,0 as PIUTANG,0 as BANK,0 as VOUCHER,0 as TUNAI, "
+    q = "SELECT *,ISNULL(TOTAL_JAMINAN,0)+ISNULL(Detail_sisa,0) AS JAMINAN FROM (select ROW_NUMBER() OVER (ORDER BY FDPNO_DEPOSIT) AS NO,A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
+    q += " IIF(FDP_JENIS_DEPOSITO=1,0,%s) as TOTAL_JAMINAN,0 as PIUTANG,0 as BANK,0 as VOUCHER,0 as TUNAI, "
     q += "(select sum(dbo.fungsiCalculasiDeposit(FDPDTARIF,1,FDPD_DISCKONSUMEN,FDPD_DISC1,FDPD_DISC2,FDPD_DISC3,FDPD_DISC4))   "
     q += "FROM DEPOSIT_PAKETD b where b.FDPDNO_DEPOSIT=a.FDPNO_DEPOSIT) as Detail_sisa   "
     q += "from DEPOSIT_PAKET a   "
@@ -606,7 +606,7 @@ def getGridPaketprodukpasien(request):
             q +=",'"+ x +"'"
         i+=1
     q += ")  "
-    q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s order by FDPNO_DEPOSIT "
+    q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s ) AS XYZ order by NOFAKTUR "
     result5 = Globals().getDataQuery(q , [nominal_deposit,KD_CABANG])
 
     json_data = json.dumps({

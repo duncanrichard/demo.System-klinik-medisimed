@@ -115,22 +115,11 @@ def SP_AUD_PAKET(request):
 def getTransaksi(request):
     no_bukti = '%'+request.GET['no_bukti']+'%'
     nama_produk = '%'+request.GET['nama_produk']+'%'
-    tipe = request.GET['tipe']
-    tanggal = datetime.strptime(request.GET['tanggal'], "%Y-%m-%d")
-
-    if(tipe == 'mutasi_by_bulan'):
-        q = "select  top 100 a.FMPKKD_PAKET,a.FMPKPAKETN,convert(varchar, a.FMPTGL, 23) as TANGGAL  "
-        q +="from PRODUK_PAKET a  "
-        q +="where (FMPKKD_PAKET like %s) and  "
-        q += "(FMPKPAKETN like %s) and (YEAR(FMPTGL) = %s) and (MONTH(FMPTGL) = %s) "
-        result = Globals().getDataQuery(q, [no_bukti, nama_produk, tanggal.year, tanggal.month])
-    else:
-        q = "select  top 100 a.FMPKKD_PAKET,a.FMPKPAKETN,convert(varchar, a.FMPTGL, 23) as TANGGAL "
-        q +="from PRODUK_PAKET a "
-        q +="where (FMPKKD_PAKET like %s) and "
-        q += "(FMPKPAKETN like %s) and (FMPTGL = %s )"
-        result = Globals().getDataQuery(q, [no_bukti, nama_produk, tanggal])
-
+    q = "select  top 100 a.FMPKKD_PAKET,a.FMPKPAKETN,convert(varchar, a.FMPTGL, 23) as TANGGAL "
+    q +="from PRODUK_PAKET a "
+    q +="where (FMPKKD_PAKET like %s) and "
+    q += "(FMPKPAKETN like %s) order by FMPTGL desc "
+    result = Globals().getDataQuery(q, [no_bukti, nama_produk])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

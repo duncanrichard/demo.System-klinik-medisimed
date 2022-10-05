@@ -10,6 +10,7 @@ $(document).ready(function () {
         }
     });
     $("#inlineRadiokreteria1").prop('checked', true)
+    $("#inlineRadiopilih1").prop('checked', true)
     setGridEmpty();
 
 });
@@ -566,6 +567,101 @@ function getGridTable() {
                         }
                     },
 
+                ],
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 500);
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}
+
+function getGridRekapTable() {
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "kodemedis_dari": $("#kodemedis_dari").val(),
+            "kodemedis_sampai": $("#kodemedis_sampai").val(),
+            "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
+            "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                sorting: {
+                    mode: 'multiple',
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "KODE_MEDIS",
+                        caption: "KODE_MEDIS",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 120,
+                        allowSorting: true
+                    },
+                    {
+                        dataField: "NAMA_MEDIS",
+                        caption: "NAMA_MEDIS",
+                        alignment: 'left',
+                        allowEditing: true,
+                        // width: 120,
+                        allowSorting: true
+                    },
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'right',
+                        allowEditing: false,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 130,
+                    },
                 ],
 
                 editing: {

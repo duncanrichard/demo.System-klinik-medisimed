@@ -54,11 +54,16 @@ $(document).ready(function () {
         pilihancetak(1)
     })
     $("#Batalproses").click(function () {
+
         Batalproses()
     })
 
     $("#ProsesExcel").click(function () {
-        ProsesExcel()
+        if ($("#inlineRadiopilih1:checked").val() == '1') {
+            ProsesExcel()
+        } else {
+            ProsesRekap()
+        }
     })
 
 })
@@ -124,10 +129,13 @@ function Prosescetak() {
 }
 
 function ProsesExcel() {
-
     url2 = host + "/proses_excel";
     getGridTable();
+}
 
+function ProsesRekap() {
+    url2 = host + "/proses_rekap";
+    getGridRekapTable();
 }
 
 function getLastDate(y, m, d) {

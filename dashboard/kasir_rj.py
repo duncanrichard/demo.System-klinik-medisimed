@@ -343,20 +343,28 @@ def getTransaksiByBukti(request):
     q += "where (FTNO_TRANSAKSI=%s AND a.KD_CABANG= %s) "
     result = Globals().getDataQuery(q, [no_bukti,KD_CABANG])
 
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER "
+    q = "Select ROW_NUMBER() OVER (ORDER BY NAMA_DOKTER) AS NO,* from (SELECT a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER "
     q += "from  DOKTER a inner join TRANSAKSIDOKTERD b on a.FMDDOKTER_ID=b.FDDKD_DOKTER "
-    q += "where FDDNO_TRANSAKSI=%s and KD_CABANG=%s and a.FMDSTATUS='0' order by FMDDOKTERN "
-    result2 = Globals().getDataQuery(q, [no_bukti,KD_CABANG])
+    q += "where FDDNO_TRANSAKSI=%s and KD_CABANG=%s and a.FMDSTATUS='0' union "
+    q += "select a.FMPPERAWAT_ID AS ID_DOKTER,FMPPERAWATN AS NAMA_DOKTER "
+    q += "from  PERAWAT a inner join TRANSAKSIDOKTERD b on a.FMPPERAWAT_ID=b.FDDKD_DOKTER "
+    q += "where FDDNO_TRANSAKSI=%s and KD_CABANG=%s and a.FMPSTATUS='0') as ZYX  "
+    q += "order by NAMA_DOKTER "
+    result2 = Globals().getDataQuery(q, [no_bukti,KD_CABANG,no_bukti,KD_CABANG])
 
     q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC ,A.FMPPERAWATN AS NAMA_BC  "
     q += "from  PERAWAT a inner join TRANSAKSIBCD b on a.FMPPERAWAT_ID=b.FDBC_ID "
     q += "where  FDBCNO_TRANSAKSI=%s and KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
     result3 = Globals().getDataQuery(q, [no_bukti,KD_CABANG])
 
-    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_PERAWAT,A.FMPPERAWATN AS NAMA_PERAWAT   "
+    q = "select ROW_NUMBER() OVER (ORDER BY NAMA_PERAWAT) AS NO,* from (Select a.FMDDOKTER_ID AS ID_PERAWAT,A.FMDDOKTERN AS NAMA_PERAWAT   "
+    q += "from  DOKTER a inner join TRANSAKSIPERAWATD b on a.FMDDOKTER_ID=b.FDPKD_PERAWAT "
+    q += "where b.FDPNO_TRANSAKSI=%s and  KD_CABANG=%s and a.FMDSTATUS='0' union "
+    q += "select a.FMPPERAWAT_ID AS ID_PERAWAT,A.FMPPERAWATN AS NAMA_PERAWAT   "
     q += "from  PERAWAT a inner join TRANSAKSIPERAWATD b on a.FMPPERAWAT_ID=b.FDPKD_PERAWAT "
-    q += "where b.FDPNO_TRANSAKSI=%s and  KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN  "
-    result4 = Globals().getDataQuery(q, [no_bukti,KD_CABANG])
+    q += "where b.FDPNO_TRANSAKSI=%s and  KD_CABANG=%s and a.FMPSTATUS='0') as ZYX "
+    q += "order by NAMA_PERAWAT  "
+    result4 = Globals().getDataQuery(q, [no_bukti,KD_CABANG,no_bukti,KD_CABANG])
 
     q = "select ROW_NUMBER() OVER (ORDER BY FTBNO_TRANSAKSI) AS NO,FTBNO_TRANSAKSI as NO_TRANSAKSI, FTBTGL_TRANSAKSI, FTBTUNAI as TUNAI, isnull(FTBPIUTANG,0) as PIUTANG, isnull(FTBJAMINPERUSAHAAN,0) as JAMINAN, USERRS, UPDATERS, FTBNAMAPEMBAYAR, FTBJUMLAH_UANG, FTBKEMBALIAN_UANG, isnull(FTBNO_FAKTUR,'') as NOFAKTUR,   "
     q += "FTBTGL_FAKTUR, FTBNILAI_FAKTUR, FTBNOKARTU01, FTBNOKARTU02, FTBNOKARTU03, FTBNOKARTU04, FTBDEBITKREDIT01, FTBDEBITKREDIT02, FTBDEBITKREDIT03, FTBDEBITKREDIT04, FTBNILAIBANK01,  "

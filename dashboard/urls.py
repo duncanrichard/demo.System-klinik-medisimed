@@ -231,6 +231,7 @@ urlpatterns = [
         url(r'^getperawat', kasir_rj.getperawat),
         url(r'^getBC', kasir_rj.getBC),
         url(r'^proses_excel', jasamedis001.proses_excel),
+        url(r'^proses_rekap', jasamedis001.proses_rekap),
     ])),
     url(r'^jasareseller001/', include ([
         url(r'^$',jasareseller001.jasareseller001, name='jasareseller001'),

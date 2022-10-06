@@ -50,8 +50,8 @@ def proses_excel(request):
     q += "from FJINKOTA c inner join FJINKOTAD d on c.FHFJBUKTI_ID=d.FDFJBUKTI_ID    "
     q += "where (c.FHFJDATE >= %s and FHFJDATE<=%s  ) and (c.FHFJBRANCH = %s)    "
     q += "group by  d.FDFJBRG_ID,d.FDFJBRGN,d.FDFJHJUAL ) as ZYXorder order by qty desc   "
-    result = Globals().getData(q, [tanggal_dr,tanggal_sd,KD_CABANG], 1)
-    result2 = Globals().getData(q, [tanggal_dr,tanggal_sd,KD_CABANG], 2)
+    result = Globals().getData(q, [tanggal_dr,tanggal_sd,KD_CABANG,tanggal_dr,tanggal_sd,KD_CABANG], 1)
+    result2 = Globals().getData(q, [tanggal_dr,tanggal_sd,KD_CABANG,tanggal_dr,tanggal_sd,KD_CABANG], 2)
 
     data = {
 		'data1': result,

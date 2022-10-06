@@ -108,6 +108,31 @@ class Globals:
 
 		return result
 
+	def getData(self,query, param = None,setIndex = 1):
+		cursor = connection.cursor()
+		if( param is not None):
+			cursor.execute(query, param)
+		else:
+			cursor.execute(query)
+		results = None
+		i = 0
+		while results is None :
+			try:
+				results = self.dictfetchall(cursor)
+				
+				i+= 1
+				if(i == setIndex):
+					break
+				else :
+					results = None
+					cursor.nextset()
+				
+			except ProgrammingError as e:
+				cursor.nextset()
+		# pprint(results)
+		cursor.close()
+		return results
+
 	def getDataSP(self, query, params = [], db = 'main', setIndex = 1):
 		if db == 'main':
 			cursor = connection.cursor()

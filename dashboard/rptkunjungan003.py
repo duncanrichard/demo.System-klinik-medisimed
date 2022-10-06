@@ -11,16 +11,16 @@ from datetime import datetime
 from django.conf.urls import url, include
 
 
-def rptkunjungan002(request):
+def rptkunjungan003(request):
     if(Globals().isLogin(request)):
         user_priv = request.session['user_priv']
         user_privelege = request.session['user_priv']
-        navbars = Globals().getNavbars(user_priv, 'IMMODERMA', "rptkunjungan002")
-        menubars = Globals().getMenubars(user_priv, 'IMMODERMA', "rptkunjungan002", '0')
-        menubarsChild = Globals().getMenubars(user_priv, 'IMMODERMA', "rptkunjungan002", '1')
+        navbars = Globals().getNavbars(user_priv, 'IMMODERMA', "rptkunjungan003")
+        menubars = Globals().getMenubars(user_priv, 'IMMODERMA', "rptkunjungan003", '0')
+        menubarsChild = Globals().getMenubars(user_priv, 'IMMODERMA', "rptkunjungan003", '1')
         menubarCount = len(menubars)
 
-        response = render(request, 'dashboard/printkunjungan002/printkunjungan002.html', {
+        response = render(request, 'dashboard/printkunjungan003/printkunjungan003.html', {
             'navbars': navbars,
             'menubars': menubars,
             'menubarsChild': menubarsChild,
@@ -35,6 +35,7 @@ def rptkunjungan002(request):
         return redirect('/login')
 
 def proses_excel(request):
+    id_pasien = request.GET['id_pasien']
     tanggal_dr = request.GET['tanggal_dr']
     tanggal_sd = request.GET['tanggal_sd']
     KD_CABANG= request.session['kdCabang']
@@ -42,16 +43,17 @@ def proses_excel(request):
     q += "d.FDTHARGA  as HARGA,(sum(FDTQTY)*d.FDTHARGA) as JUMLAH,(sum(FDTQTY)*d.FDTHARGA)-(select sum(dbo.fungsiCalculasiDeposit(FDTHARGA,1,FDT_DISCKONSUMEN,FDT_DISC,FDT_DISC2,FDT_DISC3,FDT_DISC4))) AS DISCOUNT "
     q += ",(select sum(dbo.fungsiCalculasiDeposit(FDTHARGA,1,FDT_DISCKONSUMEN,FDT_DISC,FDT_DISC2,FDT_DISC3,FDT_DISC4))) as TOTAL "
     q += "from TRANSAKSIPASIEN c inner join TRANSAKSIPASIEND d on c.FTNO_TRANSAKSI=d.FDTNO_TRANSAKSI  "
-    q += "where (c.FTTGL_TRANSAKSI >= %s and FTTGL_TRANSAKSI<=%s  ) and (c.KD_CABANG = %s)  "
+    q += "inner join KUNJUNGANPASIEN e on c.FTNO_KUNJUNGAN=e.KPNO_TRANSAKSI "
+    q += "where e.KPKD_PASIEN= %s and (c.FTTGL_TRANSAKSI >= %s and FTTGL_TRANSAKSI<=%s  ) and (c.KD_CABANG = %s)  "
     q += "group by  d.FDTKD_PRODUK,d.FDTKDPRODUKN,d.FDTHARGA ) as ZYXorder order by qty desc  "
     q += "select ROW_NUMBER() OVER(ORDER BY qty desc) AS NO,* from(select  d.FDFJBRG_ID as ID_BARANG,d.FDFJBRGN as NAMA_BARANG,sum(FDFJQTY) as QTY,   "
     q += "d.FDFJHJUAL  as HARGA,(sum(FDFJQTY)*d.FDFJHJUAL) as JUMLAH,(sum(FDFJQTY)*d.FDFJHJUAL)-(select sum(dbo.fungsiCalculasiDeposit(FDFJHJUAL,FDFJQTY,FDFJDISC1,0,0,0,FDFJDISC4))) AS DISCOUNT   "
     q += ",(select sum(dbo.fungsiCalculasiDeposit(FDFJHJUAL,1,FDFJDISC1,0,0,0,FDFJDISC4))) as TOTAL   "
     q += "from FJINKOTA c inner join FJINKOTAD d on c.FHFJBUKTI_ID=d.FDFJBUKTI_ID    "
-    q += "where (c.FHFJDATE >= %s and FHFJDATE<=%s  ) and (c.FHFJBRANCH = %s)    "
+    q += "where c.FHFJCUST_ID= %s and (c.FHFJDATE >= %s and FHFJDATE<=%s  ) and (c.FHFJBRANCH = %s)    "
     q += "group by  d.FDFJBRG_ID,d.FDFJBRGN,d.FDFJHJUAL ) as ZYXorder order by qty desc   "
-    result = Globals().getData(q, [tanggal_dr,tanggal_sd,KD_CABANG], 1)
-    result2 = Globals().getData(q, [tanggal_dr,tanggal_sd,KD_CABANG], 2)
+    result = Globals().getData(q, [id_pasien,tanggal_dr,tanggal_sd,KD_CABANG,id_pasien,tanggal_dr,tanggal_sd,KD_CABANG], 1)
+    result2 = Globals().getData(q, [id_pasien,tanggal_dr,tanggal_sd,KD_CABANG,id_pasien,tanggal_dr,tanggal_sd,KD_CABANG], 2)
 
     data = {
 		'data1': result,

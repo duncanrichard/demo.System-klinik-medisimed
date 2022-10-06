@@ -180,6 +180,7 @@ function getGridTable() {
         url: url2,
         method: "GET",
         data: {
+            "id_pasien": $("#idPasien").val(),
             "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
             "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
         },

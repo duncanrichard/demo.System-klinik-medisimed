@@ -15,6 +15,7 @@ from . import master_sumber
 from . import rptkunjungan001
 from . import rptkunjungan002
 from . import rptkunjungan003
+from . import rptkunjungan004
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
@@ -243,6 +244,11 @@ urlpatterns = [
         url(r'^$',master_sumber.master_sumber, name='master_sumber'),
         url(r'^open_sumber', master_sumber.open_sumber),
         url(r'^aud_Sumber', master_sumber.aud_Sumber),
+    ])),
+    url(r'^rptkunjungan004/', include ([
+        url(r'^$',rptkunjungan004.rptkunjungan004, name='rptkunjungan004'),
+        url(r'^proses_excel', rptkunjungan004.proses_excel),
+        url(r'^getHistoryBeliBarang', rptkunjungan004.getHistoryBeliBarang),
     ])),
     url(r'^rptkunjungan003/', include ([
         url(r'^$',rptkunjungan003.rptkunjungan003, name='rptkunjungan003'),

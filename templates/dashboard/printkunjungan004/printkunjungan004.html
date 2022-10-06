@@ -1,0 +1,91 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Jumlah order treatment
+{% endblock %} 
+
+{% block head %}
+<style>
+    div#datagrid.dx-widget {
+        font-size: 12px;
+        line-height: 0.8;
+        height: 340px;
+    }
+    div#datagridproduk.dx-widget {
+        font-size: 12px;
+        line-height: 0.8;
+        height: 340px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class=''>
+    <div class="modal-dialog modal-xl" role="modal" style="z-index: 4;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="ibox-title" style="background-color: #4f7ebb4f;">
+                    <h3 style="text-align: center">Jumlah order treatment dan produk/pasien </h3>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="row">
+                            <label class="col-md-2 control-label" id="label_Cetak_mutasi_tanggal_dr" >Dari Tanggal </label>
+                            <div class="col-md-4">
+                                <input type="date" id="Cetak_mutasi_tanggal_dr"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <label class="col-md-2 control-label" id="label_Cetak_mutasi_tanggal_sd">s/d Tanggal </label>
+                            <div class="col-md-4">
+                                <input type="date" id="Cetak_mutasi_tanggal_sd"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <input type="hidden" id="paramprint">
+                        
+                        </div>
+                        <div class="row">
+                            <div style="height: 150px;overflow-y: auto;">
+                                <div id="datagrid"></div>
+                            </div>
+                            <div style="height: 150px;overflow-y: auto;">
+                                <div id="datagridproduk"></div>
+                            </div>
+                            
+                            <div class="options">
+                                <div class="caption">Options</div>
+                                <div class="option">            
+                                    <div id="autoExpand"></div>
+                                </div>    
+                            </div>
+
+                        </div>
+                        
+                        
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="ProsesExcel">Proses</button>
+                <button type="button" class="btn btn-danger" id="Prosescetak">Cetak</button>
+                <button type="button" class="btn btn-danger" id="Batalproses" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'dashboard/modal/modalLoading.html' %}
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<!-- Custom and plugin javascript -->
+<script type="text/javascript">
+
+{% include 'dashboard/printkunjungan004/js/getDxGrid.html' %}     
+{% include 'dashboard/printkunjungan004/js/init.html' %} 
+</script>
+{% endblock  %}

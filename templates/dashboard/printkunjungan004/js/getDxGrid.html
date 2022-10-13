@@ -242,6 +242,25 @@ function getGridTable() {
                         format: 'decimal fixedPoint',
                         width: 130,
                     },
+                    {
+                        dataField: "MEMBER",
+                        caption: "MEMBER",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 200,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "TERAKHIR_BERKUNJUNG",
+                        caption: "TERAKHIR BERKUNJUNG",
+                        alignment: 'left',
+                        allowEditing: true,
+                        width: 120,
+                        dataType: "date",
+                        format: 'dd/MM/yyyy',
+                        allowSorting: false
+                    },
+
                 ],
                 summary: {
                     totalItems: [{

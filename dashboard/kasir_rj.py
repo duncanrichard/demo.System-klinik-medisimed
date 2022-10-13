@@ -194,6 +194,7 @@ def SP_AUD_TRANSAKSI(request):
     FH_PAKET_ID = request.POST['FH_PAKET_ID']
     USERRS = request.session['user_id']
     KD_CABANG= request.session['kdCabang']
+    FH_NOTA= request.POST['FH_NOTA']
     status_aud = request.POST['StatusAUD']
 
     q = "SET NOCOUNT ON;"
@@ -276,6 +277,7 @@ def SP_AUD_TRANSAKSI(request):
     q += "'" + FH_PAKET_ID + "',"
     q += "'" + USERRS + "',"
     q += "'" + KD_CABANG + "',"
+    q += "'" + FH_NOTA + "',"
     q += "'" + status_aud + "', "
     q += "@LIST_TRANSAKSI,"
     q += "@LIST_DOKTER,"
@@ -305,6 +307,7 @@ def SP_AUD_TRANSAKSI(request):
 
 def getTransaksi(request):
     no_bukti = '%'+request.GET['no_bukti']+'%'
+    no_nota = '%'+request.GET['no_nota']+'%'
     pasien = '%'+request.GET['pasien']+'%'
     nama_pasien = '%'+request.GET['nama_pasien']+'%'
     tipe = request.GET['tipe']
@@ -312,19 +315,19 @@ def getTransaksi(request):
     KD_CABANG= request.session['kdCabang']
 
     if(tipe == 'mutasi_by_bulan'):
-        q = "select  top 100 A.FTNO_TRANSAKSI, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
+        q = "select  top 100 A.FTNO_TRANSAKSI,A.FTNO_NOTA, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
         q +="from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI "
         q +="inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  "
-        q +="where (FTNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
+        q +="where (FTNO_TRANSAKSI like %s) and (FTNO_NOTA like %s) and (KPKD_PASIEN like %s) and "
         q += "(NAMAPASIEN like %s) and (YEAR(FTTGL_TRANSAKSI) = %s) and (MONTH(FTTGL_TRANSAKSI) = %s) and a.KD_CABANG= %s order by FTNO_TRANSAKSI"
-        result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal.year, tanggal.month,KD_CABANG])
+        result = Globals().getDataQuery(q, [no_bukti,no_nota, pasien, nama_pasien, tanggal.year, tanggal.month,KD_CABANG])
     else:
-        q = "select  top 100 A.FTNO_TRANSAKSI, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
+        q = "select  top 100 A.FTNO_TRANSAKSI,A.FTNO_NOTA, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
         q +="from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI "
         q +="inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  "
-        q +="where (FTNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
+        q +="where (FTNO_TRANSAKSI like %s) and (FTNO_NOTA like %s) and (KPKD_PASIEN like %s) and "
         q += "(NAMAPASIEN like %s) and (FTTGL_TRANSAKSI = %s AND a.KD_CABANG= %s )  order by FTNO_TRANSAKSI"
-        result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal,KD_CABANG])
+        result = Globals().getDataQuery(q, [no_bukti,no_nota, pasien, nama_pasien, tanggal,KD_CABANG])
 
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
@@ -333,7 +336,7 @@ def getTransaksiByBukti(request):
     no_bukti = request.GET['no_bukti']
     KD_CABANG= request.session['kdCabang']
 
-    q = "select  A.FTNO_TRANSAKSI,a.FTNO_KUNJUNGAN, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN,FTNO_DEPOSIT, "
+    q = "select  A.FTNO_TRANSAKSI,a.FTNO_KUNJUNGAN,A.FTNO_NOTA, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN,FTNO_DEPOSIT, "
     q += "d.FDTNOMER as NO,d.FDTKD_PRODUK as ID_PRODUK,d.FDTKDPRODUKN as NAMA_PRODUK,FDTQTY as QTY,d.FDTHARGA as HARGA,FDT_DISCKONSUMEN as DISCKONSUMEN,d.FDT_DISC as DISC,d.FDT_DISC2 as DISC2,d.FDT_DISC3 as DISC3,d.FDT_DISC4 as DISC4, "
     q += "d.FD_DISCRESELER as DISCRESELER,d.FD_FEEDOKTER as FEEDOKTER,d.FD_FEEBC as FEEBC,d.FD_FEEPERAWAT as FEEPERAWAT,d.FDTNO_FAKTUR as NOFAKTUR,d.FDTJENISTRANSAKSI,a.USERRS,a.UPDATERS,a.KD_RESELER,e.NAMA_RESELER,a.FKUNCI "
     q += "from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI  "
@@ -686,3 +689,26 @@ def Cekdepositfarmasi(request):
     result = Globals().getDataQuery(q , [bukti,KD_CABANG])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")	
+
+def getPembelianByBuktiPembelian(request):
+	KD_CABANG= request.session['kdCabang']
+	no_bukti = request.GET['no_bukti']
+	q = "select FTNO_NOTA from TRANSAKSIPASIEN  "
+	q += "where FTNO_NOTA = %s and KD_CABANG= %s "
+	result = Globals().getDataQuery(q, [no_bukti,KD_CABANG])
+	
+	if len(result)==0:
+		data={
+			'status':'gagal',
+			'pesen':'data tidak ditemukan',
+			'data':None
+		}
+	else:
+		data={
+			'status':'ok',
+			'pesen':'data ditemukan',
+			'data':result[0]
+		}
+	json_data = json.dumps(data, cls=DjangoJSONEncoder)
+	
+	return HttpResponse(json_data, content_type="application/json")

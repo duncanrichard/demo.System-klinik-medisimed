@@ -705,6 +705,7 @@ function getGridTabletransaksi(no_bukti) {
         success: function (datas) {
             $('#no_trans').val(datas.data1[0].FTNO_TRANSAKSI);
             $('#no_regis').val(datas.data1[0].FTNO_KUNJUNGAN);
+            $('#no_nota').val(datas.data1[0].FTNO_NOTA);
             $('#tanggal').val(datas.data1[0].TANGGAL.substr(0, 10));
             $('#idPasien').val(datas.data1[0].KPKD_PASIEN);
             $('#nama_pasien').val(datas.data1[0].NAMAPASIEN);

@@ -318,14 +318,14 @@ def getTransaksi(request):
         q = "select  top 100 A.FTNO_TRANSAKSI,A.FTNO_NOTA, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
         q +="from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI "
         q +="inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  "
-        q +="where (FTNO_TRANSAKSI like %s) and (FTNO_NOTA like %s) and (KPKD_PASIEN like %s) and "
+        q +="where (FTNO_TRANSAKSI like %s) and (isnull(FTNO_NOTA,'') like %s) and (KPKD_PASIEN like %s) and "
         q += "(NAMAPASIEN like %s) and (YEAR(FTTGL_TRANSAKSI) = %s) and (MONTH(FTTGL_TRANSAKSI) = %s) and a.KD_CABANG= %s order by FTNO_TRANSAKSI"
         result = Globals().getDataQuery(q, [no_bukti,no_nota, pasien, nama_pasien, tanggal.year, tanggal.month,KD_CABANG])
     else:
         q = "select  top 100 A.FTNO_TRANSAKSI,A.FTNO_NOTA, convert(varchar, a.FTTGL_TRANSAKSI, 23) as TANGGAL,B.KPKD_PASIEN,c.NAMAPASIEN  "
         q +="from TRANSAKSIPASIEN a inner join KUNJUNGANPASIEN b ON A.FTNO_KUNJUNGAN=B.KPNO_TRANSAKSI "
         q +="inner join PASIEN c on b.KPKD_PASIEN=c.KD_PASIEN  "
-        q +="where (FTNO_TRANSAKSI like %s) and (FTNO_NOTA like %s) and (KPKD_PASIEN like %s) and "
+        q +="where (FTNO_TRANSAKSI like %s) and (isnull(FTNO_NOTA,'') like %s) and (KPKD_PASIEN like %s) and "
         q += "(NAMAPASIEN like %s) and (FTTGL_TRANSAKSI = %s AND a.KD_CABANG= %s )  order by FTNO_TRANSAKSI"
         result = Globals().getDataQuery(q, [no_bukti,no_nota, pasien, nama_pasien, tanggal,KD_CABANG])
 

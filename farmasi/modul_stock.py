@@ -23,10 +23,10 @@ def getDataBarangKeluar(request):
 		q += "CAST(((isnull(b.FSBSALDO_AWAL,0)+isnull(b.FSBPEMBELIAN,0)+isnull(b.FSBRPENJUALAN,0)+isnull(b.FSBLAIN_MASUK,0)) - "
 		q += "(isnull(b.FSBPENJUALAN,0)+isnull(b.FSBRPEMBELIAN,0)+isnull(b.FSBLAIN_KELUAR,0))) AS INT) AS STOK "
 		q += "from BARANG a left join SALDOBARANG b on a.BARANGC = b.FSBBRG_ID  and b.FSBWH_ID=%s "
-		q += "left join WAREHOUSE c on b.FSBWH_ID=c.WH_ID  "
+		q += "left join WAREHOUSE c on b.FSBWH_ID=c.WH_ID and c.BRANCH=%s "
 		q += "inner join PRODUKOBAT f ON  A.TTYPEC=f.PRD_ID  "
-		q += "where a.NAME_BRG like %s and a.AKTIF<>1 and c.BRANCH=%s order by NAME_BRG "
-		result = Globals().getDataQuery(q, [gudang,nama,ID_CABANG])
+		q += "where a.NAME_BRG like %s and a.AKTIF<>1  order by NAME_BRG "
+		result = Globals().getDataQuery(q, [gudang,ID_CABANG,nama])
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
@@ -39,9 +39,9 @@ def cekStokBarangFarmasi(request):
 	q += "(isnull(b.FSBPENJUALAN,0)+isnull(b.FSBRPEMBELIAN,0)+isnull(b.FSBLAIN_KELUAR,0)+isnull(b.FSBKANVAS,0))) AS INT) AS STOK "
 	q += "from BARANG a left join SALDOBARANG b on "
 	q += "a.BARANGC = b.FSBBRG_ID left join WAREHOUSE c on "
-	q += "b.FSBWH_ID=c.wh_id  "
-	q += "where a.BARANGC = %s and b.FSBWH_ID=%s and c.BRANCH=%s"
-	result = Globals().getDataQuery(q, [kode,gudang,ID_CABANG])
+	q += "b.FSBWH_ID=c.wh_id and c.BRANCH=%s "
+	q += "where a.BARANGC = %s and b.FSBWH_ID=%s "
+	result = Globals().getDataQuery(q, [ID_CABANG,kode,gudang])
 	
 	if(len(result) == 0):
 		data = {
@@ -71,9 +71,9 @@ def getHistoryBarang(request):
 	q += "from BARANG a left join SALDOBARANG b on "
 	q += "a.BARANGC = b.FSBBRG_ID  left join WAREHOUSE c on "
 	# q += "a.BARANGC = b.FSBBRG_ID and b.FSBWH_ID =  %s left join WAREHOUSE c on "
-	q += "b.FSBWH_ID=c.WH_ID where a.BARANGC =  %s and c.BRANCH=%s  "
+	q += "b.FSBWH_ID=c.WH_ID and c.BRANCH=%s where a.BARANGC =  %s   "
 	# result = Globals().getDataQuery(q,[gudang,kode_barang])
-	result = Globals().getDataQuery(q,[kode_barang,ID_CABANG])
+	result = Globals().getDataQuery(q,[ID_CABANG,kode_barang])
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 

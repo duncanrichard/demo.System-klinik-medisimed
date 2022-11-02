@@ -44,15 +44,15 @@ def login(request):
                 request.session['kd_cabangpri'] = 0
                 home = '/'
                 kdCabang = cabang[0]['CABANG_ID']
-                request.session['kdCabang'] = kdCabang
-                request.session['kota_cabang'] = cabang[0]['KOTA']
-                request.session['nama_cabang'] = cabang[0]['PERUSAHAAN']
-                request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
+            request.session['kdCabang'] = kdCabang
+            request.session['kota_cabang'] = cabang[0]['KOTA']
+            request.session['nama_cabang'] = cabang[0]['PERUSAHAAN']
+            request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
 
-                # parameter
-                q= 'SELECT TOP 1 * FROM PARAMETER'
-                datares = Globals().getDataQuery(q);
-                request.session['par_ppn'] = float(datares[0]['PPN'])
+            # parameter
+            q= 'SELECT TOP 1 * FROM PARAMETER'
+            datares = Globals().getDataQuery(q);
+            request.session['par_ppn'] = float(datares[0]['PPN'])
 
             # cek gudang
             q = "select a.USER_ID, a.USER_PRIV, b.GUDANG, c.NAME_WH, c.BRANCH from USERSPRIV as a left join PRIVILEGE as b on a.USER_PRIV = b.USER_PRIV left join WAREHOUSE as c on b.GUDANG = c.WH_ID where a.USER_ID = %s"

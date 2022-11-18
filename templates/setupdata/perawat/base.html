@@ -1,0 +1,38 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    perawat
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDataperawat.dx-widget {
+            font-size: 12px;
+            line-height: 0.95;
+            height: 240px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'setupdata/perawat/content.html' %}
+    {% include 'setupdata/perawat/modal/dxGridModalperawat.html'%} 
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'setupdata/perawat/js/init.html' %}
+{% include 'setupdata/perawat/js/aud_content.html' %}
+{% include 'setupdata/perawat/js/getperawat.html' %}
+
+
+</script>
+{% endblock  %}

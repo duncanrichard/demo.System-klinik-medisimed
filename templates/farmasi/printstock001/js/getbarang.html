@@ -1,0 +1,100 @@
+$(document).ready(function () {
+    $('#carikodebarang').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        carikodebarang(event)
+        $('#Findkodebarang').attr('onclick','carikodebarang(event)')
+    })
+
+    $('#carikodebarang2').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        carikodebarang(e,1)
+        $('#Findkodebarang').attr('onclick','carikodebarang(event,1)')
+    })
+    $('#Findkodebarang2').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        carikodebarang(e,2)
+        $('#Findkodebarang').attr('onclick','carikodebarang(event,2)')
+    })
+    $('#Findkodebarang3').click(function (e) {
+        $('#dxGridModalbarang').modal('show');
+        carikodebarang(e,3)
+        $('#Findkodebarang').attr('onclick','carikodebarang(event,3)')
+    })
+
+})
+
+var gridDatabarang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_barang = $('#search_kode_barang').val();
+        var search_nama_barang = $('#search_nama_barang').val();
+        return $.ajax({
+            url: host + "/getbarang",
+            method: "GET",
+            data: {
+                "search_kode_barang": search_kode_barang,
+                "search_nama_barang": search_nama_barang
+            },
+            success: function (datas) {
+                $('#dxGridModalbarang').modal('show');
+            }
+        })
+    }
+});
+
+function carikodebarang(e, param = null) {
+    console.log('menu cari clicked hani2')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatabarang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatabarang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "BARANGC",
+                caption: "KODE",
+                width:100
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "NAMA",
+            },
+            {
+                dataField: "SATSTAND",
+                caption: "SATUAN",
+                width:100
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "GOLONGAN",
+                width:100
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "SUPPLIER",
+            },
+
+        ],
+        onRowClick: function (e) {
+            console.log(param)
+            if(param == 2){
+                $("#kodebarang_dari").val(e.data.BARANGC)
+            } else if (param == 3) {
+                $("#kodebarang_sampai").val(e.data.BARANGC)
+            }
+            $('#dxGridModalbarang').modal('hide');
+        }
+    });
+}

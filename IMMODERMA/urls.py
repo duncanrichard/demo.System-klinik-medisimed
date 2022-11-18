@@ -5,4 +5,5 @@ urlpatterns = [
     url(r'^',include('auth.urls')),
     url(r'^',include('dashboard.urls')),
     url(r'^',include('farmasi.urls')),
+    url(r'^',include('setupdata.urls')),
 ]

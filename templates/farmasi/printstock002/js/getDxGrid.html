@@ -1,0 +1,444 @@
+var dataGrid;
+var total = '';
+var ito = '';
+$(document).ready(function () {
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function (data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    setGridEmpty();
+
+});
+
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [{
+                dataField: "id_gudang",
+                caption: "id_gudang",
+                alignment: 'center',
+                allowEditing: false,
+                width: 110,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "Gudang",
+                caption: "Gudang",
+                alignment: 'left',
+                width: 200,
+                allowEditing: false,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "id_barang",
+                caption: "id_barang",
+                alignment: 'left',
+                width: 130,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "nama_barang",
+                caption: "nama_barang",
+                alignment: 'left',
+                width: 100,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "satuan",
+                caption: "satuan",
+                alignment: 'left',
+                width: 100,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "nama_produk",
+                alignment: 'left',
+                caption: "nama_produk",
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "nama_golongan",
+                alignment: 'right',
+                caption: "nama_golongan",
+                width: 80,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_saldo",
+                caption: "qty_saldo",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_Beli",
+                caption: "qty_Beli",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_RBeli",
+                caption: "qty_RBeli",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_Jual",
+                caption: "qty_Jual",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_RJual",
+                caption: "qty_RJual",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_MLain",
+                caption: "qty_MLain",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_KLain",
+                caption: "qty_KLain",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_MPindah",
+                caption: "qty_MPindah",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "qty_KPindah",
+                caption: "qty_KPindah",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 80,
+                allowEditing: false,
+                allowSorting: false
+            },
+
+            {
+                dataField: "hargapokok",
+                alignment: 'right',
+                caption: "Harga POKOK",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 110,
+                allowSorting: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "kodebarang_dari": $("#kodebarang_dari").val(),
+            "kodebarang_sampai": $("#kodebarang_sampai").val(),
+            "kodeproduk_dari": $("#kodeproduk_dari").val(),
+            "kodeproduk_sampai": $("#kodeproduk_sampai").val(),
+            "kodegolongan_dari": $("#kodegolongan_dari").val(),
+            "kodegolongan_sampai": $("#kodegolongan_sampai").val(),
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+            "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
+            "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "id_gudang",
+                        caption: "id_gudang",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 75,
+                        allowSorting: false,
+                        fixed: true
+                    },
+                    {
+                        dataField: "Gudang",
+                        caption: "Gudang",
+                        alignment: 'left',
+                        width: 85,
+                        allowEditing: false,
+                        allowSorting: false,
+                        fixed: true
+                    },
+                    {
+                        dataField: "id_barang",
+                        caption: "id_barang",
+                        alignment: 'left',
+                        width: 75,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "nama_barang",
+                        caption: "nama_barang",
+                        alignment: 'left',
+                        width: 150,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "satuan",
+                        caption: "satuan",
+                        alignment: 'left',
+                        width: 76,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "nama_produk",
+                        alignment: 'left',
+                        caption: "nama_produk",
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "nama_golongan",
+                        alignment: 'right',
+                        caption: "nama_golongan",
+                        width: 80,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_saldo",
+                        caption: "qty_saldo",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_Beli",
+                        caption: "qty_Beli",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_RBeli",
+                        caption: "qty_RBeli",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_Jual",
+                        caption: "qty_Jual",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_RJual",
+                        caption: "qty_RJual",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_MLain",
+                        caption: "qty_MLain",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_KLain",
+                        caption: "qty_KLain",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_MPindah",
+                        caption: "qty_MPindah",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_KPindah",
+                        caption: "qty_KPindah",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "qty_Saldoakhir",
+                        caption: "qty_Saldoakhir",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "hargapokok",
+                        alignment: 'right',
+                        caption: "Harga POKOK",
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 80,
+                        allowSorting: false
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

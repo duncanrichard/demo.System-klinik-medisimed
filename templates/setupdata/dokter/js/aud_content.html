@@ -1,0 +1,189 @@
+var status_aud = null
+var status_cetak = null
+
+$(document).ready(function () {
+  menuhidup()
+  enterFocusTo('far_nama_dokter', 'far_jabatan_dokter')
+  enterFocusTo('far_jabatan_dokter', 'far_id_dokter_bpjs')
+  enterFocusTo('far_id_dokter_bpjs', 'far_kode_nip')
+  enterFocusTo('far_kode_nip', 'far_sip')
+  enterFocusTo('far_sip', 'far_kode_antri')
+  enterFocusTo('far_kode_antri', 'far_kode_bpjs')
+  enterFocusTo('far_kode_bpjs', 'far_no_telepon')
+
+  $('#menu_tambah').click(function (e) {
+    status_aud = 'A'
+    menumati()
+    $('input[type=text]').val('')
+    $('#far_nama_dokter').focus()
+  });
+
+  $('#menu_edit').click(function (e) {
+    if ($('#far_kode_dokter').val() == '') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Pilih data terlebih dahulu !',
+      })
+
+    } else {
+      status_aud = 'A'
+      menumati()
+      $('#far_nama_dokter').focus()
+    }
+  });
+
+  $('#menu_cancel').click(function (e) {
+    menuhidup()
+  });
+
+  $('#menu_simpan').click(function (e) {
+    error_in_field()
+    if (Cekeror == true) {
+      var aktif = '0'
+      if ($("#inlineCheckboxaktif1").prop('checked') == true) {
+        aktif = '0'
+      } else {
+        aktif = '1'
+      }
+      $.ajax({
+        type: "POST",
+        url: host + '/aud_dokter',
+        data: {
+          far_kode_dokter: $('#far_kode_dokter').val(),
+          far_nama_dokter: $('#far_nama_dokter').val(),
+          far_jabatan_dokter: $('#far_jabatan_dokter').val(),
+          far_id_dokter_bpjs: $('#far_id_dokter_bpjs').val(),
+          far_kode_nip: $('#far_kode_nip').val(),
+          far_sip: $('#far_sip').val(),
+          far_kode_antri: $('#far_kode_antri').val(),
+          far_kode_bpjs: $('#far_kode_bpjs').val(),
+          far_no_telepon: $('#far_no_telepon').val(),
+          aktif: aktif,
+          status_aud: status_aud,
+          "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: "json",
+        success: function (e) {
+          alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].DOKTER_ID + e[0].ERROR_MESSAGE)
+          if (e[0].STATUS == 'SUKSES') {
+            $("#far_kode_dokter").val(e[0].DOKTER_ID);
+            menuhidup()
+          }
+        }
+      });
+    }
+  });
+
+  $('#menu_hapus').click(function () {
+    if ($('#kode_Sumber').val() == '') {
+      alert('Pilih kode sumber Dulu!')
+    } else {
+      var result = confirm('Yakin data akan dihapus?')
+      var status_aud = "D"
+      if (result) {
+        var aktif = '0'
+        if ($("#inlineCheckboxaktif1").prop('checked') == true) {
+          aktif = '0'
+        } else {
+          aktif = '1'
+        }
+        $.ajax({
+          url: host + "/aud_dokter",
+          method: "POST",
+          data: {
+            far_kode_dokter: $('#far_kode_dokter').val(),
+            far_nama_dokter: $('#far_nama_dokter').val(),
+            far_jabatan_dokter: $('#far_jabatan_dokter').val(),
+            far_id_dokter_bpjs: $('#far_id_dokter_bpjs').val(),
+            far_kode_nip: $('#far_kode_nip').val(),
+            far_sip: $('#far_sip').val(),
+            far_kode_antri: $('#far_kode_antri').val(),
+            far_kode_bpjs: $('#far_kode_bpjs').val(),
+            far_no_telepon: $('#far_no_telepon').val(),
+            aktif: aktif,
+            status_aud: status_aud,
+            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (e) {
+            alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].DOKTER_ID + e[0].ERROR_MESSAGE)
+            if (e[0].STATUS == 'SUKSES') {
+              $('input[type=text]').val('')
+              menuhidup()
+            }
+          }
+        });
+      }
+    }
+  })
+
+  $('#menu_find').click(function (e) {
+    $('#dxGridModaldokter').modal('show')
+    load_Dokter()
+  });
+  $('#menu_keluar').click(function () {
+    window.open('/', "_self");
+  })
+});
+
+function error_in_field() {
+  Cekeror = true;
+  if ($("#far_nama_dokter").val() == '') {
+    alert('Nama dokter tidak boleh kosong')
+    Cekeror = false;
+  }
+  if ($("#far_kode_nip").val() == '') {
+    alert('NIP tidak boleh kosong')
+    Cekeror = false;
+  }
+  if ($("#far_sip").val() == '') {
+    alert('SIP tidak boleh kosong')
+    Cekeror = false;
+  }
+
+  return Cekeror;
+}
+
+function menuhidup() {
+  menuEnable('menu_tambah');
+  menuEnable('menu_edit');
+  menuEnable('menu_hapus');
+  menuDisable('menu_simpan');
+  menuDisable('menu_cancel');
+  menuEnable('menu_find');
+  menuEnable('menu_cetak');
+
+  setReadOnly('far_kode_dokter')
+  setReadOnly('far_nama_dokter')
+  setReadOnly('far_jabatan_dokter')
+  setReadOnly('far_id_dokter_bpjs')
+  setReadOnly('far_kode_nip')
+  setReadOnly('far_sip')
+  setReadOnly('far_kode_antri')
+  setReadOnly('far_kode_bpjs')
+  setReadOnly('far_no_telepon')
+  setDisabled('inlineCheckboxaktif1', 0)
+}
+
+function menumati() {
+  menuDisable('menu_tambah');
+  menuDisable('menu_edit');
+  menuDisable('menu_hapus');
+  menuEnable('menu_simpan');
+  menuEnable('menu_cancel');
+  menuDisable('menu_find');
+  menuDisable('menu_cetak');
+
+  setReadOnly('far_kode_dokter')
+  setUnReadOnly('far_nama_dokter')
+  setUnReadOnly('far_jabatan_dokter')
+  setUnReadOnly('far_id_dokter_bpjs')
+  setUnReadOnly('far_kode_nip')
+  setUnReadOnly('far_sip')
+  setUnReadOnly('far_kode_antri')
+  setUnReadOnly('far_kode_bpjs')
+  setUnReadOnly('far_no_telepon')
+  setDisabled('inlineCheckboxaktif1', 1)
+  if ($("#far_kode_dokter").val() == '') {
+    $('input[id=inlineCheckboxaktif1]').iCheck('check');
+  }
+}

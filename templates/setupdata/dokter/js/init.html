@@ -1,0 +1,29 @@
+var host_main = window.location.href.split("/");
+var host_root = host_main[0] + "//" + host_main[2];
+var host = host_main[0] + "//" + host_main[2] + "/" + host_main[3];
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+})
+
+function setDisabled(id, enable = 1) {
+    if (enable == 1) {
+        $('#' + id).attr("disabled", false);
+        // $('#' + id).css("background-color", 'white');
+        // $('#' + id).css("color", 'black');
+    } else {
+        $('#' + id).attr("disabled", true);
+        // $('#' + id).css("background-color", 'white');
+        // $('#' + id).css("color", 'black');
+    }
+}

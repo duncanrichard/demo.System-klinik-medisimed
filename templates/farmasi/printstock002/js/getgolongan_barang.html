@@ -1,0 +1,59 @@
+var gridDatagolongan_barang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_golongan_barang = $('#search_kode_golongan_barang').val();
+        var search_nama_golongan_barang = $('#search_nama_golongan_barang').val();
+        return $.ajax({
+            url: host + "/getgolongan_barang",
+            method: "GET",
+            data: {
+                "search_kode_golongan_barang": search_kode_golongan_barang,
+                "search_nama_golongan_barang": search_nama_golongan_barang
+            },
+            success: function (datas) {
+                $('#dxGridModalgolongan_barang').modal('show');
+            }
+        })
+    }
+});
+
+function carigolongan_barang(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatagolongan_barang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatagolongan_barang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "MERK_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAMA",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == 1) {
+                $("#kodegolongan_dari").val(e.data.MERK_ID)
+            } else {
+                $("#kodegolongan_sampai").val(e.data.MERK_ID)
+            }
+
+            $('#dxGridModalgolongan_barang').modal('hide');
+        }
+    });
+}

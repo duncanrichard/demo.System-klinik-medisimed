@@ -1,0 +1,115 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+// console.log(host)
+$(document).ready(function () {
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    $("#kodebarang_dari").val("0")
+    $("#kodebarang_sampai").val("ZZZ")
+    $("#kodeproduk_dari").val("0")
+    $("#kodeproduk_sampai").val("ZZZ")
+    $("#kodegolongan_dari").val("0")
+    $("#kodegolongan_sampai").val("ZZZ")
+    $("#cetak_dari").val("0")
+    $("#cetak_sampai").val("ZZZ")
+    $("#Cetak_mutasi_tanggal_dr").val(getLastDate(yyyy, mm, 1))
+    $("#Cetak_mutasi_tanggal_sd").val(todays)
+
+    $("#Prosescetak").click(function () {
+        pilihancetak(1)
+    })
+    $("#Batalproses").click(function () {
+        Batalproses()
+    })
+
+    $("#ProsesExcel").click(function () {
+        ProsesExcel()
+    })
+
+})
+
+function Batalproses() {
+    window.location.href = "http://{{ request.get_host }}/";
+    // window.history.back();
+}
+
+function pilihancetak(param = null) {
+    pilihcetak = ''
+    Swal.fire({
+        title: 'Pilih cetak ?',
+        text: "",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#28a745',
+        confirmButtonText: 'PDF',
+        cancelButtonText: 'EXCEL',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // window.open(datas.pdf);
+            pilihcetak = 'pdf'
+        } else {
+            // window.open(datas.xls);
+            pilihcetak = 'xls'
+        }
+        if (param == 1) {
+            Prosescetak()
+        }
+    })
+}
+
+function Prosescetak() {
+    $.ajax({
+        url: host + "/posisistock",
+        method: "GET",
+        data: {
+            "kodebarang_dari": $("#kodebarang_dari").val(),
+            "kodebarang_sampai": $("#kodebarang_sampai").val(),
+            "kodeproduk_dari": $("#kodeproduk_dari").val(),
+            "kodeproduk_sampai": $("#kodeproduk_sampai").val(),
+            "kodegolongan_dari": $("#kodegolongan_dari").val(),
+            "kodegolongan_sampai": $("#kodegolongan_sampai").val(),
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+            "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
+            "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
+            'pilihcetak': pilihcetak,
+        },
+        beforeSend: function () {
+            // $('#printstock001').modal('hide');
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak kartu stock..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            if (pilihcetak == 'pdf') {
+                window.open(datas.pdf);
+            } else {
+                window.open(datas.xls);
+            }
+        },
+    })
+}
+
+function ProsesExcel() {
+
+    url2 = host + "/proses_excel";
+    getGridTable();
+
+}
+
+function getLastDate(y, m, d) {
+    return y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0')
+}

@@ -14,6 +14,7 @@ from . import modul_stock
 from . import frm_mutasi_M
 
 urlpatterns = [
+    url(r'^',include('farmasi.url_reportstock')),
     url(r'^frm_suplier/', include([
         url(r'^$', frm_suplier.frm_suplier, name='frm_suplier'),
         url(r'^exit', frm_suplier.exit, name='exitsuplier'),
@@ -173,6 +174,7 @@ urlpatterns = [
         url(r'^cetak_lap_rekap_divisi', frm_mutasi_M.cetak_lap_rekap_divisi,name='cetak_lap_rekap_divisi'),
 
     ])),
+
 
 
 ]

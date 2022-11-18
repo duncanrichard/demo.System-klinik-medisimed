@@ -1,0 +1,61 @@
+var gridDatajenis_barang = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_jenis_barang = $('#search_kode_jenis_barang').val();
+        var search_nama_jenis_barang = $('#search_nama_jenis_barang').val();
+        return $.ajax({
+            url: host + "/getjenis_barang",
+            method: "GET",
+            data: {
+                "search_kode_jenis_barang": search_kode_jenis_barang,
+                "search_nama_jenis_barang": search_nama_jenis_barang
+            },
+            success: function (datas) {
+                $('#DxGridModaljenis_barang').modal('show');
+            }
+        })
+    }
+});
+
+function carijenis_barang(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatajenis_barang2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 100
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatajenis_barang,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "PRD_ID",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if(param == 1){
+                $("#kodeproduk_dari").val(e.data.PRD_ID)
+            } else {
+                $("#kodeproduk_sampai").val(e.data.PRD_ID)
+            }
+
+            $('#DxGridModaljenis_barang').modal('hide');
+        }
+    });
+}
+

@@ -1,0 +1,102 @@
+{% extends "layout/master.html" %}
+{% block title %}
+KARTU STOCK
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+{% block content %}
+
+<div class=''>
+    <div class="modal-dialog modal-lg" role="modal" style="z-index: 4;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="ibox-title" style="background-color: #4f7ebb4f;">
+                    <h3 style="text-align: center">Print Criteria Kartu Stock </h3>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="row">
+                            <label class="col-md-2 control-label">KODE BARANG </label>
+                            <div class="col-md-2">
+                                <input type="text" name="kodebarang_dari" id="kodebarang_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode barang">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodebarang2">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="kodebarang_sampai" id="kodebarang_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodebarang3">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label">Dari Gudang </label>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_dari" id="cetak_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="FindDivisi2">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_sampai" id="cetak_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="FindDivisi3">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" id="label_Cetak_mutasi_tanggal">
+                            <label class="col-md-2 control-label" id="label_Cetak_mutasi_tanggal_dr" >Dari Tanggal </label>
+                            <div class="col-md-3">
+                                <input type="date" id="Cetak_mutasi_tanggal_dr"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <label class="col-md-2 control-label" id="label_Cetak_mutasi_tanggal_sd">s/d Tanggal </label>
+                            <div class="col-md-3">
+                                <input type="date" id="Cetak_mutasi_tanggal_sd"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <input type="hidden" id="paramprint">
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="Prosescetak">Cetak</button>
+                <button type="button" class="btn btn-danger" id="Batalproses" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'dashboard/modal/modalLoading.html' %}
+{% include 'farmasi/printstock001/dxgrid/DxGridModaldivisi.html' %}
+{% include 'farmasi/printstock001/dxgrid/dxGridModalbarang.html' %}
+
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/printstock001/js/init.html' %} 
+{% include 'farmasi/printstock001/js/getDivisi.html' %} 
+{% include 'farmasi/printstock001/js/getbarang.html' %} 
+</script>
+{% endblock  %}

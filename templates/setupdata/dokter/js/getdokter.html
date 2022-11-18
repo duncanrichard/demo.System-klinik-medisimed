@@ -1,0 +1,74 @@
+function load_Dokter() {
+    $("#dxGridDatadokter").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000,
+        },
+        filterRow: {
+            visible: false,
+        },
+        export: {
+            enabled: true
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/open_dokter",
+                    data: {},
+                    method: "GET",
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length,
+                        });
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single",
+        },
+        columns: [{
+                dataField: "FMDDOKTER_ID",
+                caption: "Kode Dokter",
+            },
+            {
+                dataField: "FMDDOKTERN",
+                caption: "Nama Dokter",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#far_kode_dokter").val(e.data.FMDDOKTER_ID);
+            $("#far_nama_dokter").val(e.data.FMDDOKTERN);
+            $("#far_jabatan_dokter").val(e.data.FMDJABATAN);
+            $("#far_id_dokter_bpjs").val(e.data.FMDDOKTER_ID_BPJS);
+            $("#far_kode_nip").val(e.data.FMDNIP);
+            $("#far_sip").val(e.data.SIP);
+            $("#far_kode_antri").val(e.data.KODEDOKTER);
+            $("#far_kode_bpjs").val(e.data.KODEDPJP);
+            $("#far_no_telepon").val(e.data.FMDNOTELP);
+            if (parseInt(e.data.FMDSTATUS) == 0) {
+                $("#inlineCheckboxaktif1").prop('checked', true)
+            } else {
+                $("#inlineCheckboxaktif1").prop('checked', false)
+            }
+            $('#dxGridModaldokter').modal('hide')
+            menuhidup();
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

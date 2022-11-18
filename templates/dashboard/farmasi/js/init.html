@@ -206,12 +206,14 @@ $(document).ready(function () {
                         },
                         success: function (e) {
 
-                            alert(e[0].STATUS + ' - ' + e[0].STATE)
-                            $("#no_fakturid").val(e[0].no_trans)
-                            deathtext()
-                            $('#btnfar_tambah_produk').css("display", 'none');
-                            $('#btn_hapus_semua_barang').css("display", 'none');
-                            canAdd = 0
+                            alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
+                            if (e[0].STATUS == 'SUKSES') {
+                                $("#no_fakturid").val(e[0].no_trans)
+                                deathtext()
+                                $('#btnfar_tambah_produk').css("display", 'none');
+                                $('#btn_hapus_semua_barang').css("display", 'none');
+                                canAdd = 0
+                            }
 
                         }
                     })
@@ -332,10 +334,12 @@ $(document).ready(function () {
                     },
                     success: function (e) {
 
-                        alert(e[0].STATUS + ' - ' + e[0].STATE)
-                        setAwal()
-                        cleartext()
-                        setGridEmpty()
+                        alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
+                        if (e[0].STATUS == 'SUKSES') {
+                            setAwal()
+                            cleartext()
+                            setGridEmpty()
+                        }
 
                     }
                 })

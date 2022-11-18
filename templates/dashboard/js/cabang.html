@@ -74,6 +74,7 @@ function cariCabang() {
         onRowClick: function (e) {
             // getDataPasien(e.data.KODE_PASIEN);
             window.location.href = 'http://{{ request.get_host }}/?kdCabang=' + e.data.CABANG_ID;
+            // window.location.href = 'http://{{ request.get_host }}';
             $('#Modalcabang').modal('hide');
         }
     });

@@ -14,7 +14,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 def login(request):
 
     # print("==========================")
-    # print(createHashPass("BUDI"))
+    # print(createHashPass("APT_CRB"))
     # print("==========================")
     # print(createHashPass("BUDI"))
     # print("==========================")

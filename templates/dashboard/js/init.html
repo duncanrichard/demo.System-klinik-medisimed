@@ -1,11 +1,12 @@
-var host = window.location.href;
+var host = window.location.href.split("/");
+var host = host[0] + "//" + host[2] + "/"
 // var host2 = host[0] + "//" + host[2] + "/"
 // var host = host[0] + "//" + host[2] + "/" + host[3]
 console.log(host)
 
 $(document).ready(function () {
     console.log('tes33')
-     $('#Modalcabang').modal('hide');
+    $('#Modalcabang').modal('hide');
     user = "{{request.session.user_id}}";
     if (user == 'IT') {
         setMenu('Findjenis', 1)

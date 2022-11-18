@@ -139,12 +139,10 @@ $(document).ready(function () {
                         "JENIS": 'C02',
                         "StatusAUD": 'D',
                     },
-                    success: function (datas) {
-                        if (datas.status == 'sukses') {
-                            alert('Berhasil Dihapus')
+                    success: function (e) {
+                        alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
+                        if (e[0].STATUS == 'SUKSES') {
                             setAwal()
-                        } else {
-                            alert('Gagal Dihapus, ' + datas.data)
                         }
                     }
                 })
@@ -222,9 +220,11 @@ $(document).ready(function () {
                             "StatusAUD": 'A',
                         },
                         success: function (e) {
-                            alert(e[0].STATUS + ' - ' + e[0].STATE)
-                            $("#no_bhp").val(e[0].no_trans)
-                            deathtext()
+                            alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
+                            if (e[0].STATUS == 'SUKSES') {
+                                $("#no_bhp").val(e[0].no_trans)
+                                deathtext()
+                            }
                         }
                     })
                 }

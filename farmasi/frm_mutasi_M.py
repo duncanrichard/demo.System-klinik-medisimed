@@ -56,14 +56,14 @@ def getdivisi(request):
         kode = request.GET['kode']
         q = "SELECT WH_ID, NAME_WH "
         q += "FROM WAREHOUSE  "
-        q += "WHERE (WH_ID LIKE %s) AND aktif=1 and c.BRANCH=%s"
+        q += "WHERE (WH_ID LIKE %s) AND aktif=1 and BRANCH=%s"
         result = Globals().getDataQuery(q,[kode,ID_CABANG])
     else:
         kode_divisi = '%'+request.GET['search_kode_divisi']+'%'
         nama_divisi = '%'+request.GET['search_nama_divisi']+'%'
         q = "SELECT WH_ID, NAME_WH "
         q += "FROM WAREHOUSE  "
-        q += "WHERE (WH_ID LIKE %s) AND (NAME_WH LIKE %s)  AND aktif=1 and c.BRANCH=%s "
+        q += "WHERE (WH_ID LIKE %s) AND (NAME_WH LIKE %s)  AND aktif=1 and BRANCH=%s "
         result = Globals().getDataQuery(q, [kode_divisi,nama_divisi,ID_CABANG])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

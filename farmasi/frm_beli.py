@@ -89,6 +89,14 @@ def getdivisi(request):
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)
 	return HttpResponse(json_data, content_type="application/json")
 
+def getDataGudang(request):
+    idGudang=request.GET['idGudang']
+    cabang_id = request.session['kdCabang']
+    q = "select ROW_NUMBER() OVER (ORDER BY NAME_WH) AS NO, a.WH_ID AS WH_ID,NAME_WH AS NAME_WH from  WAREHOUSE a where WH_ID=%s and BRANCH=%s and AKTIF=1 order by NAME_WH "
+    result = Globals().getDataQuery(q,[idGudang,cabang_id])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
 def getIdDataBarang(request):
 	kode = request.GET['kode']
 	if len(kode)==0:

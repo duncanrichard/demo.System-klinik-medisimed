@@ -1,0 +1,84 @@
+<div class="panel-body default-panel">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="form-row">
+                <label class="col-md-2 control-label">Nomor</label>
+                <div class="col-md-9">
+                    <input id="no_bhp" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Tanggal</label>
+                <div class="col-md-3">
+                    <input id="tanggal" type="date" class="form-control input-sm today">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Gudang Tujuan</label>
+                <div class="col-md-3">
+                    <input id="kode_divisi" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-6">
+                    <input id="nama_divisi" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success btn-xs" id="cari_divisi">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Gudang</label>
+                <div class="col-md-3">
+                    <input id="kode_divisi2" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-6">
+                    <input id="nama_divisi2" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success btn-xs" id="cari_divisi2">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Keterangan</label>
+                <div class="col-md-9">
+                    <input id="keterangan" type="text" class="form-control input-sm">
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-5">
+            <div class="form-row">
+                <div class="col-md-2" style="background:#ed55657a;">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="inlineCheckboxclose" name="inlineCheckboxclose" value="0">Close
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="row" style="margin-top:5px;margin-bottom: 5px;">
+                <div class="col-md-12">
+                    <button class="btn btn-xs btn-primary" id="btn_tambah_barang" style="display: none;">Tambah
+                        Produk</button>
+                    <div style="height: 240px;overflow-y: auto;" class="mt-7">
+                        <div id="datagrid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-row">
+                <div class="col-md-6">
+                    <div id="dxGridStockBarang"></div>
+                </div>
+            </div>
+        </div>
+    </div>

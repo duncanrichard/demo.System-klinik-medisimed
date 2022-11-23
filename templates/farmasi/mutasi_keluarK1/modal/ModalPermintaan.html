@@ -1,0 +1,49 @@
+<div class="modal fade" id="ModalPermintaan" data-keyboard="false" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">Data Permintaan</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="date" id="minta_tanggal"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control input-sm-lab" id="select_minta">
+                                    <option value="minta_by_tanggal">Mutasi Per Tanggal</option>
+                                    <option value="minta_by_bulan">Mutasi Per Bulan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="minta_bukti" class="form-control input-sm-lab enter-cari-mutasi"
+                                    placeholder="No Bukti">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="minta_divisi"
+                                    class="form-control input-sm-lab enter-cari-mutasi" placeholder="Divisi">
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-sm btn-primary btn-block" id="btn_cari_minta">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-10">
+                            <div id="DataPermintaan"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

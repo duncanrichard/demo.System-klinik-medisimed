@@ -1,6 +1,9 @@
 $(document).ready(function () {
     if (window.localStorage.getItem("kode_gudang_local")) {
         $('#far_kode_gudang').val(window.localStorage.getItem("kode_gudang_local"));
+        if ($("#far_kode_gudang").val() != '') {
+            getDataGudang($("#far_kode_gudang").val());
+        }
     }
     if (window.localStorage.getItem("nama_gudang_local")) {
         $('#far_nama_gudang').val(window.localStorage.getItem("nama_gudang_local"));
@@ -43,6 +46,8 @@ function getDataGudang(e) {
                 $('#far_kode_gudang').val(datas[0].WH_ID);
                 $('#far_nama_gudang').val(datas[0].NAME_WH);
             } else {
+                $('#far_kode_gudang').val('')
+                $('#far_nama_gudang').val('')
                 $('#dxGridModalGudang').modal('show');
                 param = 1
                 cariGudang(param)

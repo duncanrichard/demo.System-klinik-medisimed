@@ -2,6 +2,9 @@
 $(document).ready(function () {
     if (window.localStorage.getItem("kode_gudang_local")) {
         $('#kode_divisi').val(window.localStorage.getItem("kode_gudang_local"));
+        if ($("#kode_divisi").val() != '') {
+            getDataGudang($("#kode_divisi").val());
+        }
     }
     if (window.localStorage.getItem("nama_gudang_local")) {
         $('#nama_divisi').val(window.localStorage.getItem("nama_gudang_local"));
@@ -25,6 +28,30 @@ $(document).ready(function () {
 
 })
 
+function getDataGudang(e) {
+    $.ajax({
+        url: host + "/getDataGudang",
+        method: "GET",
+        data: {
+            "idGudang": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#kode_divisi').val(datas[0].WH_ID);
+                $('#nama_divisi').val(datas[0].NAME_WH);
+            } else {
+                $('#kode_divisi').val('')
+                $('#nama_divisi').val('')
+                $('#DxGridModaldivisi').modal('show');
+                param = null
+                caridivisi(param)
+            }
+
+        }
+    })
+}
 
 var gridDataDivisi = new DevExpress.data.DataSource({
     load: function (values) {
@@ -45,10 +72,7 @@ var gridDataDivisi = new DevExpress.data.DataSource({
     }
 });
 
-function caridivisi(e, param = null) {
-    console.log('menu cari clicked BUDI')
-    //e.preventDefault();
-    e.stopImmediatePropagation();
+function caridivisi(param = null) {
     $("#DxgridDataDivisi2").dxDataGrid({
         showColumnLines: false,
         showRowLines: true,

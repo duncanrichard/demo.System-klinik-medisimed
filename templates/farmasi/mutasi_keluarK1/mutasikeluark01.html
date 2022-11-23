@@ -1,0 +1,59 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Mutasi keluar Farmasi 
+{% endblock %} 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+<style>
+  div#datagrid.dx-widget {
+    font-size: 12px;
+    line-height: 0.8;
+    /* height: 200px; */
+  }
+
+  div#dxGridStockBarang.dx-widget {
+    font-size: 12px;
+    line-height: 0.8;
+    height: 100px;
+  }
+</style>
+{% endblock %} 
+{% block content %} 
+<div class=''>
+    <div class="wrapper wrapper-content entry">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ibox">
+                    <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                        <h3 style="text-align: center">Mutasi Keluar Farmasi</h3>
+                    </div>
+                    <div class="ibox-content">
+                        {% csrf_token %}
+                        {% include 'farmasi/mutasi_keluarK1/form_mutasikeluark01.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'farmasi/mutasi_keluarK1/modal/ModalPaketAlkes.html' %} 
+{% include 'farmasi/mutasi_keluarK1/modal/ModalPermintaan.html' %} 
+{% include 'farmasi/mutasi_keluarK1/modal/ModalprintMutasiKeluar.html' %} 
+{% include 'farmasi/mutasi_keluarK1/modal/ModalLoading.html' %} 
+{% include 'farmasi/mutasi_keluarK1/modal/ModalBarang.html' %} 
+{% include 'farmasi/mutasi_keluarK1/modal/ModalMutasiKeluar.html' %} 
+{% include 'farmasi/mutasi_keluarK1/dxgrid/DxGridModaldivisi.html' %} 
+{% endblock content%}
+{% block script %} 
+{% load static %}
+<script type="text/javascript">
+  {% include 'farmasi/mutasi_keluarK1/js/getalkespaket.html' %}
+  {% include 'farmasi/mutasi_keluarK1/js/getpermintaan.html' %}
+  {% include 'farmasi/mutasi_keluarK1/js/getBarang.html' %}
+  {% include 'farmasi/mutasi_keluarK1/js/init.html' %}
+  {% include 'farmasi/mutasi_keluarK1/js/getDxGrid.html' %}
+  {% include 'farmasi/beli/js/getDivisi.html' %}
+</script>
+{% endblock %}

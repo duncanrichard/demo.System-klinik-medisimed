@@ -111,7 +111,7 @@ def getdokter(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def getDataGudang(request):
-    idGudang=request.GET['search_name']
+    idGudang=request.GET['idGudang']
     cabang_id = request.session['kdCabang']
     q = "select ROW_NUMBER() OVER (ORDER BY NAME_WH) AS NO, a.WH_ID AS WH_ID,NAME_WH AS NAME_WH from  WAREHOUSE a where WH_ID=%s and BRANCH=%s and AKTIF=1 order by NAME_WH "
     result = Globals().getDataQuery(q,[idGudang,cabang_id])

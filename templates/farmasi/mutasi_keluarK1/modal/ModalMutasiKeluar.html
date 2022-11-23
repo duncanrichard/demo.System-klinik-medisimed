@@ -1,0 +1,53 @@
+<div class="modal fade" id="ModalMutasiKeluar" data-keyboard="false" tabindex="-1" role="dialog" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title">Data Mutasi Keluar</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <input type="date" id="mutasi_tanggal"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-control input-sm-lab" id="select_mutasi">
+                                    <option value="mutasi_by_tanggal">Mutasi Per Tanggal</option>
+                                    <option value="mutasi_by_bulan">Mutasi Per Bulan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="mutasi_bukti" class="form-control input-sm-lab enter-cari-mutasi"
+                                    placeholder="No Bukti">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="mutasi_pasien"
+                                    class="form-control input-sm-lab enter-cari-mutasi" placeholder="Gudang Asal">
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" id="mutasi_gudang"
+                                    class="form-control input-sm-lab enter-cari-mutasi" placeholder="Gudang Tujuan">
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-sm btn-primary btn-block" id="btn_cari_mutasi">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row mt-10">
+                            <div id="DataMutasiKeluar"style="height: 340px;font-size: 12px;line-height: 0.8;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>

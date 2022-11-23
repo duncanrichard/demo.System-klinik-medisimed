@@ -1,0 +1,280 @@
+$(document).ready(function () {
+    $("#cari_barang").keyup(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#dataModalBrg").dxDataGrid("instance");
+        if (code == 27 || code == 13) {
+            if (canEnterBarang == 1) {
+                if (dataGrid.getVisibleRows().length != 0) {
+                    e.preventDefault()
+                    $(this).blur()
+                    dataGrid.focus(dataGrid.getCellElement(0, 'NAME_BRG'))
+                    dataGrid.selectRowsByIndexes(0)
+                }
+            }
+        } else {
+            if ($("#cari_barang").val().length > 2) {
+                searchBarangByName($("#cari_barang").val())
+            } else {
+                searchBarangByName('nullnone0')
+            }
+        }
+    });
+
+    $('#btn_ok_data_barang').click(function () {
+        if (data) {
+            pilihBarang()
+        }
+    })
+})
+
+function carikodebrgid(e) {
+
+    $("#cari_barang").val(e)
+    $.ajax({
+        url: host + "/getIdDataBarang",
+        method: "GET",
+        data: {
+            "kode": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.status == 'ok') {
+                tempId = datas.data.BARANGC
+                tempNama = datas.data.NAME_BRG
+                tempSatuan = datas.data.SATSTAND
+                tempHpokok = datas.data.HPOKOK
+                tempIdPrd = datas.data.TTYPEC
+                tempstatusproduk = datas.data.STATUSPRODUK
+                pilihBarang()
+            } else {
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, "TTYPEC", '');
+                dataGrid.cellValue(rowIndex, 'BARANGC', '')
+                dataGrid.cellValue(rowIndex, "NAME_BRG", '');
+                dataGrid.cellValue(rowIndex, "SATUAN", '');
+                dataGrid.cellValue(rowIndex, "HPOKOK", 0);
+                dataGrid.cellValue(rowIndex, "QTY", 0);
+                dataGrid.cellValue(rowIndex, "TOTAL", 0);
+                dataGrid.cellValue(rowIndex, "STATUSPRODUK", '');
+                openModalBrg()
+                if ($("#cari_barang").val().length > 2) {
+                    searchBarangByName($("#cari_barang").val())
+                } else {
+                    searchBarangByName('nullnone0')
+                }
+            }
+        }
+    })
+}
+
+function openModalBrg() {
+    try {
+        var dxgridbarang = $("#dataModalBrg").dxDataGrid('instance');
+        dxgridbarang.clearSelection();
+    } catch (err) {}
+    if (canAdd == 1) {
+        tempId = ''
+        tempNama = ''
+        temppqty = ''
+        tempSatuan = ''
+        tempHpokok = ''
+        tempIdPrd = ''
+
+        $('#modalBarang').modal('show')
+        $('#cari_barang').val()
+        $('#modalBarang').on('shown.bs.modal', function () {
+            $('#cari_barang').focus()
+        })
+        $("#dataModalBrg").dxDataGrid({
+            dataSource: [],
+            keyExpr: 'BARANGC',
+            selection: {
+                mode: "single"
+            },
+            paging: {
+                pageSize: 10000
+            },
+            rowAlternationEnabled: true,
+            hoverStateEnabled: true,
+            showBorders: true,
+            columns: [{
+                dataField: "BARANGC",
+                caption: "ID BARANG",
+                alignment: 'center',
+                width: 80
+            }, {
+                dataField: "NAME_BRG",
+                caption: "NAMA BARANG",
+            }, {
+                dataField: "SATSTAND",
+                caption: "SATUAN",
+                width: 80,
+                alignment: 'center',
+            }, {
+                dataField: "HPOKOK",
+                caption: "HARGA",
+                width: 100,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                alignment: 'right',
+            }, , {
+                dataField: "STOK",
+                caption: "STOCK",
+                width: 80,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                alignment: 'right',
+            }],
+        });
+    }
+}
+
+
+function searchBarangByName(nama) {
+    $.ajax({
+        url: host + "/getDataBarangKeluar",
+        method: "GET",
+        data: {
+            'nama': nama,
+            "gudang": $("#kode_divisi2").val(),
+        },
+        beforeSend: function () {
+            canEnterBarang = 0
+            if (nama != 'nullnone0') {
+                $('#loadDataText').css("display", 'block');
+            }
+        },
+        complete: function () {
+            $('#loadDataText').css("display", 'none');
+            canEnterBarang = 1
+        },
+        success: function (datas) {
+            canEnterBarang = 1
+            $("#dataModalBrg").dxDataGrid({
+                dataSource: datas,
+                keyExpr: 'BARANGC',
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 10000
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                focusedRowEnabled: true,
+                columns: [{
+                    dataField: "BARANGC",
+                    caption: "ID BARANG",
+                    alignment: 'left',
+                    width: 90,
+                    allowSorting: false
+                }, {
+                    dataField: "NAME_BRG",
+                    caption: "NAMA BARANG",
+                    allowSorting: false
+                }, {
+                    dataField: "SATSTAND",
+                    caption: "SATUAN",
+                    width: 80,
+                    alignment: 'left',
+                    allowSorting: false
+                }, {
+                    dataField: "HPOKOK",
+                    caption: "HARGA POKOK",
+                    allowEditing: true,
+                    width: 120,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                }, {
+                    dataField: "STOK",
+                    caption: "STOCK",
+                    width: 80,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    alignment: 'right',
+                }, ],
+                onFocusedCellChanged: function (e) {
+                    if (e.row.data) {
+                        tempId = e.row.data.BARANGC
+                        tempNama = e.row.data.NAME_BRG
+                        tempSatuan = e.row.data.SATSTAND
+                        tempHpokok = e.row.data.HPOKOK
+                        tempIdPrd = e.row.data.TTYPEC
+                        tempstatusproduk = e.row.data.STATUSPRODUK
+                    }
+
+                },
+                onSelectionChanged: function (r) {
+                    if (r.selectedRowsData.length > 0) {
+                        tempId = r.selectedRowsData[0].BARANGC
+                        tempNama = r.selectedRowsData[0].NAME_BRG
+                        tempSatuan = r.selectedRowsData[0].SATSTAND
+                        tempHpokok = r.selectedRowsData[0].HPOKOK
+                        tempIdPrd = r.selectedRowsData[0].TTYPEC
+                        tempstatusproduk = r.selectedRowsData[0].STATUSPRODUK
+                    }
+                },
+                onKeyDown: function (e) {
+                    if (e.event.originalEvent.which == 13) {
+                        pilihBarang()
+                    }
+                },
+                onContentReady: function (e) {
+                    setTimeout(() => {
+                        $('#cari_barang').focus()
+                    }, 200);
+                }
+            });
+        }
+    })
+}
+
+function pilihBarang() {
+    if (tempId != '') {
+        if (!cekDataSudahAda(tempId)) {
+            alert('Maaf Barang ' + tempNama + ' Sudah Ada')
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            dataGrid.cellValue(rowIndex, "TTYPEC", '');
+            dataGrid.cellValue(rowIndex, "BARANGC", '');
+            dataGrid.cellValue(rowIndex, "NAME_BRG", '');
+            dataGrid.cellValue(rowIndex, "SATSTAND", '');
+            dataGrid.cellValue(rowIndex, "HPOKOK", 0);
+            dataGrid.cellValue(rowIndex, "QTY", 0);
+            dataGrid.cellValue(rowIndex, "TOTAL", 0);
+            dataGrid.cellValue(rowIndex, "STATUSPRODUK", '')
+            openModalBrg()
+            searchBarangByName(tempNama)
+        } else {
+            $('#cari_barang').val('')
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            // dataGrid.cellValue(rowIndex, "NO", generateNo());
+            dataGrid.cellValue(rowIndex, "TTYPEC", tempIdPrd);
+            dataGrid.cellValue(rowIndex, "BARANGC", tempId);
+            dataGrid.cellValue(rowIndex, "NAME_BRG", tempNama);
+            dataGrid.cellValue(rowIndex, "SATSTAND", tempSatuan);
+            dataGrid.cellValue(rowIndex, "HPOKOK", tempHpokok);
+            dataGrid.cellValue(rowIndex, "QTY", temppqty);
+            dataGrid.cellValue(rowIndex, "TOTAL", tempHrupiah);
+            dataGrid.cellValue(rowIndex, "STATUSPRODUK", tempstatusproduk)
+            dataGrid.saveEditData();
+            $.when(dataGrid.saveEditData()).done(function () {
+                setFocusQTY()
+            })
+            setGudangPasien()
+            setGridStock(tempId)
+            $('#modalBarang').modal('hide')
+        }
+    } else {
+        alert('Silahkan Pilih Barang')
+    }
+}
+
+function setFocusQTY() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    $(dataGrid.focus(dataGrid.getCellElement(qtyIndex, 'QTY'))).promise().done(function () {
+        dataGrid.editCell(qtyIndex, 'QTY')
+    })
+}

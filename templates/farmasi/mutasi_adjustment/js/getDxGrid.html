@@ -1,0 +1,860 @@
+$(document).ready(function () {
+    setGridEmpty()
+
+    $("#cari_barang").keyup(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#dataModalBrg").dxDataGrid("instance");
+
+        if (code == 27 || code == 13) {
+            if (canEnterBarang == 1) {
+                if (dataGrid.getVisibleRows().length != 0) {
+                    e.preventDefault()
+                    $(this).blur()
+                    dataGrid.focus(dataGrid.getCellElement(0, 'NAME_BRG'))
+                    dataGrid.selectRowsByIndexes(0)
+                }
+            }
+        } else {
+            if ($("#cari_barang").val().length > 2) {
+                searchBarangByName($("#cari_barang").val())
+            } else {
+                searchBarangByName('nullnone0')
+            }
+        }
+    });
+
+    $(document).on("keydown", function (event) {
+        if (event.altKey && event.which == 81) {
+            setFocusQTY()
+        } else if (event.altKey && event.which == 65) {
+            openModalBrg()
+        } else if (event.altKey && event.which == 90) {
+            $(this).focusout()
+        } else if (event.which == 112) {
+            // f1 key number
+            // f1 112
+            // f2 113
+            // f3 114
+            // f4 115
+            // f5 116
+            // f6 117
+            // f7 118
+            // f8 119
+            // f9 120
+            // f10 121
+            // f11 122
+            // f12 123
+            $("#menu_tambah").trigger("click")
+        } else if (event.which == 113) {
+            $("#menu_edit").trigger("click")
+        } else if (event.which == 114) {
+            $("#menu_hapus").trigger("click")
+        } else if (event.which == 115) {
+            $("#menu_simpan").trigger("click")
+        } else if (event.which == 116) {
+            $("#menu_find").trigger("click")
+        } else if (event.which == 117) {
+            $("#menu_cetak").trigger("click")
+        } else if (event.which == 118) {
+            $("#menu_cancel").trigger("click")
+        }
+    });
+})
+
+function setGridEmpty() {
+    $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        paging: {
+            pageSize: 10000
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        allowColumnResizing: true,
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 40,
+                allowSorting: false
+            },
+            {
+                dataField: "TTYPEC",
+                alignment: 'center',
+                caption: "ID PRODUK",
+                width: 100,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "BARANGC",
+                caption: "ID BARANG",
+                alignment: 'center',
+                width: 150,
+                allowEditing: true,
+                allowSorting: false
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "NAMA BARANG",
+                width: 350,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "SATSTAND",
+                alignment: 'center',
+                caption: "SATUAN",
+                width: 100,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "HPOKOK",
+                alignment: 'RIGHT',
+                caption: "HARGA POKOK",
+                width: 120,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "Stock",
+                caption: "Stock",
+                alignment: 'RIGHT',
+                width: 60,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "Phisik",
+                caption: "Phisik",
+                alignment: 'RIGHT',
+                width: 60,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                allowEditing: true,
+                allowSorting: false
+            },
+            {
+                dataField: "QTY",
+                caption: "Qty.Adj",
+                alignment: 'RIGHT',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 60,
+                allowEditing: true,
+                allowSorting: false,
+                calculateCellValue: function (rowData) {
+                    var Stock = ''
+                    var Phisik = ''
+                    if (!rowData.Stock) {
+                        Stock = 0
+                    } else {
+                        Stock = parseInt(rowData.Stock)
+                    }
+                    if (!rowData.Phisik) {
+                        Phisik = 0
+                    } else {
+                        Phisik = parseInt(rowData.Phisik)
+                    }
+                    var selesih = (Phisik - Stock)
+                    return (selesih)
+                }
+            },
+
+            {
+                dataField: "TOTAL",
+                caption: "TOTAL",
+                alignment: 'RIGHT',
+                width: 120,
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                allowEditing: false,
+                allowSorting: false,
+                calculateCellValue: function (rowData) {
+                    var hjual = ''
+                    var qty = ''
+                    var Phisik = ''
+                    var Stock = ''
+
+                    if (rowData.HPOKOK == '') {
+                        hjual = 0
+                    } else {
+                        hjual = parseInt(rowData.HPOKOK)
+                    }
+                    if (!rowData.Phisik) {
+                        Phisik = 0
+                    } else {
+                        Phisik = parseInt(rowData.Phisik)
+                    }
+
+                    if (!rowData.Stock) {
+                        Stock = 0
+                    } else {
+                        Stock = parseInt(rowData.Stock)
+                    }
+                    var res = (hjual * (Phisik - Stock))
+                    // return rupiah2(Math.floor(res))
+                    return res
+                }
+            },
+            {
+                dataField: "STATUSPRODUK",
+                caption: "STATUSPRODUK",
+                alignment: 'RIGHT',
+                width: 0,
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+            texts: {
+                confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                deleteRow: "Hapus"
+            }
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+            if (d.column.dataField == "Phisik") {
+                setGridStock(d.data.BARANGC)
+            }
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+            colIndex = e.columnIndex
+            if (colIndex == 2) {
+                colIndex = "BARANGC"
+            }
+            if (colIndex == 7) {
+                colIndex = "Phisik"
+            }
+            if (colIndex == 8) {
+                colIndex = "QTY"
+            }
+        },
+        onRowClick: function (e) {
+            setGridStock(e.data.BARANGC)
+        },
+        onRowUpdated: function (e) {
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Tidak Dapat Diubah, Silahkan Pilih Edit')
+                dataGrid.cancelEditData()
+            } else {
+                if (e.data.hasOwnProperty("Phisik")) {
+                    if (e.data.Phisik < 0 || e.data.Phisik === null) {
+                        e.cancel = true
+                        alert('Phisik Tidak Boleh null atau kurang dari 0');
+                        dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "Phisik", '0');
+                        dataGrid.saveEditData();
+                    }
+                }
+            }
+            setAll()
+        },
+        onRowRemoved: function (e) {
+            setGudangPasien()
+        },
+        onRowRemoving: function (e) {
+            if (canAdd == 0) {
+                e.cancel = true
+                alert('Maaf Barang Tidak Dapat Dihapus, Silahkan Pilih Edit')
+            }
+        },
+        onKeyDown: function (d) {
+
+            if (colIndex == 'BARANGC' && d.event.originalEvent.which == 13) {
+
+                if (canAdd == 1) {
+                    var id_barangKODE = d.event.target.value
+                    carikodebrgid(id_barangKODE)
+                }
+            }
+            if (colIndex == 'QTY' && d.event.originalEvent.which == 13) {
+                // kalo enter tambah row otomatis
+                var dataGrid = $("#datagrid").dxDataGrid("instance");
+                dataGrid.saveEditData();
+                if (canAdd == 1) {
+                    if (Cekeror == true) {
+                        error_in_field()
+                        if (Cekeror == true) {
+                            tambahrow()
+                        }
+                    }
+                }
+            }
+        },
+    });
+
+    $("#dxGridStockBarang").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        allowColumnResizing: true,
+        columns: [{
+            caption: "SALDO STOCK",
+            alignment: 'center',
+            columns: [{
+                    dataField: "NAME_WH",
+                    alignment: 'center',
+                    caption: "GUDANG",
+                    width: 200,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "STOK",
+                    caption: "QTY",
+                    alignment: 'center',
+                    width: 60,
+                    allowSorting: false
+                },
+                {
+                    dataField: "SATSTAND",
+                    alignment: 'center',
+                    caption: "SATUAN",
+                    width: 100,
+                    allowEditing: false,
+                    allowSorting: false
+                }
+            ]
+
+
+        }],
+
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onCellClick: function (d) {
+            rowIndex = d.rowIndex;
+            colIndex = d.column.dataField;
+        },
+    });
+}
+
+function tambahrow() {
+    tempId = ''
+    tempNama = ''
+    tempSatuan = ''
+    tempHpokok = 0
+    temppqty = 0
+    tempPhisik = 0
+    tempAjust = 0
+    tempstatusproduk = ''
+    tempIdPrd = ''
+
+
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    dataGrid.addRow();
+    dataGrid.cellValue(0, "NO", generateNo());
+    dataGrid.cellValue(0, "TTYPEC", tempIdPrd);
+    dataGrid.cellValue(0, "BARANGC", tempId);
+    dataGrid.cellValue(0, "NAME_BRG", tempNama);
+    dataGrid.cellValue(0, "SATSTAND", tempSatuan);
+    dataGrid.cellValue(0, "HPOKOK", tempHpokok);
+    dataGrid.cellValue(0, "QTY", temppqty);
+    dataGrid.cellValue(0, "Phisik", tempPhisik);
+    dataGrid.cellValue(0, "Stock", tempAjust);
+    dataGrid.cellValue(0, "STATUSPRODUK", tempstatusproduk);
+    $.when(dataGrid.saveEditData()).done(function () {
+        colIndex = 'BARANGC'
+        setFocusID_BARANG()
+    })
+}
+
+function setFocusID_BARANG() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    dataGrid.editCell(qtyIndex, 'BARANGC')
+}
+
+function generateNo() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var last_number = parseInt(dataGrid.cellValue((dataGrid.getVisibleRows().length - 1), "NO"))
+
+    if (!last_number) {
+        return 1
+    } else {
+        return (last_number + 1)
+    }
+}
+
+function cekDataSudahAda(kode) {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length - 1; i++) {
+        if (dataGrid.getVisibleRows()[i].data.BARANGC == kode) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function setAll() {
+    $('#Total').val(rupiah2(getnetto()))
+}
+
+function getnetto() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    var result = 0;
+    var res = 0;
+    var harga = 0;
+    var qty = 0;
+    var Stock = 0;
+    var Phisik = 0;
+    var hasil_1 = 0
+
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        // if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.HPOKOK))) {
+        //     harga = 0
+        // } else {
+        //     harga = parseInt(dataGrid.getVisibleRows()[i].data.HPOKOK)
+        // }
+
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].cells[5].value))) {
+            harga = 0
+        } else {
+            harga = parseInt(dataGrid.getVisibleRows()[i].cells[5].value)
+        }
+        // if (isNaN(parseInt(dataGrid.getVisibleRows()[i].data.QTY))) {
+        //     qty = 0
+        // } else {
+        //     qty = parseInt(dataGrid.getVisibleRows()[i].data.QTY)
+        // }
+
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].cells[6].value))) {
+            Stock = 0
+        } else {
+            Stock = parseInt(dataGrid.getVisibleRows()[i].cells[6].value)
+        }
+
+        if (isNaN(parseInt(dataGrid.getVisibleRows()[i].cells[7].value))) {
+            Phisik = 0
+        } else {
+            Phisik = parseInt(dataGrid.getVisibleRows()[i].cells[7].value)
+        }
+        qty = Phisik - Stock
+        hasil_1 = (harga * qty)
+        res = hasil_1
+
+        result += res
+    }
+
+    return parseInt(Math.ceil(result))
+}
+
+function setGridStock(kode_barang = null) {
+    if (kode_barang != null) {
+        $.ajax({
+            url: host + "/getHistoryBarang",
+            method: "GET",
+            data: {
+                'kode_barang': kode_barang,
+                'gudang': $('#kode_divisi2').val(),
+            },
+            success: function (datas) {
+                $("#dxGridStockBarang").dxDataGrid({
+                    dataSource: datas,
+                    selection: {
+                        mode: "single"
+                    },
+                    rowAlternationEnabled: true,
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    customizeColumns: function (columns) {
+                        columns[0].width = 70;
+                    },
+                    loadPanel: {
+                        enabled: false
+                    },
+                    paging: {
+                        pageSize: 5
+                    },
+                    scrolling: {
+                        mode: 'virtual'
+                    },
+                    columns: [{
+                        caption: "SALDO STOCK",
+                        alignment: 'center',
+                        columns: [{
+                                dataField: "NAME_WH",
+                                alignment: 'center',
+                                caption: "GUDANG",
+                                width: 200,
+                                allowEditing: false,
+                                allowSorting: false
+                            },
+                            {
+                                dataField: "STOK",
+                                caption: "QTY",
+                                alignment: 'center',
+                                width: 60,
+                                allowSorting: false
+                            },
+                            {
+                                dataField: "SATSTAND",
+                                alignment: 'center',
+                                caption: "SATUAN",
+                                width: 100,
+                                allowEditing: false,
+                                allowSorting: false
+                            }
+                        ]
+                    }],
+                });
+            }
+        })
+    } else {
+        $("#dxGridStockBarang").dxDataGrid({
+            dataSource: [],
+            selection: {
+                mode: "single"
+            },
+            rowAlternationEnabled: true,
+            hoverStateEnabled: true,
+            showBorders: true,
+            loadPanel: {
+                enabled: false
+            },
+            scrolling: {
+                mode: 'virtual'
+            },
+            paging: {
+                pageSize: 5
+            },
+        });
+    }
+}
+
+function setGudangPasien() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    if (dataGrid.getVisibleRows().length != 0) {
+        setDisabled('cari_divisi', 0)
+        setDisabled('cari_divisi2', 0)
+    } else {
+        setDisabled('cari_divisi', 1)
+        setDisabled('cari_divisi2', 1)
+    }
+}
+
+function deleteAllRow() {
+    setGridEmpty()
+    setDisabled('cari_gudang', 1)
+    setDisabled('cari_pasien', 1)
+}
+
+function setFocusQTY() {
+    var dataGrid = $("#datagrid").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    $(dataGrid.focus(dataGrid.getCellElement(qtyIndex, 'Phisik'))).promise().done(function () {
+        dataGrid.editCell(qtyIndex, 'Phisik')
+    })
+}
+
+function rupiah2(angka, prefix) {
+    angka = String(angka)
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah2 = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    if (ribuan) {
+        separator = sisa ? ',' : '';
+        rupiah2 += separator + ribuan.join(',');
+    }
+
+    rupiah2 = split[1] != undefined ? rupiah2 + ',' + split[1] : rupiah2;
+    return prefix == undefined ? rupiah2 : (rupiah2 ? 'Rp. ' + rupiah2 : '');
+}
+
+function getGridTableBarang(no_bukti) {
+    $.ajax({
+        url: host + "/getBarangByBuktiKeluar",
+        method: "GET",
+        data: {
+            "no_bukti": no_bukti,
+        },
+        success: function (datas) {
+            $('#no_bhp').val(datas[0].FHPCLMBUKTI_ID);
+            $('#tanggal').val(datas[0].FHPCLMTGL.substr(0, 10));
+            $('#kode_divisi2').val(datas[0].FHPCLMWH_ID);
+            $('#nama_divisi2').val(datas[0].FHPCLMWHN);
+            $('#kode_divisi').val(datas[0].FHPCLMCUST_ID);
+            $('#nama_divisi').val(datas[0].FHPCLMCUSTN);
+            $('#keterangan').val(datas[0].FHPCLMREMARK);
+
+            $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 10000
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 40,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "TTYPEC",
+                        alignment: 'center',
+                        caption: "ID PRODUK",
+                        width: 100,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "BARANGC",
+                        caption: "ID BARANG",
+                        alignment: 'center',
+                        width: 150,
+                        allowEditing: true,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAME_BRG",
+                        caption: "NAMA BARANG",
+                        width: 350,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "SATSTAND",
+                        alignment: 'center',
+                        caption: "SATUAN",
+                        width: 100,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "HPOKOK",
+                        alignment: 'RIGHT',
+                        caption: "HARGA POKOK",
+                        width: 120,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "Stock",
+                        caption: "Stock",
+                        alignment: 'RIGHT',
+                        width: 60,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "Phisik",
+                        caption: "Phisik",
+                        alignment: 'RIGHT',
+                        width: 60,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        allowEditing: true,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "QTY",
+                        caption: "Qty.Adj",
+                        alignment: 'RIGHT',
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 60,
+                        allowEditing: true,
+                        allowSorting: false,
+                        calculateCellValue: function (rowData) {
+                            var Stock = ''
+                            var Phisik = ''
+                            if (!rowData.Stock) {
+                                Stock = 0
+                            } else {
+                                Stock = parseInt(rowData.Stock)
+                            }
+                            if (!rowData.Phisik) {
+                                Phisik = 0
+                            } else {
+                                Phisik = parseInt(rowData.Phisik)
+                            }
+                            var selesih = (Phisik - Stock)
+                            return (selesih)
+                        }
+                    },
+
+                    {
+                        dataField: "TOTAL",
+                        caption: "TOTAL",
+                        alignment: 'RIGHT',
+                        width: 120,
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        allowEditing: false,
+                        allowSorting: false,
+                        calculateCellValue: function (rowData) {
+                            var hjual = ''
+                            var qty = ''
+                            var Phisik = ''
+                            var Stock = ''
+
+                            if (rowData.HPOKOK == '') {
+                                hjual = 0
+                            } else {
+                                hjual = parseInt(rowData.HPOKOK)
+                            }
+                            if (!rowData.Phisik) {
+                                Phisik = 0
+                            } else {
+                                Phisik = parseInt(rowData.Phisik)
+                            }
+
+                            if (!rowData.Stock) {
+                                Stock = 0
+                            } else {
+                                Stock = parseInt(rowData.Stock)
+                            }
+                            var res = (hjual * (Phisik - Stock))
+                            // return rupiah2(Math.floor(res))
+                            return res
+                        }
+                    },
+                    {
+                        dataField: "STATUSPRODUK",
+                        caption: "STATUSPRODUK",
+                        alignment: 'RIGHT',
+                        width: 0,
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                    texts: {
+                        confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                        deleteRow: "Hapus"
+                    }
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+                onCellClick: function (d) {
+                    rowIndex = d.rowIndex;
+                    colIndex = d.column.dataField;
+                    if (d.column.dataField == "Phisik") {
+                        setGridStock(d.data.BARANGC)
+                    }
+                },
+                onFocusedCellChanged: function (e) {
+                    rowIndex = e.rowIndex
+                    colIndex = e.columnIndex
+                    if (colIndex == 2) {
+                        colIndex = "BARANGC"
+                    }
+                    if (colIndex == 7) {
+                        colIndex = "Phisik"
+                    }
+                    if (colIndex == 8) {
+                        colIndex = "QTY"
+                    }
+                },
+                onRowClick: function (e) {
+                    setGridStock(e.data.BARANGC)
+                },
+                onRowUpdated: function (e) {
+                    var dataGrid = $("#datagrid").dxDataGrid("instance");
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Tidak Dapat Diubah, Silahkan Pilih Edit')
+                        dataGrid.cancelEditData()
+                    } else {
+                        if (e.data.hasOwnProperty("Phisik")) {
+                            if (e.data.Phisik < 0 || e.data.Phisik === null) {
+                                e.cancel = true
+                                alert('Phisik Tidak Boleh null atau kurang dari 0');
+                                dataGrid.cellValue(dataGrid.getRowIndexByKey(e.key), "Phisik", '0');
+                                dataGrid.saveEditData();
+                            }
+                        }
+                    }
+                    setAll()
+                },
+                onRowRemoved: function (e) {
+                    setGudangPasien()
+                },
+                onRowRemoving: function (e) {
+                    if (canAdd == 0) {
+                        e.cancel = true
+                        alert('Maaf Barang Tidak Dapat Dihapus, Silahkan Pilih Edit')
+                    }
+                },
+                onKeyDown: function (d) {
+
+                    if (colIndex == 'BARANGC' && d.event.originalEvent.which == 13) {
+
+                        if (canAdd == 1) {
+                            var id_barangKODE = d.event.target.value
+                            carikodebrgid(id_barangKODE)
+                        }
+                    }
+                    if (colIndex == 'QTY' && d.event.originalEvent.which == 13) {
+                        // kalo enter tambah row otomatis
+                        var dataGrid = $("#datagrid").dxDataGrid("instance");
+                        dataGrid.saveEditData();
+                        if (canAdd == 1) {
+                            if (Cekeror == true) {
+                                error_in_field()
+                                if (Cekeror == true) {
+                                    tambahrow()
+                                }
+                            }
+                        }
+                    }
+                },
+                onContentReady: function (e) {
+                    setAll()
+                },
+            });
+        }
+    })
+
+}

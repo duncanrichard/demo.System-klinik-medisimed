@@ -71,7 +71,7 @@ def getHistoryBarang(request):
 	q += "from BARANG a left join SALDOBARANG b on "
 	q += "a.BARANGC = b.FSBBRG_ID  left join WAREHOUSE c on "
 	# q += "a.BARANGC = b.FSBBRG_ID and b.FSBWH_ID =  %s left join WAREHOUSE c on "
-	q += "b.FSBWH_ID=c.WH_ID and c.BRANCH=%s where a.BARANGC =  %s   "
+	q += "b.FSBWH_ID=c.WH_ID and c.BRANCH=%s where a.BARANGC =  %s and isnull(c.NAME_WH,'')<>''   "
 	# result = Globals().getDataQuery(q,[gudang,kode_barang])
 	result = Globals().getDataQuery(q,[ID_CABANG,kode_barang])
 	json_data = json.dumps(result, cls=DjangoJSONEncoder)

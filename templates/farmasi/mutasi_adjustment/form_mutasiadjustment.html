@@ -1,0 +1,93 @@
+<div class="panel-body default-panel">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-row">
+                <label class="col-md-2 control-label">Nomor</label>
+                <div class="col-md-9">
+                    <input id="no_bhp" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Tanggal</label>
+                <div class="col-md-9">
+                    <input id="tanggal" type="date" class="form-control input-sm today">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Unit Tujuan</label>
+                <div class="col-md-3">
+                    <input id="kode_divisi" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-6">
+                    <input id="nama_divisi" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success btn-xs" id="cari_divisi">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Unit Asal</label>
+                <div class="col-md-3">
+                    <input id="kode_divisi2" type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-6">
+                    <input id="nama_divisi2"  type="text" class="form-control input-sm" readonly
+                        style="background-color: white;">
+                </div>
+                <div class="col-md-1">
+                    <button class="btn btn-success btn-xs" id="cari_divisi2" >
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Keterangan</label>
+                <div class="col-md-9">
+                    <input id="keterangan" type="text" class="form-control input-sm">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-3">
+                    <button class="btn btn-primary btn-xs" id="btn_tambah_barang">Tambah Barang</button>
+                </div>
+                <div class="col-md-9">
+                    <button class="btn btn-danger btn-xs pull-right" id="btn_hapus_semua_barang">Hapus Semua Barang</button>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="form-row mt-5">
+            <div style="height: 240px;overflow-y: auto;">
+                <div id="datagrid"></div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="row mt-10">
+            <div class="col-md-7">
+                <div id="dxGridStockBarang"></div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group form-row">
+                    <label class="col-md-4 control-label">T O T A L </label>
+                    <div class="col-md-1">
+                        : Rp
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" id="Total" value="0" class="form-control input-sm inputText" readonly
+                            style="background-color: white;text-align: right">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

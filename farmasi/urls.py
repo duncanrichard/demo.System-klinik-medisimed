@@ -13,6 +13,7 @@ from . import frm_beli
 from . import modul_stock
 from . import frm_mutasi_M
 from . import frm_mutasi_K01
+from . import frm_Ajdustment
 
 urlpatterns = [
     url(r'^',include('farmasi.url_reportstock')),
@@ -193,6 +194,24 @@ urlpatterns = [
         url(r'^cetakBarangKeluar', frm_mutasi_K01.cetakBarangKeluar,name='cetakBarangKeluar'),
         url(r'^cetak_lap_mutasi_BHP_REKAP', frm_mutasi_K01.cetak_lap_mutasi_BHP_REKAP, name='cetak_lap_mutasi_BHP_REKAP'),
         url(r'^cetak_lap_mutasi_BHP', frm_mutasi_K01.cetak_lap_mutasi_BHP, name='cetak_lap_mutasi_BHP'),
+    ])),
+
+    url(r'^frm_Ajdustment/', include([
+        url(r'^$', frm_Ajdustment.frm_Ajdustment, name='frm_Ajdustment'),
+        url(r'^exit', frm_Ajdustment.exit, name='exitfrm_Ajdustment'),
+        url(r'^getDataGudang', frm_beli.getDataGudang, name='getDataGudang'),
+        url(r'^getdivisi', frm_Ajdustment.getdivisi, name='getdivisi'),
+        url(r'^getIdDataBarang', frm_Ajdustment.getIdDataBarang, name='getIdDataBarang'),
+        url(r'^getDataBarangKeluar', modul_stock.getDataBarangKeluar,name='getDataBarangKeluar'),
+        url(r'^getHistoryBarang', modul_stock.getHistoryBarang,name='getHistoryBarang'),
+        url(r'^cekStokBarangFarmasi', modul_stock.cekStokBarangFarmasi, name='cekStokBarangFarmasi'),
+        url(r'^SP_AUD_PCLAIMS', frm_Ajdustment.SP_AUD_PCLAIMS, name='SP_AUD_PCLAIMS'),
+        url(r'^getMutasiKeluar', frm_Ajdustment.getMutasiKeluar,name='getMutasiKeluar'),
+        url(r'^getBarangByBuktiKeluar', frm_Ajdustment.getBarangByBuktiKeluar,name='getBarangByBuktiKeluar'),
+        url(r'^cetakBarangKeluar', frm_Ajdustment.cetakBarangKeluar, name='cetakBarangKeluar'),
+        url(r'^cetak_lap_mutasi_BHP_REKAP', frm_Ajdustment.cetak_lap_mutasi_BHP_REKAP,name='cetak_lap_mutasi_BHP_REKAP'),
+        url(r'^cetak_lap_mutasi_BHP', frm_Ajdustment.cetak_lap_mutasi_BHP,name='cetak_lap_mutasi_BHP'),
+        
     ])),
 
 

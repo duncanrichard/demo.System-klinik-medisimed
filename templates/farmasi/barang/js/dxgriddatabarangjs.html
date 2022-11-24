@@ -229,18 +229,20 @@ $(document).ready(function () {
 
                 },
                 success: function (datas) {
-                    alert(datas[0].STATUS + ' - ' + datas[0].STATE)
-                    setMenu('menu_tambah')
-                    setMenu('menu_edit')
-                    setMenu('menu_hapus')
-                    setMenu('menu_simpan', 0)
-                    setMenu('menu_cancel', 0)
-                    setMenu('menu_find')
-                    setMenu('menu_cetak')
-                    ClearText()
-                    load_barang = 'unlock'
-                    setDisabled('kode_barang', 0)
-                    Buka_barang()
+                    alert(datas[0].STATUS + ' - ' + datas[0].STATE + ' - ' + datas[0].ERROR_MESSAGE)
+                    if (datas[0].STATUS == 'SUKSES') {
+                        setMenu('menu_tambah')
+                        setMenu('menu_edit')
+                        setMenu('menu_hapus')
+                        setMenu('menu_simpan', 0)
+                        setMenu('menu_cancel', 0)
+                        setMenu('menu_find')
+                        setMenu('menu_cetak')
+                        ClearText()
+                        load_barang = 'unlock'
+                        setDisabled('kode_barang', 0)
+                        Buka_barang()
+                    }
                 }
             })
         }

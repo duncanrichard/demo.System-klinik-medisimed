@@ -1,0 +1,52 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+// console.log(host)
+$(document).ready(function () {
+    // set tanggal hari ini
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    $("#cetak_dari").val("")
+    $("#cetak_sampai").val("")
+    $("#cetak_sampai2").val("")
+
+    $("#pabrik_dari").val("0")
+    $("#pabrik_sampai").val("ZZZ")
+
+    $("#Prosescetak").click(function () {
+        if($("#cetak_dari").val()!=""){
+            Prosescetak()
+        } else {
+            alert('Pilih gudang utama Dahulu') 
+        }
+        
+    })
+    $("#Batalproses").click(function () {
+        Batalproses()
+    })
+
+})
+
+function Batalproses(){
+    window.location.href = "http://{{ request.get_host }}/";
+    // window.history.back();
+}
+
+function Prosescetak() {
+
+    url2=host + "/proses_lap_limit";
+    getGridTable();
+
+}
+

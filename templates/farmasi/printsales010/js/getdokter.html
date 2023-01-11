@@ -1,0 +1,74 @@
+$(document).ready(function () {
+    $('#Findkodedokter2').click(function (e) {
+        $('#dxGridModaldokter').modal('show');
+        carikodedokter(e,2)
+        $('#Findkodedokter').attr('onclick','carikodedokter(event,2)')
+    })
+    $('#Findkodedokter3').click(function (e) {
+        $('#dxGridModaldokter').modal('show');
+        carikodedokter(e,3)
+        $('#Findkodedokter').attr('onclick','carikodedokter(event,3)')
+    })
+
+})
+
+var gridDatadokter = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_dokter = $('#search_kode_dokter').val();
+        var search_nama_dokter = $('#search_nama_dokter').val();
+        return $.ajax({
+            url: host + "/getdokter",
+            method: "GET",
+            data: {
+                "search_kode_dokter": search_kode_dokter,
+                "search_nama_dokter": search_nama_dokter
+            },
+            success: function (datas) {
+                $('#dxGridModaldokter').modal('show');
+            }
+        })
+    }
+});
+
+function carikodedokter(e, param = null) {
+    console.log('menu cari clicked hani2')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatadokter2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatadokter,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMDDOKTER_ID",
+                caption: "KODE",
+                width:150
+            },
+            {
+                dataField: "FMDDOKTERN",
+                caption: "NAMA",
+            },
+        ],
+        onRowClick: function (e) {
+            console.log(param)
+            if(param == 2){
+                $("#kodedokter_dari").val(e.data.FMDDOKTER_ID)
+            } else if (param == 3) {
+                $("#kodedokter_sampai").val(e.data.FMDDOKTER_ID)
+            }
+            $('#dxGridModaldokter').modal('hide');
+        }
+    });
+}

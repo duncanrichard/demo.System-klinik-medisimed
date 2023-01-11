@@ -1,0 +1,349 @@
+var status_aud = null
+var status_cetak = null
+
+$(document).ready(function () {
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
+  var yyyy = today.getFullYear();
+  var time = today.toTimeString();
+  time = time.split(' ')[0];
+
+  today = yyyy + '-' + mm + '-' + dd;
+  todays = today
+
+  $(".today").val(today)
+  menuhidup()
+  enterFocusTo('nama_voucher', 'jumlah_voucher')
+  enterFocusTo('jumlah_voucher', 'tgl_expired')
+  enterFocusTo('tgl_expired', 'nilai_voucher')
+  Buka_voucher()
+  $('#menu_tambah').click(function (e) {
+    status_aud = 'A'
+    menumati()
+    $('input[type=text]').val('')
+    $('#nama_voucher').focus()
+  });
+
+  $('#menu_edit').click(function (e) {
+    if ($('#kode_voucher').val() == '') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Pilih data terlebih dahulu !',
+      })
+
+    } else {
+      status_aud = 'A'
+      menumati()
+      $('#nama_voucher').focus()
+    }
+  });
+
+  $('#menu_cancel').click(function (e) {
+    menuhidup()
+  });
+
+  $('#menu_simpan').click(function (e) {
+    error_in_field()
+    if (Cekeror == true) {
+      var aktif = '0'
+      if ($("#inlineCheckboxaktif1").prop('checked') == true) {
+        aktif = '0'
+      } else {
+        aktif = '1'
+      }
+      $.ajax({
+        type: "POST",
+        url: host + '/aud_voucher',
+        data: {
+          "kode_voucher": $('#kode_voucher').val(),
+          "tgl_transaksi": $('#tgl_transaksi').val(),
+          "nama_voucher": $('#nama_voucher').val(),
+          "jumlah_voucher": parseInt(desimal2($("#jumlah_voucher").val())),
+          "tgl_expired": $('#tgl_expired').val(),
+          "nilai_voucher": parseInt(desimal2($("#nilai_voucher").val())),
+          "aktif": aktif,
+          "status_aud": status_aud,
+          "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+        },
+        dataType: "json",
+        success: function (e) {
+          alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].VOUCHER_GROUP + e[0].ERROR_MESSAGE)
+          if (e[0].STATUS == 'SUKSES') {
+            $("#group_voucher").val(e[0].VOUCHER_GROUP);
+            Buka_voucher()
+            menuhidup()
+          }
+        }
+      });
+    }
+  });
+
+  $('#menu_hapus').click(function () {
+    if ($('#kode_voucher').val() == '') {
+      alert('Pilih kode voucher Dulu!')
+    } else {
+      var result = confirm('Yakin data akan dihapus?')
+      var status_aud = "D"
+      if (result) {
+        var aktif = '0'
+        if ($("#inlineCheckboxaktif1").prop('checked') == true) {
+          aktif = '0'
+        } else {
+          aktif = '1'
+        }
+        $.ajax({
+          url: host + "/aud_voucher",
+          method: "POST",
+          data: {
+            "kode_voucher": $('#kode_voucher').val(),
+            "tgl_transaksi": $('#tgl_transaksi').val(),
+            "nama_voucher": $('#nama_voucher').val(),
+            "jumlah_voucher": parseInt(desimal2($("#jumlah_voucher").val())),
+            "tgl_expired": $('#tgl_expired').val(),
+            "nilai_voucher": parseInt(desimal2($("#nilai_voucher").val())),
+            "aktif": aktif,
+            "status_aud": status_aud,
+            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function (e) {
+            alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].VOUCHER_GROUP + e[0].ERROR_MESSAGE)
+            if (e[0].STATUS == 'SUKSES') {
+              $("#group_voucher").val(e[0].VOUCHER_GROUP);
+              Buka_voucher()
+              menuhidup()
+            }
+          }
+        });
+      }
+    }
+  })
+
+  $('#menu_find').click(function (e) {
+    $('#dxGridModalvoucher').modal('show')
+    $('#mutasi_tanggal').val(todays);
+    $("#select_mutasi").val('mutasi_by_tanggal');
+    $('#mutasi_bukti').val('');
+    $('#mutasi_nama').val('');
+    load_voucher()
+  });
+  $("#btn_cari_mutasi").click(function () {
+    load_voucher()
+  })
+  $("#mutasi_tanggal").change(function () {
+    load_voucher()
+  })
+  $("#select_mutasi").change(function () {
+    load_voucher()
+  })
+  $('#menu_keluar').click(function () {
+    window.open('/', "_self");
+  })
+});
+
+function error_in_field() {
+  Cekeror = true;
+  if ($("#nama_voucher").val() == '') {
+    alert('Nama voucher tidak boleh kosong')
+    Cekeror = false;
+  }
+  if ($("#jumlah_voucher").val() == '') {
+    alert('jumlah_voucher tidak boleh kosong')
+    Cekeror = false;
+  }
+  if ($("#nilai_voucher").val() == '') {
+    alert('nilai voucher tidak boleh kosong')
+    Cekeror = false;
+  }
+
+  return Cekeror;
+}
+
+function menuhidup() {
+  menuEnable('menu_tambah');
+  menuEnable('menu_edit');
+  menuEnable('menu_hapus');
+  menuDisable('menu_simpan');
+  menuDisable('menu_cancel');
+  menuEnable('menu_find');
+  menuEnable('menu_cetak');
+
+  setReadOnly('kode_voucher')
+  setReadOnly('nama_voucher')
+  setReadOnly('tgl_expired')
+  setReadOnly('tgl_transaksi')
+  setReadOnly('jumlah_voucher')
+  setReadOnly('nilai_voucher')
+  setDisabled('inlineCheckboxaktif1', 0)
+}
+
+function menumati() {
+  menuDisable('menu_tambah');
+  menuDisable('menu_edit');
+  menuDisable('menu_hapus');
+  menuEnable('menu_simpan');
+  menuEnable('menu_cancel');
+  menuDisable('menu_find');
+  menuDisable('menu_cetak');
+
+  setReadOnly('kode_voucher')
+  setUnReadOnly('nama_voucher')
+  setUnReadOnly('tgl_expired')
+  setUnReadOnly('tgl_transaksi')
+  setUnReadOnly('jumlah_voucher')
+  setUnReadOnly('nilai_voucher')
+  setDisabled('inlineCheckboxaktif1', 1)
+  if ($("#kode_voucher").val() == '') {
+    $('input[id=inlineCheckboxaktif1]').iCheck('check');
+  }
+}
+
+function Buka_voucher() {
+  var namagroupvoucher = $('#group_voucher').val()
+  $("#dxGroupDatavoucher").dxDataGrid({
+
+    showColumnLines: false,
+    showRowLines: true,
+    rowAlternationEnabled: true,
+    showBorders: true,
+    paging: {
+      pageSize: 1000
+    },
+    filterRow: {
+      visible: true
+    },
+    export: {
+      enabled: true
+    },
+    dataSource: new DevExpress.data.DataSource({
+      load: function (values) {
+        return $.ajax({
+          url: host + "/buka_voucher",
+          method: "GET",
+          data: {
+            'namagroupvoucher': namagroupvoucher,
+          },
+          beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Memuat Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+          },
+          success: function (datas) {
+            console.log(datas)
+            if (datas.length != 0) {
+              $("#kode_voucher").val(datas[0].NO_VOUCHER);
+              $("#tgl_transaksi").val(datas[0].TGL_TRANSAKSI.substr(0, 10));
+              $("#nama_voucher").val(datas[0].NORM_VOUCHER);
+              $("#tgl_expired").val(datas[0].EXPR_VOUCHER.substr(0, 10));
+              $("#group_voucher").val(datas[0].GROUP_VOUCHER);
+              $("#jumlah_voucher").val(rupiah2(parseInt(datas[0].jumlah_voucher)));
+              $("#nilai_voucher").val(rupiah2(parseInt(datas[0].NILAI_VOUCHER)));
+              if (parseInt(datas[0].AKTIF) == 0) {
+                $("#inlineCheckboxaktif1").prop('checked', true)
+              } else {
+                $("#inlineCheckboxaktif1").prop('checked', false)
+              }
+            }
+          },
+          complete: function () {
+            $('#ModalLoading').modal('hide');
+          },
+        })
+      }
+    }),
+    selection: {
+      mode: "single"
+    },
+    hoverStateEnabled: true,
+    columns: [{
+        dataField: "NO_VOUCHER",
+        caption: "NO_VOUCHER",
+        width: 150,
+      },
+      {
+        dataField: "NORM_VOUCHER",
+        caption: "Keterangan",
+        width: 250,
+      },
+      {
+        dataField: "NILAI_VOUCHER",
+        caption: "NILAI_VOUCHER",
+        width: 200,
+        dataType: "number",
+        format: 'decimal fixedPoint',
+      },
+      {
+        dataField: "EXPR_VOUCHER",
+        caption: "EXPR_VOUCHER",
+        width: 125,
+      },
+
+      {
+        dataField: "STATUS_VOUCHER",
+        caption: "STATUS_VOUCHER",
+        width: 100,
+        dataType: "number",
+        format: 'decimal fixedPoint',
+      },
+    ],
+    onRowClick: function (e) {
+      Tampilkandata(e)
+    }
+  });
+}
+
+function Tampilkandata(e) {
+  $("#kode_voucher").val(e.data.NO_VOUCHER)
+  $("#tgl_transaksi").val(e.data.TGL_TRANSAKSI.substr(0, 10));
+  $("#nama_voucher").val(e.data.NORM_VOUCHER)
+  $("#group_voucher").val(e.data.GROUP_VOUCHER)
+  $("#jumlah_voucher").val(rupiah2(parseInt(e.data.jumlah_voucher)))
+  $("#nilai_voucher").val(rupiah2(parseInt(e.data.NILAI_VOUCHER)))
+  $("#tgl_expired").val(e.data.EXPR_VOUCHER.substr(0, 10))
+  if (parseInt(e.data.STATUS_VOUCHER) == 0) {
+    $("#inlineCheckboxaktif1").prop('checked', true)
+  } else {
+    $("#inlineCheckboxaktif1").prop('checked', false)
+  }
+}
+
+function rupiah2(angka, prefix) {
+  angka = String(angka)
+  var number_string = angka.replace(/[^,\d]/g, '').toString(),
+    split = number_string.split(','),
+    sisa = split[0].length % 3,
+    rupiah2 = split[0].substr(0, sisa),
+    ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+  if (ribuan) {
+    separator = sisa ? ',' :
+      '';
+    rupiah2 += separator + ribuan.join(',');
+  }
+  rupiah2 = split[1] != undefined ? rupiah2 + ',' + split[1] : rupiah2;
+  return prefix == undefined ? rupiah2 : (rupiah2 ? 'Rp. ' + rupiah2 : '');
+}
+
+function desimal2(string_uang, separator_ribuan = ',') {
+  let separator_desimal = '.'
+  if (separator_ribuan != ',') {
+    separator_ribuan = '.'
+    separator_desimal = ','
+  }
+  if (string_uang == '') {
+    return 0;
+  }
+
+  let array_desimal = string_uang.split(separator_desimal)
+  let array_nominal = array_desimal[0].split(separator_ribuan);
+
+
+  let nominal = array_nominal.join('')
+  let hasil
+  if (array_desimal.length > 1) {
+    hasil = parseFloat(nominal + '.' + array_desimal[1])
+  } else {
+    hasil = parseFloat(nominal)
+  }
+
+  return hasil;
+}

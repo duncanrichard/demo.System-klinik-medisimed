@@ -23,6 +23,12 @@ def dashboard(request):
 			request.session['kota_cabang'] = cabang[0]['KOTA']
 			request.session['nama_cabang'] = cabang[0]['PERUSAHAAN']
 			request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
+			# parameter
+			q= 'SELECT TOP 1 * FROM PARAMETER WHERE COMPANY=%s '
+			datares = Globals().getDataQuery(q,[kdCabang]);
+			request.session['par_ppn'] = float(datares[0]['PPN'])
+			request.session['par_MTH'] = datares[0]['MTH']
+			request.session['par_TAHUNYR'] = datares[0]['YR']
 
 		navbars = Globals().getNavbars(user_priv, 'IMMODERMA', None)
 		menubars = Globals().getMenubars(user_priv, 'IMMODERMA', None, '0')

@@ -1,0 +1,355 @@
+var dataGrid;
+var total='';
+var ito='';
+$(document).ready(function (){
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function(data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    setGridEmpty();
+    
+});
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [{
+            dataField: "FDFBBRG_ID",
+            caption: "ID BARANG",
+            alignment: 'left',
+            width: 100,
+            allowEditing: false,
+            allowSorting: false
+        },
+        {
+            dataField: "FDFBBRGN",
+            caption: "NAMA BARANG",
+            alignment: 'left',
+            allowEditing: false,
+            allowSorting: false,
+            width: 250,
+        },
+        {
+            dataField: "FDFBSATUAN",
+            alignment: 'left',
+            caption: "SATUAN",
+            width: 80,
+            allowEditing: false,
+            allowSorting: false
+        },
+        {
+            dataField: "FDFBBATHNO",
+            alignment: 'center',
+            caption: "NO BATCH",
+            width: 80,
+            allowEditing: true,
+            allowSorting: false
+        },
+        {
+            dataField: "FDFBHPOKOK",
+            alignment: 'right',
+            caption: "HARGA POKOK",
+            dataType: "number",
+            format: 'decimal fixedPoint',
+            width: 120,
+            allowSorting: false
+        },
+        {
+            dataField: "FDFBQTYT",
+            caption: "QTY",
+            alignment: 'right',
+            width: 60,
+            allowSorting: false,
+            dataType: "number",
+            format: 'decimal fixedPoint',
+        },
+        {
+            dataField: "FDFBDISC1",
+            caption: "DISC1",
+            alignment: 'right',
+            width: 60,
+            allowSorting: false,
+            dataType: "number",
+            format: 'decimal fixedPoint',
+        },
+        {
+            dataField: "FDFBDISC2",
+            caption: "DISC2",
+            alignment: 'right',
+            width: 60,
+            allowSorting: false,
+            dataType: "right",
+            format: 'decimal fixedPoint',
+        },
+        {
+            dataField: "FDFBDISC3",
+            caption: "DISC RP",
+            alignment: 'right',
+            width: 75,
+            allowSorting: false,
+            dataType: "number",
+            format: 'decimal fixedPoint',
+        },
+        {
+            dataField: "FDFBTOTAL",
+            caption: "TOTAL",
+            alignment: 'right',
+            width: 100,
+            allowEditing: false,
+            allowSorting: false,
+            dataType: "number",
+            format: 'decimal fixedPoint',
+        },
+        {
+            dataField: "FDFBBUKTI_ID",
+            alignment: 'center',
+            width: 100,
+            allowEditing: false,
+            allowSorting: false
+        },
+        {
+            dataField: "NAME_SUPPL",
+            alignment: 'center',
+            width: 150,
+            allowEditing: false,
+            allowSorting: false
+        },
+        {
+            dataField: "FDFBTGL_EXPIRED",
+            alignment: 'center',
+            width: 80,
+            allowEditing: false,
+            allowSorting: false
+        },
+        {
+            dataField: "AVL_QTY",
+            alignment: 'center',
+            caption: "STOCK",
+            width: 75,
+            allowEditing: false,
+            allowSorting: false
+        },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "tanggal_dr": $("#tanggal_dr").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                    dataField: "FDFBBRG_ID",
+                    caption: "ID BARANG",
+                    alignment: 'left',
+                    width: 100,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "FDFBBRGN",
+                    caption: "NAMA BARANG",
+                    alignment: 'left',
+                    allowEditing: false,
+                    allowSorting: false,
+                    width: 250,
+                },
+                {
+                    dataField: "FDFBSATUAN",
+                    alignment: 'left',
+                    caption: "SATUAN",
+                    width: 80,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "FDFBBATHNO",
+                    alignment: 'center',
+                    caption: "NO BATCH",
+                    width: 80,
+                    allowEditing: true,
+                    allowSorting: false
+                },
+                {
+                    dataField: "FDFBHPOKOK",
+                    alignment: 'right',
+                    caption: "HARGA POKOK",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 120,
+                    allowSorting: false
+                },
+                {
+                    dataField: "FDFBQTYT",
+                    caption: "QTY",
+                    alignment: 'right',
+                    width: 60,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                },
+                {
+                    dataField: "FDFBDISC1",
+                    caption: "DISC1",
+                    alignment: 'right',
+                    width: 60,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                },
+                {
+                    dataField: "FDFBDISC2",
+                    caption: "DISC2",
+                    alignment: 'right',
+                    width: 60,
+                    allowSorting: false,
+                    dataType: "right",
+                    format: 'decimal fixedPoint',
+                },
+                {
+                    dataField: "FDFBDISC3",
+                    caption: "DISC RP",
+                    alignment: 'right',
+                    width: 75,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                },
+                {
+                    dataField: "FDFBTOTAL",
+                    caption: "TOTAL",
+                    alignment: 'right',
+                    width: 100,
+                    allowEditing: false,
+                    allowSorting: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                },
+                {
+                    dataField: "FDFBBUKTI_ID",
+                    alignment: 'center',
+                    width: 100,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "NAME_SUPPL",
+                    alignment: 'center',
+                    width: 150,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "FDFBTGL_EXPIRED",
+                    alignment: 'center',
+                    width: 80,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "AVL_QTY",
+                    alignment: 'center',
+                    caption: "STOCK",
+                    width: 75,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+            ],
+            onCellPrepared: function (e) {
+                if (e.rowType === "data" && e.column.dataField === "KEBUTUHAN" && (e.value != undefined)) {
+                    e.cellElement.css("color", "white");
+                    if (ito < 3) {
+                        e.cellElement.css("background-color", "red");
+                    } else if  (ito >= 3 && ito < 5 ) {
+                        e.cellElement.css("background-color", "yellow");
+                    } else {
+                        e.cellElement.css("background-color", "green");
+                    }
+                }
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: false,
+                selectTextOnEditStart: true,
+                allowEditing: false,
+                allowDeleting: false,
+            },
+            keyboardNavigation: {
+                editOnKeyPress: true,
+                enterKeyAction: "moveFocus",
+                enterKeyDirection: 'row'
+            },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

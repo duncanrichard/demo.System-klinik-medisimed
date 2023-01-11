@@ -1,0 +1,83 @@
+function load_voucher() {
+    $("#dxGridDatavoucher").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000,
+        },
+        filterRow: {
+            visible: false,
+        },
+        // export: {
+        //     enabled: true
+        // },
+        // searchPanel: {
+        //     visible: true
+        // },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/open_voucher",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'mutasi_nama': $('#mutasi_nama').val(),
+                    },
+                    method: "GET",
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length,
+                        });
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single",
+        },
+        columns: [{
+                dataField: "GROUP_VOUCHER",
+                caption: "Group voucher",
+            },
+            {
+                dataField: "NORM_VOUCHER",
+                caption: "Keterangan voucher",
+            },
+            {
+                dataField: "EXPR_VOUCHER",
+                caption: "EXPIRED VOUCHER",
+            },
+            {
+                dataField: "NORM_VOUCHER",
+                caption: "Keterangan voucher",
+            },
+            {
+                dataField: "jumlah",
+                caption: "jumlah",
+            },
+            {
+                dataField: "NILAI_VOUCHER",
+                caption: "NILAI VOUCHER",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#group_voucher").val(e.data.GROUP_VOUCHER);
+            Buka_voucher()
+            $('#dxGridModalvoucher').modal('hide')
+            menuhidup();
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

@@ -1,0 +1,494 @@
+var dataGrid;
+var total='';
+var ito='';
+$(document).ready(function (){
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function(data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    setGridEmpty();
+    
+});
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [
+            {
+                dataField: "BARANGC",
+                caption: "Kode Barang",
+                alignment: 'center',
+                allowEditing: false,
+                width: 140,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "Nama Barang",
+                alignment: 'left',
+                width: 250,
+                allowEditing: false,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "Supplier",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "Golongan",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "MERKN",
+                caption: "Jenis",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "SATKEMAS",
+                alignment: 'left',
+                caption: "Kemasan",
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "KONVERSI",
+                alignment: 'right',
+                caption: "KONVERSI",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "SATSTAND",
+                alignment: 'left',
+                caption: "Satuan",
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "QTYMAX",
+                caption: "QTY MAX",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "QTYMIN",
+                caption: "QTY MIN",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "FMPNAME_SUPPL",
+                alignment: 'left',
+                caption: "Pabrikan",
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "HPOKOK",
+                alignment: 'right',
+                caption: "Harga POKOK",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY",
+                alignment: 'right',
+                caption: "Gudang Utama",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY2",
+                alignment: 'right',
+                caption: "Gudang-2",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY3",
+                alignment: 'right',
+                caption: "Gudang-3",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+    
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+            "cetak_sampai2": $("#cetak_sampai2").val(),
+            "pabrik_dari": $("#pabrik_dari").val(),
+            "pabrik_sampai": $("#pabrik_sampai").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [
+                {
+                    dataField: "BARANGC",
+                    caption: "Kode Barang",
+                    alignment: 'center',
+                    allowEditing: false,
+                    width: 110,
+                    allowSorting: false,
+                    fixed: true
+                },
+                {
+                    dataField: "NAME_BRG",
+                    caption: "Nama Barang",
+                    alignment: 'left',
+                    width: 200,
+                    allowEditing: false,
+                    allowSorting: false,
+                    fixed: true
+                },
+                {
+                    dataField: "NAME_SUPPL",
+                    caption: "Supplier",
+                    alignment: 'left',
+                    width: 130,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "NAME_PRD",
+                    caption: "Golongan",
+                    alignment: 'left',
+                    width: 100,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "MERKN",
+                    caption: "Jenis",
+                    alignment: 'left',
+                    width: 100,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "SATKEMAS",
+                    alignment: 'left',
+                    caption: "Kemasan",
+                    width: 80,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "KONVERSI",
+                    alignment: 'right',
+                    caption: "KONVERSI",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 75,
+                    allowSorting: false
+                },
+                {
+                    dataField: "SATSTAND",
+                    alignment: 'left',
+                    caption: "Satuan",
+                    width: 80,
+                    allowSorting: false
+                },
+                {
+                    dataField: "QTYMAX",
+                    caption: "QTY MAX",
+                    alignment: 'right',
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 80,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "QTYMIN",
+                    caption: "QTY MIN",
+                    alignment: 'right',
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 80,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "FMPNAME_SUPPL",
+                    alignment: 'left',
+                    caption: "Pabrikan",
+                    width: 150,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "HPOKOK",
+                    alignment: 'right',
+                    caption: "Harga POKOK",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 110,
+                    allowSorting: false
+                },
+                {
+                    dataField: "AVL_QTY",
+                    alignment: 'right',
+                    caption: "Gudang Utama",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    allowSorting: false
+                },
+                {
+                    dataField: "AVL_QTY2",
+                    alignment: 'right',
+                    caption: "Gudang-2",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    allowSorting: false
+                },
+                {
+                    dataField: "AVL_QTY3",
+                    alignment: 'right',
+                    caption: "Gudang-3",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    allowSorting: false
+                },
+                {
+                    dataField: "TOTAL",
+                    caption: "TOTAL STOK SEKARANG",
+                    alignment: 'right',
+                    allowEditing: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    calculateCellValue: function (rowData) {
+                        var AVL_QTY3 = ''
+                        var AVL_QTY2 = ''
+                        var AVL_QTY = ''
+                        
+                        var QTYMIN = ''
+                        if (!rowData.AVL_QTY) {
+                            AVL_QTY = 0
+                        } else {
+                            AVL_QTY = parseInt(rowData.AVL_QTY)
+                        }
+
+                        if (!rowData.AVL_QTY3) {
+                            AVL_QTY3 = 0
+                        } else {
+                            AVL_QTY3 = parseInt(rowData.AVL_QTY3)
+                        }
+        
+                        if (!rowData.AVL_QTY2) {
+                            AVL_QTY2 = 0
+                        } else {
+                            AVL_QTY2 = parseInt(rowData.AVL_QTY2)
+                        }
+        
+                        if (!rowData.QTYMIN) {
+                            QTYMIN = 0
+                        } else {
+                            QTYMIN = parseInt(rowData.QTYMIN)
+                        }
+                        total=AVL_QTY+AVL_QTY2+AVL_QTY3
+                        ito=total/QTYMIN
+                        var res = (AVL_QTY+AVL_QTY2+AVL_QTY3)
+                        return parseInt(Math.ceil(total))
+                        // return rupiah2(Math.floor(res))
+                    }
+                },
+                {
+                    dataField: "QTYTHREEMONTH",
+                    alignment: 'right',
+                    caption: "Rata Rata per Bulan",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    allowSorting: false
+                },
+                {
+                    dataField: "KEBUTUHAN",
+                    caption: "RENCANA ORDER",
+                    alignment: 'right',
+                    allowEditing: false,
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    calculateCellValue: function (rowData) {
+                        var AVL_QTY3 = ''
+                        var AVL_QTY2 = ''
+                        var AVL_QTY = ''
+                        
+                        var QTYMIN = ''
+                        if (!rowData.AVL_QTY) {
+                            AVL_QTY = 0
+                        } else {
+                            AVL_QTY = parseInt(rowData.AVL_QTY)
+                        }
+                        if (!rowData.AVL_QTY3) {
+                            AVL_QTY3 = 0
+                        } else {
+                            AVL_QTY3 = parseInt(rowData.AVL_QTY3)
+                        }
+        
+                        if (!rowData.AVL_QTY2) {
+                            AVL_QTY2 = 0
+                        } else {
+                            AVL_QTY2 = parseInt(rowData.AVL_QTY2)
+                        }
+        
+                        if (!rowData.QTYMIN) {
+                            QTYMIN = 0
+                        } else {
+                            QTYMIN = parseInt(rowData.QTYMIN)
+                        }
+                        if (!rowData.QTYMAX) {
+                            QTYMAX = 0
+                        } else {
+                            QTYMAX = parseInt(rowData.QTYMAX)
+                        }
+                        total=AVL_QTY+AVL_QTY2+AVL_QTY3
+                        ito=total/QTYMIN
+                        var res = QTYMAX-(AVL_QTY+AVL_QTY2+AVL_QTY3)
+                        return parseInt(Math.ceil(res))
+                        // return rupiah2(Math.floor(res))
+                    }
+                },
+                {
+                    dataField: "FMPNAME_SUPPL",
+                    groupIndex: 0
+                },
+            ],
+            onCellPrepared: function (e) {
+                if (e.rowType === "data" && e.column.dataField === "KEBUTUHAN" && (e.value != undefined)) {
+                    e.cellElement.css("color", "white");
+                    if (ito < 3) {
+                        e.cellElement.css("background-color", "red");
+                    } else if  (ito >= 3 && ito < 5 ) {
+                        e.cellElement.css("background-color", "yellow");
+                    } else {
+                        e.cellElement.css("background-color", "green");
+                    }
+                }
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: false,
+                selectTextOnEditStart: true,
+                allowEditing: false,
+                allowDeleting: false,
+            },
+            keyboardNavigation: {
+                editOnKeyPress: true,
+                enterKeyAction: "moveFocus",
+                enterKeyDirection: 'row'
+            },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

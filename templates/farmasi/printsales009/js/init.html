@@ -1,0 +1,102 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+// console.log(host)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+
+    $("#cetak_dari").val("0")
+    $("#cetak_sampai").val("ZZZ")
+
+    $("#tanggal_dr").val(getLastDate(yyyy,mm,1))
+    $("#tanggal_sd").val(todays)
+
+    var start = $('#tanggal_dr').val().split('-');
+    var end   = $('#tanggal_sd').val().split('-');
+    $('#umur_stock').val(daysBetween(start,end));
+
+    $('#tanggal_dr').change(function(){
+        var start = $('#tanggal_dr').val().split('-');
+        var end   = $('#tanggal_sd').val().split('-');
+        $('#umur_stock').val(daysBetween(start,end));
+        calculatedays(end);
+    });
+
+    $('#tanggal_sd').change(function(){
+        var start = $('#tanggal_dr').val().split('-');
+        var end   = $('#tanggal_sd').val().split('-');
+        $('#umur_stock').val(daysBetween(start,end));
+        calculatedays(end);
+    });
+
+    $('#umur_stock').keyup(function(){
+        var end   = $('#tanggal_sd').val().split('-');
+        calculatedays(end);
+    });
+
+    $("#Prosescetak").click(function () {
+        if($("#cetak_dari").val()!=""){
+            Prosescetak()
+        } else {
+            alert('Pilih gudang utama Dahulu') 
+        }
+        
+    })
+    $("#Batalproses").click(function () {
+        Batalproses()
+    })
+
+})
+
+function Batalproses(){
+    window.location.href = "http://{{ request.get_host }}/";
+    // window.history.back();
+}
+
+function Prosescetak() {
+
+    url2=host + "/proses_lap_umur";
+    getGridTable();
+
+}
+
+function getLastDate (y,m,d){
+    return y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0')
+}
+
+function daysBetween(first, second) {
+    // Copy date parts of the timestamps, discarding the time parts.
+    var one = new Date(first[0], first[1]-1, first[2]);
+    var two = new Date(second[0], second[1]-1, second[2]);
+
+    // // Do the math.
+    var millisecondsPerDay = 1000 * 60 * 60 * 24;
+    var millisBetween = two.getTime() - one.getTime();
+    var days = millisBetween / millisecondsPerDay;
+
+    // Round down.
+    return Math.floor(days);
+}
+
+function calculatedays(second) {
+    var one = new Date(second[0], second[1]-1, second[2]);
+    var hari = parseInt($('#umur_stock').val());
+    // // Do the math.
+    var DayInMs = 1000 * 60 * 60 * 24* hari;
+    var newTime = one.getTime() - DayInMs;
+    var today = new Date(newTime);
+    var newDate = today.getFullYear()+'-'+(today.getMonth()+1).toString().padStart(2, "0")+'-'+today.getDate().toString().padStart(2, "0")
+    // Round down.
+    $('#tanggal_dr').val(newDate);
+}

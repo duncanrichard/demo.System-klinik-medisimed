@@ -1,0 +1,142 @@
+{% extends "layout/master.html" %}
+{% block title %}
+{{title}}
+{% endblock %}
+
+{% block head %}
+<style>
+    div#datagrid.dx-widget {
+        font-size: 12px;
+        line-height: 0.99;
+        height: 200px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+
+<div class=''>
+    <div class="modal-dialog modal-lg" role="modal" style="z-index: 4;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="ibox-title" style="background-color: #4f7ebb4f;">
+                    <h3 style="text-align: center">{{title}}</h3>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="card-body">
+                        <div class="row">
+                            <label class="col-md-2 control-label">KODE BARANG </label>
+                            <div class="col-md-2">
+                                <input type="text" name="kodebarang_dari" id="kodebarang_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode barang">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodebarang2">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="kodebarang_sampai" id="kodebarang_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="Findkodebarang3">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label">KODE PRODUCT </label>
+                            <div class="col-md-2">
+                                <input type="text" name="kodeproduk_dari" id="kodeproduk_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode produk">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carijenis_barang(event, 1)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="kodeproduk_sampai" id="kodeproduk_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode produk">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" onclick="carijenis_barang(event, 2)">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-2 control-label">Dari Gudang </label>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_dari" id="cetak_dari"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="dari kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="FindDivisi2">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                            <div class="col-md-2">
+                                <input type="text" name="cetak_sampai" id="cetak_sampai"
+                                    class="form-control input-sm-lab grid-opt-suplier" placeholder="s/d kode">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-sm btn-block btn-primary" id="FindDivisi3">
+                                    <span class="fa fa-search"></span> Cari
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row" id="label_Cetak_mutasi_tanggal">
+                            <label class="col-md-2 control-label" id="label_Cetak_mutasi_tanggal_dr" >periode bulan </label>
+                            <div class="col-md-3">
+                                <input type="date" id="Cetak_mutasi_tanggal_dr"
+                                    class="form-control input-sm-lab today formdate2">
+                            </div>
+                            <input type="hidden" id="paramprint">
+                        </div>
+
+                        <div class="row">
+                            <div style="overflow-y: auto;">
+                                <div id="datagrid"></div>
+                            </div>
+                            <div class="options">
+                                <div class="caption">Options</div>
+                                <div class="option">            
+                                    <div id="autoExpand"></div>
+                                </div>    
+                            </div>
+
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="ProsesExcel">Proses</button>
+                <button type="button" class="btn btn-danger" id="Prosescetak">Cetak</button>
+                <button type="button" class="btn btn-danger" id="Batalproses" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'farmasi/printstock004/modal/ModalLoading.html' %}
+{% include 'farmasi/printstock004/dxgrid/DxGridModaldivisi.html' %}
+{% include 'farmasi/printstock004/dxgrid/dxGridModalbarang.html' %}
+{% include 'farmasi/printstock004/dxgrid/DxGridModaljenis_barang.html' %}
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'farmasi/printstock004/js/getDxGrid.html' %}       
+{% include 'farmasi/printstock004/js/init.html' %} 
+{% include 'farmasi/printstock004/js/getDivisi.html' %} 
+{% include 'farmasi/printstock004/js/getbarang.html' %} 
+{% include 'farmasi/printstock004/js/getjenis_barang.html' %} 
+</script>
+{% endblock  %}

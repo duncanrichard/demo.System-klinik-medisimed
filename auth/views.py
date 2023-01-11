@@ -50,9 +50,11 @@ def login(request):
             request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
 
             # parameter
-            q= 'SELECT TOP 1 * FROM PARAMETER'
-            datares = Globals().getDataQuery(q);
+            q= 'SELECT TOP 1 * FROM PARAMETER WHERE COMPANY=%s '
+            datares = Globals().getDataQuery(q,[kdCabang]);
             request.session['par_ppn'] = float(datares[0]['PPN'])
+            request.session['par_MTH'] = datares[0]['MTH']
+            request.session['par_TAHUNYR'] = datares[0]['YR']
 
             # cek gudang
             q = "select a.USER_ID, a.USER_PRIV, b.GUDANG, c.NAME_WH, c.BRANCH from USERSPRIV as a left join PRIVILEGE as b on a.USER_PRIV = b.USER_PRIV left join WAREHOUSE as c on b.GUDANG = c.WH_ID where a.USER_ID = %s"

@@ -217,10 +217,11 @@ def getDiscCustomer(request):
 	return HttpResponse(json_data, content_type="application/json")
 
 def getParameter(request):
-	q = "select * from PARAMETER "
-	result = Globals().getDataQuery(q)
-	json_data = json.dumps(result[0], cls=DjangoJSONEncoder)
-	return HttpResponse(json_data, content_type="application/json")
+    cabang_id = request.session['kdCabang']
+    q = "select * from PARAMETER WHERE COMPANY=%s "
+    result = Globals().getDataQuery(q,[cabang_id])
+    json_data = json.dumps(result[0], cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
 
 def getHistoryBarang(request):
     cabang_id = request.session['kdCabang']

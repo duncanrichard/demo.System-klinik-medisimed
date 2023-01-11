@@ -93,3 +93,64 @@ def getHistoryBeliBarang(request):
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
+def getdivisi(request):
+	tipe = request.GET['tipe']
+	KD_CABANG= request.session['kdCabang']
+	if(tipe == 'Divisi'):
+		kode = request.GET['kode']
+		q = "SELECT WH_ID, NAME_WH "
+		q += "FROM WAREHOUSE  "
+		q += "WHERE (WH_ID LIKE %s) AND aktif=1 and BRANCH=%s"
+		result = Globals().getDataQuery(q,[kode,KD_CABANG])
+	else:
+		kode_divisi = '%'+request.GET['search_kode_divisi']+'%'
+		nama_divisi = '%'+request.GET['search_nama_divisi']+'%'
+		q = "SELECT WH_ID, NAME_WH "
+		q += "FROM WAREHOUSE  "
+		q += "WHERE (WH_ID LIKE %s) AND (NAME_WH LIKE %s)  AND aktif=1 and BRANCH=%s "
+		result = Globals().getDataQuery(q, [kode_divisi,nama_divisi,KD_CABANG])
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def getbarang(request):
+	kode_barang = '%'+request.GET['search_kode_barang']+'%'
+	nama_barang = '%'+request.GET['search_nama_barang']+'%'
+	q = "SELECT A.BARANGC,NAME_BRG,SATSTAND, "
+	q += "B.NAME_PRD, C.NAME_SUPPL "
+	q +=  "FROM BARANG AS A LEFT JOIN "
+	q +=  "PRODUKOBAT AS B ON A.TTYPEC = B.PRD_ID LEFT JOIN "
+	q +=  "SUPPLIER AS C ON A.SUPPLIER_ID = C.SUPPLIERC "
+	q += "WHERE (BARANGC LIKE %s) AND (NAME_BRG LIKE %s)  ORDER BY  NAME_BRG "
+
+	result = Globals().getDataQuery(q, [kode_barang,nama_barang])
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def getpabrikan(request):
+	kode_pabrikan = '%'+request.GET['search_kode_pabrikan']+'%'
+	nama_pabrikan = '%'+request.GET['search_nama_pabrikan']+'%'
+	q = "SELECT FMPSUPPLIERC, FMPNAME_SUPPL, FMPADDRESS1, FMPADDRESS2, FMPCITYC, FMPPOSTC, FMPTELP, FMPFAX, FMPCONTACT, [USER], [UPDATE]  "
+	q += "FROM PABRIKAN AS A  "
+	q += "WHERE (FMPSUPPLIERC LIKE %s) AND (FMPNAME_SUPPL LIKE %s) order by FMPNAME_SUPPL "
+	result = Globals().getDataQuery(q, [kode_pabrikan,nama_pabrikan])
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def getjenis_barang(request):
+	kode_jenis_barang = '%'+request.GET['search_kode_jenis_barang']+'%'
+	nama_jenis_barang = '%'+request.GET['search_nama_jenis_barang']+'%'
+	q = "select PRD_ID,NAME_PRD from PRODUKOBAT "
+	q += "WHERE (PRD_ID LIKE %s) AND (NAME_PRD LIKE %s)  "
+	result = Globals().getDataQuery(q, [kode_jenis_barang,nama_jenis_barang])
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+
+def getgolongan_barang(request):
+	kode_golongan_barang = '%'+request.GET['search_kode_golongan_barang']+'%'
+	nama_golongan_barang = '%'+request.GET['search_nama_golongan_barang']+'%'
+	q = "select MERK_ID,NAMA from MERK "
+	q += "WHERE (MERK_ID LIKE %s) AND (NAMA LIKE %s) "
+	result = Globals().getDataQuery(q, [kode_golongan_barang,nama_golongan_barang])
+	json_data = json.dumps(result, cls=DjangoJSONEncoder)
+	return HttpResponse(json_data, content_type="application/json")
+

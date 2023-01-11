@@ -1,0 +1,94 @@
+// Get Gudang
+$(document).ready(function () {
+    $('#cari_far_kode_gudang').click(function (e) {
+        $('#dxGridModaldivisi').modal('show');
+        caridivisi(event)
+        $('#FindDivisi').attr('onclick','caridivisi(event)')
+    })
+
+    $('#cari_divisi2').click(function (e) {
+        $('#dxGridModaldivisi').modal('show');
+        caridivisi(e,1)
+        $('#FindDivisi').attr('onclick','caridivisi(event,1)')
+    })
+    $('#FindDivisi2').click(function (e) {
+        $('#dxGridModaldivisi').modal('show');
+        caridivisi(e,2)
+        $('#FindDivisi').attr('onclick','caridivisi(event,2)')
+    })
+    $('#FindDivisi3').click(function (e) {
+        $('#dxGridModaldivisi').modal('show');
+        caridivisi(e,3)
+        $('#FindDivisi').attr('onclick','caridivisi(event,3)')
+    })
+
+})
+
+
+
+var gridDataDivisi = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_divisi = $('#search_kode_divisi').val();
+        var search_nama_divisi = $('#search_nama_divisi').val();
+        return $.ajax({
+            url: host + "/getdivisi",
+            method: "GET",
+            data: {
+                "search_kode_divisi": search_kode_divisi,
+                "search_nama_divisi": search_nama_divisi,
+                "tipe": ''
+            },
+            success: function (datas) {
+                $('#DxGridModaldivisi').modal('show');
+            }
+        })
+    }
+});
+
+function caridivisi(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDataDivisi2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDataDivisi,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "WH_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "NAME_WH",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#far_kode_gudang").val(e.data.WH_ID)
+                $("#far_nama_gudang").val(e.data.NAME_WH)
+            } else if (param == 1) {
+                $("#kode_divisi2").val(e.data.WH_ID)
+                $('#nama_divisi2').val(e.data.NAME_WH);
+            } else if (param == 2) {
+                $("#cetak_dari").val(e.data.WH_ID)
+            } else {
+                $("#cetak_sampai").val(e.data.WH_ID)
+            }
+            
+            $('#DxGridModaldivisi').modal('hide');
+        }
+    });
+}

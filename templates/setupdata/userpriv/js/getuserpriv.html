@@ -1,0 +1,71 @@
+function load_userpriv() {
+    $("#dxGridDatauserpriv").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000,
+        },
+        filterRow: {
+            visible: false,
+        },
+        export: {
+            enabled: true
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/open_userpriv",
+                    data: {},
+                    method: "GET",
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length,
+                        });
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single",
+        },
+        columns: [{
+                dataField: "USER_ID",
+                caption: "Kode userpriv",
+            },
+            {
+                dataField: "USER_NAME",
+                caption: "Nama userpriv",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#kode_userpriv").val(e.data.USER_ID);
+            $("#nama_userpriv").val(e.data.USER_NAME);
+            $("#password_userpriv").val('');
+            $("#privelege_userpriv").val(e.data.USER_PRIV);
+            $("#kode_nip").val(e.data.nip);
+            $("#no_telepon").val(e.data.phone);
+            if (parseInt(e.data.AKTIF) == 0) {
+                $("#inlineCheckboxaktif1").prop('checked', true)
+            } else {
+                $("#inlineCheckboxaktif1").prop('checked', false)
+            }
+            $('#dxGridModaluserpriv').modal('hide')
+            menuhidup();
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

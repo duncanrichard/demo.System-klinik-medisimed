@@ -1,0 +1,38 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    userpriv
+{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDatadokter.dx-widget {
+            font-size: 12px;
+            line-height: 0.95;
+            height: 240px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'setupdata/userpriv/content.html' %}
+    {% include 'setupdata/userpriv/modal/dxGridModaluserpriv.html'%} 
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'setupdata/userpriv/js/init.html' %}
+{% include 'setupdata/userpriv/js/aud_content.html' %}
+{% include 'setupdata/userpriv/js/getuserpriv.html' %}
+
+
+</script>
+{% endblock  %}

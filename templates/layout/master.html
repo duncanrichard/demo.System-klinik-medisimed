@@ -41,6 +41,7 @@
         Medisimed © {% now "Y" %} Copyright.
         <span class="blinking" style="color:rgb(151, 85, 153);font-weight:bold;font-size: 13pt ">Cabang
             {{request.session.kdCabang}} : {{request.session.nama_cabang}} - {{request.session.kota_cabang}}</span>
+        <span style="color:rgb(28, 0, 128);font-weight:bold;font-size: 13pt">Periode Stock :{{request.session.par_MTH}} {{request.session.par_TAHUNYR}}</span>
     </div>
 
     <script src="{% static 'js/jquery.min.js' %}"></script>

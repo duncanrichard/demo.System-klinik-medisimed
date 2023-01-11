@@ -1,0 +1,551 @@
+var dataGrid;
+var total = '';
+var ito = '';
+$(document).ready(function () {
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function (data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    setGridEmpty();
+
+});
+
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [{
+                dataField: "BARANGC",
+                caption: "Kode Barang",
+                alignment: 'center',
+                allowEditing: false,
+                width: 140,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "Nama Barang",
+                alignment: 'left',
+                width: 250,
+                allowEditing: false,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "NAME_SUPPL",
+                caption: "Supplier",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "NAME_PRD",
+                caption: "Golongan",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "MERKN",
+                caption: "Jenis",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "SATKEMAS",
+                alignment: 'left',
+                caption: "Kemasan",
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "KONVERSI",
+                alignment: 'right',
+                caption: "KONVERSI",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "SATSTAND",
+                alignment: 'left',
+                caption: "Satuan",
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "QTYMAX",
+                caption: "QTY MAX",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "QTYMIN",
+                caption: "QTY MIN",
+                alignment: 'right',
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "FMPNAME_SUPPL",
+                alignment: 'left',
+                caption: "Pabrikan",
+                width: 150,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "HPOKOK",
+                alignment: 'right',
+                caption: "Harga POKOK",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY",
+                alignment: 'right',
+                caption: "Gudang Utama",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY2",
+                alignment: 'right',
+                caption: "Gudang-2",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY3",
+                alignment: 'right',
+                caption: "Gudang-3",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 150,
+                allowSorting: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+            "kodebarang_dari": $("#kodebarang_dari").val(),
+            "kodebarang_sampai": $("#kodebarang_sampai").val(),
+            "kodedokter_dari": $("#kodedokter_dari").val(),
+            "kodedokter_sampai": $("#kodedokter_sampai").val(),
+            "tanggal_dr": $("#tanggal_dr").val(),
+            "tanggal_sd": $("#tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "GUDANG",
+                        caption: "Nama Gudang",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 130,
+                        allowSorting: false,
+                        fixed: true
+                    },
+                    {
+                        dataField: "NAMA_BARANG",
+                        alignment: 'left',
+                        caption: "NAMA BARANG",
+                        width: 200,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "TANGGAL",
+                        caption: "Tanggal",
+                        alignment: 'left',
+                        width: 90,
+                        format: 'dd/MM/yyyy',
+                        allowEditing: false,
+                        allowSorting: false,
+                        fixed: true
+                    },
+                    {
+                        dataField: "BUKTI",
+                        caption: "Bukti",
+                        alignment: 'left',
+                        width: 110,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "PASIEN",
+                        caption: "PASIEN",
+                        alignment: 'left',
+                        width: 180,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "POLY",
+                        caption: "POLY",
+                        alignment: 'left',
+                        width: 100,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "DOKTER",
+                        alignment: 'left',
+                        caption: "DOKTER",
+                        width: 150,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "QTY",
+                        alignment: 'right',
+                        caption: "QTY",
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 75,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "SATUAN",
+                        alignment: 'left',
+                        caption: "Satuan",
+                        width: 80,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "GUDANG",
+                        groupIndex: 0
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}
+
+function getGridTableRekap() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+            "kodebarang_dari": $("#kodebarang_dari").val(),
+            "kodebarang_sampai": $("#kodebarang_sampai").val(),
+            "kodedokter_dari": $("#kodedokter_dari").val(),
+            "kodedokter_sampai": $("#kodedokter_sampai").val(),
+            "tanggal_dr": $("#tanggal_dr").val(),
+            "tanggal_sd": $("#tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "GUDANG",
+                        caption: "Nama Gudang",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 130,
+                        allowSorting: false,
+                        fixed: true
+                    },
+                    {
+                        dataField: "NAMA_BARANG",
+                        alignment: 'left',
+                        caption: "NAMA BARANG",
+                        width: 200,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "DOKTER",
+                        alignment: 'left',
+                        caption: "DOKTER",
+                        width: 150,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "QTY",
+                        alignment: 'right',
+                        caption: "QTY",
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 175,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "SATUAN",
+                        alignment: 'left',
+                        caption: "Satuan",
+                        width: 120,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "GUDANG",
+                        groupIndex: 0
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}
+
+function getGridTableSummary() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+            "kodebarang_dari": $("#kodebarang_dari").val(),
+            "kodebarang_sampai": $("#kodebarang_sampai").val(),
+            "kodedokter_dari": $("#kodedokter_dari").val(),
+            "kodedokter_sampai": $("#kodedokter_sampai").val(),
+            "tanggal_dr": $("#tanggal_dr").val(),
+            "tanggal_sd": $("#tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [{
+                        dataField: "GUDANG",
+                        caption: "Nama Gudang",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 130,
+                        allowSorting: false,
+                        fixed: true
+                    },
+                    {
+                        dataField: "NAME_PRD",
+                        alignment: 'left',
+                        caption: "NAMA PRODUK",
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMA_BARANG",
+                        alignment: 'left',
+                        caption: "NAMA BARANG",
+                        width: 200,
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "QTY",
+                        alignment: 'right',
+                        caption: "QTY",
+                        dataType: "number",
+                        format: 'decimal fixedPoint',
+                        width: 175,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "SATUAN",
+                        alignment: 'left',
+                        caption: "Satuan",
+                        width: 120,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "GUDANG",
+                        groupIndex: 0
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

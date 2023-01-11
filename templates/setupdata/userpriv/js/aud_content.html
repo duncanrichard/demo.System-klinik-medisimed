@@ -3,18 +3,19 @@ var status_cetak = null
 
 $(document).ready(function () {
   menuhidup()
-  enterFocusTo('far_nama_perawat', 'far_jabatan_perawat')
-  enterFocusTo('far_jabatan_perawat', 'far_kode_nip')
-
+  enterFocusTo('nama_userpriv', 'password_userpriv')
+  enterFocusTo('password_userpriv', 'privelege_userpriv')
+  enterFocusTo('privelege_userpriv', 'kode_nip')
+  enterFocusTo('kode_nip', 'no_telepon')
   $('#menu_tambah').click(function (e) {
     status_aud = 'A'
     menumati()
     $('input[type=text]').val('')
-    $('#far_nama_perawat').focus()
+    $('#nama_userpriv').focus()
   });
 
   $('#menu_edit').click(function (e) {
-    if ($('#far_kode_perawat').val() == '') {
+    if ($('#kode_userpriv').val() == '') {
       Swal.fire({
         icon: 'error',
         title: 'Pilih data terlebih dahulu !',
@@ -23,7 +24,7 @@ $(document).ready(function () {
     } else {
       status_aud = 'A'
       menumati()
-      $('#far_nama_perawat').focus()
+      $('#nama_userpriv').focus()
     }
   });
 
@@ -40,31 +41,25 @@ $(document).ready(function () {
       } else {
         aktif = '1'
       }
-      var bidan = '1'
-      if ($("#inlineCheckboxbidan").prop('checked') == true) {
-        bidan = '1'
-      } else {
-        bidan = '0'
-      }
       $.ajax({
         type: "POST",
-        url: host + '/aud_perawat',
+        url: host + '/aud_userpriv',
         data: {
-          far_kode_perawat: $('#far_kode_perawat').val(),
-          far_nama_perawat: $('#far_nama_perawat').val(),
-          far_jabatan_perawat: $('#far_jabatan_perawat').val(),
-          far_kode_nip: $('#far_kode_nip').val(),
-          far_sip: $('#far_sip').val(),
+          kode_userpriv: $('#kode_userpriv').val(),
+          nama_userpriv: $('#nama_userpriv').val(),
+          password_userpriv: $('#password_userpriv').val(),
+          privelege_userpriv: $('#privelege_userpriv').val(),
+          kode_nip: $('#kode_nip').val(),
+          no_telepon: $('#no_telepon').val(),
           aktif: aktif,
-          bidan: bidan,
           status_aud: status_aud,
           "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
         },
         dataType: "json",
         success: function (e) {
-          alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].perawat_ID + e[0].ERROR_MESSAGE)
+          alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].USER_ID + e[0].ERROR_MESSAGE)
           if (e[0].STATUS == 'SUKSES') {
-            $("#far_kode_perawat").val(e[0].perawat_ID);
+            $("#kode_userpriv").val(e[0].USER_ID);
             menuhidup()
           }
         }
@@ -73,8 +68,8 @@ $(document).ready(function () {
   });
 
   $('#menu_hapus').click(function () {
-    if ($('#far_kode_perawat').val() == '') {
-      alert('Pilih kode perawat Dulu!')
+    if ($('#kode_userpriv').val() == '') {
+      alert('Pilih kode userpriv Dulu!')
     } else {
       var result = confirm('Yakin data akan dihapus?')
       var status_aud = "D"
@@ -85,27 +80,22 @@ $(document).ready(function () {
         } else {
           aktif = '1'
         }
-        var bidan = '1'
-        if ($("#inlineCheckboxbidan").prop('checked') == true) {
-          bidan = '1'
-        } else {
-          bidan = '0'
-        }
         $.ajax({
-          url: host + "/aud_perawat",
+          url: host + "/aud_dokter",
           method: "POST",
           data: {
-            far_kode_perawat: $('#far_kode_perawat').val(),
-            far_nama_perawat: $('#far_nama_perawat').val(),
-            far_jabatan_perawat: $('#far_jabatan_perawat').val(),
-            far_kode_nip: $('#far_kode_nip').val(),
+            kode_userpriv: $('#kode_userpriv').val(),
+            nama_userpriv: $('#nama_userpriv').val(),
+            password_userpriv: $('#password_userpriv').val(),
+            privelege_userpriv: $('#privelege_userpriv').val(),
+            kode_nip: $('#kode_nip').val(),
+            no_telepon: $('#no_telepon').val(),
             aktif: aktif,
-            bidan: bidan,
             status_aud: status_aud,
             "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
           },
           success: function (e) {
-            alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].perawat_ID + e[0].ERROR_MESSAGE)
+            alert(e[0].STATUS + ' - ' + e[0].STATE + ' - ' + e[0].USER_ID + e[0].ERROR_MESSAGE)
             if (e[0].STATUS == 'SUKSES') {
               $('input[type=text]').val('')
               menuhidup()
@@ -117,8 +107,8 @@ $(document).ready(function () {
   })
 
   $('#menu_find').click(function (e) {
-    $('#dxGridModalperawat').modal('show')
-    load_perawat()
+    $('#dxGridModaluserpriv').modal('show')
+    load_userpriv()
   });
   $('#menu_keluar').click(function () {
     window.open('/', "_self");
@@ -127,12 +117,16 @@ $(document).ready(function () {
 
 function error_in_field() {
   Cekeror = true;
-  if ($("#far_nama_perawat").val() == '') {
-    alert('Nama perawat tidak boleh kosong')
+  if ($("#nama_userpriv").val() == '') {
+    alert('Nama dokter tidak boleh kosong')
     Cekeror = false;
   }
-  if ($("#far_kode_nip").val() == '') {
-    alert('NIP tidak boleh kosong')
+  if ($("#privelege_userpriv").val() == '') {
+    alert('privelege userpriv tidak boleh kosong')
+    Cekeror = false;
+  }
+  if ($("#password_userpriv").val() == '') {
+    alert('password userpriv tidak boleh kosong')
     Cekeror = false;
   }
 
@@ -148,12 +142,16 @@ function menuhidup() {
   menuEnable('menu_find');
   menuEnable('menu_cetak');
 
-  setReadOnly('far_kode_perawat')
-  setReadOnly('far_nama_perawat')
-  setReadOnly('far_jabatan_perawat')
-  setReadOnly('far_kode_nip')
+  setReadOnly('kode_userpriv')
+  setReadOnly('nama_userpriv')
+  setReadOnly('password_userpriv')
+  setReadOnly('privelege_userpriv')
+  setReadOnly('kode_nip')
+  setReadOnly('sip')
+  setReadOnly('kode_antri')
+  setReadOnly('kode_bpjs')
+  setReadOnly('no_telepon')
   setDisabled('inlineCheckboxaktif1', 0)
-  setDisabled('inlineCheckboxbidan', 0)
 }
 
 function menumati() {
@@ -165,15 +163,17 @@ function menumati() {
   menuDisable('menu_find');
   menuDisable('menu_cetak');
 
-  setReadOnly('far_kode_perawat')
-  setUnReadOnly('far_nama_perawat')
-  setUnReadOnly('far_jabatan_perawat')
-  setUnReadOnly('far_kode_nip')
+  setReadOnly('kode_userpriv')
+  setUnReadOnly('nama_userpriv')
+  setUnReadOnly('password_userpriv')
+  setUnReadOnly('privelege_userpriv')
+  setUnReadOnly('kode_nip')
+  setUnReadOnly('sip')
+  setUnReadOnly('kode_antri')
+  setUnReadOnly('kode_bpjs')
+  setUnReadOnly('no_telepon')
   setDisabled('inlineCheckboxaktif1', 1)
-  setDisabled('inlineCheckboxbidan', 1)
-  if ($("#far_kode_perawat").val() == '') {
+  if ($("#kode_userpriv").val() == '') {
     $('input[id=inlineCheckboxaktif1]').iCheck('check');
-    $('input[id=inlineCheckboxbidan]').iCheck('uncheck');
   }
-
 }

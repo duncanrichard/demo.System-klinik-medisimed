@@ -1,0 +1,215 @@
+var dataGrid;
+var total='';
+var ito='';
+$(document).ready(function (){
+    $("#autoExpand").dxCheckBox({
+        value: true,
+        text: "Expand All Groups",
+        onValueChanged: function(data) {
+            dataGrid.option("grouping.autoExpandAll", data.value);
+        }
+    });
+    setGridEmpty();
+    
+});
+function setGridEmpty() {
+    dataGrid = $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        paging: {
+            pageSize: 100
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: [
+            {
+                dataField: "FSBWH_ID",
+                caption: "Kode gudang",
+                alignment: 'center',
+                allowEditing: false,
+                width: 110,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "NAME_WH",
+                caption: "Nama gudang",
+                alignment: 'left',
+                width: 150,
+                allowEditing: false,
+                allowSorting: false,
+                fixed: true
+            },
+            {
+                dataField: "FSBBRG_ID",
+                caption: "Kode barang",
+                alignment: 'left',
+                width: 130,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "NAME_BRG",
+                caption: "Nama barang",
+                alignment: 'left',
+                width: 325,
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "AVL_QTY",
+                alignment: 'right',
+                caption: "Gudang Utama",
+                dataType: "number",
+                format: 'decimal fixedPoint',
+                width: 100,
+                allowSorting: false
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+}
+
+function getGridTable() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            "cetak_dari": $("#cetak_dari").val(),
+            "cetak_sampai": $("#cetak_sampai").val(),
+
+            "tanggal_dr": $("#tanggal_dr").val(),
+            "tanggal_sd": $("#tanggal_sd").val(),
+        },
+        success: function (datas) {
+            dataGrid = $("#datagrid").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: [
+                {
+                    dataField: "FSBWH_ID",
+                    caption: "Kode gudang",
+                    alignment: 'center',
+                    allowEditing: false,
+                    width: 110,
+                    allowSorting: false,
+                    fixed: true
+                },
+                {
+                    dataField: "NAME_WH",
+                    caption: "Nama gudang",
+                    alignment: 'left',
+                    width: 150,
+                    allowEditing: false,
+                    allowSorting: false,
+                    fixed: true
+                },
+                {
+                    dataField: "FSBBRG_ID",
+                    caption: "Kode barang",
+                    alignment: 'left',
+                    width: 130,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "NAME_BRG",
+                    caption: "Nama barang",
+                    alignment: 'left',
+                    width: 325,
+                    allowEditing: false,
+                    allowSorting: false
+                },
+                {
+                    dataField: "AVL_QTY",
+                    alignment: 'right',
+                    caption: "Gudang Utama",
+                    dataType: "number",
+                    format: 'decimal fixedPoint',
+                    width: 100,
+                    allowSorting: false
+                },
+            ],
+            onCellPrepared: function (e) {
+                if (e.rowType === "data" && e.column.dataField === "KEBUTUHAN" && (e.value != undefined)) {
+                    e.cellElement.css("color", "white");
+                    if (ito < 3) {
+                        e.cellElement.css("background-color", "red");
+                    } else if  (ito >= 3 && ito < 5 ) {
+                        e.cellElement.css("background-color", "yellow");
+                    } else {
+                        e.cellElement.css("background-color", "green");
+                    }
+                }
+            },
+            editing: {
+                mode: "cell",
+                allowUpdating: false,
+                selectTextOnEditStart: true,
+                allowEditing: false,
+                allowDeleting: false,
+            },
+            keyboardNavigation: {
+                editOnKeyPress: true,
+                enterKeyAction: "moveFocus",
+                enterKeyDirection: 'row'
+            },
+            }).dxDataGrid("instance");
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

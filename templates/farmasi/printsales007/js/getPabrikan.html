@@ -1,0 +1,78 @@
+// Get produk
+$(document).ready(function () {
+
+    $('#FindPabrik2').click(function (e) {
+        $('#DxGridModalpabrikan').modal('show');
+        caripabrikan(e,2)
+    })
+    $('#FindPabrik3').click(function (e) {
+        $('#DxGridModalpabrikan').modal('show');
+        caripabrikan(e,3)
+    })
+
+    $('.grid-opt-produk').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            cariProduk(event)
+        }
+    });
+})
+
+var gridDatapabrikan = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_pabrikan = $('#search_kode_pabrikan').val();
+        var search_nama_pabrikan = $('#search_nama_pabrikan').val();
+        return $.ajax({
+            url: host + "/getpabrikan",
+            method: "GET",
+            data: {
+                "search_kode_pabrikan": search_kode_pabrikan,
+                "search_nama_pabrikan": search_nama_pabrikan
+            },
+        })
+    }
+});
+
+function caripabrikan(e, param = null) {
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatapabrikan2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatapabrikan,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMPSUPPLIERC",
+                caption: "KODE",
+                width:220,
+            },
+            {
+                dataField: "FMPNAME_SUPPL",
+                caption: "NAMA",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+            } else if (param == 1) {
+                $("#pabrik_dari").val(e.data.FMPSUPPLIERC)
+            } else if (param == 2) {
+                $("#pabrik_dari").val(e.data.FMPSUPPLIERC)
+            } else {
+                $("#pabrik_sampai").val(e.data.FMPSUPPLIERC)
+            }
+            $('#DxGridModalpabrikan').modal('hide');
+        }
+    });
+}

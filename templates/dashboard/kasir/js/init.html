@@ -415,6 +415,7 @@ $(document).ready(function () {
         } else if (debet - kredit == 0) {
             alert("Transaksi sudah lunas")
         } else {
+            Clearpembayarantext()
             $('#no_kwitansi_pembayaran').val($('#no_trans').val());
             $('#tanggal_trans').val($('#tanggal').val());
             $('#tanggal_piutang').val($('#tanggal').val());
@@ -787,6 +788,33 @@ function setupAwal() {
     canAdd = 0
     setGridEmpty()
 
+}
+
+function Clearpembayarantext() {
+    $('#jumlah_pembayaran_1').val('');
+    $('#jumlah_pembayaran_2').val('');
+    $('#jumlah_pembayaran_3').val('');
+    $('#jumlah_pembayaran_4').val('');
+    $('#id_edc_1').val('');
+    $('#id_edc_2').val('');
+    $('#id_edc_3').val('');
+    $('#id_edc_4').val('');
+    $('#nama_edc_1').val('');
+    $('#nama_edc_2').val('');
+    $('#nama_edc_3').val('');
+    $('#nama_edc_4').val('');
+    $('#no_kartu_1').val('');
+    $('#no_kartu_2').val('');
+    $('#no_kartu_3').val('');
+    $('#no_kartu_4').val('');
+    $('#voucher_pembayaran_1').val('');
+    $('#voucher_pembayaran_2').val('');
+    $('#voucher_pembayaran_3').val('');
+    $('#voucher_pembayaran_4').val('');
+    $('#no_voucher_1').val('');
+    $('#no_voucher_2').val('');
+    $('#no_voucher_3').val('');
+    $('#no_voucher_4').val('');
 }
 
 function Cleartext() {

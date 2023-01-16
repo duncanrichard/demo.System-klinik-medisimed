@@ -426,13 +426,13 @@ def getVoucherPay(request):
         q = " SELECT  NO_VOUCHER, TGL_TRANSAKSI, NILAI_VOUCHER, STATUS_VOUCHER, NORM_VOUCHER, EXPR_VOUCHER, GROUP_VOUCHER FROM  VOUCHER_PASIEN a "
         q += " WHERE a.NO_VOUCHER = %s and STATUS_VOUCHER = 0 "
         q += " ORDER BY a.NO_VOUCHER "
-        print (q)
+        
         result = Globals().getDataQuery(q,)
     else :
         q = " SELECT  NO_VOUCHER, TGL_TRANSAKSI, NILAI_VOUCHER, STATUS_VOUCHER, NORM_VOUCHER, EXPR_VOUCHER, GROUP_VOUCHER FROM  VOUCHER_PASIEN  a "
         q += " WHERE STATUS_VOUCHER = 0 "
         q += " ORDER BY a.NO_VOUCHER "
-        print (q)
+        
         result = Globals().getDataQuery(q)
 
     json_data = json.dumps(result,cls=DjangoJSONEncoder)

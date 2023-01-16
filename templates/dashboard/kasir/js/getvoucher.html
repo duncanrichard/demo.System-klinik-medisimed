@@ -46,7 +46,8 @@ function cariVoucherid(e) {
         url: host + "/getidvoucher",
         method: "GET",
         data: {
-            "kode": e,
+            "novoucher": e,
+            'tipe': 'idvoucher'
         },
         dataType: "json",
         success: function (datas) {
@@ -96,41 +97,43 @@ function cariVoucher(e, param = null) {
                 dataField: 'NO_VOUCHER'
             },
             {
-                caption: "status",
-                dataField: 'STATUS_VOUCHER'
+                caption: "NORM_VOUCHER ",
+                dataField: 'NORM_VOUCHER'
             },
             {
-                caption: "Kode ",
-                dataField: 'KODE_VOUCHER'
-            },
-            {
-                caption: "Nominal",
-                dataField: 'NILAI_RUPIAH'
-            },
-            {
-                caption: "point",
-                dataField: 'NILAI_VOUCHER'
+                caption: "NILAI_VOUCHER",
+                dataField: 'NILAI_VOUCHER',
+                alignment: 'right',
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 155,
             },
             {
                 caption: "kadaluarsa",
-                dataField: 'EXPR_DATE'
+                dataField: 'EXPR_VOUCHER',
+                dataType: 'date',
+                width: 100,
+                format: 'dd/MM/yyyy',
             },
 
         ],
         onRowClick: function (e) {
             if (param == 1) {
-                $("#id_edc_1").val(e.data.KODE)
-                $("#nama_edc_1").val(e.data.NAMA)
+                $("#voucher_pembayaran_1").val(e.data.NILAI_VOUCHER)
+                $("#no_voucher_1").val(e.data.NO_VOUCHER)
             } else if (param == 2) {
-                $("#id_edc_2").val(e.data.KODE)
-                $("#nama_edc_2").val(e.data.NAMA)
+                $("#voucher_pembayaran_2").val(e.data.NILAI_VOUCHER)
+                $("#no_voucher_2").val(e.data.NO_VOUCHER)
             } else if (param == 3) {
-                $("#id_edc_3").val(e.data.KODE)
-                $("#nama_edc_3").val(e.data.NAMA)
+                $("#voucher_pembayaran_3").val(e.data.NILAI_VOUCHER)
+                $("#no_voucher_3").val(e.data.NO_VOUCHER)
             } else if (param == 4) {
-                $("#id_edc_4").val(e.data.KODE)
-                $("#nama_edc_4").val(e.data.NAMA)
+                $("#voucher_pembayaran_4").val(e.data.NILAI_VOUCHER)
+                $("#no_voucher_4").val(e.data.NO_VOUCHER)
             }
+            perhitungan()
             $('#DxGridModalVoucher').modal('hide');
         },
         onContentReady: function (e) {

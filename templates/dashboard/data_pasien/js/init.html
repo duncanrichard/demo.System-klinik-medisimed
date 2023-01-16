@@ -227,6 +227,10 @@ $(document).ready(function () {
         $('#DxGridModalPasien').modal('show')
         cariPasien()
     })
+    $("#menu_cetak").click(function () {
+        $('#dxGridModalCetakPasien').modal('show')
+        carilistPasien()
+    })
     $('#menu_keluar').click(function () {
         window.open('/', "_self");
     })
@@ -234,6 +238,126 @@ $(document).ready(function () {
 
 
 })
+
+function carilistPasien() {
+    $("#DxGridDataCetakPasien").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        export: {
+            enabled: true
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        filterRow: {
+            visible: false
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getlistPasien",
+                    method: "GET",
+                    data: {},
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    },
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Proses Cetak..');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        $('#ModalLoading').modal('hide');
+                    },
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KD_PASIEN",
+                caption: "KODE PASIEN",
+                alignment: 'left',
+                allowEditing: true,
+                width: 120,
+                allowSorting: false
+            }, {
+                dataField: "NAMAPASIEN",
+                caption: "NAMA PASIEN",
+                alignment: 'left',
+                width: 170,
+                allowEditing: false
+            }, {
+                dataField: "ALAMAT",
+                caption: "ALAMAT",
+                alignment: 'left',
+                width: 270,
+                allowEditing: false
+            }, {
+                dataField: "KELURAHAN",
+                caption: "KELURAHAN",
+                alignment: 'left',
+                width: 110,
+                allowEditing: false
+            }, {
+                dataField: "KECAMATAN",
+                caption: "KECAMATAN",
+                alignment: 'left',
+                width: 110,
+                allowEditing: false
+            }, {
+                dataField: "KABUPATEN",
+                caption: "KABUPATEN",
+                alignment: 'left',
+                width: 110,
+                allowEditing: false
+            }, {
+                dataField: "TELEPON",
+                caption: "TELEPON",
+                alignment: 'left',
+                width: 110,
+                allowEditing: false
+            }, {
+                dataField: "TGL_LAHIR",
+                caption: "TGL_LAHIR",
+                alignment: 'left',
+                dataType: 'date',
+                width: 100,
+                format: 'dd/MM/yyyy',
+                allowEditing: false
+            }, {
+                dataField: "KELAMIN",
+                caption: "KELAMIN",
+                alignment: 'left',
+                width: 110,
+                allowEditing: false
+            },
+            {
+                dataField: "NAMA_KELUARGA",
+                caption: "Nama Keluarga",
+            },
+        ],
+    });
+}
 
 function checkError() {
     cekError = true;

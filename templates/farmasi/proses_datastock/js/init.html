@@ -1,0 +1,81 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+// console.log(host)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    // $("#tanggal").val(getLastDate(yyyy,mm))
+    ambil_periode()
+    $("#tanggal").change(function (e) {
+        console.log(this)
+        var y = new Date(this.value).getFullYear()
+        var m = new Date(this.value).getMonth() + 1
+        console.log(getLastDate(y, m))
+        $("#tanggal").val(getLastDate(y, m))
+    })
+
+    $("#Prosesakhir").click(function () {
+        Prosesakhir()
+    })
+    $("#Batalproses").click(function () {
+        Batalproses()
+    })
+
+})
+
+function Batalproses() {
+    window.location.href = "http://{{ request.get_host }}/";
+    // window.history.back();
+}
+
+function ambil_periode() {
+    $.ajax({
+        url: host + "/Monthlyperiode",
+        method: "GET",
+        success: function (datas) {
+            var tahun = datas[0].YR
+            var bulan = datas[0].MTH
+            $("#tanggal").val(getLastDate(tahun, bulan))
+        },
+    })
+}
+
+function Prosesakhir() {
+    $.ajax({
+        url: host + "/MonthlyClosing002",
+        method: "GET",
+        data: {
+            "Tgl_proses": $("#tanggal").val(),
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses data stock..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (e) {
+            alert(e[0].STATUS + ' - ' + e[0].ERROR_MESSAGE)
+            if (e[0].STATUS == 'SUKSES') {
+
+                window.location.href = "http://{{ request.get_host }}/";
+            }
+        },
+    })
+}
+
+function getLastDate(y, m) {
+    return y + '-' + String(m).padStart(2, '0') + '-' + new Date(y, m, 0).getDate()
+}

@@ -34,6 +34,7 @@ Data Pasien
 {% csrf_token %} 
 
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalCetakPasien.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalCustomer.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalKelcustomer.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalKelurahan.html'%}
@@ -50,6 +51,7 @@ Data Pasien
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalSuku.html'%}  
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalBahasa.html'%} 
 {% include 'dashboard/data_pasien/layout/content.html'%} 
+{% include 'dashboard/modal/modalLoading.html' %}
 
 
 {% endblock %} 

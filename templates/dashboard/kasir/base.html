@@ -54,6 +54,10 @@ Kasir        I M M O D E R M A
             font-size: 12px;
             line-height: 0.8;
         }
+        div#DxGridDataVoucher.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+        }
         .form-group {
         margin-bottom: 0.2rem;
         }
@@ -83,7 +87,6 @@ Kasir        I M M O D E R M A
 
 {% block content %}
 {% csrf_token %}
-
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalReseler.html'%}
 {% include 'dashboard/kasir/modal/ModalDaftarPaketTransaksi.html'%}
 {% include 'dashboard/kasir/modal/modalPembayaranKasir.html'%}

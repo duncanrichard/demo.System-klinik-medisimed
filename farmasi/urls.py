@@ -14,6 +14,10 @@ from . import modul_stock
 from . import frm_mutasi_M
 from . import frm_mutasi_K01
 from . import frm_Ajdustment
+from . import frm_rekarstock
+from . import frm_reposstock
+from . import frm_datastock
+from . import frm_undoMonthlyClosing
 
 urlpatterns = [
     url(r'^',include('farmasi.url_reportstock')),
@@ -178,7 +182,6 @@ urlpatterns = [
         url(r'^cetak_lap_rekap_divisi', frm_mutasi_M.cetak_lap_rekap_divisi,name='cetak_lap_rekap_divisi'),
 
     ])),
-
     url(r'^frm_mutasi_K01/', include([
         url(r'^$', frm_mutasi_K01.frm_mutasi_K01, name='frm_mutasi_K01'),
         url(r'^exit', frm_mutasi_K01.exit, name='exitfrm_mutasi_K01'),
@@ -195,7 +198,6 @@ urlpatterns = [
         url(r'^cetak_lap_mutasi_BHP_REKAP', frm_mutasi_K01.cetak_lap_mutasi_BHP_REKAP, name='cetak_lap_mutasi_BHP_REKAP'),
         url(r'^cetak_lap_mutasi_BHP', frm_mutasi_K01.cetak_lap_mutasi_BHP, name='cetak_lap_mutasi_BHP'),
     ])),
-
     url(r'^frm_Ajdustment/', include([
         url(r'^$', frm_Ajdustment.frm_Ajdustment, name='frm_Ajdustment'),
         url(r'^exit', frm_Ajdustment.exit, name='exitfrm_Ajdustment'),
@@ -213,7 +215,26 @@ urlpatterns = [
         url(r'^cetak_lap_mutasi_BHP', frm_Ajdustment.cetak_lap_mutasi_BHP,name='cetak_lap_mutasi_BHP'),
         
     ])),
-
+    url(r'^frm_rekarstock/', include([
+        url(r'^$', frm_rekarstock.frm_rekarstock, name='frm_rekarstock'),
+        url(r'^Monthlyperiode', frm_rekarstock.Monthlyperiode,name='Monthlyperiode'),
+        url(r'^REKARTU_STOCK', frm_rekarstock.REKARTU_STOCK,name='REKARTU_STOCK'),
+    ])),
+    url(r'^frm_reposstock/', include([
+        url(r'^$', frm_reposstock.frm_reposstock, name='frm_reposstock'),
+        url(r'^Monthlyperiode', frm_reposstock.Monthlyperiode,name='Monthlyperiode'),
+        url(r'^Restock002', frm_reposstock.Restock002,name='Restock002'),
+    ])),
+    url(r'^frm_datastock/', include([
+        url(r'^$', frm_datastock.frm_datastock, name='frm_datastock'),
+        url(r'^Monthlyperiode', frm_datastock.Monthlyperiode,name='Monthlyperiode'),
+        url(r'^MonthlyClosing002', frm_datastock.MonthlyClosing002,name='MonthlyClosing002'),
+    ])),
+    url(r'^frm_undoMonthlyClosing/', include([
+        url(r'^$', frm_undoMonthlyClosing.frm_undoMonthlyClosing,name='frm_undoMonthlyClosing'),
+        url(r'^Monthlyperiode', frm_undoMonthlyClosing.Monthlyperiode, name='Monthlyperiode'),
+        url(r'^undoMonthlyClosingStock', frm_undoMonthlyClosing.undoMonthlyClosingStock, name='undoMonthlyClosingStock'),
+    ])),
 
 
 

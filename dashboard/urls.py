@@ -85,6 +85,7 @@ urlpatterns = [
         url(r'^getPasien', data_pasien.getPasien),
         url(r'^getDataPasien', data_pasien.getDataPasien),
         url(r'^GUD_PASIEN', data_pasien.GUD_PASIEN),
+        url(r'^getlistPasien', data_pasien.getlistPasien),
 
     ])),
     url(r'^pasien_rj/', include ([

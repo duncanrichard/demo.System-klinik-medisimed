@@ -420,24 +420,20 @@ def getTpay(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def getVoucherPay(request):
-    novoucher = request.GET['novoucher']
+    # novoucher = request.GET['novoucher']
     tipe = request.GET['tipe']
     if(tipe == 'idvoucher'):
-        q = " SELECT a.NO_VOUCHER, a.STATUS_VOUCHER, b.KODE_VOUCHER, b.NILAI_RUPIAH, "
-        q += " b.NILAI_VOUCHER, CONVERT(DATE,b.EXPR_VOUCHER) as EXPR_DATE "
-        q += " FROM VOUCHER_PASIEN a JOIN GROUP_VOUCHER b "
-        q += " ON a.GROUP_VOUCHER = b.ID_VOUCHER "
-        q += " WHERE a.NO_VOUCHER = %s "
+        q = " SELECT  NO_VOUCHER, TGL_TRANSAKSI, NILAI_VOUCHER, STATUS_VOUCHER, NORM_VOUCHER, EXPR_VOUCHER, GROUP_VOUCHER FROM  VOUCHER_PASIEN a "
+        q += " WHERE a.NO_VOUCHER = %s and STATUS_VOUCHER = 0 "
         q += " ORDER BY a.NO_VOUCHER "
-        result = Globals().getDataQuery(q,[novoucher])
+        print (q)
+        result = Globals().getDataQuery(q,)
     else :
-        q = " SELECT a.NO_VOUCHER, a.STATUS_VOUCHER, b.KODE_VOUCHER, b.NILAI_RUPIAH, "
-        q += " b.NILAI_VOUCHER, CONVERT(DATE,b.EXPR_VOUCHER) as EXPR_DATE "
-        q += " FROM VOUCHER_PASIEN a JOIN GROUP_VOUCHER b "
-        q += " ON a.GROUP_VOUCHER = b.ID_VOUCHER "
-        q += " WHERE a.NORM_VOUCHER = %s and STATUS_VOUCHER = 0 "
+        q = " SELECT  NO_VOUCHER, TGL_TRANSAKSI, NILAI_VOUCHER, STATUS_VOUCHER, NORM_VOUCHER, EXPR_VOUCHER, GROUP_VOUCHER FROM  VOUCHER_PASIEN  a "
+        q += " WHERE STATUS_VOUCHER = 0 "
         q += " ORDER BY a.NO_VOUCHER "
-        result = Globals().getDataQuery(q,[novoucher])
+        print (q)
+        result = Globals().getDataQuery(q)
 
     json_data = json.dumps(result,cls=DjangoJSONEncoder)
     edit=json_data

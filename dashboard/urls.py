@@ -86,7 +86,7 @@ urlpatterns = [
         url(r'^getDataPasien', data_pasien.getDataPasien),
         url(r'^GUD_PASIEN', data_pasien.GUD_PASIEN),
         url(r'^getlistPasien', data_pasien.getlistPasien),
-
+        url(r'^getHistoricalpasien', pasien_rj.getHistoricalpasien),
     ])),
     url(r'^pasien_rj/', include ([
         url(r'^$',pasien_rj.pasien_rj, name='pasien_rj'),
@@ -126,6 +126,7 @@ urlpatterns = [
         url(r'^cekRMterakhir', pasien_rj.cekRMterakhir),
         url(r'^getDaftarPasien', pasien_rj.getDaftarPasien),
         url(r'^open_sumber', master_sumber.open_sumber),
+        url(r'^getHistoricalpasien', pasien_rj.getHistoricalpasien),
     ])),
     url(r'^master_produk/', include ([
         url(r'^$',master_produk.master_produk, name='master_produk'),

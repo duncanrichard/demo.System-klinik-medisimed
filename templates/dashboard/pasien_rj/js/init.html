@@ -175,6 +175,7 @@ $(document).ready(function () {
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
                         Sumber_id: $("#kode_Sumber").val(),
+                        CATATANMEDIK: $("#catatan").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
                         TEMPAT_LAHIR: $("#tempat_lahir").val(),
                         BAHASA: $("#idBahasa").val(),
@@ -191,10 +192,9 @@ $(document).ready(function () {
                         alert(e[0].STATUS + ' - ' + e[0].STATE)
                         $("#idPasien").val(e[0].KD_PASIEN)
                         $('#no_transaksi').val(e[0].NOMOR_TRANSAKSI);
-
-
                         Deathtext()
                         cekRMTerakhir()
+                        setGridEmpty()
                     }
                 });
             }
@@ -227,6 +227,7 @@ $(document).ready(function () {
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
                         Sumber_id: $("#kode_Sumber").val(),
+                        CATATANMEDIK: $("#catatan").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
                         TEMPAT_LAHIR: $("#tempat_lahir").val(),
                         BAHASA: $("#idBahasa").val(),
@@ -243,10 +244,9 @@ $(document).ready(function () {
                         alert(e[0].STATUS + ' - ' + e[0].STATE)
                         $("#idPasien").val(e[0].KD_PASIEN)
                         $('#no_transaksi').val(e[0].NOMOR_TRANSAKSI);
-
-
                         Deathtext()
                         cekRMTerakhir()
+                        setGridEmpty()
                     }
                 });
             }
@@ -308,6 +308,8 @@ function setupAwal() {
     Deathtext()
     Cleartext()
     cekRMTerakhir()
+    setGridEmpty()
+
 
 }
 
@@ -362,6 +364,8 @@ function Cleartext() {
     $('#namaGolDarah').val('');
     $('#idSuku').val('');
     $('#namaSuku').val('');
+    $('#catatan').val('');
+    $('#member_id').html('');
     $("#inlineCheckboxclose").prop('checked', false)
 }
 
@@ -467,6 +471,8 @@ function Deathtext() {
     setReadOnly('tgl_periksa')
     btnDisable('inlineCheckboxclose')
 
+    setReadOnly('catatan')
+
 }
 
 function Livetext() {
@@ -560,6 +566,7 @@ function Livetext() {
     btnEnable('btnFindSuku')
 
     setUnReadOnly('tgl_periksa')
+    setUnReadOnly('catatan')
 
 }
 

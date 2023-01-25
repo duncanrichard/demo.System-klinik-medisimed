@@ -2,8 +2,8 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header text-center h6 bg-danger font-bold text-white">Pendaftaran Pasien </div>
-			<div class="card-body"
-				style="background: linear-gradient(to right, #0f2027, #203a43, #2c5364);border-radius: 5px;padding-bottom:5px;padding-top:5px;">
+			<div class="card-body" style="background: linear-gradient(to right, #78b5ce, #c4d5db, #355f71);border-radius:
+				5px;padding-bottom:5px;padding-top:5px;">
 				<div class="text-white font-bold justify-content-between">
 					<div class="ibox"
 						style="background-color:#42636b;border-radius: 5px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
@@ -40,6 +40,8 @@
 								<li><a class="nav-link active" data-toggle="tab" href="#tab-1">Pendaftaran Pasien</a>
 								</li>
 								<li><a class="nav-link" data-toggle="tab" href="#tab-2">Surveillance</a>
+								</li>
+								<li><a class="nav-link" data-toggle="tab" href="#tab-3">Kunjungan</a>
 								</li>
 							</ul>
 							<div class="tab-content" id='form'>
@@ -109,6 +111,12 @@
 												<div class="well well-sm"
 													style="background-color: #e3be97;text-align: center;padding: 3px;">
 													<strong id="rm_terakhir" style="font-size: 28px;">000000</strong>
+												</div>
+											</div>
+											<div class="col-md-2 col-md-offset-1">
+												<div class="well well-sm"
+													style="background-color: #70b5da;text-align: center;padding: 3px;">
+													<strong id="member_id" style="font-size: 28px;">Silver</strong>
 												</div>
 											</div>
 										</div>
@@ -255,8 +263,8 @@
 															style="padding-top:5px" class="form-control input-md ">
 													</div>
 													<div class="col-md-2">
-														<button class="btn  btn-success btn-xs"
-															id="btnFindsumber">cari </button>
+														<button class="btn  btn-success btn-xs" id="btnFindsumber">cari
+														</button>
 													</div>
 												</div>
 
@@ -337,21 +345,27 @@
 													</div>
 												</div>
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<div class=" row">
-													<label class="col-md-6 control-label" style="padding-top:5px">No.
+													<label class="col-md-4 control-label" style="padding-top:5px">No.
 														Kunjungan</label>
-													<div class="col-md-6">
+													<div class="col-md-8">
 														<input id="no_transaksi" name="no_transaksi" type="text"
 															readonly class="form-control input-md ">
 													</div>
 												</div>
 											</div>
 
-											<div class="col-md-3">
+											<div class="col-md-5">
 												<div class=" row">
+													<label class="col-md-4 control-label"
+														style="padding-top:5px">Catatan</label>
+													<div class="col-md-6">
+														<input id="catatan" name="catatan" type="text" 
+															class="form-control input-md ">
+													</div>
 													<label style="background:#ed55657a;"
-														class="col-md-12 checkbox-inline">
+														class="col-md-2 checkbox-inline">
 														<input type="checkbox" id="inlineCheckboxclose"
 															name="inlineCheckboxclose" value="0">Close
 													</label>
@@ -415,9 +429,10 @@
 															class="form-control input-sm ">
 													</div>
 												</div>
-
-
 											</div>
+
+
+
 										</div>
 									</div>
 								</div>
@@ -551,6 +566,13 @@
 										</div>
 
 
+									</div>
+								</div>
+								<div role="tabpanel" id="tab-3" class="tab-pane">
+									<div class="row" style="background:#69717b7a;padding:10px;">
+										<div style="height: 280px;overflow-y: auto;" class="mt-7">
+											<div id="dxGridDatapasien"></div>
+										</div>
 									</div>
 								</div>
 							</div>

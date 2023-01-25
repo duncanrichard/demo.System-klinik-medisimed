@@ -4,6 +4,7 @@ from . import master_dokter
 from . import master_perawat
 from . import master_userpriv
 from . import master_voucher
+from . import master_changeuser
 
 urlpatterns = [
     url(r'^master_dokter/', include ([
@@ -20,6 +21,10 @@ urlpatterns = [
         url(r'^$',master_userpriv.master_userpriv, name='master_userpriv'),
         url(r'^open_userpriv', master_userpriv.open_userpriv),
         url(r'^aud_userpriv', master_userpriv.aud_userpriv),
+    ])),
+    url(r'^master_changeuser/', include ([
+        url(r'^$',master_changeuser.master_changeuser, name='master_changeuser'),
+        url(r'^changepassword', master_changeuser.changepassword),
     ])),
     url(r'^master_voucher/', include ([
         url(r'^$',master_voucher.master_voucher, name='master_voucher'),

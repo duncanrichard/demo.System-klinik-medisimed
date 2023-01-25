@@ -59,6 +59,7 @@ def AUD_PASIENRJ(request):
     KD_POS = request.POST['KD_POS']
     NO_ASURANSI = request.POST['NO_ASURANSI']
     Sumber_id = request.POST['Sumber_id']
+    CATATANMEDIK = request.POST['CATATANMEDIK']
     NAMA_KELUARGA = request.POST['NAMA_KELUARGA']
     TEMPAT_LAHIR = request.POST['TEMPAT_LAHIR']
     BAHASA = request.POST['BAHASA']
@@ -75,9 +76,9 @@ def AUD_PASIENRJ(request):
     NO_TRANSAKSI= request.POST['NO_TRANSAKSI']
 
     try:
-        q = "EXEC AUD_KUNJUNGAN_PASIEN  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
+        q = "EXEC AUD_KUNJUNGAN_PASIEN  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
         param = [KD_PASIEN, KD_KELURAHAN, KD_PENDIDIKAN,KD_PEKERJAAN, KD_PERUSAHAAN, NAMAPASIEN, TGL_LAHIR, GOL_DARAH, JENIS_KELAMIN, STATUS_MARITA, 
-                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI, Sumber_id, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
+                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI, Sumber_id,CATATANMEDIK, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
                 KD_RESELER, USERRS,TGL_PERIKSA,NO_TRANSAKSI,KD_ASAL_CABANG,status_aud]
         # print (q % tuple(param))
         result = Globals().getDataSP(
@@ -109,5 +110,15 @@ def getDaftarPasien(request):
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal,idAsal_cabang])
 
 
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getHistoricalpasien(request):
+    pasien = request.GET['pasien']
+    q = "select TOP 20 ROW_NUMBER() OVER (ORDER BY KPTGL_PERIKSA DESC) AS NO,KPNO_TRANSAKSI,KPTGL_PERIKSA as TANGGAL,B.PERUSAHAAN as NAMA_CABANG,B.KOTA AS KOTA_CABANG,C.NAMA_RESELER from KUNJUNGANPASIEN a  "
+    q +="inner join CABANG B ON A.KD_CABANG=B.CABANG_ID "
+    q +="left join RESELER C ON A.KD_RESELER=C.KD_RESELER  "
+    q +="WHERE A.KPKD_PASIEN=%s ORDER BY KPTGL_PERIKSA DESC "
+    result = Globals().getDataQuery(q, [ pasien])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

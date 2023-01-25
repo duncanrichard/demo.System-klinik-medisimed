@@ -92,13 +92,14 @@ function getDataPasien(e) {
                 $('#customerId').val(datas[0].KD_PERUSAHAAN);
                 $('#namaPerusahaan').val(datas[0].NAMA_PERUSAHAAN);
                 $('#noAsuransi').val(datas[0].NO_ASURANSI);
-
+                $('#catatan').val(datas[0].CATATANMEDIK);
+                $('#member_id').html(datas[0].JENISPASIEN);
                 if ($('#idAsal_cabang').val() == '') {
                     $('#idAsal_cabang').val("{{request.session.kdCabang}}");
                     $('#namaAsal_cabang').val("{{request.session.nama_cabang}}");
                 }
 
-
+                setGridEmpty()
 
 
 
@@ -185,4 +186,82 @@ function cariPasien() {
             $('#nama_pasien').focus()
         }
     });
+}
+
+function setGridEmpty() {
+    $("#dxGridDatapasien").dxDataGrid({
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getHistoricalpasien",
+                    data: {
+                        'pasien': $('#idPasien').val(),
+                    },
+                    method: "GET",
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length,
+                        });
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 100
+        },
+        columns: [{
+                dataField: "NO",
+                caption: "No",
+                width: 60,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "Tanggal",
+                dataType: 'date',
+                width: 100,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "KPNO_TRANSAKSI",
+                caption: "No Transaksi",
+            },
+            {
+                dataField: "NAMA_CABANG",
+                caption: "NAMA_CABANG",
+            },
+            {
+                dataField: "KOTA_CABANG",
+                caption: "KOTA_CABANG",
+            },
+            {
+                dataField: "NAMA_RESELER",
+                caption: "NAMA_RESELER",
+            },
+
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    });
+
 }

@@ -4,7 +4,7 @@
 			<div class="card-header text-center h6 bg-secondary font-bold text-white">Data Pasien</div>
 
 			<div class="card-body"
-				style="background: linear-gradient(to right, #0f2027, #203a43, #2c5364);border-radius: 5px;padding-bottom:5px;padding-top:5px;">
+				style="background: linear-gradient(to right, #78b5ce, #c4d5db, #355f71);border-radius: 5px;padding-bottom:5px;padding-top:5px;">
 				<div class="text-white font-bold justify-content-between">
 					<div class="ibox"
 						style="background-color:#7a7ab4;border-radius: 5px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
@@ -28,6 +28,8 @@
 								<li><a class="nav-link active" data-toggle="tab" href="#tab-1">Data Pasien</a></li>
 								<li><a class="nav-link" data-toggle="tab" href="#tab-2">Surveillance</a>
 								</li> 
+								<li><a class="nav-link" data-toggle="tab" href="#tab-3">Kunjungan</a>
+								</li>
 							</ul>
 							<div class="tab-content" id='form'>
 								<div role="tabpanel" id="tab-1" class="tab-pane active">
@@ -93,10 +95,15 @@
 
 											</div>
 											<div class="col-md-2 col-md-offset-1">
-
-												<div class="well well-sm" id="rm_terakhir"
+												<div class="well well-sm"
 													style="background-color: #e3be97;text-align: center;padding: 3px;">
-													<strong style="font-size: 18px;">{{lastnorm.no_rm}}</strong>
+													<strong id="rm_terakhir" style="font-size: 28px;">000000</strong>
+												</div>
+											</div>
+											<div class="col-md-2 col-md-offset-1">
+												<div class="well well-sm"
+													style="background-color: #70b5da;text-align: center;padding: 3px;">
+													<strong id="member_id" style="font-size: 28px;">Silver</strong>
 												</div>
 											</div>
 										</div>
@@ -370,6 +377,16 @@
 
 
 											</div>
+											<div class="col-md-6">
+												<div class="row">
+													<label class="col-md-4 control-label"
+														style="padding-top:5px">Catatan</label>
+													<div class="col-md-6">
+														<input id="catatan" name="catatan" type="text" readonly
+															class="form-control input-md ">
+													</div>
+												</div>
+											</div>
 										</div> 
 									</div>
 								</div>
@@ -505,6 +522,13 @@
 
 									</div>
 								</div> 
+								<div role="tabpanel" id="tab-3" class="tab-pane">
+									<div class="row" style="background:#69717b7a;padding:10px;">
+										<div style="height: 280px;overflow-y: auto;" class="mt-7">
+											<div id="dxGridDatapasien"></div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 

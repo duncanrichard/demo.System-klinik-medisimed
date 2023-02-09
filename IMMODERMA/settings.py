@@ -122,3 +122,6 @@ LOGGING = {
         },
     },
 }
+UPLOAD_PATH = 'static/excel/uploads/'
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10242880

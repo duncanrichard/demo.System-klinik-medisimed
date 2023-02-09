@@ -1,0 +1,286 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+// console.log(host)
+
+var todays = ''
+var canAdd = 0
+var rowIndex = ''
+var colIndex = ''
+var number = 1
+var data = ''
+
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+var time = today.toTimeString();
+time = time.split(' ')[0];
+today = yyyy + '-' + mm + '-' + dd;
+todays = today
+$(".today").val(today)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    setupAwal()
+    $("#menu_tambah").click(function () {
+        livetext()
+        Cleartext()
+        setGridEmpty()
+        $('#keterangan').focus()
+    })
+    $('#menu_simpan').click(function () {
+        error_in_field()
+        if (Cekeror == true) {
+            var dataGrid = $("#datagrid").dxDataGrid("instance");
+            if (dataGrid.getVisibleRows().length == 0) {
+                alert('Data Barang Masih Kosong')
+            } else {
+                var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
+                if (c) {
+                    var NO = []
+                    var ID_PASIEN = []
+                    var ID_MEMBER = []
+                    var POINT = []
+
+                    var tot = ''
+                    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                        if (dataGrid.getVisibleRows()[i].data.KODE_PASIEN != '' && dataGrid.getVisibleRows()[i].data.MEMBER_ID != '') {
+                            NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                            ID_PASIEN.push("" + dataGrid.getVisibleRows()[i].data.KODE_PASIEN)
+                            ID_MEMBER.push("" + dataGrid.getVisibleRows()[i].data.MEMBER_ID)
+                            POINT.push("" + dataGrid.getVisibleRows()[i].data.POINT)
+                        }
+                    }
+
+                    $.ajax({
+                        url: host + "/SP_AUD_UPLOAD_MEMBER",
+                        method: "POST",
+                        data: {
+                            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                            "NO": JSON.stringify(NO),
+                            "ID_PASIEN": JSON.stringify(ID_PASIEN),
+                            "ID_MEMBER": JSON.stringify(ID_MEMBER),
+                            "POINT": JSON.stringify(POINT),
+                            "BUKTI_ID": $("#no_bhp").val(),
+                            "TANGGAL": $("#tanggal").val(),
+                            "KETERANGAN": $("#keterangan").val(),
+                            "USERRS": '{{request.session.user_id}}',
+                            "StatusAUD": 'A',
+                        },
+                        success: function (e) {
+                            alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
+                            if (e[0].STATUS == 'SUKSES') {
+                                $("#no_bhp").val(e[0].no_trans)
+                                Deathtext()
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    })
+    $("#menu_cancel").click(function () {
+        setupAwal()
+    })
+    $("#menu_hapus").click(function () {
+        if ($("#no_bhp").val() == '') {
+            alert('Nomor Masih Kosong')
+        } else if (($("#inlineCheckboxclose").prop('checked') == true)) {
+            alert("Transaksi sudah ditutup")
+        } else {
+            var c = confirm('Yakin Ingin Menghapus Data Ini ?')
+            if (c) {
+                var NO = []
+                var ID_PASIEN = []
+                var ID_MEMBER = []
+                var POINT = []
+
+                var tot = ''
+                for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+                    if (dataGrid.getVisibleRows()[i].data.KODE_PASIEN != '' && dataGrid.getVisibleRows()[i].data.MEMBER_ID != '') {
+                        NO.push("" + dataGrid.getVisibleRows()[i].data.NO)
+                        ID_PASIEN.push("" + dataGrid.getVisibleRows()[i].data.KODE_PASIEN)
+                        ID_MEMBER.push("" + dataGrid.getVisibleRows()[i].data.MEMBER_ID)
+                        POINT.push("" + dataGrid.getVisibleRows()[i].data.POINT)
+                    }
+                }
+
+                $.ajax({
+                    url: host + "/SP_AUD_UPLOAD_MEMBER",
+                    method: "POST",
+                    data: {
+                        "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+                        "NO": JSON.stringify(NO),
+                        "ID_PASIEN": JSON.stringify(ID_PASIEN),
+                        "ID_MEMBER": JSON.stringify(ID_MEMBER),
+                        "POINT": JSON.stringify(POINT),
+                        "BUKTI_ID": $("#no_bhp").val(),
+                        "TANGGAL": $("#tanggal").val(),
+                        "KETERANGAN": $("#keterangan").val(),
+                        "USERRS": '{{request.session.user_id}}',
+                        "StatusAUD": 'D',
+                    },
+                    success: function (e) {
+
+                        alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
+                        if (e[0].STATUS == 'SUKSES') {
+                            setupAwal()
+                        }
+
+                    }
+                })
+            }
+        }
+    })
+    $("#menu_find").click(function () {
+        $('#ModalCari').modal('show')
+        $('#mutasi_tanggal').val(todays);
+        $("#select_mutasi").val('mutasi_by_tanggal');
+        $('#mutasi_bukti').val('');
+        $('#mutasi_nama').val('');
+        cari_mutasi()
+    })
+    $("#btn_cari_mutasi").click(function () {
+        cari_mutasi()
+    })
+    $("#mutasi_tanggal").change(function () {
+        cari_mutasi()
+    })
+    $("#select_mutasi").change(function () {
+        cari_mutasi()
+    })
+    $('#menu_keluar').click(function () {
+        window.open('/', "_self");
+    })
+})
+
+function setupAwal() {
+    Deathtext()
+    Cleartext()
+    setGridEmpty()
+}
+
+function Deathtext() {
+    menuEnable('menu_tambah');
+    menuEnable('menu_edit');
+    menuEnable('menu_hapus');
+    menuDisable('menu_simpan');
+    menuDisable('menu_cancel');
+    menuEnable('menu_find');
+    menuEnable('menu_cetak');
+
+    setReadOnly('tanggal')
+    btnDisable('prosesexcel')
+    btnDisable('kode_file')
+    setReadOnly('no_bhp')
+    setReadOnly('keterangan')
+    btnDisable('inlineCheckboxclose')
+}
+
+function livetext() {
+    menuDisable('menu_tambah');
+    menuDisable('menu_edit');
+    menuDisable('menu_hapus');
+    menuEnable('menu_simpan');
+    menuEnable('menu_cancel');
+    menuDisable('menu_find');
+    menuDisable('menu_cetak');
+
+    setUnReadOnly('tanggal')
+    btnEnable('prosesexcel')
+    btnEnable('kode_file')
+    setReadOnly('no_bhp')
+    setUnReadOnly('keterangan')
+    btnDisable('inlineCheckboxclose')
+}
+
+function Cleartext() {
+    canAdd2 = 0
+    $('#tanggal').val(todays);
+    $('#keterangan').val('');
+    $('#no_nota').val('');
+    $('#kode_file').val('');
+
+    $("#inlineCheckboxclose").prop('checked', false)
+}
+
+function error_in_field() {
+    Cekeror = true;
+    if ($('#keterangan').val() == '') {
+        alert('Silahkan Pilih keterangan')
+        Cekeror = false;
+    }
+    if ($('#tanggal').val() == '') {
+        alert('Silahkan Pilih Tanggal')
+        Cekeror = false;
+    }
+    return Cekeror;
+}
+
+function cari_mutasi() {
+    $("#DataUpload").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (values) {
+                var deferred = $.Deferred();
+
+                $.ajax({
+                    url: host + "/getUploadMember",
+                    method: "GET",
+                    data: {
+                        'tanggal': $('#mutasi_tanggal').val(),
+                        'tipe': $('#select_mutasi').val(),
+                        'no_bukti': $('#mutasi_bukti').val(),
+                        'keterangan': $('#mutasi_nama').val(),
+                    },
+                    success: function (datas) {
+                        deferred.resolve(datas, {
+                            totalCount: datas.length
+                        });
+                        recordCount = datas.length;
+                    }
+                })
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FHUMBUKTI_ID",
+                caption: "NO BUKTI",
+                width: 150,
+            },
+            {
+                dataField: "TANGGAL",
+                caption: "TANGGAL",
+                dataType: 'date',
+                width: 80,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "FHUMKETERANGAN",
+                caption: "Keterangan",
+                // width: 200,
+            },
+        ],
+        onRowClick: function (e) {
+            getGridTableBarang(e.data.FHUMBUKTI_ID)
+            $('#ModalCari').modal('hide')
+        }
+    });
+}

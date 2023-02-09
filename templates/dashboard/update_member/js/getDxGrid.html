@@ -1,0 +1,402 @@
+$(document).ready(function () {
+    setGridEmpty()
+
+})
+
+function setGridEmpty() {
+    $("#datagrid").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        paging: {
+            pageSize: 100000
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 90,
+                allowSorting: false
+            },
+            {
+                dataField: "KODE_PASIEN",
+                caption: "Kode Pasien",
+                alignment: 'center',
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "MEMBER_ID",
+                alignment: 'center',
+                caption: "Member ID",
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "POINT",
+                alignment: 'center',
+                caption: "POINT",
+                allowEditing: false,
+                allowSorting: false,
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+        ],
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+        },
+    });
+    $("#datagridnoregister").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        paging: {
+            pageSize: 100000
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 90,
+                allowSorting: false
+            },
+            {
+                dataField: "KODE_PASIEN",
+                caption: "Kode Pasien",
+                alignment: 'center',
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "MEMBER_ID",
+                alignment: 'center',
+                caption: "Member ID",
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "POINT",
+                alignment: 'center',
+                caption: "POINT",
+                allowEditing: false,
+                allowSorting: false,
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+        ],
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+        },
+    });
+    $("#datagridregister").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "row"
+        },
+        paging: {
+            pageSize: 100000
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+
+        columns: [{
+                dataField: "NO",
+                caption: "NO",
+                alignment: 'center',
+                allowEditing: false,
+                width: 90,
+                allowSorting: false
+            },
+            {
+                dataField: "KODE_PASIEN",
+                caption: "Kode Pasien",
+                alignment: 'center',
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "MEMBER_ID",
+                alignment: 'center',
+                caption: "Member ID",
+                allowEditing: false,
+                allowSorting: false
+            },
+            {
+                dataField: "POINT",
+                alignment: 'center',
+                caption: "POINT",
+                allowEditing: false,
+                allowSorting: false,
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+        ],
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onFocusedCellChanged: function (e) {
+            rowIndex = e.rowIndex
+        },
+    });
+}
+
+function getGridTableBarang(no_bukti) {
+    $.ajax({
+        url: host + "/getUploadMemberByBukti",
+        method: "GET",
+        data: {
+            "no_bukti": no_bukti,
+        },
+        success: function (datas) {
+            console.log(datas)
+            $('#no_bhp').val(datas.data1[0].FHUMBUKTI_ID);
+            $('#tanggal').val(datas.data1[0].TANGGAL.substr(0, 10));
+            $('#keterangan').val(datas.data1[0].FHUMKETERANGAN);
+            dataGrid = $("#datagrid").dxDataGrid("instance");
+            $("#datagrid").dxDataGrid({
+                dataSource: datas.data1,
+                selection: {
+                    mode: "row"
+                },
+                export: {
+                    enabled: true
+                },
+                paging: {
+                    pageSize: 100000
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 90,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "KODE_PASIEN",
+                        caption: "Kode Pasien",
+                        alignment: 'center',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMAPASIEN",
+                        caption: "Nama Pasien",
+                        alignment: 'center',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "MEMBER_ID",
+                        alignment: 'center',
+                        caption: "Member ID",
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "POINT",
+                        alignment: 'center',
+                        caption: "POINT",
+                        allowEditing: false,
+                        allowSorting: false,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+
+
+                ],
+
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            });
+            dataGrid2 = $("#datagridnoregister").dxDataGrid({
+                dataSource: datas.data2,
+                allowColumnReordering: true,
+                showBorders: true,
+                searchPanel: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 100000
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true
+                },
+
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 90,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "KODE_PASIEN",
+                        caption: "Kode Pasien",
+                        alignment: 'center',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "MEMBER_ID",
+                        alignment: 'center',
+                        caption: "Member ID",
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "POINT",
+                        alignment: 'center',
+                        caption: "POINT",
+                        allowEditing: false,
+                        allowSorting: false,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+            dataGrid3 = $("#datagridregister").dxDataGrid({
+                dataSource: datas.data3,
+                allowColumnReordering: true,
+                showBorders: true,
+                searchPanel: {
+                    visible: true
+                },
+                paging: {
+                    pageSize: 100000
+                },
+                groupPanel: {
+                    visible: true
+                },
+                export: {
+                    enabled: true
+                },
+                columns: [{
+                        dataField: "NO",
+                        caption: "NO",
+                        alignment: 'center',
+                        allowEditing: false,
+                        width: 90,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "KODE_PASIEN",
+                        caption: "Kode Pasien",
+                        alignment: 'center',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "NAMAPASIEN",
+                        caption: "Nama Pasien",
+                        alignment: 'center',
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "MEMBER_ID",
+                        alignment: 'center',
+                        caption: "Member ID",
+                        allowEditing: false,
+                        allowSorting: false
+                    },
+                    {
+                        dataField: "POINT",
+                        alignment: 'center',
+                        caption: "POINT",
+                        allowEditing: false,
+                        allowSorting: false,
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                ],
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+
+        }
+    })
+
+
+}

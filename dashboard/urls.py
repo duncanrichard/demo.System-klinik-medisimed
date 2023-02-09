@@ -16,6 +16,7 @@ from . import rptkunjungan001
 from . import rptkunjungan002
 from . import rptkunjungan003
 from . import rptkunjungan004
+from . import update_member
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
@@ -267,5 +268,11 @@ urlpatterns = [
         url(r'^$',rptkunjungan001.rptkunjungan001, name='rptkunjungan001'),
         url(r'^proses_excel', rptkunjungan001.proses_excel),
     ])),
-    
+    url(r'^update_member/', include ([
+        url(r'^$',update_member.update_member, name='update_member'),
+        url(r'^prosesuploader', update_member.prosesuploader),
+        url(r'^SP_AUD_UPLOAD_MEMBER', update_member.SP_AUD_UPLOAD_MEMBER),
+        url(r'^getUploadMemberByBukti', update_member.getUploadMemberByBukti),
+        url(r'^getUploadMember', update_member.getUploadMember),
+    ])),
 ]

@@ -1,0 +1,87 @@
+<div class="panel-body default-panel">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="form-row">
+                <label class="col-md-2 control-label">Nomor</label>
+                <div class="col-md-9">
+                    <input id="no_bhp" type="text" class="form-control input-md" readonly
+                        style="background-color: white;margin-bottom: 5px;">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Tanggal</label>
+                <div class="col-md-3">
+                    <input id="tanggal" type="date" class="form-control input-md today"
+                        style="background-color: white;margin-bottom: 5px;">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">Keterangan</label>
+                <div class="col-md-9">
+                    <input id="keterangan" type="text" class="form-control input-md"
+                        style="background-color: white;margin-bottom: 5px;">
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="col-md-2 control-label">UPLOAD DATA</label>
+                <div class="col-md-5">
+                    <input id="kode_file" type="file" style="background-color: white;margin-bottom: 5px;">
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-default btn-sm active" id="prosesexcel">
+                        <span class="fa fa-recycle"></span> Proses
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-5">
+            <div class="form-row">
+                <div class="col-md-2" style="background:#ed55657a;">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="inlineCheckboxclose" name="inlineCheckboxclose" value="0">Close
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tabs-container">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#form-2">Upload</a></li>
+            <li class=""><a data-toggle="tab" href="#form-1">Tidak terverif</a></li>
+            <li class=""><a data-toggle="tab" href="#form-3">terverif</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="form-2" class="tab-pane registration-pane active">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12" style="background-color:#90e7cd;padding-top:10px;border-radius: 5px">
+                            <div class="col-md-12">
+                                <div style="height: 340px;overflow-y: auto;">
+                                    <div id="datagrid"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="form-1" class="tab-pane registration-pane ">
+                <div class="panel-body">
+                    <div class="row" style="background-color:#5d81c2;padding-top:10px;border-radius: 5px">
+                        <div style="height: 340px;overflow-y: auto;">
+                            <div id="datagridnoregister"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="form-3" class="tab-pane registration-pane ">
+                <div class="panel-body">
+                    <div class="row" style="background-color:#ecafcd;padding-top:10px;border-radius: 5px">
+                        <div style="height: 340px;overflow-y: auto;">
+                            <div id="datagridregister"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -12,8 +12,13 @@ $(document).ready(function () {
 
     $('#cari_divisi').click(function (e) {
         $('#dxGridModaldivisi').modal('show');
-        caridivisi(event)
+        caridivisi()
         $('#FindDivisi').attr('onclick', 'caridivisi(event)')
+    })
+    $('#cari_divisi2').click(function (e) {
+        var param = 3
+        $('#dxGridModaldivisi').modal('show');
+        caridivisi(param)
     })
     $('#cariGudang').click(function (e) {
         $('#dxGridModaldivisi').modal('show');
@@ -107,6 +112,9 @@ function caridivisi(param = null) {
                 window.localStorage.setItem("kode_gudang_local", $('#kode_divisi').val());
                 window.localStorage.setItem("nama_gudang_local", $('#nama_divisi').val());
 
+            } else if (param == 3) {
+                $("#kode_divisi2").val(e.data.WH_ID)
+                $("#nama_divisi2").val(e.data.NAME_WH)
             } else if (param == 1) {
                 $("#cetak_dariGudang").val(e.data.WH_ID)
 

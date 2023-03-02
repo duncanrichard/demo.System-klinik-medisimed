@@ -138,7 +138,6 @@ def proses_excel(request):
 
 	q = "exec frm_reportstock004 %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
 	Globals().executeQuery(q, [kodebarang_dr, kodebarang_sd,kodeproduk_dari,kodeproduk_sampai,kodegolongan_dari,kodegolongan_sampai, cetak_dari, cetak_sampai, tanggal_dr, tanggal_sd,KD_CABANG])
-
 	q = "SELECT id_gudang,Gudang,id_barang,nama_barang,satuan,id_produk,nama_produk,id_golongan,nama_golongan, "
 	q += "qty_saldo,qty_Beli,qty_RBeli,qty_Jual,qty_RJual,qty_MLain,qty_KLain,qty_MPindah,qty_KPindah,hargapokok, "
 	q += "(isnull(qty_saldo,0)+isnull(qty_Beli,0)-isnull(qty_RBeli,0)-isnull(qty_Jual,0)+isnull(qty_RJual,0)+ "

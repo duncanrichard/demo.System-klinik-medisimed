@@ -338,8 +338,6 @@ function getGridTable() {
                     enterKeyDirection: 'row'
                 },
                 onRowClick: function (e) {
-                    console.log('eee')
-                    console.log(e.data.KD_PASIEN)
                     setGridHistory(e.data.KD_PASIEN)
                 },
             }).dxDataGrid("instance");

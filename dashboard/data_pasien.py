@@ -317,7 +317,7 @@ def getlistPasien(request):
     q += " LEFT JOIN CABANG as N ON A.KD_ASAL_CABANG = N.CABANG_ID "
     q += " LEFT JOIN SUMBER as O ON A.KETERANGAN = O.SUMBER_ID "
     q += " where KD_ASAL_CABANG = %s  order by KD_PASIEN "
-    print (q)
+    # print (q)
     result = Globals().getDataQuery(q,[cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

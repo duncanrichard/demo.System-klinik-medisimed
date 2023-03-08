@@ -105,10 +105,10 @@ def SP_AUD_PCLAIMS(request):
 	FHPCLMJENIS = request.POST['FHPCLMJENIS']
 	StatusAUD = request.POST['StatusAUD']
 	FKSMUTASI = request.POST['FKSMUTASI']
-
+	ID_CABANG = request.session['kdCabang']
 	USERRS = request.session['user_id']
 
-	q = "DECLARE @LIST_FJINKOTAD FJINKOTAD;"
+	q = "SET NOCOUNT ON;DECLARE @LIST_FJINKOTAD FJINKOTAD;"
 	q += "DECLARE @NOW datetime; "
 	q += "SET @NOW = GETDATE(); "
 
@@ -141,6 +141,7 @@ def SP_AUD_PCLAIMS(request):
 	q += "'" + USERRS + "',"
 	q += "@NOW,"
 	q += "'" + StatusAUD + "',"
+	q += "'" + ID_CABANG + "',"
 	q += "'',"
 	q += "'',"
 	q += "'',"

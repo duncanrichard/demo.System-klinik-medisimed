@@ -153,6 +153,7 @@ function getDataPasien(e) {
                 $('#namaReseler').val(datas.data1[0].NAMA_RESELER);
                 $('#far_kode_dokter').val(datas.data1[0].KODE_DOKTER);
                 $('#far_nama_dokter').val(datas.data1[0].NAMA_DOKTER);
+                $('#far_tanggal').val(datas.data1[0].KPTGL_PERIKSA.substr(0, 10));
             } else if (datas.data3.length != 0) {
                 $('#far_kode_pasien').val(datas.data3[0].KODE_PASIEN);
                 $('#far_nama_pasien').val(datas.data3[0].NAMA_PASIEN);

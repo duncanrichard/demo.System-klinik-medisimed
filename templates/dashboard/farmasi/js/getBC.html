@@ -1,0 +1,115 @@
+$(document).ready(function () {
+    $('#far_kode_BC').keypress(function (e) {
+        // e.preventDefault();
+        e.stopImmediatePropagation();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#far_kode_BC").val() != '') {
+                    getDataBC($("#far_kode_BC").val());
+                }
+            }
+        }
+
+    })
+
+    $('#cari_far_kode_BC').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        var param = 1
+        $('#dxGridModalBC').modal('show');
+        cariBC(param)
+    })
+
+});
+
+function getDataBC(e) {
+    $.ajax({
+        url: host + "/getDataBC",
+        method: "GET",
+        data: {
+            "idBC": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#far_kode_BC').val(datas[0].ID_BC);
+                $('#far_nama_BC').val(datas[0].NAMA_BC);
+            } else {
+                $('#dxGridModalBC').modal('show');
+                param = 1
+                cariBC(param)
+            }
+
+        }
+    })
+}
+
+function cariBC(param = null) {
+    $("#dxGridDataBC").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
+
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getBC",
+                    method: "GET",
+                    data: {},
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "ID_BC",
+                caption: "Kode BC/Perawat",
+            },
+            {
+                dataField: "NAMA_BC",
+                caption: "Nama BC/Perawat",
+            },
+            {
+                dataField: "FMPJABATAN",
+                caption: "Keterangan",
+            },
+        ],
+        onRowClick: function (e) {
+            if (param == 1) {
+                $("#far_kode_BC").val(e.data.ID_BC);
+                $("#far_nama_BC").val(e.data.NAMA_BC);
+            }
+            $('#dxGridModalBC').modal('hide');
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

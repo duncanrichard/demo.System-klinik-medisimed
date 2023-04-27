@@ -208,6 +208,8 @@ urlpatterns = [
         url(r'^getReseler', data_pasien.getReseler),
         url(r'^getDataDokter', farmasi.getDataDokter),
         url(r'^getdokter', farmasi.getdokter),
+        url(r'^getDataBC', farmasi.getDataBC),
+        url(r'^getBC', farmasi.getBC),
         url(r'^getDataGudang', farmasi.getDataGudang),
         url(r'^getgudang', farmasi.getgudang),
         url(r'^getIdDataBarang', farmasi.getIdDataBarang),

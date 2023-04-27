@@ -110,6 +110,21 @@ def getdokter(request):
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
+def getDataBC(request):
+    idBC=request.GET['search_name']
+    cabang_id = request.session['kdCabang']
+    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,FMPPERAWATN AS NAMA_BC,FMPJABATAN from  PERAWAT a where FMPPERAWAT_ID=%s and KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
+    result = Globals().getDataQuery(q,[idBC,cabang_id])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getBC(request):
+    cabang_id = request.session['kdCabang']
+    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,FMPPERAWATN AS NAMA_BC,FMPJABATAN from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
+    result = Globals().getDataQuery(q,[cabang_id])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
 def getDataGudang(request):
     idGudang=request.GET['idGudang']
     cabang_id = request.session['kdCabang']
@@ -290,6 +305,7 @@ def SP_AUD_FJINKOTA(request):
     FHFJDATE = request.POST['FHFJDATE']
     FHFJRESELER_ID = request.POST['FHFJRESELER_ID']
     FHFJDOKTER_ID = request.POST['FHFJDOKTER_ID']
+    FHFJBC_ID = request.POST['FHFJBC_ID']
     FHFJSTATUSOBAT = request.POST['FHFJSTATUSOBAT']
     FHFJCUST_ID = request.POST['FHFJCUST_ID']
     FHFJCUSTN = request.POST['FHFJCUSTN']
@@ -355,6 +371,7 @@ def SP_AUD_FJINKOTA(request):
     q += "'" + FHFJDATE + "',"
     q += "'" + FHFJRESELER_ID + "',"
     q += "'" + FHFJDOKTER_ID + "',"
+    q += "'" + FHFJBC_ID + "',"
     q += "'" + FHFJSTATUSOBAT + "',"
     q += "'" + FHFJCUST_ID + "',"
     q += " %s,"
@@ -440,7 +457,7 @@ def getBarangByBukti(request):
     no_bukti = request.GET['no_bukti']
 
     q = "select a.FHFJBUKTI_ID,FHFJNO_TRANSAKSI,FHFJDATE,FHFJCUST_ID,FHFJCUSTN, "
-    q += "FHFJADDR1,FHFJADDR2,FHFJPOLY_ID, d.NAMA_RESELER,FHFJdokter_ID,e.FMDDOKTERN as FHFJdokterN, "
+    q += "FHFJADDR1,FHFJADDR2,FHFJPOLY_ID, d.NAMA_RESELER,FHFJdokter_ID,e.FMDDOKTERN as FHFJdokterN,FHFJJENISCUST_ID,i.FMPPERAWATN as FHFJBCN, "
     q += "FHFJTPAY_ID,FHFJTPAYN,FHFJWH_ID,f. NAME_WH as FHFJWHN,FHFJSTATUSOBAT, "
     q += "FHFJREMARK,FHFJRACIK,FHFJRESEP,FHFJBULAT,FHFJIURASKES,FHFJBAYAR,FHFJTOTAL,FKUNCI,FKUNCISTOCK,FHFJUSER,FHFJUPDATE, "
     q += "b.FDFJNOM as NO,FDFJPRD_ID as TTYPEC,FDFJBRG_ID as ID_BARANG,KDBARANG as ID_BARANG2,FDFJBRGN as NAMA_BARANG,FDFJSATUAN as SATSTAND, "
@@ -451,6 +468,7 @@ def getBarangByBukti(request):
     q += "PASIEN c on a.FHFJCUST_ID=c.KD_PASIEN  LEFT OUTER JOIN "
     q += "RESELER AS d ON a.FHFJPOLY_ID = d.KD_RESELER LEFT OUTER JOIN  "
     q += "DOKTER AS e ON a.FHFJdokter_ID=e.FMDDOKTER_ID LEFT OUTER JOIN "
+    q += "PERAWAT AS i ON a.FHFJJENISCUST_ID=i.FMPPERAWAT_ID LEFT OUTER JOIN "
     q += "WAREHOUSE AS f ON a.FHFJWH_ID=f.WH_ID LEFT OUTER JOIN "
     q += "PRODUKOBAT AS h ON b.FDFJPRD_ID = h.PRD_ID "
     q += "where a.FHFJBUKTI_ID = %s order by FDFJNOM asc"

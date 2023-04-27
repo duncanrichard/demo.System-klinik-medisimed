@@ -173,6 +173,7 @@ $(document).ready(function () {
                             "FHFJDATE": $("#far_tanggal").val(),
                             "FHFJRESELER_ID": $("#idReseler").val(),
                             "FHFJDOKTER_ID": $("#far_kode_dokter").val(),
+                            "FHFJBC_ID": $("#far_kode_BC").val(),
                             "FHFJSTATUSOBAT": $('input[name="opt_resep"]:checked').val(),
                             "FHFJCUST_ID": $("#far_kode_pasien").val(),
                             "FHFJCUSTN": $("#far_nama_pasien").val(),
@@ -301,6 +302,7 @@ $(document).ready(function () {
                         "FHFJDATE": $("#far_tanggal").val(),
                         "FHFJRESELER_ID": $("#idReseler").val(),
                         "FHFJDOKTER_ID": $("#far_kode_dokter").val(),
+                        "FHFJBC_ID": $("#far_kode_BC").val(),
                         "FHFJSTATUSOBAT": $('input[name="opt_resep"]:checked').val(),
                         "FHFJCUST_ID": $("#far_kode_pasien").val(),
                         "FHFJCUSTN": $("#far_nama_pasien").val(),
@@ -874,6 +876,8 @@ function deathtext() {
     btnDisable('cari_far_kode_gudang')
     setReadOnly('far_keterangan')
     btnDisable('cari_far_kode_dokter')
+    btnDisable('cari_far_kode_BC')
+    btnDisable('btnFindReseler')
     btnDisable('opt_resep1')
     btnDisable('opt_resep2')
     setReadOnly('adm_racik')
@@ -908,6 +912,8 @@ function livetext() {
     setUnReadOnly('far_keterangan')
     btnEnable('cari_far_kode_dokter')
     setReadOnly('far_kode_reseler')
+    btnEnable('cari_far_kode_BC')
+    btnEnable('btnFindReseler')
     setReadOnly('far_nama_reseler')
     btnEnable('cari_far_kode_reseler')
 
@@ -935,6 +941,8 @@ function cleartext() {
     $('#far_nama_reseler').val('');
     $('#far_kode_dokter').val('');
     $('#far_nama_dokter').val('');
+    $('#far_kode_BC').val('');
+    $('#far_nama_BC').val('');
     $('#adm_racik').val('0');
 
     $('#far_message').val('');

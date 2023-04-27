@@ -798,6 +798,8 @@ function getGridTableBarang(no_bukti) {
             $('#namaReseler').val(datas[0].NAMA_RESELER);
             $('#far_kode_dokter').val(datas[0].FHFJdokter_ID);
             $('#far_nama_dokter').val(datas[0].FHFJdokterN);
+            $('#far_kode_BC').val(datas[0].FHFJJENISCUST_ID);
+            $('#far_nama_BC').val(datas[0].FHFJBCN);
             var status2 = parseInt(datas[0].FHFJSTATUSOBAT)
             if (status2 == 0) {
                 $("#opt_resep1").prop('checked', true)

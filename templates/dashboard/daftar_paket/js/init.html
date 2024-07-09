@@ -384,6 +384,26 @@ $(document).ready(function () {
             })
         }
     })
+    $('#menu_rekap_paket').click(function () {
+        var kode_deposito = 1
+        url2 = host + "/proses_excel_paket";
+        dataGrid = $("#datagrid").dxDataGrid("instance");
+        window.open(url2 + "?kode_deposito=" + kode_deposito, "_blank")
+        $('#ModalLoading').modal('show');
+        $('#loading_title').html('Proses  Data..');
+        $('#loading_text').html('Tunggu Sebentar');
+        $('#ModalLoading').modal('hide');
+    })
+    $('#menu_rekap_paket2').click(function () {
+        var kode_deposito = 0
+        url2 = host + "/proses_excel_pakettunai";
+        dataGrid = $("#datagrid").dxDataGrid("instance");
+        window.open(url2 + "?kode_deposito=" + kode_deposito, "_blank")
+        $('#ModalLoading').modal('show');
+        $('#loading_title').html('Proses  Data..');
+        $('#loading_text').html('Tunggu Sebentar');
+        $('#ModalLoading').modal('hide');
+    })
 
     $("#simpanBayar").click(function () {
         var c = confirm('Yakin Ingin Menyimpan Pembayaran Ini ?')

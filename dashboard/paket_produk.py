@@ -134,3 +134,5 @@ def getpaketprodukByBukti(request):
 
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
+
+

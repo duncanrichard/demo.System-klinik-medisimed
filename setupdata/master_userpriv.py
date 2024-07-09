@@ -66,6 +66,12 @@ def open_userpriv(request):
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
+def getprivelige(request):
+    q = "select USER_PRIV,SHIFT_AKTIF,AKTIF from PRIVILEGE order by USER_PRIV"
+    result = Globals().getDataQuery(q)
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
 def createHashPass(password):
     return bcrypt.hashpw(password.encode("utf-8") , bcrypt.gensalt()).decode("utf-8") 
   

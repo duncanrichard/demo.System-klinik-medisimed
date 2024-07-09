@@ -21,6 +21,7 @@ urlpatterns = [
         url(r'^$',master_userpriv.master_userpriv, name='master_userpriv'),
         url(r'^open_userpriv', master_userpriv.open_userpriv),
         url(r'^aud_userpriv', master_userpriv.aud_userpriv),
+        url(r'^getprivelige', master_userpriv.getprivelige),
     ])),
     url(r'^master_changeuser/', include ([
         url(r'^$',master_changeuser.master_changeuser, name='master_changeuser'),

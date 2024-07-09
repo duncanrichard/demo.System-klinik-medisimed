@@ -18,19 +18,19 @@
                                         </a>
                                         <ul class="dropdown-menu">
                                             {% for submenubar in menubarsChild %}
-                                            {% if submenubar.parent == menubar.id  %}
-                                            {% if submenubar.link is None %}
-                                            <li><a id="{{ submenubar.action_id }}" class="btn-link">{{ submenubar.name }}</a></li>
-                                            {% else %}
-                                            {% if submenubar.onclick == '#' %}
-                                            <li><a href="http://{{ submenubar.link}}" class="btn-link">{{ submenubar.name }}</a></li>
-                                            {% elif submenubar.onclick == '##' %}
-                                            <li><a href="http://{{ request.get_host }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
-                                            {% else %}
-                                            <li><a href="/{{ url }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
-                                            {% endif %}
-                                            {% endif %}
-                                            {% endif %}
+                                                {% if submenubar.parent == menubar.id  %}
+                                                    {% if submenubar.link is None %}
+                                                        <li><a id="{{ submenubar.action_id }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                                    {% else %}
+                                                        {% if submenubar.onclick == '#' %}
+                                                        <li><a href="http://{{ submenubar.link}}" class="btn-link">{{ submenubar.name }}</a></li>
+                                                        {% elif submenubar.onclick == '##' %}
+                                                        <li><a href="http://{{ request.get_host }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                                        {% else %}
+                                                        <li><a href="/{{ url }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
                                             {% endfor %}
                                         </ul>
                                     </div>

@@ -9,6 +9,7 @@ from IMMODERMA.globals import Globals
 from IMMODERMA.environment import env
 from datetime import datetime
 from django.conf.urls import url, include
+from openpyxl import Workbook
 
 
 def daftar_paket(request):
@@ -289,3 +290,87 @@ def getpaketbayar(request):
     result = Globals().getDataQuery(q , [bukti])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")	
+
+def proses_excel_paket(request):
+    kode_deposito = request.GET['kode_deposito']
+    KD_CABANG= request.session['kdCabang']
+    q = "select * from  "
+    q += "(select    "
+    q += "A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,isnull(FDPNOMINAL_SISA,0) as FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as SISASALDO  "
+    q += ",dbo.fungsideposit(b.FDPDTARIF,b.FDPDQTY,b.FDPD_DISCKONSUMEN,b.FDPD_DISC1,b.FDPD_DISC2,b.FDPD_DISC3,b.FDPD_DISC4) as NILAI_PAKET "
+    q += ",b.FDPDQTY ,A.FDPKD_PAKET,d.FMPKPAKETN "
+    q += ",isnull((SELECT sum(z.FDTQTY) as QTY FROM TRANSAKSIPASIEN x inner join TRANSAKSIPASIEND z on x.FTNO_TRANSAKSI=z.FDTNO_TRANSAKSI where z.FDTNO_FAKTUR = a.FDPNO_DEPOSIT AND z.FDTKD_PRODUK = b.FDPDKD_PRODUK),0) as QTYPAKAI  "
+    q += ",FDP_JENIS_DEPOSITO "
+    q += ",b.FDPDKD_PRODUK,p.FMPPRODUKN "
+    q += "from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN  "
+    q += "inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT "
+    q += "inner join PRODUK p on b.FDPDKD_PRODUK=p.FMPPRODUK_ID "
+    q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET  " 
+    q += "WHERE FDPSTATUS = 1 and FDP_JENIS_DEPOSITO=%s "
+    q += "AND a.FDPKD_CABANG= %s "
+    q += ") as dd where dd.FDPDQTY <> QTYPAKAI "
+    result = Globals().getDataQuery(q, [kode_deposito, KD_CABANG])
+    # print (result[0])
+    # Create a new workbook and add a worksheet
+    wb = Workbook()
+    ws = wb.active
+
+    # Add headers to the worksheet
+    headers = ["FDPNO_DEPOSIT", "TANGGAL", "FDPKD_PASIEN", "NAMAPASIEN", "NILAI_PAKET", "FDPNOMINAL", "FDPNOMINAL_SISA",
+               "SISASALDO", "FDPDQTY", "FDPKD_PAKET", "FMPKPAKETN", "QTYPAKAI", "FDP_JENIS_DEPOSITO", "FDPDKD_PRODUK", "FMPPRODUKN"]
+
+    ws.append(headers)
+
+    # Add data to the worksheet
+    for row_data in result:
+        row = [row_data.get(column_name.upper(), '') for column_name in headers]
+        ws.append(row)
+
+    # Save the workbook to a response object
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=exported_data_paket.xlsx'
+    wb.save(response)
+
+    return response
+
+def proses_excel_pakettunai(request):
+    kode_deposito = request.GET['kode_deposito']
+    KD_CABANG= request.session['kdCabang']
+    q = "select * from  "
+    q += "(select    "
+    q += "A.FDPNO_DEPOSIT, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,FDPNOMINAL,isnull(FDPNOMINAL_SISA,0) as FDPNOMINAL_SISA,(isnull(a.FDPNOMINAL,0)-isnull(FDPNOMINAL_SISA,0)) as SISASALDO  "
+    q += ",dbo.fungsideposit(b.FDPDTARIF,b.FDPDQTY,b.FDPD_DISCKONSUMEN,b.FDPD_DISC1,b.FDPD_DISC2,b.FDPD_DISC3,b.FDPD_DISC4) as NILAI_PAKET "
+    q += ",b.FDPDQTY ,A.FDPKD_PAKET,d.FMPKPAKETN "
+    q += ",isnull((SELECT sum(z.FDTQTY) as QTY FROM TRANSAKSIPASIEN x inner join TRANSAKSIPASIEND z on x.FTNO_TRANSAKSI=z.FDTNO_TRANSAKSI where z.FDTNO_FAKTUR = a.FDPNO_DEPOSIT AND z.FDTKD_PRODUK = b.FDPDKD_PRODUK),0) as QTYPAKAI  "
+    q += ",FDP_JENIS_DEPOSITO "
+    q += ",b.FDPDKD_PRODUK,p.FMPPRODUKN "
+    q += "from DEPOSIT_PAKET a inner join PASIEN c on a.FDPKD_PASIEN=c.KD_PASIEN  "
+    q += "inner join DEPOSIT_PAKETD b on a.FDPNO_DEPOSIT=b.FDPDNO_DEPOSIT "
+    q += "inner join PRODUK p on b.FDPDKD_PRODUK=p.FMPPRODUK_ID "
+    q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET  " 
+    q += "WHERE FDPSTATUS = 1 and FDP_JENIS_DEPOSITO=%s "
+    q += "AND a.FDPKD_CABANG= %s "
+    q += ") as dd where dd.FDPNOMINAL_SISA*-1 <> dd.SISASALDO order by dd.TANGGAL desc "
+    result = Globals().getDataQuery(q, [kode_deposito, KD_CABANG])
+    # print (result[0])
+    # Create a new workbook and add a worksheet
+    wb = Workbook()
+    ws = wb.active
+
+    # Add headers to the worksheet
+    headers = ["FDPNO_DEPOSIT", "TANGGAL", "FDPKD_PASIEN", "NAMAPASIEN", "NILAI_PAKET", "FDPNOMINAL", "FDPNOMINAL_SISA",
+               "SISASALDO", "FDPDQTY", "FDPKD_PAKET", "FMPKPAKETN", "QTYPAKAI", "FDP_JENIS_DEPOSITO", "FDPDKD_PRODUK", "FMPPRODUKN"]
+
+    ws.append(headers)
+
+    # Add data to the worksheet
+    for row_data in result:
+        row = [row_data.get(column_name.upper(), '') for column_name in headers]
+        ws.append(row)
+
+    # Save the workbook to a response object
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=exported_data_paket.xlsx'
+    wb.save(response)
+
+    return response

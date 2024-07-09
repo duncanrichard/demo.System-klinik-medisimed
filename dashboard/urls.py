@@ -191,6 +191,8 @@ urlpatterns = [
         url(r'^SP_BATAL_BAYAR', kasir_rj.SP_BATAL_BAYAR),
         url(r'^SP_UBAH_PAKET', kasir_rj.SP_UBAH_PAKET),
         url(r'^getpaketbayar', daftar_paket.getpaketbayar),
+        url(r'^proses_excel_pakettunai', daftar_paket.proses_excel_pakettunai),
+        url(r'^proses_excel_paket', daftar_paket.proses_excel_paket),
     ])),
     url(r'^paket_produk/', include ([
         url(r'^$',paket_produk.paket_produk, name='paket_produk'),
@@ -200,6 +202,7 @@ urlpatterns = [
         url(r'^SP_AUD_PAKET', paket_produk.SP_AUD_PAKET),
         url(r'^getTransaksi', paket_produk.getTransaksi),
         url(r'^getpaketprodukByBukti', paket_produk.getpaketprodukByBukti),
+        
     ])),
     url(r'^farmasi/', include ([
         url(r'^$',farmasi.farmasi, name='farmasi'),

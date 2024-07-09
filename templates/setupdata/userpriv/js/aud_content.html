@@ -1,7 +1,36 @@
 var status_aud = null
 var status_cetak = null
+var gridDataprivilege = [];
+$.ajax({
+  url: host + "/getprivelige",
+  method: "GET",
+  data: {},
+  dataType: "json",
+  success: function (datas) {
+    if (datas.length != 0) {
+      // gridDataprivilege = datas
+      for (let i = 0; i < datas.length; i++) {
 
+        gridDataprivilege.push(datas[i].USER_PRIV);
+      }
+
+
+    } else {
+      gridDataprivilege = []
+    }
+  }
+})
 $(document).ready(function () {
+  $('#privelege_userpriv').dxLookup({
+    dropDownOptions: {
+      showTitle: false,
+    },
+    items: gridDataprivilege,
+    value: gridDataprivilege[0],
+    onItemClick: function (d) {
+      $('#privelege_userpriv').val(d.itemData)
+    },
+  });
   menuhidup()
   enterFocusTo('nama_userpriv', 'password_userpriv')
   enterFocusTo('password_userpriv', 'privelege_userpriv')
@@ -81,7 +110,7 @@ $(document).ready(function () {
           aktif = '1'
         }
         $.ajax({
-          url: host + "/aud_dokter",
+          url: host + "/aud_userpriv",
           method: "POST",
           data: {
             kode_userpriv: $('#kode_userpriv').val(),

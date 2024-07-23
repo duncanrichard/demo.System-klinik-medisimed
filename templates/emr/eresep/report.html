@@ -1,0 +1,147 @@
+
+{% extends "emr/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+E-MR | ERESEP
+{% endblock %}
+
+{% block head %}
+    {% comment %} <link rel="stylesheet" type="text/css" href="/static/css/emrdokter-home.css"> {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="/static/css/farmasi.css"> 
+    <style>
+    .top-navigation .quick-button .thumbnail{
+        height:50px !important;
+        margin-bottom:0px !important;
+    }
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    body{
+        background: #fff;
+    }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+
+<div style="background: white;margin: 10px 10px;" id="print">
+    <div id="rs_name">RS</div>
+    <div id="rs_address" style="margin-bottom: 10px;">ALAMAT</div>
+    <div style="margin: 0px 50px;width: 100px;text-align: center;">Resep Obat
+    <hr style="display: block;height: 1px;border: 0;border-top: 1px solid #110f0f;margin: 1px;padding: 0;">
+    </div>
+
+    <table style="margin-bottom: 10px;">
+    <tbody>
+        <tr>
+            <td>No.Resep</td><td>:</td><td><div id="noresp" style="margin: 0px 5px;"></div></td>
+        </tr>
+            <tr>
+            <td>Tanggal</td><td>:</td><td><div id="tgl" style="margin: 0px 5px;"></div></td>
+        </tr>
+            <tr>
+            <td>NO. RM</td><td>:</td><td><div style="margin: 0px 5px;" id="detailPasien1"></div></td>
+        </tr>
+            <tr>
+            <td>Nm Pasien</td><td>:</td><td><div style="margin: 0px 5px;" id="detailPasien2"></div></td>
+        </tr>
+
+    </tbody>
+    </table>
+
+    <table>
+    <tbody>
+        <div id="gridObat">
+            {% comment %} <tr>
+                <td style="width: 50px;">NO.</td>
+                <td style="width: 200px;">Nama Obat</td>
+                <td style="width: 50px;">QTY</td>
+                <td style="width: 50px;">KET</td>
+            </tr>
+            <tr><td colspan="4"><hr style="display: block;height: 1px;border: 0;border-top: 1px solid #110f0f;margin: 1px;padding: 0;"></td></tr>
+            <div id="contentGrid"></div>
+            <tr><td colspan="4"><hr style="display: block;height: 1px;border: 0;border-top: 1px solid #110f0f;margin: 1px;padding: 0;"></td></tr> {% endcomment %}
+        </div>
+        
+    </tbody>
+    </table>
+    {% comment %} FOoter {% endcomment %}
+    <table>
+        <tr>
+            <td style="width: 50px;"></td>
+            <td style="width: 200px;"></td>
+            <td style="width: 50px;"></td>
+            <td style="width: 50px;"></td>
+            <td style="width: 50px;"></td>
+        </tr>
+        <tr ><td colspan="5"><hr style="display: block;height: 1px;border: 0;border-top: 1px solid #110f0f;margin: 1px;padding: 0;"></td></tr>
+    </table>
+    <div id="rs_dr" style="width: 350px;text-align: right;margin-bottom: 150px;">DR</div>
+</div>
+
+<div class="row">
+  <div class="col-sm-1" style="margin-left: 0px;">
+    <a href="#" id="btnRCetak">
+    <div class="thumbnail ">
+        <center>
+            <img src="{% static 'img/emr/print.png' %}" alt="..." class="height35">
+            <div class="caption padding_button_crud ">
+            <p>Cetak &nbsp</p>
+            </div>
+        </center>
+    </div>
+    </a>
+</div>
+
+<div class="col-sm-1" style="margin-left: 0px;">
+    <a href="#" id="btnRCPPT">
+    <div class="thumbnail ">
+        <center>
+            <img src="{% static 'img/emr/cppt.png' %}" alt="..." class="height35">
+            <div class="caption padding_button_crud ">
+            <p>CPPT &nbsp</p>
+            </div>
+        </center>
+    </div>
+    </a>
+</div>
+
+<div class="col-sm-1" style="margin-left: 0px;">
+    <a href="/emr/printCopyResep">
+    <div class="thumbnail ">
+        <center>
+            <img src="{% static 'img/emr/cppt.png' %}" alt="..." class="height35">
+            <div class="caption padding_button_crud ">
+            <p>CopyResep &nbsp</p>
+            </div>
+        </center>
+    </div>
+    </a>
+</div>
+
+<div class="col-sm-1" style="margin-left: 0px;">
+<a href="/emr/cppt">
+<div class="thumbnail ">
+    <center>
+        <img src="{% static 'img/emr/exit.png' %}" alt="..." class="height35">
+        <div class="caption padding_button_crud ">
+        <p> Exit &nbsp</p>
+        </div>
+    </center>
+</div>
+</a>
+</div>
+</div>
+
+{% endblock content %}
+
+{% block script%}
+    
+    
+     {% include 'emr/eresep/layout/js_report.html' %}
+{% endblock script%}
+

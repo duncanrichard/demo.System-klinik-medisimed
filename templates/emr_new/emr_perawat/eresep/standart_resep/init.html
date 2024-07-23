@@ -1,0 +1,128 @@
+var arrIdxStoreProduk = 0;
+$(document).ready(function () {
+    $('#btnStandartResep').click(function () {
+        $('#modalFind').modal('show');
+        setGridFindStandarResep();
+    });
+})
+
+function setGridFindStandarResep(a = null) {
+    if (a == null) {
+        a = "";
+    }
+    $.ajax({
+        url: host + "/pickerDaftarResep",
+        method: "GET",
+        data: {
+            "DOKTER_ID": $("#Fr_dokter1").val()
+        },
+        dataType: "json",
+        success: function (datas) {
+            $("#gridFind").dxDataGrid({
+                showColumnLines: false,
+                showRowLines: true,
+                rowAlternationEnabled: true,
+                showBorders: true,
+                paging: {
+                    pageSize: 7
+                },
+                filterRow: {
+                    visible: true
+                },
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+                columns: [
+                    "PFKODE", "PFKETERANGAN"
+                ],
+                onSelectionChanged: function (selectedItems) {
+                    var data = selectedItems.selectedRowsData[0];
+
+                    $('#modalFind').modal('hide');
+                    confirmAddPaketResep(data.PFKODE);
+                    selectionChangedRaised = true;
+
+                },
+                onRowClick: function (e) {
+                    if (!selectionChangedRaised) {
+                        var dataGrid = e.component;
+                        var keys = dataGrid.getSelectedRowKeys();
+                        dataGrid.deselectRows(keys);
+                    }
+                    selectionChangedRaised = false;
+                }
+            });
+        }
+    })
+}
+
+function confirmAddPaketResep(pfkode) {
+    var r = confirm("Apakah anda yakin menambahkan paket resep?");
+    if (r == true) {
+        addPaketResep(pfkode);
+    } else {
+
+    }
+}
+
+function addPaketResep(pfkode) {
+    $.ajax({
+        url: host + "/DaftardetailResep",
+        method: "GET",
+        data: {
+            'NO_TRANSAKSI': pfkode,
+            "DOKTER_ID": $("#Fr_dokter1").val()
+        },
+        dataType: "json",
+        success: function (data) {
+            SPinsertPaketResep(data);
+        }
+    })
+}
+
+function SPinsertPaketResep(arrData, genarateNoTrans = null) {
+    if (arrIdxStoreProduk < arrData.length) {
+        $.ajax({
+            url: host + "/crudResepRJ",
+            method: "POST",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'q': 'entryResepRJ',
+                'DOKTER_ID': $('#Fr_dokter1').val(),
+                'NOTRANSAKSI': cekKondisiResep($('#notransresep').val()),
+                'TANGGAL': ($('#Fr_tglfaktur').val()),
+                'BUKTI_ID': $('#noKunjunganResep').val(),
+                'BRG_ID': arrData[arrIdxStoreProduk].FDRBRG_ID,
+                'BRGN': arrData[arrIdxStoreProduk].FDRBRGN,
+                'SATUAN': arrData[arrIdxStoreProduk].FDRSATUAN,
+                'QTY': arrData[arrIdxStoreProduk].FDRQTY,
+                'QTYOUT': '0',
+                'DOSIS': arrData[arrIdxStoreProduk].FDRDOSIS,
+                'SIGNAF': cekKondisiResep(arrData[arrIdxStoreProduk].FDRSIGNAF),
+                'DOSIS2': arrData[arrIdxStoreProduk].FDRDOSIS2,
+                'SIGNAS': cekKondisiResep(arrData[arrIdxStoreProduk].FDRSIGNAS),
+                'SIGNAW': cekKondisiResep(arrData[arrIdxStoreProduk].FDRSIGNAW),
+                'SIGNA': arrData[arrIdxStoreProduk].FDRSIGNA,
+                'StatusAUD': 'A'
+            },
+            success: function (data) {
+                if (data.success) {
+                    $('#notransresep').val(data.message.trim());
+                    arrIdxStoreProduk++;
+                    SPinsertPaketResep(arrData, data.message.trim());
+
+                    setGridResep($('#noKunjunganResep').val());
+                } else {
+                    alert("Terjadi Kesalahan \n" + data.message);
+                }
+            }
+        })
+    } else {
+        arrIdxStoreProduk = 0;
+        setGridResep($('#noKunjunganResep').val());
+        alert("Sukses Menyimpan");
+    }
+}

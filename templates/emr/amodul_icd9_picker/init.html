@@ -1,0 +1,217 @@
+
+<script>
+    var dxgridTindakan;
+    var tindakanDatasource = [];
+    $(document).ready(function(){
+        init_gridTindakan()
+    })
+
+    $('#addTindakanCPPT').click(function(e){
+
+            if ($("#notrans").val().trim().length==0){
+                return alert("SILIHKAN MEMILIH NO TRANSAKSI KUNJUNGAN!");
+            }else{
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindTindakanCPPT();
+            $('#DxGridButtonSearch').unbind('click');
+            $('#DxGridButtonSearch').click(function(e){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                dxGridFindTindakanCPPT();
+            })
+            }
+            // findTindakan();
+        });
+        
+    $('#removeTindakanCPPT').click(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            removeTindakan();
+        })
+
+        $('#btnFindTindakanCPPT').click(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindTindakanCPPT();
+        })
+
+
+    function findDiagnosaKerja()
+    {
+        $('#modalDiagnosaKerja').modal('show');
+    }
+
+    function init_gridTindakan(){
+
+        $.get('/emr/data-cppt', { 'q': 'OpenTindakanMedis', 'NO_TRANSAKSI': getNoTrans2() },
+        function(data) {
+            console.log(data);
+            tindakanDatasource = data;
+            gridTindakan()
+        });
+
+        
+    }
+
+    function gridTindakan(e=null)
+    {
+        if(e!=null)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+        
+        dxgridTindakan = $("#gridTindakanCPPT").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: tindakanDatasource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "MRTURUT_MASUK", width: 35, caption: "No" },
+                { dataField: "MRTKD_TINDAKAN", width: 100, caption: "Kode" },
+                { dataField: "MRTKD_TINDAKANN", caption: "Tindakan" },
+                { dataField: "MRTTGL_TINDAKAN", width: 100, caption: "Tanggal" ,customizeText:function(info){return info.value.substring(0,10)}},
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                if(data) {
+
+                }
+            }
+        });
+    }
+
+    function findTindakan()
+    {
+        $('#modalTindakan').modal('show');
+    }
+
+    
+
+    function removeTindakan(e=null)
+    {
+        if(e!=null)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+        var key = dxgridTindakan.dxDataGrid("instance").getSelectedRowKeys();
+        var idx = dxgridTindakan.dxDataGrid("instance").getRowIndexByKey(key[0]);
+        console.log(idx);
+        console.log(tindakanDatasource);
+        tindakanDatasource.splice(idx,1);
+        dxgridTindakan.dxDataGrid("instance").refresh();
+        
+    }
+
+    function dxGridFindTindakanCPPT(){
+        startLoading();
+        // $('#DxGridModalSearch').modal('show');
+        var dxgridDataSource =  new DevExpress.data.DataSource({
+            load: function (values) {
+                
+                return $.ajax({
+                    url: "{% url 'emrrj_getMRICD9' %}",
+                    method: "GET",
+                    data : {
+                        key : $('#DxGridInputSearch').val(),
+                    },
+                    success : function (datas){
+                        hideModal();
+                        $('#DxGridModalSearch').modal('show');                       
+                    },
+                    fail: function()
+                    {
+                        $('#DxGridModalSearch').modal('hide'); 
+                        hideModal();
+                        alert('terjadi kesalahan');
+                    }
+                });
+            }
+        }); 
+        $("#DxGridDataSearch").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: dxgridDataSource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "FMI9KODE",width: 100,  caption: "Kode" },
+                { dataField: "FMI9KETERANGAN",  caption: "Tindakan ICD" },
+                { dataField: "FMI9KETERANGAN2",  caption: "Istilah Dokter" },
+                
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                if(data) {
+                    // setJenisPasien(data.CustId);
+                    $('#cpptTindakanKode').val(data.FMI9KODE);
+                    $('#cpptTindakanName').val(data.FMI9KETERANGAN);
+                    var no;
+                    var size = tindakanDatasource.length;
+                    var isInList = false
+
+                    for (var i = tindakanDatasource.length - 1; i >= 0; i--) {
+                        if(tindakanDatasource[i].MRTKD_TINDAKAN == data.FMI9KODE)
+                        {
+                            isInList = true;
+                        }
+                    }
+
+                    if(isInList)
+                    {
+                        $('#DxGridModalSearch').modal('hide');
+                        alert('kode tindakan sudah ada dalam list!');
+                    }else
+                    {
+                        if(size == 0)
+                        {
+                            no = 1
+                        }else
+                        {
+                            no = parseInt(tindakanDatasource[size-1].MRTURUT_MASUK) + 1;
+                        }
+                        
+                        
+
+
+                        tindakanDatasource.push({
+                            "MRTURUT_MASUK": no,
+                            "MRTNOTRANSAKSI": '{{request.session.noTrans}}',
+                            "MRTTGL_TINDAKAN": $('#tglfaktur').val(),
+                            "MRTTGL_MASUK": $('#tglfaktur').val(),
+                            "MRTKD_PASIEN": $('#detailPasien1').val(),
+                            "MRTKD_UNIT": $('#poli1').val(),
+                            "MRTKD_TINDAKAN": data.FMI9KODE,
+                            "MRTKD_TINDAKANN": data.FMI9KETERANGAN,
+                        });
+                        gridTindakan();
+                        $('#DxGridModalSearch').modal('hide');
+                        
+                    }
+                }
+            }
+        });
+    }
+
+</script>

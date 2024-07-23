@@ -1,0 +1,169 @@
+var element2 = $("#layoutSLOdontogram"); // global variable
+var elementCoret2 = $("#layoutSLVisualGigi1"); // global variable
+var getCanvas; // global variable
+var getCanvas2; // global variable
+$(document).ready(function () {
+    //GIGI UPLOAD IMAGE
+    $("#btnSLSaveOdontogram").on('click', function () {
+        kondisiUpBaru2 = true;
+        saveImage2();
+    });
+    $('#btnSLOdontogram').click(function () {
+        kondisiUpBaru2 = true;
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLOdontogram').css("display", "block");
+        $('#layoutSLOdontogram').css("display", "block");
+        $('#layoutCreateSLOdontogram').css("display", "none");
+        $('#layoutSLImageOdontogram').css("display", "none");
+    });
+
+    $('#btnSLEditOdontogram').click(function () {
+        $(".drawing-board-controls").show();
+    });
+
+    $('#btnSLBatalOdontogram').click(function () {
+        kondisiUpBaru2 = false;
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLOdontogram').css("display", "none");
+        $('#layoutSLOdontogram').css("display", "none");
+        $('#layoutCreateSLOdontogram').css("display", "block");
+        $('#layoutSLImageOdontogram').css("display", "block");
+    });
+
+    var customBoard3 = new DrawingBoard.Board('default-board-Odontogram', {
+        controls: [
+            //{ Navigation: { back: false, forward: false } },
+            'Color',
+            {
+                Size: {
+                    type: 'dropdown'
+                }
+            },
+            //{ DrawingMode: { filler: false } },
+            {
+                Navigation: {
+                    back: true,
+                    forward: true
+                }
+            },
+            //'Navigation',
+
+            //'Download'
+        ],
+        background: '/static/img/emr/odontogramCPPT.JPG',
+        size: 2,
+        //webStorage: 'local',
+        enlargeYourContainer: true
+    });
+
+
+})
+
+function getMDG_ODONTOGRAM(urlUpload2 = null) {
+    var value = '';
+    var item = {};
+    item['MDG_ODONTOGRAM'] = {};
+    if (urlUpload2 != null) {
+        item['MDG_ODONTOGRAM']['imageOdontogram'] = urlUpload2;
+    } else {
+        item['MDG_ODONTOGRAM']['imageOdontogram'] = cekKosong($('#imageOdontogram').val());
+    }
+    item['MDG_ODONTOGRAM']['odontogramCatatan'] = cekKosong($('#odontogramCatatan').val());
+
+    return JSON.stringify(item);
+
+}
+
+function saveImage2(kondisi = null, hasil1 = null) {
+    $(".drawing-board-controls").hide();
+    html2canvas(element2, {
+        onrendered: function (canvas) {
+            //$("#layoutSLImage").append(canvas);
+            $('#layoutSLImageOdontogram').css("display", "block");
+
+            getCanvas = canvas;
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date + '_' + time;
+            var imgageData = getCanvas.toDataURL("image/png");
+            // Now browser starts downloading it instead of just showing it
+            var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+            /*var a  = document.createElement('a');
+            a.href = newData;
+            a.download = "{{request.session.noTrans}}_"+dateTime+"_"+today+".png";
+
+            a.click()*/
+
+            var file = dataURLtoBlob(imgageData);
+            // Create new form data
+            var fd = new FormData();
+            NO_TRANSAKSI = $("#noTrans").val();
+            fd.append("imagev5", file, NO_TRANSAKSI + "-Odontogram.png");
+            fd.append('noTrans', getNoTrans());
+            fd.append('MDG_NO_TRANSAKSI', getNoTrans());
+            fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+
+
+            $.ajax({
+                url: '/emr/upload/',
+                type: 'POST',
+                data: fd,
+                async: true,
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                beforeSend: function () {
+                    console.log('Uploading...');
+                    $('.upload-progress').show();
+                },
+                success: function (response) {
+                    $('.upload-progress').hide();
+                    if (response.status == 200) {
+                        console.log(response);
+                        console.log('sukses upload');
+                        console.log(kondisi);
+                        console.log(hasil1);
+                        if (kondisi != null) {
+
+                            if (hasil1 != null) {
+                                //    alert('sini a');
+                                saveCPPT(hasil1, response.imagev5);
+                            } else {
+                                // alert('sini b');
+                                saveCPPT(null, response.imagev5);
+                            }
+                        } else {
+                            alert("berhasil upload");
+                            kondisiUpBaru2 = false;
+                            $('#layoutEditSLOdontogram').css("display", "none");
+                            $('#layoutSLOdontogram').css("display", "none");
+                            $('#layoutCreateSLOdontogram').css("display", "block");
+                            $('#layoutSLImageOdontogram').css("display", "block");
+                            $('#imageOdontogram').val('' + response.imagev5);
+                            $('#layoutSLImageImgOdontogram').html("<img id='layoutSLImageImgOdontogram' style='width: 726px;height: 300px;' />");
+                            $('#layoutSLImageImgOdontogram').attr("src", host + '/' + response.imagev5 + '?nocache=' + Math.round((new Date()).getTime() / 1000));
+                            // saveCPPT();
+                        }
+                    } else {
+                        try {
+                            var error = JSON.parse(response.error);
+                            alert('Vailed to upload! ' + error['data']['error'] + ', error_code: ' + error['status']);
+                        } catch (error) {
+                            alert('Vailed to upload! ' + response.error + ', error_code :' + response.status);
+                        }
+                        console.log(response);
+                    }
+                },
+                error: function (response) {
+                    console.log("error", response);
+                    alert(response);
+                }
+            });
+
+            //$("#layoutSLImage").attr("download", "your_pic_name.png").attr("href", newData);
+        }
+    });
+}

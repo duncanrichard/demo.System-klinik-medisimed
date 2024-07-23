@@ -1,0 +1,73 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/loading.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dropdown.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/plugins/select2/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/plugins/css-toggle-switch/toggle-switch.css' %}">
+    
+    <!-- DevExtreme themes -->
+    <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.common.css'%}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.light.css'%}" /> {% block head %}{% endblock %}
+
+    <link rel="stylesheet" href="{% static 'css/plugins/iCheck/custom.css' %}">
+    <script src="{% static '/js/plugins/jszip/jszip.min.js'%}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/plugins/datapicker/datepicker3.css' %}">
+
+    <title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    {% csrf_token %}
+
+    {% include 'emr/layout/navbar.html' %}
+    <!-- {% include 'layout/menubar.html' %} -->
+
+
+    <div class="container-fluid mt-2 mb-2" style="margin: 0 auto;">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="mt-auto bg-white px-3 py-2 font-bold ">
+        Medisimed © {% now "Y" %} Copyright.
+        <span class="blinking" style="color:rgb(151, 85, 153);font-weight:bold;font-size: 13pt ">Cabang
+            {{request.session.kdCabang}} : {{request.session.nama_cabang}} - {{request.session.kota_cabang}}</span>
+    </div>
+
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/dropdown.js' %}"></script>
+    <script src="{% static 'js/font-awesome/font-awesome.min.js' %}"></script>
+    <script src="{% static 'js/font-awesome/solid.min.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/MainProc.js'%}"></script>
+    <script src="{% static 'js/plugins/select2/select2.full.min.js'%}"></script>
+    <script src="{% static 'js/plugins/iCheck/icheck.min.js' %}"></script>
+    <script src="{% static 'sweet/sweet.min.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/plugins/datapicker/bootstrap-datepicker.js'%}"></script>
+    <!-- A DevExtreme library -->
+    <script type="text/javascript" src="{% static 'dxgrid/dx.all.js'%}"></script>
+    
+    {% block script %}{% endblock %}
+    <script>
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green',
+        });
+    </script>
+
+</body>
+
+
+</html>

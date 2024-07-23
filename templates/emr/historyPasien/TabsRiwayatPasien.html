@@ -1,0 +1,196 @@
+<div class="tabs-container" style="padding: 5px 5px;">
+    <ul class="nav nav-tabs" role="tablist">
+        <li><a class="nav-link " data-toggle="tab" href="#rkp1" aria-expanded="true"> Catatan Kunjungan </a></li>
+        <li><a class="nav-link " data-toggle="tab" href="#rkp2">Diagnosa</a></li>
+        {% comment %}
+        <li><a class="nav-link" data-toggle="tab" href="#rkp3">Tindakan</a></li> {% endcomment %}
+
+        <li class="active"><a class="nav-link" data-toggle="tab" href="#rkp4">Obat/Alkes</a></li>
+        <li><a class="nav-link" data-toggle="tab" href="#rkp5">Laboratorium</a></li>
+        <li><a class="nav-link" data-toggle="tab" href="#rkp6">Radiologi</a></li>
+    </ul>
+    <div class="tab-content">
+
+        <div role="tabpanel" id="rkp1" class="tab-pane ">
+            <div class="panel-body bgfffbc0">
+                <div class="row">
+                    <div class="" style="background: #d9534f;color: white;padding: 5px;">
+                        <center>Riwayat Kunjungan</center>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+                    <div class="col-md-10" id="gridRiwayatKunjungan" style="overflow-x: scroll;overflow-y: scroll;background: white;"></div>
+                    <div class="col-sm-2" style="margin-left: 0px;">
+                        <div href="#" id="btnRKDiagnosa">
+                            <div class="thumbnail " style="height: 72px !important;">
+                                <center>
+                                    <img src="/static/img/emr/history.png" alt="..." class="height35">
+                                    <div class="caption padding_button_crud ">
+                                        <p>Diagnosa &nbsp;</p>
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                    <div class="" style="background: #d9534f;color: white;padding: 5px;">
+                        <center>Riwayat Inap</center>
+                    </div>
+
+                </div>
+                <div class="row" style="margin-bottom: 10px;">
+
+                    <div class="col-md-10" id="gridRiwayatInap" style="overflow-y: scroll;overflow-y: scroll;background: white;"></div>
+                    <div class="col-sm-2" style="margin-left: 0px;">
+                        <div href="#" id="btnRWIDiagnosa">
+                            <div class="thumbnail " style="height: 72px !important;">
+                                <center>
+                                    <img src="/static/img/emr/history.png" alt="..." class="height35">
+                                    <div class="caption padding_button_crud ">
+                                        <p>Diagnosa &nbsp;</p>
+                                    </div>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div role="tabpane2" id="rkp2" class="tab-pane ">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 5px;">
+                    <div class="row">
+
+                        <div class="col-md-6" id="">
+                            <div id="gridDiagnosa1" style="overflow-x: scroll;background: white;"></div>
+                        </div>
+
+                        <div class="col-md-6" id="">
+                            <div id="gridDiagnosa2" style="overflow-x: scroll;background: white;"></div>
+                        </div>
+
+                    </div>
+
+                    <div class="row" style="margin: auto;">
+                        <div class="col-md-6">
+                            <div class="form-group row">
+                                <label class="col-md-2 fz-11 control-label">No.Transaksi :</label>
+                                <div class="col-md-10" id="">
+                                    <input type="text" id="noTransDiagnosa" class="col-md-5 fz-11 input-sm2">
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 fz-11 control-label">Morfologi NeoPlasma:</label>
+                                <div class="col-md-10" id="">
+                                    <input type="text" id="morfologiNeoPlasma" class="col-md-5  fz-11 input-sm2">
+
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 fz-11 control-label">Sebab luar kecelakaan dan keracunan:</label>
+                                <div class="col-md-10" id="">
+                                    <input type="text" id="noTransDiagnosa" class="col-md-5 fz-11 input-sm2">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-7 fz-11 control-label">Catatan :</label><br>
+                                <textarea class="form-control" style="font-size: 11px;height: 100px;" id="catatanDiagnosa" name="catatanDiagnosa" placeholder=""></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div role="tabpane3" id="rkp3" class="tab-pane">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 25px;">
+                    <div class="row">
+                        <div class="col-sm-12" style="background: #d9534f;color: white;padding: 5px;">
+                            <center>Tindakan Medis yang diBerikan</center>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12" style="background: #d9534f;color: white;padding: 5px;">
+                            <center>Pemakaian Darah</center>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpane4" id="rkp4" class="tab-pane active">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 25px;">
+                    <div class="row ">
+                        <div class="col-sm-6 ">
+                            {% include 'emrdokter/historyPasien/col_kiri.html' %}
+                        </div>
+                        <div class="col-sm-6 ">
+                            {% include 'emrdokter/historyPasien/col_kanan.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div role="tabpane5" id="rkp5" class="tab-pane">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 25px;">
+                    <div class="row ">
+                        <div class="col-sm-6 ">
+                            {% include 'emrdokter/historyPasien/col_kiri_lab.html' %}
+                        </div>
+                        <div class="col-sm-6 ">
+                            {% include 'emrdokter/historyPasien/col_kanan_lab.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpane6" id="rkp6" class="tab-pane">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 25px;">
+                    <div class="row ">
+                        <div class="col-sm-6 ">
+
+                            <div class="row">
+                                <div id="gridHistoryTransRad" style="overflow-x: scroll;"></div>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-6 ">
+                            <div class="row" >
+                                <div id="gridHistoryTransRadD" style="overflow-x: scroll;"></div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+
+
+</div>

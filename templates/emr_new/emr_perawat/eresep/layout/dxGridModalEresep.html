@@ -1,0 +1,355 @@
+<div class="modal fade " id="dxGridModalEresep" data-bs-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="myModal" style="z-index: 1500 !important;width: 100%;">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Entry E-Resep </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 0px;">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="panel-body" style="background: rgb(133, 162, 209) !important;padding-left: 2px;padding-right: 2px;padding-top:
+                5px;padding-bottom: 5px;margin-bottom: 5px;">
+                        <div class="row" style="margin-left: 5px;margin-bottom: 5px;padding-bottom: 0px;">
+                            <div class="col-md-6">
+                                <div class="row" style="margin-bottom: -20px;">
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/add.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Resep</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRarikResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/add_racikan.png" alt="..."
+                                                        class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Racikan</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnHapusResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/delete.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Hapus</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnKirimResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/save.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Kirim</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {% comment %} <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnEditResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/edit.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Edit</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div> {% endcomment %}
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnCetakResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/print.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Cetak</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row" style="margin-bottom: -20px;">
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnHistoryResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/history.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>History</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                     <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnDaftarResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/daftarResep.png" alt="..."
+                                                        class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Daftar</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div> 
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnStandartResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/standar.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>standar</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnBatalResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/cancel.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Batal</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnExitResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/exit.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>exit</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ibox">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">No.Rajal</label>
+                                    <div class="col-md-6">
+                                        <input type="text" name="noKunjunganResep" id="noKunjunganResep"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">No.Resep</label>
+                                    <div class="col-md-6">
+                                        <input type="text" name="notransresep" id="notransresep"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Pasien</label>
+                                    <div class="col-md-2" style="margin-right: inherit;">
+                                        <input type="text" name="Fr_detailPasien1" id="Fr_detailPasien1"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-6" style="margin-right: inherit;">
+                                        <input type="text" name="Fr_detailPasien2" id="Fr_detailPasien2"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Usia</label>
+                                    <div class="col-md-1">
+                                        <input type="text" name="Fr_thn" id="Fr_thn" style="padding: 0px 1px;"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-1">
+                                        Th
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="Fr_bln" id="Fr_bln" style="padding: 0px 1px;"
+                                           readonly class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-1">
+                                        Bln
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="Fr_hari" id="Fr_hari" style="padding: 0px 1px;"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-1">
+                                        Hri
+                                    </div>
+                                    <div class="col-md-1">
+                                        L/P
+                                    </div>
+                                    <div class="col-md-1">
+                                        <input type="text" name="Fr_jk" id="Fr_jk" class="form-control input-sm"
+                                            readonly required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Alamat</label>
+                                    <div class="col-md-6">
+                                        <input type="text" name="Fr_alamat1" id="Fr_alamat1"
+                                           readonly  class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Alergi</label>
+                                    <div class="col-md-6">
+                                        <input type="text" name="Fr_alergi" id="Fr_alergi" class="form-control input-sm"
+                                            required />
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div id="Fr_btnSaveAlergi" class="btn btn-sm btn-primary float-right m-t-n-xs">
+                                            <strong>Simpan Alergi</strong></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Tgl.Faktur</label>
+                                    <div class="col-md-5">
+                                        <input type="text" name="Fr_tglfaktur" id="Fr_tglfaktur"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Kel.Pasien</label>
+                                    <div class="col-md-2" style="margin-right: inherit;">
+                                        <input type="text" name="Fr_kelpas1" id="Fr_kelpas1"
+                                            readonly class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-6" style="margin-right: inherit;">
+                                        <input type="text" name="Fr_kelpas2" id="Fr_kelpas2"
+                                           readonly class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Nama Dokter</label>
+                                    <div class="col-md-2" style="margin-right: inherit;">
+                                        <input type="text" name="Fr_dokter1" id="Fr_dokter1"
+                                           readonly class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-6" style="margin-right: inherit;">
+                                        <input type="text" name="Fr_dokter2" id="Fr_dokter2"
+                                           readonly  class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <label class="col-md-3 fz-11 control-label">Status</label>
+                                    <div class="col-md-2" style="margin-right: inherit;">
+                                        <input type="text" name="status1" id="status1"
+                                           class="form-control input-sm" required />
+                                    </div>
+                                    <div class="col-md-6" style="margin-right: inherit;">
+                                        <input type="text" name="status2" id="status2"
+                                            class="form-control input-sm" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 card" style="margin-top: 5px;">
+                                <div class="tabs-container" style="padding: 5px 5px;">
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="active"><a class="nav-link active" data-toggle="tab"
+                                                href="#tabEresep">E-Resep</a></li>
+                                        <li><a class="nav-link" data-toggle="tab" href="#tabEresepM">E-Resep Manual</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content">
+                                        <div role="tabpanel" id="tabEresep" class="tab-pane active">
+                                            <div class="panel-body">
+                                                <div id="gridResep" style="padding: 15px 0px;">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div role="tabpanel" id="tabEresepM" class="tab-pane">
+                                            <div class="panel-body">
+                                                <div id="btnCopyEresepManual"
+                                                    class="btn btn-sm btn-primary float-right m-t-n-xs"><strong>Copy
+                                                        History Obat Manual</strong></div>
+                                                <div class="row">
+                                                    <div class="col-md-12" id="layoutCopyEresepManual"
+                                                        style="display: none;">
+
+                                                        <div id="gridHistoryResepManual" style="height: 200px;"></div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <textarea class="form-control" id="FHRRESEPTEXT"
+                                                            name="FHRRESEPTEXT" placeholder="Input E-resep Manual "
+                                                            style="width:100%;height: 150px;"></textarea>
+                                                        <br />
+                                                        <div id="btnSaveEresepManual"
+                                                            class="btn btn-sm btn-primary float-right m-t-n-xs">
+                                                            <strong>Simpan E-resep Manual</strong></div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,353 @@
+<!-- Modal Popup Menu -->
+<div class="modal fade" id="modalsFTW" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Surat FTW / RTW</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div role="tabpanel" id="tabFTW" class="tab-pane">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="panel-body" style="background: white !important;">
+                            <div class="panel-body" style="background: #2874A6 ;color:#000;font-weight: bold;box-shadow: 10px 10px 5px 0
+                                rgba(0, 0, 0, .75)">
+                                <div style="margin: 0px 5px;">
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-4 fz-11 control-label">IDENTITAS PEKERJA :</label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Nama :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 50%;" id="FTW_NAMA" name="FTW_NAMA" placeholder=""></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">No Transaksi :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 50%;" id="FTW_NOTRANS" name="FTW_NOTRANS" placeholder=""></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Tanggal Lahir :</label>
+                                            <div class="col-md-2">
+                                                <input type="date" style="font-size: 11px;width:100%;height: 75%;" id="FTW_TGL_LHR" name="FTW_TGL_LHR"
+                                                    class="form-control fz-11 ">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Jenis Kelamin :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 50%;"
+                                                    id="FTW_JEN_KEL" name="FTW_JEN_KEL"
+                                                    placeholder=""></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Agama :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control " style="width:100%;height: 50%;font-size:
+                                                    11px;background: #B7B5B5; "
+                                                    id="FTW_AGAMA"
+                                                    name="FTW_AGAMA"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Pekerjaan :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control "
+                                                    style="width:100%;height: 50%;font-size: 11px;"
+                                                    id="FTW_PEKERJAAN"
+                                                    name="FTW_PEKERJAAN"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Alamat :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control "
+                                                    style="width:100%;height: 50%;font-size: 11px;background: #B7B5B5"
+                                                    id="FTW_ALAMAT"
+                                                    name="FTW_ALAMAT"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Perusahaan :</label>
+                                            <div class="col-md-4">
+                                                <textarea class="form-control "
+                                                    style="width:100%;height: 50%;font-size: 11px;"
+                                                    id="FTW_PERUSAHAAN"
+                                                    name="FTW_PERUSAHAAN"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Tanggal Penilaian :</label>
+                                            <div class="col-md-2">
+                                                <input type="date" style="font-size: 11px;width:100%;height: 75%;" id="FTW_TGL_NILAI" name="FTW_TGL_NILAI"
+                                                    class="form-control fz-11 " placeholder="hppt">
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-4 fz-11 control-label">LANGKAH RETURN TO WORK :</label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">1. PERJALANAN KASUS KECELAKAAN/PENYAKIT :</label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-4 fz-11 control-label">INFORMASI UMUM :</label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Keluhan Utama :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 100%;" id="FTW_KELUHAN_UTAMA"
+                                                    name="FTW_KELUHAN_UTAMA"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label"> Rwyt Penyakit Skrg :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 100%;background: #B7B5B5" id="FTW_RWYT_SKT_SKRG"
+                                                    name="FTW_RWYT_SKT_SKRG" placeholder=""></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label"> Riwayat Penyakit dahulu : </label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 100%;"
+                                                    id="FTW_RWYT_SKT_DL" name="FTW_RWYT_SKT_DL"
+                                                    placeholder=""></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Kebiasaan :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control " style="width:100%;height: 100%;font-size:
+                                                    11px;background: #B7B5B5; "
+                                                    id="FTW_BIASA"
+                                                    name="FTW_BIASA"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">2. PERPEMERIKSAAN KONDISI KESEHATAN :</label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">Keluhan yang disarakan :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control " style="width:100%;height: 100%;font-size:
+                                                    11px; "
+                                                    id="FTW_KELUHAN_RASA"
+                                                    name="FTW_KELUHAN_RASA"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">PEMERIKSAAN FISIK :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control " style="width:100%;height: 100%;font-size:
+                                                    11px; "
+                                                    id="FTW_PMR_FISIK" name="FTW_PMR_FISIK" placeholder="Pemeriksaan fisik saat Dilampirkan juga hasil asesmen dari dokter ahli yang merawat (sesuai kasus)"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">PEMERIKSAAN PENUNJANG :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control " style="width:100%;height: 100%;font-size:
+                                                    11px;"
+                                                    id="FTW_PMR_PENUNJANG" name="FTW_PMR_PENUNJANG" placeholder="Jika Diperlukan"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">KRITERIA SEMBUH :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control " style="width:100%;height: 100%;font-size:
+                                                    11px; "
+                                                    id="FTW_KRITERIA_SEMBUH" name="FTW_KRITERIA_SEMBUH" placeholder="Untuk kasus infeksi, mengingat potensi penularan di tempat kerja"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">3. MENDESKRIPSIKAN AKTIVITAS PEKERJA :</label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">DESKRIPSI PEKERJAAN SAAT INI (AKTIVITAS HARIAN) </label>
+                                        </div>
+                                        <div class="row" style="margin-top:-5px;margin-bottom: 5px;">
+                                            <button class="btn btn-xs btn-primary" id="btn_tambah_aktv"
+                                                >Tambah Data AKTIVITAS </button>
+                                        </div>
+                                        <div id="gridaktivitas">
+                                        </div>   
+                                    </div>
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">POTENSI BAHAYA (HAZARD) DI TEMPAT KERJA</label>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-3 fz-11 control-label"></label>
+                                            <div class="col-md-3">
+                                                <div id="list_Bahaya">
+                                                    <label class="checkbox-inline fz-11">Fisika 
+                                                        <input type="checkbox" name="FTW_BAHAYA"
+                                                            value="Fisika" data-value="Fisika">
+                                                    </label>
+                                                </div>
+                                                <div id="list_Bahaya">
+                                                    <label class="checkbox-inline fz-11">Kimia 
+                                                        <input type="checkbox" name="FTW_BAHAYA"
+                                                            value="Kimia" data-value="Kimia"> 
+                                                    </label>
+                                                </div>
+                                                <div id="list_Bahaya">
+                                                    <label class="checkbox-inline fz-11">Biologi 
+                                                        <input type="checkbox" name="FTW_BAHAYA"
+                                                            value="Biologi" data-value="Biologi"> 
+                                                    </label>
+                                                </div>
+                                                <div id="list_Bahaya">
+                                                    <label class="checkbox-inline fz-11">Ergonomi  
+                                                        <input type="checkbox" name="FTW_BAHAYA"
+                                                            value="Ergonomi" data-value="Ergonomi "> 
+                                                    </label>
+                                                </div>
+                                                <div id="list_Bahaya">
+                                                    <label class="checkbox-inline fz-11">Psikososial  
+                                                        <input type="checkbox" name="FTW_BAHAYA"
+                                                            value="Psikososial" data-value="Psikososial "> 
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div id="list_Bahaya">
+                                                    <textarea class="form-control " style="width:100%;height: 100%;font-size:
+                                                    11px; "
+                                                    id="FTW_BAHAYA_NOTE" name="FTW_BAHAYA_NOTE" placeholder="Note : Jika Diperlukan"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">4. MENILAI KEMAMPUAN :</label>
+                                        </div>
+                                        <div class="row" style="margin-top:-5px;margin-bottom: 5px;">
+                                            <button class="btn btn-xs btn-primary" id="btn_tambah_mampu"
+                                                >Tambah Data KEMAMPUAN </button>
+                                        </div>
+                                        <div id="gridkemampuan">
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label"></label>
+                                        </div>
+                                        <div class="row">
+                                            <label class="col-md-6 fz-11 control-label">5. KESIMPULAN</label>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-md-3 fz-11 control-label"></label>
+                                            <div class="col-md-9">
+                                                <div class="row" style="margin-top: -10px;margin-bottom: -10px;">
+                                                    <div class="col-md-9">
+                                                        <div id="" class="form-inline">
+                                                            <label class="radio-inline fz-11">
+                                                                <input type="radio" name="FTW_KESIMPULAN" value="Fit untuk pekerjaannya">Fit untuk pekerjaannya
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        <div id="" class="form-inline">
+                                                            <label class="radio-inline fz-11">
+                                                                <input type="radio" name="FTW_KESIMPULAN" value="Fit untuk pekerjaannya dengan keterbatasan">Fit untuk pekerjaannya dengan keterbatasan
+                                                            </label>   
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-9">
+                                                        <div id="" class="form-inline">
+                                                            <label class="radio-inline fz-11">
+                                                                <input type="radio" name="FTW_KESIMPULAN" value="Tidak fit untuk pekerjaannya">Tidak fit untuk pekerjaannya
+                                                            </label>
+                                                        </div>
+                                                    </div>        
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="layoutFTW">
+                                        <div class="row">
+                                            <label class="col-md-3 fz-11 control-label">REKOMENDASI :</label>
+                                            <div class="col-md-9">
+                                                <textarea class="form-control"
+                                                    style="font-size: 11px;width:100%;height: 75%;" id="FTW_REKOMENDASI"
+                                                    name="FTW_REKOMENDASI" placeholder=""></textarea>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                                    <div id="layoutFTW">
+                                        <div class="modal-footer">
+                                            <div class="btn btn-primary btn-lg active" id="btn_simpan_FTW">
+                                                <span class="fa fa-save"></span> Simpan
+                                            </div>
+                                            <div class="btn btn-success  btn-lg active" id="btnCetakFTW">
+                                                <span class="fa fa-save"></span> Cetak
+                                            </div>
+                                            <button class="btn btn-danger  btn-lg active" id="btn_batal_FTW">
+                                                <span class="fa fa-user"></span> Batal
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Tutup</button>
+        </div>
+    </div>
+</div>

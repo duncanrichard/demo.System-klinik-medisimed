@@ -1,0 +1,457 @@
+<div class="modal fade " id="modals_racikan" data-bs-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="myModal" style="z-index: 15002 !important;width: 100%;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Racikan E-Resep </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 0px;">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="panel-body" style="background: rgb(133, 162, 209) !important;padding-left: 2px;padding-right: 2px;padding-top:
+                5px;padding-bottom: 5px;margin-bottom: 5px;">
+                        <div class="row" style="margin-left: 5px;margin-bottom: 5px;padding-bottom: 0px;">
+                            <div class="col-md-12">
+                                <div class="row" style="margin-bottom: -20px;">
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRckBaru">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/add.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Racik Baru</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRckSimpan">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/save.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Simpan &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRckHapus">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/delete.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Hapus &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRckFind">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/history.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Find &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRckCetak">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/print.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Cetak &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnExitPResepracik">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/exit.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>exit</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ibox">
+                        <div class="row">
+                            <div class="col-md-7 col-sm-7" style="padding: 0px 10px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="dk_FERRACIK_ID"
+                                            style="text-align: left;">No.RACIK</label>
+                                        <div class="col-md-8">
+                                            <input id="dk_FERRACIK_ID" name="dk_FERRACIK_ID" type="text"
+                                                class="form-control input-sm" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label">Usia</label>
+                                        <div class="col-md-1">
+                                            <input type="text" name="frr_thn" id="frr_thn" style="padding: 0px 1px;"
+                                                class="form-control input-sm" required="">
+                                        </div>
+                                        <div class="col-md-1">
+                                            Th
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="text" name="frr_bln" id="frr_bln" style="padding: 0px 1px;"
+                                                class="form-control input-sm" required="">
+                                        </div>
+                                        <div class="col-md-1">
+                                            Bln
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input type="text" name="frr_hari" id="frr_hari" style="padding: 0px 1px;"
+                                                class="form-control input-sm" required="">
+                                        </div>
+                                        <div class="col-md-1">
+                                            Hri
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="name"
+                                            style="text-align: left;">Bentuk Racikan</label>
+
+                                        <div class="col-md-4">
+                                            <input type="hidden" name="bentukRacikKd" id="bentukRacikKd"
+                                                class="form-control input-sm convResep" required />
+                                            <input type="hidden" name="bentukRacikS" id="bentukRacikS"
+                                                class="form-control input-sm convResep" required />
+                                            <input type="text" name="bentukRacik" id="bentukRacik"
+                                                class="form-control input-sm convResep" required />
+                                        </div>
+
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="btnbentukRacik"
+                                                style="padding: 0px 5px;margin: -2px -8px 0px;"><i
+                                                    class="fa fa-search"></i></div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="email"
+                                            style="text-align: left;">Jumlah</label>
+                                        <div class="col-md-4">
+                                            <input id="racikqty1" name="racikqty1" type="text"
+                                                class="form-control input-sm convResep">
+                                        </div>
+                                        <div class="col-md-1" style="margin-left: inherit;margin-right: inherit;">
+                                            <h3 style="padding: 1px 5px;margin: -5px 8px 0px;font-size: 20px;">/
+                                            </h3>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="racikqty2" name="racikqty2" type="text"
+                                                class="form-control input-sm convResep">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+
+                                        <label class="col-md-3 control-label" for="email"
+                                            style="text-align: left;">Dosis</label>
+                                        <div class="col-md-2">
+                                            <input id="racikfrkw1" name="racikfrkw1" type="text"
+                                                class="form-control input-sm convResep autoDurasi">
+                                        </div>
+                                        <div class="col-md-1" style="margin-left: inherit;margin-right: inherit;">
+                                            <h3 style="padding: 1px 5px;margin: 0px 5px;font-size: 15px;">X</h3>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="racikfrkw2" name="racikfrkw2" type="text"
+                                                class="form-control input-sm convResep autoDurasi">
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <input id="racikfrkw4" name="racikfrkw4" type="text"
+                                                class="form-control input-sm" placeholder="durasi">
+                                            <input id="raciksignaf" name="raciksignaf" type="hidden"
+                                                class="form-control input-sm">
+                                            <input id="raciksignafKd" name="raciksignaf" type="hidden"
+                                                class="form-control input-sm">
+                                        </div>
+
+                                        <div class="col-md-2" style="visibility: hidden;">
+                                            <input id="racikfrkw3" name="racikfrkw3" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+
+                                        <div class="col-md-2" style="visibility: hidden;">
+                                            <input id="racikfrkw5" name="racikfrkw5" type="text"
+                                                class="form-control input-sm" placeholder="pemakaian">
+                                            <input id="raciksignas" name="raciksignaf" type="hidden"
+                                                class="form-control input-sm">
+                                            <input id="raciksignasKd" name="raciksignaf" type="hidden"
+                                                class="form-control input-sm">
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="crapakai"
+                                            style="text-align: left;">Cara Pakai</label>
+                                        <div class="col-md-2">
+                                            <input id="racikcrapakaiKd" name="racikcrapakaiKd" type="hidden"
+                                                class="form-control input-sm convResep">
+                                            <input id="racikcrapakai1" name="racikcrapakai1" type="text"
+                                                class="form-control input-sm convResep">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="racikcrapakai" name="racikcrapakai" type="text"
+                                                class="form-control  input-sm">
+                                        </div>
+
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCaraPakairacik"
+                                                style="padding: 0px 5px;margin: -2px -8px 0px;"><i
+                                                    class="fa fa-search"></i></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-sm-12" style="margin-top: 5px;">
+
+                                            <div type="button" class="btn btn-primary" id="btnRacikCariObat">Tambah
+                                                Obat</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 col-sm-5" style="padding: 0px 10px;">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="sigmaRacik"
+                                            style="text-align: left;">Signa</label>
+                                        <div class="col-md-6">
+                                            <div class="form-check-inline">
+                                                <label class="customradio"><span class="radiotextsty">Otomatis</span>
+                                                    <input type="radio" checked="checked" name="radioSigmaracik">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                <label class="customradio"><span class="radiotextsty">Manual</span>
+                                                    <input type="radio" name="radioSigmaracik">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <textarea class="form-control" id="raciksigma" name="raciksigma" placeholder=""
+                                            style="width: 304px; height: 150px;"></textarea>
+                                    </div>
+                                </div>
+
+                                <input type="hidden" id="dk_KPTGL_PERIKSA" />
+                                <input type="hidden" id="dk_FHRNO_TRANSAKSI" />
+                                <input type="hidden" id="dk_KPKD_DOKTER" />
+                                <input type="hidden" id="dk_FDRBUKTI_ID" />
+                                <!-- <input type="hidden" id="dk_FERRACIK_ID" /> -->
+                                <input type="hidden" id="dk_FERRACIKDNO" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group">
+                                <div id="gridResepracik" style="padding: 15px 0px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal  -->
+<div class="modal fade" id="modalBentukRacik" tabindex="-1" role="dialog" aria-labelledby="myModal"
+    style="z-index: 15003 !important;width: 100%;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Cari</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div id="gridBentukRacik">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal confirmationEdit -->
+<div class="modal fade" id="modalsEntryResepRacik" tabindex="-1" role="dialog" aria-labelledby="myModal"style="z-index: 15002 !important;width: 100%;">
+
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    <div id="modalsEntryResepRacik_aksi"></div>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12" style="padding: 0px 10px;">
+
+                        <form class="form-horizontal" action="" method="post">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="name" style="text-align: left;">Nama Obat</label>
+                                         <div style="margin-right: inherit;">
+                                            <input type="hidden" name="raciknobatchEdit" id="raciknobatchEdit" class="form-control input-sm" required />
+                                            <input type="hidden" name="racikKdObat" id="racikKdObat" class="form-control input-sm" required />
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="raciknmObat" name="raciknmObat" type="text" class="form-control input-sm" placeholder="Cari Nama Obat">
+                                        </div>
+    
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCariObatracik" style="padding: 5px 10px;"><i class="fa fa-search"></i></div>
+                                        </div>
+    
+                                        <div class="col-md-2">
+                                            <input id="kemasan1" name="kemasan1" type="text" class="form-control input-sm">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="kemasan2" name="kemasan2" type="text" class="form-control input-sm">
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;">Dosis</label>
+                                        <div class="col-md-2">
+                                            <div class="radio">
+                                                <label><input type="radio" name="banyaktype" id="banyaktype1" value='0' checked> <div id="dalambanyaktype1"></div></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="banyakqtytype1Pecahan" type="text" class="form-control input-sm convKebObat" placeholder="mode se-per (1/2)">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="banyakqtytype1" type="text" class="form-control input-sm convKebObat" placeholder="mode nominal/desimal (5)">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="layout_banyaktype2">
+                                    <div class="row">
+
+                                        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;"></label>
+                                        <div class="col-md-2">
+                                            <div class="radio">
+                                                <label><input type="radio" name="banyaktype" id="banyaktype2" value='1'>  <div id="dalambanyaktype2"></div></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="banyakqtytype2Pecahan" type="text" class="form-control input-sm convKebObat" placeholder="mode se-per (1/2)">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="banyakqtytype2PecahanPer" type="text" class="form-control input-sm convKebObat" placeholder="mode nominal/desimal (5)">
+                                        </div>
+                                        <div class="col-md-4" style="display:none;">
+                                            <input id="banyakqtytype2" name="banyakqtytype2" type="text" class="form-control input-sm convKebObat" placeholder="mode nominal/desimal (5)">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <div hidden class="row">
+                                        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;">Signa</label>
+                                        <div class="col-md-9">
+                                            <input id="dosis" name="dosis" type="text" class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+
+                                        <div id="KebutuhanLabel">
+                                            <label class="col-md-3 control-label" for="email" style="text-align: left;" id="">Kebutuhan</label>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="kebObat" name="kebObat" type="text" class="form-control input-sm" disabled>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="kebObatSat" name="kebObatSat" type="text" class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </fieldset>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="modalsEntryResepRacik_btnSave">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+
+            </div>
+        </div>
+    </div>
+</div>

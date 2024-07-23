@@ -1,0 +1,422 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Catatan Perkembangan Pasien Terintegrasi (CPPT)
+{% endblock %} 
+
+
+{% block head %}
+<style>
+    div#gridPasienRJ.dx-widget {
+        font-size: 13px;
+        line-height: 0.9;
+        /* height: 240px; */
+    }
+    div#gridResep.dx-widget {
+        font-size: 13px;
+        line-height: 0.9;
+        /* height: 240px; */
+    }
+    div#gridResepracik.dx-widget {
+        font-size: 13px;
+        line-height: 0.9;
+        /* height: 240px; */
+    }
+    div#gridHistoryResepManual.dx-widget {
+        font-size: 12px;
+        line-height: 0.9;
+        /* height: 240px; */
+    }
+    div#dxGridDatapasienBPJS.dx-widget {
+        font-size: 12px;
+        line-height: 0.9;
+        height: 240px;
+    }
+    div#gridFind.dx-widget {
+        font-size: 12px;
+        line-height: 0.9;
+        height: 240px;
+    }
+    div#dxGridDatasurvei.dx-widget {
+        font-size: 12px;
+        line-height: 0.9;
+        height: 240px;
+    }
+    div#dxGridDatariwayat.dx-widget {
+        font-size: 12px;
+        line-height: 0.9;
+        height: 240px;
+    }
+    div#dxGridDatajkn.dx-widget {
+        font-size: 12px;
+        line-height: 0.9;
+        height: 240px;
+    }
+
+  .hight70{ height:40px;width: 80%;}
+  .hight40{ height:50px;width: 80%;}
+  .row-blue{
+        background:#23c6c8 !important;
+    }
+    .row-blue-3498db{
+        background:#3498db !important;
+    }
+    
+    .row-blue-1abc9c{
+        background:#1abc9c !important;
+    }
+    
+    .row-sudah-prw{
+        background:#2ca02c !important;
+    }
+
+    .row-sudah{
+        background:#ff7f0e !important;
+    }
+
+    .row-abu{
+        background: #eeeeee !important;
+    }
+
+    .row-hijau{
+        background:#1ab394 !important;
+    }
+    
+    .row-ed5565{
+        background:#ed5565 !important;
+    }
+    .dot-ed5565 {
+    height: 25px;
+    width: 25px;
+    background-color:#ed5565;
+    border-radius: 50%;
+    display: inline-block;
+    }
+    .dot-1abc9c {
+    height: 25px;
+    width: 25px;
+    background-color:#1abc9c;
+    border-radius: 50%;
+    display: inline-block;
+    }
+
+    .dot-sudah-prw {
+    height: 25px;
+    width: 25px;
+    background-color:#2ca02c;
+    border-radius: 50%;
+    display: inline-block;
+    }
+
+    .dot-sudah {
+    height: 25px;
+    width: 25px;
+    background-color:#ff7f0e;
+    border-radius: 50%;
+    display: inline-block;
+    }
+
+    .dot-3498db {
+    height: 25px;
+    width: 25px;
+    background-color:#3498db;
+    border-radius: 50%;
+    display: inline-block;
+    }
+    .btn-default {
+    color: inherit;
+    background: #a9f0b4;
+    border: 2px solid #1d1d1e;
+    }
+  
+
+    label{
+        margin-bottom: 10px;
+    }
+
+    .panel-head-CPPT_DR{
+        background: #ff7f0e !important;
+    }
+
+    .panel-head-CPPT_PRW{
+        background: #2ca02c !important;
+    }
+
+    .cppt-menu-fz{
+        font-size: 13px;
+        width: 150px;
+    }
+    .cppt-menu-img-sz{
+        height: 35px;
+
+    }
+    
+    .pulse {
+        height: 100px;
+        width: 300px;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        }
+        .pulse:after {
+        content: '';
+        display: block;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200px 100px" enable-background="new 0 0 200px 100px" xml:space="preserve"><polyline fill="none" stroke-width="3px" stroke="black" points="2.4,58.7 70.8,58.7 76.1,46.2 81.1,58.7 89.9,58.7 93.8,66.5 102.8,22.7 110.6,78.7 115.3,58.7 126.4,58.7 134.4,54.7 142.4,58.7 197.8,58.7 "/></svg>') 0 0 no-repeat;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        -webkit-animation: 2s pulse linear infinite;
+        -moz-animation: 2s pulse linear infinite;
+        -o-animation: 2s pulse linear infinite;
+        animation: 2s pulse linear infinite;
+            clip: rect(0, 0, 100px, 0);
+        }
+        .pulse:before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        left: 2px;
+        right: 2px;
+        bottom: 0;
+        top: 16px;
+        margin: auto;
+        height: 3px;
+
+        }
+
+
+        @-webkit-keyframes pulse {
+        0% {
+            clip: rect(0, 0, 100px, 0);
+            opacity: 0.4;
+        }
+        4% {
+            clip: rect(0, 66.66667px, 100px, 0);
+            opacity: 0.6;
+        }
+        15% {
+            clip: rect(0, 133.33333px, 100px, 0);
+            opacity: 0.8;
+        }
+        20% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity: 1;
+        }
+
+        80% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+
+        90% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity: 0;
+        }
+
+        100% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+        }
+        @keyframes pulse {
+        0% {
+            clip: rect(0, 0, 100px, 0);
+        }
+        4% {
+            clip: rect(0, 66.66667px, 100px, 0);
+        }
+        15% {
+            clip: rect(0, 133.33333px, 100px, 0);
+        }
+        20% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:1;
+        }
+
+        80% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+
+        90% {
+            opacity: 0;
+        }
+
+        100% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+        
+        }
+
+        .btn-custom {
+            display: block;
+            border-radius: 5px;
+            padding-top: 5px;
+            padding-bottom: 1px;
+            color: #f4f3f9;
+            background-color: #40883f;
+            position: relative;
+            -webkit-box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75);
+            -moz-box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75);
+            box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 40px;
+            color: #f4f3f9;
+            display: block;
+            text-align: center;
+        }
+        .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+        /* Theoretically for IE 8 & 9 (more valid) */	
+        /* ...but not required as filter works too */
+        /* should come BEFORE filter */
+        -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        
+        /* This works in IE 8 & 9 too */
+        /* ... but also 5, 6, 7 */
+        filter: alpha(opacity=40);
+        
+        /* Older than Firefox 0.9 */
+        -moz-opacity:0.4;
+        
+        /* Safari 1.x (pre WebKit!) */
+        -khtml-opacity: 0.4;
+        background: rgb(76, 175, 80);
+        
+        cursor: not-allowed;
+        color: rgba(0,0,0,.26);
+
+    }
+    .enablebutton {
+        
+
+        /* Theoretically for IE 8 & 9 (more valid) */	
+        /* ...but not required as filter works too */
+        /* should come BEFORE filter */
+        -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        
+        /* This works in IE 8 & 9 too */
+        /* ... but also 5, 6, 7 */
+        filter: alpha(opacity=40);
+        
+        /* Older than Firefox 0.9 */
+        -moz-opacity:0.4;
+        
+        /* Safari 1.x (pre WebKit!) */
+        -khtml-opacity: 0.4;
+        background: rgb(76, 175, 80);
+        
+        cursor: allowed;
+        color: rgba(0,0,0,.26);
+
+
+    }
+    
+    #white-clr label{
+        color:white;
+    }
+    .dx-datagrid-headers{
+        color : rgb(10, 11, 18)
+    }
+    .form-control{
+        color : rgb(10, 11, 18)
+    }
+
+    .form-inline label {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: left;
+    margin-bottom: 0;
+  }
+
+
+</style>
+{% load static %}
+<style src="{% static 'css/plugins/c3/c3.min.css'%}" rel="stylesheet"></style>
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/drawingboard.js/dist/drawingboard.min.css' %}">
+{% endblock %} 
+
+
+{% block content %} 
+{% csrf_token %} 
+
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
+{% include 'emr_new/emr_perawat/eresep/eresepracikan/layout/confirmationEditracik.html' %}
+{% include 'emr_new/emr_perawat/eresep/eresepracikan/layout/modals_racikan.html' %}
+{% include 'emr_new/emr_perawat/eresep/daftar_resep/layout/daftarResep.html' %}
+{% include 'emr_new/emr_perawat/eresep/layout/confirmationEdit.html' %}
+{% include 'emr_new/emr_perawat/eresep/layout/modalsEntryResep.html' %}
+{% include 'emr_new/emr_perawat/eresep/layout/ModalBarang.html' %}
+{% include 'emr_new/emr_perawat/eresep/layout/dxGridModalEresep.html' %}
+{% include 'emr_new/emr_perawat/eresep/layout/dxGridModalEresep.html' %}
+{% include 'emr_new/emr_perawat/modal/modalsMenu.html' %}
+{% include 'emr_new/emr_perawat/modal/dxGridModalRujukanBpjs.html' %}
+{% include 'emr_new/emr_perawat/layout/content.html'%} 
+{% include 'dashboard/modal/ModalLoading.html' %}
+{% include 'emr_new/amodul_icd10_picker/modal/DxGridModalSearch.html' %}
+{% include 'emr_new/amodul_icd10_picker/modal/DxGridModal.html' %}
+{% include 'emr_new/amodul_icd10_picker/modal/dxGridModalDiagnosa.html' %}
+
+{% include 'emr_new/emr_perawat/modal/modalsFTW.html' %}
+
+{% endblock %} 
+
+
+{% block script %}
+ 
+{% load static %}
+<script src="/static/js/standardModal.js"></script>  
+<script src="{% static 'bower_components/drawingboard.js/dist/drawingboard.min.js'  %}"></script>
+<script src="{% static 'bower_components/drawingboard.js/example/yepnope.js'  %}"></script>
+<script type="text/javascript" src="{% static 'js/html2canvas.js'%}"></script> 
+<script type="text/javascript" src="{% static 'js/moment.min.js'%}"></script>
+<script src="{% static 'js/MainProc.js'%}"></script>
+<script src="{% static 'js/terbilang.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/d3/d3.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/c3/c3.min.js'%}"></script>   
+<script type="text/javascript" src="{% static 'bower_components/easytimer.js/dist/easytimer.min.js'%}"></script>
+<script type="text/javascript">
+    {% include 'emr_new/emr_perawat/js/getPasien.html' %}
+    {% include 'emr_new/emr_perawat/js/mcu.html' %}
+    {% include 'emr_new/emr_perawat/eresep/standart_resep/init.html' %}
+    {% include 'emr_new/emr_perawat/eresep/eresepracikan/init.html' %}
+    {% include 'emr_new/emr_perawat/eresep/daftar_resep/init.html' %}
+    {% include 'emr_new/emr_perawat/js/rujukanBPJS.html' %}
+    {% include 'emr_new/emr_perawat/js/getRiwayat.html' %}
+    {% include 'emr_new/emr_perawat/js/getjkn.html' %}
+    {% include 'emr_new/emr_perawat/js/odontogram.html' %}  
+    {% include 'emr_new/emr_perawat/js/pemeriksaanfisik.html' %} 
+    {% include 'emr_new/emr_perawat/eresep/js/getBarang.html' %}
+    {% include 'emr_new/emr_perawat/eresep/js/init.html' %}
+    {% include 'emr_new/emr_perawat/js/init.html' %}
+    {% include 'emr_new/amodul_icd10_picker/getDxGrid.html' %}
+    {% include 'emr_new/amodul_icd10_picker/getDiagnosa.html' %}
+    //js FTW
+    {% include 'emr_new/emr_perawat/js/ftw.html' %}
+    $('.modal').on("hidden.bs.modal", function (e) { 
+        if ($('.modal:visible').length) { 
+            $('body').addClass('modal-open');
+        }
+    });
+</script>
+
+
+{% include 'emr_new/emr_perawat/js/renderRiwayatContent.html' %}
+{% include 'emr_new/emr_perawat/js/cetakResumeMedis.html' %}
+<!-- ICD10 -->
+{% comment %} {% include 'emr_new/amodul_icd10_picker/init.html' %} {% endcomment %}
+
+<!-- ICD9 -->
+{% include 'emr_new/amodul_icd9_picker/init.html' %}
+{% endblock %}
+
+

@@ -1,0 +1,553 @@
+<script>
+var host = window.location.href.split("/");
+    var host = host[0] + "//" + host[2]
+    console.log(host)
+
+
+$(document).ready(function(){
+    var cekNoRM="";
+    cekNoRM='{{request.session.noRM}}';
+
+    if(cekNoRM.length>0){
+        $("#nocmH").val('{{request.session.noRM}}'); 
+        $("#pasienNH").val('{{request.session.namaPasien}}'); 
+    }
+   setGridAll();
+});
+
+
+    $('#btnRFind').click(function(event){
+            cariPendaftar(event) ;
+            
+    });
+
+ function setGridAll(){
+    setGridKunjunganPasien(""+$('#nocmH').val());
+    setGridPasienRWI(""+$('#nocmH').val());
+   
+    setGridDiagnosa(""+$('#nocmH').val());
+    setGridDiagnosaPenyakitD(""+$('#nocmH').val());
+
+    setGridTransaksiResep(""+$('#nocmH').val());
+    setGridTransaksiResepDetail(""+$('#pasienNH').val());
+    setGridTransaksiLab(""+$('#nocmH').val());
+    setGridTransaksiLabD(""+$('#nocmH').val());
+
+    setGridTransaksiRad(""+$('#nocmH').val());
+    setGridTransaksiRadD(""+$('#nocmH').val());
+ }
+
+ function setGridKunjunganPasien(norm){
+        $("#gridRiwayatKunjungan").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 4
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getPasienkunjungan&kdPasien="+norm,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "KPKD_POLY",caption: "Kode Poli"},
+         {dataField: "FMPKLINIKN",caption: "Nama Poli"},
+         {dataField: "KPTGL_PERIKSA",caption: "TglPeriksa"},
+         {dataField: "KPKD_DOKTER",caption: "KodeDokter"},
+         {dataField: "FMDDOKTERN",caption: "Dokter"},
+         {dataField: "KPJAM_MASUK",caption: "JamPeriksa"},
+         {dataField: "KPTGL_KELUAR",caption: "TglKeluar"},
+         {dataField: "KPJAM_KELUAR",caption: "JamKeluar"},
+         {dataField: "NAME",caption: "Kelompok"},
+         {dataField: "KPDIAGNOSA",caption: "KpDiagnosa"},
+         {dataField: "KPNO_TRANSAKSI",caption: "NoTrans"},
+         //{dataField: "STATUSLAB",caption: "STATUSLAB"}
+         ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        //setGridTransaksiRadD(e.data.MRHNO_TRANSAKSI);
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridPasienRWI(norm){
+        $("#gridRiwayatInap").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 4
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getPasienRWI&kdPasien="+norm,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "FMSPESIALISASIN",width:150,caption: "Spesialis"},
+         {dataField: "FMKKAMARN",width:150,caption: "KelasKamar"},
+         {dataField: "FMKNAMA_KAMAR",width:150,caption: "Kamar"},
+         {dataField: "PRWITGL_INAP",width:150,caption: "TglMasuk"},
+         {dataField: "FMDDOKTERN",width:150,caption: "Dokter"},
+         {dataField: "PRWIKPJAM_MASUK",width:100,caption: "JamMasuk"},
+         {dataField: "PRWITGL_KELUAR",width:100,caption: "TglKeluar"},
+         {dataField: "PRWIJAM_KELUAR",width:100,caption: "JamKeluar"},
+         {dataField: "name",width:100,caption: "Kelompok"},
+         {dataField: "PRWINO_TRANSAKSI",width:150,caption: "NoTrans"},
+         //{dataField: "STATUSLAB",caption: "STATUSLAB"}
+         ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        //setGridTransaksiRadD(e.data.MRHNO_TRANSAKSI);
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+function setGridDiagnosa(norm){
+        $("#gridDiagnosa1").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 4
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getDiagnosaPasien&kdPasien="+norm,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "Unit",caption: "Spesialis/Unit"},
+         {dataField: "MRDTGL_DIAGNOSA",caption: "TglTindakan"},
+         {dataField: "FMDDOKTERN",caption: "Dokter"},,
+         //{dataField: "STATUSLAB",caption: "STATUSLAB"}
+         ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        setGridDiagnosaPenyakitD(e.data.MRDNO_TRANSAKSI);
+        $('#noTransDiagnosa').val(e.data.MRDNO_TRANSAKSI);
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridDiagnosaPenyakitD(noTrans){
+        $("#gridDiagnosa2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 4
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getDiagnosaPenyakitD&noTrans="+noTrans,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "MRPURUT_MASUK",width:50,caption: "No."},
+         {dataField: "MRPKD_PENYAKIT",width:100,caption: "Kode."},
+         {dataField: "PENYAKIT",width:100,caption: "Penyakit"},
+         {dataField: "MSDIAGNOSANAMA",width:150,caption: "DiagnosaPenyakit"},
+         {dataField: "MSKASUSNAMA",width:150,caption: "Kasus"},
+         //{dataField: "MSDIAGNOSANAMA",width:150,caption: "Diagnosa Dokter"},
+         //{dataField: "STATUSLAB",caption: "STATUSLAB"}
+         ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        //setGridTransaksiRadD(e.data.MRHNO_TRANSAKSI);
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+ function setGridTransaksiResep(norm){
+        $("#gridTransaksiResep").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/detail-entry-resep?q=transaksiResep&FHFJCUST_ID="+norm,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "FHFJDOKTERN",width:300,caption: "Dokter"},
+         {dataField: "FHFJDATE",caption: "Tgl"},
+         {dataField: "FHFJBUKTI_ID",caption: "NoTrans"},
+         
+         ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            setGridTransaksiResepDetail(data.FHFJBUKTI_ID);
+            $('#noresep').val(''+data.FHFJBUKTI_ID);
+            $('#tglresep').val(''+data.FHFJDATE);
+            $('#dokterResep').val(''+data.FHFJDOKTERN);
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridTransaksiResepDetail(notrans){
+        $("#gridTransaksiResepD").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/detail-entry-resep?q=transaksiResepDetail&FDFJBUKTI_ID="+notrans,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        {dataField: "FDFJNOM",caption: "NO"},
+        {dataField: "FDFJBRGN",caption: "NAMAOBAT"},
+        {dataField: "FDFJQTY",caption: "JUMLAH"}],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridTransaksiLab(norm){
+        $("#gridHistoryTransLab").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getTransLab&kdPasien="+norm,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "MLHNO_TRANSAKSI",caption: "NoTrans"},
+         {dataField: "MLHTGL_MASUK",caption: "Tgl"},
+         {dataField: "STATUSLAB",caption: "STATUSLAB"}],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        setGridTransaksiLabD(e.data.MLHNO_TRANSAKSI);
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridTransaksiLabD(notrans){
+        $("#gridHistoryTransLabD").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getTransLabD&noTrans="+notrans,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        {dataField: "LabAutoNomor",width:50,caption: "NO"},
+       // {dataField: "BillingNomor",width:100,caption: "BillingNomor"},
+        //{dataField: "LabHeaderID",caption: "LabHeaderID"},
+        //{dataField: "LabNomor",caption: "LabNomor"},
+        //{dataField: "LabKode",caption: "LabKode"},
+        {dataField: "LabNama",width:150,caption: "LabNama"},
+        {dataField: "KelompokPx",width:150,caption: "KelompokPx"},
+        {dataField: "LabMetode",width:100,caption: "LabMetode"},
+        {dataField: "LabHasil",width:100,caption: "LabHasil"},
+        {dataField: "LabSatuan",width:100,caption: "LabSatuan"},
+        {dataField: "LabHargaNorm",width:100,caption: "LabHargaNorm"},
+        {dataField: "LabKeterangan",width:100,caption: "LabKeterangan"},
+        {dataField: "LabStatus",width:100,caption: "LabStatus"},
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+
+    function setGridTransaksiRad(norm){
+        $("#gridHistoryTransRad").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getTransRad&kdPasien="+norm,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "MRHNO_TRANSAKSI",caption: "NoTrans"},
+         {dataField: "MRHTGL_MASUK",caption: "Tgl"},
+         //{dataField: "STATUSLAB",caption: "STATUSLAB"}
+         ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        setGridTransaksiRadD(e.data.MRHNO_TRANSAKSI);
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridTransaksiRadD(notrans){
+        $("#gridHistoryTransRadD").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "http://{{ request.get_host }}/emrdokter/get-data-pasien?q=getTransRadD&noTrans="+notrans,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        //{dataField: "LabAutoNomor",width:35,caption: "NO"},
+        {dataField: "MRHKD_PRODUK",caption: "KdProduk"},
+        {dataField: "FMPPRODUKN",caption: "Produk"},
+        {dataField: "MRHHASIL",caption: "Hasil"},
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+
+    var gridDataPendaftar = new DevExpress.data.DataSource({
+        load: function (values) {
+            var pilihan = $('#gridPasienFilter').val();
+            
+            var tanggal = $('#date_search').val();
+            var search_name = $('#search_name').val();
+            var search_almt = $('#search_almt').val();
+            var search_kdpas = $('#search_kdpas').val();
+            return $.ajax({
+                url: host+"/getPasien",
+                method: "GET",
+                data: {
+                    "search_name" : search_name,
+                    "search_almt" : search_almt,
+                    "search_kdpas": search_kdpas
+                },
+                success : function (datas){
+                    $('#DxGridModalPasien').modal('show');
+                    console.log('tes');
+                }
+            })    
+            
+            
+        }
+    });
+
+     function cariPendaftar(e) {
+         $('#DxGridModalPasien').modal('show');
+        //e.preventDefault();
+        //e.stopImmediatePropagation();
+        $('#DxGridLabelPasien').html('Pasien');
+        $("#DxGridDataPasien").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: gridDataPendaftar,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                "KD_PASIEN",
+                "NAMAPASIEN",
+                "ALAMAT",
+                "NAMA_KELUARGA"
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                
+            },onRowClick : function(e) {
+            
+            var data = e.data;
+            if(data) {
+                
+                $('#DxGridModalPasien').modal('hide');
+                $('#nocmH').val(''+data.KD_PASIEN);
+                $('#pasienNH').val(''+data.NAMAPASIEN);
+                setGridAll();
+            }
+
+            }
+
+        });
+    }
+</script>

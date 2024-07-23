@@ -1,0 +1,84 @@
+{% extends "emr/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+E-MR | ERESEP
+{% endblock %}
+
+{% block head %} 
+<link rel="stylesheet" type="text/css" href="/static/css/farmasi.css">
+<style>
+    .top-navigation .quick-button .thumbnail {
+        height: 50px !important;
+        margin-bottom: 0px !important;
+    }
+    
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+    
+    .modal .input-sm {
+        font-size: 11px;
+        height: 30px !important;
+    }
+    .height35{
+    height: 35px !important;
+}
+</style>
+{% endblock %} 
+
+{% block content %}
+<div class="wrapper wrapper-content  entry ">
+    <div class="row ">
+        {% include 'emr/eresepracikan/layout/navbar_crud_racikan.html' %}
+    </div>
+
+    <div class="row ">
+
+        <div class="col-md-7 col-sm-12 card">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h3>Racikan E-Resep</h3>
+                </div>
+                <div class="ibox-content " style="width: 100%;">
+                    <div class="row">
+                        <div class="col-md-7 col-sm-7" style="padding: 0px 10px;">
+                            <form class="form-horizontal" action="" method="post">
+                                {% include 'emr/eresepracikan/layout/form_racikan.html' %}
+                            </form>
+
+                        </div>
+                        <div class="col-md-5 col-sm-5" style="padding: 0px 10px;">
+                            {% include 'emr/eresepracikan/layout/form_racikan_kanan.html' %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12" style="margin-top: 5px;">
+                            <div class="form-group">
+                                <div id="gridResep" style="padding: 15px 0px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+
+
+{% include 'emr/eresepracikan/layout/modals_racikan.html' %} 
+{% endblock content %} 
+
+{% block script%} 
+{% include 'emr/eresepracikan/layout/js.html' %} 
+{% endblock script%}

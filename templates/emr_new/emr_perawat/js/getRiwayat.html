@@ -1,0 +1,94 @@
+
+function getriwayat(kd_pasien) {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: "/emr_perawat/getriwayat",
+        method: "GET",
+        data: {
+            "tanggal_dr": $("#Cetak_mutasi_tanggal_dr").val(),
+            "tanggal_sd": $("#Cetak_mutasi_tanggal_sd").val(),
+            "pasien": kd_pasien
+        },
+        success: function (datas) {
+
+            dataGrid = $("#dxGridDatariwayat").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                sorting: {
+                    mode: 'multiple',
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: 
+                    [{
+                        dataField: "NAMAPASIEN",
+                        caption: "Nama Pasien",
+                    },{
+                        dataField: "KPKD_PASIEN",
+                        caption: "NO RM",
+                    },{
+                        dataField: "TTV_TGL_CUTI",
+                        caption: "Tanggal",
+                    },
+                    {
+                        dataField: "TTV_LAMA_CUTI",
+                        caption: "Lama Cuti",
+                    },
+                    {
+                        dataField: "FMDDOKTERN",
+                        caption: "DOKTER",
+                    },
+                    {
+                        dataField: "MRPKD_PENYAKIT",
+                        caption: "PENYAKIT",
+                    },
+                ],
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 500);
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

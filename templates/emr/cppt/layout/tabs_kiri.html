@@ -1,0 +1,813 @@
+<div class="tabs-container" style="padding: 5px 5px;">
+    <ul class="nav nav-tabs" role="tablist">
+
+        <!-- <li ><a class="nav-link " data-toggle="tab" href="#tabSOAPDOKTER">SOAP Dokter</a></li> -->
+        <li class="active"><a class="nav-link active" data-toggle="tab" href="#tab_cppt">CPPT</a></li>
+        <li><a class="nav-link " data-toggle="tab" href="#tabkiri1" aria-expanded="true"> H/ Penyakit</a></li>
+         <li><a class="nav-link" data-toggle="tab" href="#tab_labs">R/ Laboratorium</a></li>
+        <li><a class="nav-link" data-toggle="tab" href="#tab_rads">R/ Radiologi</a></li>
+        <!-- <li><a class="nav-link" data-toggle="tab" href="#tabRiwayatLama">Riwayat Lama</a></li> -->
+        <li><a class="nav-link" data-toggle="tab" href="#tabvisual">Visual</a></li>
+    </ul>
+    <div class="tab-content">
+
+
+      <div role="tabpane2" id="tab_cppt" class="tab-pane active">
+        <div class="panel-body" style="background: #4fb3bf;color:#000; 
+          font-weight: bold;">
+          <div style="margin: 0px 5px;">
+            <div id="layoutCPPTRiwayat">
+              <div class="form-group row">
+                <div class="row" style="margin-left: 2px;">
+                  <label class="col-md-2 fz-11 control-label">Riwayat dari:</label>
+                  <div class="col-md-10" id="MRDANAMNESE" style="margin-left: 2px;">
+                    <div id="ds_answer" class="form-inline">
+                      <table>
+                        <tr>
+                          <td>
+                            <label class="radio-inline fz-11">
+                              <input type="radio" name="ds" value="0">autoanamnesa </label>
+                          </td>
+                          <td>
+                            <label class="radio-inline fz-11">
+                              <input type="radio" name="ds" value="1">allonamnesa yaitu : <input type="text" id="ds_pernah" name="ds_pernah" class="form-control fz-11 input-sm" placeholder="...">
+                            </label>
+                          </td>
+                          <td>
+                            <label class="radio-inline fz-11">hub dg pasien : <input type="text" id="ds_pernah2" name="ds_pernah2" class="form-control fz-11 input-sm" placeholder="...">
+                            </label>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Keluhan Utama:</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" style="font-size: 11px;height: 50px;" id="keluhanutm" name="keluhanutm" placeholder=""></textarea>
+                </div>
+              </div>
+              <div class="form-group row" id="layoutAlergi" style="display:none;">
+                <label class="col-md-3 fz-11 control-label">Alergi:</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" style="font-size: 11px;height: 50px;" id="alergiKet" name="alergiKet" placeholder=""></textarea>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Rwyt Penyakit Skrg:</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" style="font-size: 11px;height: 50px;" id="rwytpenyakitskg" name="rwytpenyakitskg" placeholder=""></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 fz-11 control-label">S:</label>
+              <div class="col-md-9">
+                <textarea class="form-control generateSoap2" style="width:100%;height: 100px;font-size: 11px;" id="S_dokter"  placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 fz-11 control-label">O:</label>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 fz-11 control-label"></label>
+              <div class="col-md-9">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="col-md-12 fz-11">
+                      <label>Berat Badan</label>
+                    </div>
+                    <input type="number" id="BB" class="form-control fz-11 input-sm2 generateBMI ttv" placeholder="kg">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">Kg</i>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="col-md-12">
+                      <label class=" fz-11">Tinggi Badan</label>
+                    </div>
+                    <input type="number" id="TB" class="form-control fz-11 input-sm2 generateBMI ttv" placeholder="cm">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">Cm</i>
+                  </div>
+                  <!-- <div class="col-md-4" id="LayoutTensi">
+                    <div class="col-md-12">
+                      <label class=" fz-11">Tekanan Darah</label>
+                    </div>
+                    <input type="text" id="tensi" name="tensi" class="form-control fz-11 input-sm2" placeholder="../.. mmHg">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">mmHg</i>
+                  </div> -->
+                  <div class="col-md-4" id="LayoutBMI" >
+                    <div class="col-md-12">
+                      <label class=" fz-11">BMI</label>
+                    </div>
+                    <input type="number" id="BMI" name="BMI" class="form-control fz-11 input-sm2 ttv" placeholder=".....">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">kg/m2</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 fz-11 control-label"></label>
+              <div class="col-md-9">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="col-md-12">
+                      <label class="fz-11">Nadi</label>
+                    </div>
+                    <input type="number" id="nadi" name="nadi" class="form-control fz-11 input-sm2 ttv" placeholder="x/mnt">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">x/mnt</i>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="col-md-12">
+                      <label class="fz-11">Sistole</label>
+                    </div>
+                    <input type="number" id="sistole" name="sistole" class="form-control fz-11 input-sm2 ttv" value="0" placeholder="mmHg">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">mmHg</i>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="col-md-12">
+                      <label class="fz-11">Diastole</label>
+                    </div>
+                    <input type="number" id="diastole" name="diastole" class="form-control fz-11 input-sm2 ttv" value="0" placeholder="mmHg">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">mmHg</i>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="col-md-12">
+                      <label class="fz-11">Suhu</label>
+                    </div>
+                    <input type="number" id="suhu" name="suhu" class="form-control fz-11 input-sm2 ttv" placeholder="C">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">C</i>
+                  </div>
+                  <div class="col-md-4" id="LayoutRespirasi">
+                    <div class="col-md-12">
+                      <label class="fz-11">Respirasi</label>
+                    </div>
+                    <input type="number" id="respirasi" name="respirasi" class="form-control fz-11 input-sm2 ttv" placeholder="x/mnt">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">x/mnt</i>
+                  </div>
+                  <div class="col-md-4" id="LayoutRespirasi">
+                    <div class="col-md-12">
+                      <label class="fz-11">SPO2</label>
+                    </div>
+                    <input type="number" id="TTVO2" name="TTVO2" class="form-control fz-11 input-sm2 ttv" placeholder="%">
+                    <i style="position: absolute;right: 10px;margin-top: -20px;">%</i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="LayoutSD">
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label"></label>
+                <div class="col-md-9">
+                  <div class="row">
+                    
+                    <div class="col-md-4">
+                      <div class="col-md-12">
+                        <label class="fz-11">L.Perut</label>
+                      </div>
+                      <input type="number" id="LingkarPerut" name="LingkarPerut" class="form-control fz-11 input-sm2 ttv" value="0" placeholder="cm">
+                      <i style="position: absolute;right: 10px;margin-top: -20px;">cm</i>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="col-md-12">
+                        <label class="fz-11">L.Kepala</label>
+                      </div>
+                      <input type="number" id="LingkarKepala" name="LingkarKepala" class="form-control fz-11 input-sm2 ttv" value="0" placeholder="cm">
+                      <i style="position: absolute;right: 10px;margin-top: -20px;">cm</i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row ttv_obsgn">
+                <label class="col-md-3 fz-11 control-label"></label>
+                <div class="col-md-9">
+                  <div class="row">
+                    
+                    <div class="col-md-4 ttv_obsgn">
+                      <div class="col-md-12">
+                        <label class="fz-11">HPPT</label>
+                      </div>
+                      <input type="date" id="TTV_HPHT" name="TTV_HPHT" class="form-control fz-11 input-sm2"  placeholder="hppt">
+                      <!-- <i style="position: absolute;right: 10px;margin-top: -20px;">cm</i> -->
+                    </div>
+
+                    <div class="col-md-4 ttv_obsgn">
+                      <div class="col-md-12">
+                        <label class="fz-11">HPL</label>
+                      </div>
+                      <input type="date" id="TTV_HPL" name="TTV_HPL" class="form-control fz-11 input-sm2"  disabled placeholder="hpl">
+                      <!-- <i style="position: absolute;right: 10px;margin-top: -20px;">cm</i> -->
+                    </div>
+                    
+                    <div class="col-md-4 ttv_obsgn">
+                      <div class="col-md-12">
+                        <label class="fz-11">UMUR KEHAMILAN</label>
+                      </div>
+                      <input type="text" id="TTV_UH" name="TTV_UH" class="form-control fz-11 input-sm2"   placeholder="UMURKEHAMILAN">
+                      <!-- <i style="position: absolute;right: 10px;margin-top: -20px;">cm</i> -->
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Kesadaran:</label>
+                <div class="col-md-9">
+                  <div id="" class="form-inline">
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="Kesadaran" value="01" data-value="Compos mentis" checked="checked">Compos mentis </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="Kesadaran" value="02" data-value="Somnolence">Somnolence </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="Kesadaran" value="03" data-value="Sopor">Sopor </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="Kesadaran" value="04" data-value="Coma">Coma </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Status Pulang:</label>
+                <div class="col-md-9">
+                  <div id="" class="form-inline">
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="StatusPulang" value="0">Sembuh </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="StatusPulang" value="3">Berobat Jalan </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="StatusPulang" value="4">Rujuk </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="StatusPulang" value="1">Meninggal </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="StatusPulang" value="2">Pulang Paksa </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Pelayanan NonKapitasi:</label>
+                <div class="col-md-9">
+                  <div id="listNonKapitasi_slc_gigi">
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="01" data-value="Pelayanan KB">Pelayanan KB </label>
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="02" data-value="Pelayanan ANC">Pelayanan ANC </label>
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="03" data-value="Pelayanan KB">Pelayanan PNC </label>
+                  </div>
+                  <div id="listNonKapitasi_slc_gigi">
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="04" data-value="Pelayanan Ambulance">Pelayanan Ambulance </label>
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="05" data-value="Pra Rujukan">Pra Rujukan </label>
+                  </div>
+                  <div id="listNonKapitasi_slc_lab">
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="10" data-value="Pelayanan Gula Darah">Pelayanan Gula Darah </label>
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="11" data-value="Pelayanan HbA1c">Pelayanan HbA1c </label>
+                    <label class="checkbox-inline fz-11">
+                      <input type="checkbox" name="pelayananNonKapitasi" value="12" data-value="Pelayanan Kimia Darah">Pelayanan Kimia Darah </label>
+                  </div>
+                </div>
+              </div>
+              <div id="layoutRujukan" style="display: none;">
+                <div class="form-group row">
+                  <label class="col-md-3 fz-11 control-label">PPK Rujukan:</label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="kondisiKhususKategoris" id="kondisiKhususKategoris" class="form-control input-sm">
+                    <input type="hidden" name="opsiRujuk_rbs" id="opsiRujuk_rbs" class="form-control input-sm">
+                    <input type="hidden" name="jenisRujukan_rbs" id="jenisRujukan_rbs" class="form-control input-sm">
+                    <input type="hidden" name="rujukanSarana" id="rujukanSarana" class="form-control input-sm" value="0">
+                    <input type="hidden" name="ppkRujukan" id="ppkRujukan" class="form-control input-sm" required="">
+                    <input type="text" name="ppkRujukanN" id="ppkRujukanN" class="form-control input-sm" readonly>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 fz-11 control-label">Spesialis/Subspesialis:</label>
+                  <div class="col-md-9">
+                    <input type="hidden" name="kdTacc" id="kdTacc" class="form-control input-sm" required="">
+                    <input type="hidden" name="alasanTacc" id="alasanTacc" class="form-control input-sm" required="">
+                    <input type="hidden" name="spesialisRujukan" id="spesialisRujukan" class="form-control input-sm" required="">
+                    <input type="text" name="spesialisRujukanN" id="spesialisRujukanN" class="form-control input-sm" readonly>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 fz-11 control-label">Catatan:</label>
+                  <div class="col-md-9">
+                    <textarea class="form-control " style="width:100%;height: 100px;font-size: 11px;" id="catatanRujukan" name="catatanRujukan" readonly></textarea>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 fz-11 control-label">Tgl Rencana Kunjungan:</label>
+                  <div class="col-md-9">
+                    <input type="text" name="tglRujukan" id="tglRujukan" class="form-control input-sm  tglfakturs" readonly>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label class="col-md-3 fz-11 control-label"></label>
+                  <div class="col-md-9">
+                    <div id="btnCariRujukan" class="btn btn-primary">Cari Rujukan</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row" style="display: none;">
+              <div class="col-md-3 "></div>
+              <div class="col-md-9 ">
+                <div id="btnCetakSuratSPPPCARE" class="btn btn-primary disabled">
+                  <i class="fa fa-print"></i> SPP
+                </div>
+                <div id="btnCetakSuratKunjunganPCARE" class="btn btn-primary disabled">
+                  <i class="fa fa-print"></i> Kunjungan
+                </div>
+                <div id="btnCetakSuratRujukan" class="btn btn-primary disabled">
+                  <i class="fa fa-print"></i> Surat Rujukan
+                </div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 fz-11 control-label"></label>
+              <div class="col-md-9">
+                <textarea class="form-control generateSoap2" style="width:100%;height: 100px;font-size: 11px;" id="O_dokter"  placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 fz-11 control-label">A:</label>
+              <div class="col-md-10">
+                {% include 'emr/amodul_icd10_picker/content.html' %}
+                <textarea class="form-control generateSoap2" style="width:100%;height: 100px;font-size: 11px;" id="A_dokter"  placeholder=""></textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 fz-11 control-label">P:</label>
+              <div class="col-md-10">
+                
+                {% include 'emr/amodul_icd9_picker/content.html' %}
+                <button class="btn btn-primary" id="btn_COPY_ERESEP"><span class="fa fa-plus"></span> COPY TERAPI DARI ERESEP</button>
+                <textarea class="form-control generateSoap2" style="width:100%;height: 100px;font-size: 11px;" id="P_dokter"  placeholder=""></textarea>
+              </div>
+            </div> 
+
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control" id="MRDTERAPI" name="MRDTERAPI" placeholder="Input Melalui E-resep" style="width:100%;height: 100px;" disabled></textarea>
+              </div>
+            </div>
+
+            {% comment %} <div class="form-group row">
+              <label class="col-md-3 fz-11 control-label">SOAP Dokter:</label>
+              <div class="col-md-9">
+                <textarea class="form-control" style="font-size: 11px;height: 50px;" id="soap" name="soap" placeholder=""></textarea>
+              </div>
+            </div> {% endcomment %} 
+            <div class="form-group row" style="display:none">
+              <label class="col-md-3 fz-11 control-label">SOAP Perawat:</label>
+              <div class="col-md-9">
+                <textarea class="form-control generateSoap2" style="width:100%;height: 200px;font-size: 11px;" id="soap2" name="soap" placeholder=""></textarea>
+              </div>
+            </div>
+            <div id="layoutCPPTKeluar" style="display: none;">
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Tanggal Keluar:</label>
+                <div class="col-md-4">
+                  <input type="text" name="tanggalKeluar" id="tanggalKeluar" class="form-control input-sm datepik" required="">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Jam Masuk:</label>
+                <div class="col-md-2">
+                  <input type="text" name="jamMasuk" id="jamMasuk" class="form-control input-sm clockpicker" required="">
+                </div>
+                <label class="col-md-2 fz-11 control-label">Jam Keluar:</label>
+                <div class="col-md-2">
+                  <input type="text" name="jamKeluar" id="jamKeluar" class="form-control input-sm clockpicker" required="">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Cara Pulang:</label>
+                <div class="col-md-1">
+                  <input type="text" name="caraPulang1" id="caraPulang1" class="form-control input-sm" required="">
+                </div>
+                <div class="col-md-4">
+                  <input type="text" name="caraPulang2" id="caraPulang2" class="form-control input-sm" required="">
+                </div>
+                <div class=" col-md-1">
+                  <div class="" id="caraPulangCari">
+                    <i class="fa fa-search " style="padding: 4px;border-radius: 5px;background: white;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Tindakan:</label>
+                <div class="col-md-9">
+                  <div id="" class="form-inline">
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptTindakan" value="0" data-value="Bedah">Bedah </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptTindakan" value="1" checked="checked" data-value="Non Bedah">Non Bedah </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptTindakan" value="2" data-value="Kebidanan">Kebidanan </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptTindakan" value="3" data-value="Psikiatrik">Psikiatrik </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptTindakan" value="4" data-value="Anak">Anak </label>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 fz-11 control-label">Perawatan:</label>
+                <div class="col-md-9">
+                  <div id="" class="form-inline">
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptPerawatan" value="0" data-value="Dirawat">Dirawat </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptPerawatan" value="1" data-value="Dirujuk">Dirujuk </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptPerawatan" value="2" data-value="Pulang" checked="checked">Pulang </label>
+                    <label class="radio-inline fz-11">
+                      <input type="radio" name="cpptPerawatan" value="3" data-value="Meninggal">Meninggal </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row" id="layout_triage" style="display:none">
+              <label class="col-md-3 fz-11 control-label">Triage:</label>
+              <div class="col-md-9">
+                <div id="" class="form-inline">
+                  <label class="radio-inline fz-11" style="background: red;margin-right: 3px;">
+                    <input type="radio" name="cpptTriage" value="0" data-value="Merah">Merah </label>
+                  <label class="radio-inline fz-11" style="background: yellow;margin-right: 3px;">
+                    <input type="radio" name="cpptTriage" value="1" data-value="Kuning" checked="checked">Kuning </label>
+                  <label class="radio-inline fz-11" style="background: green;margin-right: 3px;">
+                    <input type="radio" name="cpptTriage" value="2" data-value="Hijau">Hijau </label>
+                  <label class="radio-inline fz-11" style="background: black;color:white;margin-right: 3px;">
+                    <input type="radio" name="cpptTriage" value="3" data-value="Hitam">Hitam </label>
+                </div>
+              </div>
+            </div>
+            <div class="form-group row" id="layoutSebabKematian" style="display:none">
+              <label class="col-md-3 fz-11 control-label">Sebab Kematian:</label>
+              <div class="col-md-4">
+                <input type="text" name="cpptSebabKematian" id="cpptSebabKematian" class="form-control input-sm" required="">
+              </div>
+            </div>
+            <div class="form-group row" style="display: none;">
+              <label class="col-md-3 fz-11 control-label">Perawat:</label>
+              <div class="col-md-1">
+                <input type="text" name="kdPerawat1" id="kdPerawat1" class="form-control input-sm" required="">
+              </div>
+              <div class="col-md-4">
+                <input type="text" name="kdPerawat2" id="kdPerawat2" class="form-control input-sm" required="">
+              </div>
+            </div>
+
+
+            <div id="layoutPoliGigi" style="display:none;">
+              <div class="col-md-12 row" style="margin-left: 15px;">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="col-md-12">
+                      <a class="btn btn-primary" href="/emr">Refresh (Gambar Apabila gambar belum berubah)</a>
+                    </div>
+                    <div id="layoutCreateSLOdontogram" class="login-button text-center">
+                      <div id="btnSLOdontogram" class="btn btn-primary"> Buat Gambar Odontogram</div>
+                    </div>
+                    <div id="layoutEditSLOdontogram">
+                      <table>
+                        <tr>
+                          <td>
+                            <div id="btnSLSaveOdontogram" class="btn btn-primary"> Simpan Gambar</div>
+                          </td>
+                          <td>
+                            <div id="btnSLEditOdontogram" class="btn btn-primary"> Edit</div>
+                          </td>
+                          <td>
+                            <div id="btnSLBatalOdontogram" class="btn btn-primary"> Batal</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" id="layoutSLOdontogram">
+                  <div class="board" id="default-board-Odontogram" data-example="3" style="width: 726px;height: 216px;margin-bottom: 25px;"></div>
+                </div>
+                <div class="row" id="layoutSLImageOdontogram">
+                  <img class="img-popup" id="layoutSLImageImgOdontogram" onerror="this.onerror=null;$('#layoutSLImageOdontogram').hide();" style="width: 726px;height: 216px;" />
+                </div>
+                <input type="hidden" id="imageOdontogram" />
+              </div>
+              <div class="form-group row">
+                <label class="col-md-7 fz-11 control-label">Catatan Odontogram:</label>
+                <br>
+                <textarea class="form-control" style="font-size: 11px;height: 100px;" id="odontogramCatatan" name="odontogramCatatan" placeholder=""></textarea>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+        <div role="tabpanel" id="tabvisual" class="tab-pane visual-gigi">
+            <div class="panel-body">
+
+                <div style="margin: 0px 5px;">
+                    <div class="col-md-12">
+                      <a class="btn btn-primary" href="/emr">Refresh (Gambar Apabila gambar belum berubah)</a>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4 fz-11 control-label">Gambar 1 :</label>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12 row" style="margin-left: 15px;">
+                            <div class="row">
+
+                                <div class="col-md-4">
+                                    <div id="layoutCreateSLVisualGigi1" class="login-button text-center">
+                                        <div id="btnSLVisualGigi1" class="btn btn-primary"> Buat Gambar 1 (Coret)</div>
+                                    </div>
+                                    
+                                    <div id="layoutEditSLVisualGigi1">
+                                      <div class="row">
+                                        <table>
+                                          <tr>
+                                            <td><div id="btnSLSaveVisualGigi1" class="btn btn-primary"> Simpan Gambar</div></td>
+                                            <td><div id="btnSLEditVisualGigi1" class="btn btn-primary"> Edit</div></td>
+                                            <td><div id="btnSLBatalVisualGigi1" class="btn btn-primary"> Batal</div></td>
+                                          </tr>
+                                        </table>
+                                        
+                                        
+                                        
+                                      </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="row" id="layoutSLVisualGigi1">
+                                <div class="board" id="default-board-VisualGigi1" data-example="3" style="width: 826px;height: 440px;margin-bottom: 25px;"></div>
+                            </div>
+
+                            <div class="row" id="layoutSLImageVisualGigi1">
+                                <img class="img-popup" id="layoutSLImageImgVisualGigi1" onerror="this.onerror=null;$('#layoutSLImageVisualGigi1').hide();" style="width: 826px;height: 440px;" />
+                            </div>
+                            <input type="hidden" id="imageVisualGigi1" />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 fz-11 control-label">Gambar 2 :</label>
+                        <div class="col-md-4" id="">
+                            <input type='file' id="imageVisualGigi2" class=" form-control  input-sm2">
+                        </div>
+                        <div class="col-md-6" id="">
+                            <img class="img-popup" id="imageVisualGigi2View" src="#" alt="Gambar 2" width="300px" />
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 fz-11 control-label">Gambar 3 :</label>
+                        <div class="col-md-4" id="">
+                            <input type='file' id="imageVisualGigi3" class=" form-control  input-sm2">
+                        </div>
+
+                        <div class="col-md-6" id="">
+                            <img class="img-popup" id="imageVisualGigi3View" src="#" alt="Gambar 3" width="300px" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 fz-11 control-label">Gambar 4 :</label>
+                        <div class="col-md-4" id="">
+                            <input type='file' id="imageVisualGigi4" class=" form-control  input-sm2">
+                        </div>
+
+                        <div class="col-md-6" id="">
+                            <img class="img-popup" id="imageVisualGigi4View" src="#" alt="Gambar 4" width="300px" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 fz-11 control-label">Gambar 5 :</label>
+                        <div class="col-md-4" id="">
+                            <input type='file' id="imageVisualGigi5" class=" form-control  input-sm2">
+                        </div>
+
+                        <div class="col-md-6" id="">
+                            <img class="img-popup" id="imageVisualGigi5View" src="#" alt="Gambar 5" width="300px" />
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpane5" id="tab_labs" class="tab-pane">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 25px;">
+                    <div class="row ">
+                        <div class="col-md-12 ">
+                            {% include 'emr/historyPasien/col_kiri_lab.html' %}
+                        </div>
+                        <div class="col-md-12 ">
+                            {% include 'emr/historyPasien/col_kanan_lab.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpane6" id="tab_rads" class="tab-pane">
+            <div class="panel-body bgfffbc0">
+                <div style="margin: 0px 25px;">
+                    <div class="row ">
+                        <div class="col-md-12 ">
+
+                            <div class="row">
+                                <div id="gridHistoryTransRad" style="overflow-x: scroll;"></div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12 ">
+                            <div class="row" >
+                                <div id="gridHistoryTransRadD" style="overflow-x: scroll;"></div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tabpanel" id="tabSOAPDOKTER" class="tab-pane">
+            <div class="panel-body" style="font-weight: bold;background: #79adda;color:#000;"> {% comment %} style="display:none;" {% endcomment %} 
+                <div style="margin: 0px 5px;">
+                <div id="layoutCPPTDOKTER" >
+                  <div class="form-group row">
+                    <label class="col-md-2 fz-11 control-label">S:</label>
+                    <div class="col-md-8">
+                      <textarea class="form-control generateSoapDokter" style="width:100%;height: 100px;font-size: 11px;" id="soapDS" name="soapDS" placeholder=""></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-2 fz-11 control-label">O:</label>
+                    <div class="col-md-8">
+                      <textarea class="form-control generateSoapDokter" style="width:100%;height: 100px;font-size: 11px;" id="soapDO" name="soapDO" placeholder=""></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-2 fz-11 control-label">A:</label>
+                    <div class="col-md-8">
+                     
+                      <textarea class="form-control generateSoapDokter" style="width:100%;height: 100px;font-size: 11px;" id="soapDA" name="soapDA" placeholder=""></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-md-2 fz-11 control-label">P:</label>
+                    <div class="col-md-8">
+
+                      <textarea class="form-control generateSoapDokter" style="width:100%;height: 100px;font-size: 11px;" id="soapDP" name="soapDP" placeholder=""></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div id="layoutCPPTDOKTERU" style="display:none;">
+                  <div class="form-group row">
+                    <div class="col-md-12">
+                      <textarea class="form-control" id="soap" name="soap" style="width:100%;height: 200px;" placeholder="SOAP DOKTER"></textarea>
+                    </div>
+                  </div>
+                </div>
+                
+                
+              </div>
+            </div>
+          </div>
+
+        <div role="tabpanel" id="tabpendiagnostik" class="tab-pane">
+            <div class="panel-body">
+                <div id="btnAddLab" class="btn btn-primary">Tambah Data Baru</div>
+                <div id="gridpendiagnostik" style="padding: 15px 0px;">
+                </div>
+
+            </div>
+        </div>
+        
+        <div role="tabpanel" id="tabkiri1" class="tab-pane">
+            <div class="panel-body">
+
+                <div id="gridPenyakitHIS" style="padding: 15px 0px;">
+                </div>
+
+            </div>
+        </div>
+        
+        <div role="tabpanel" id="tabKonsulDokter" class="tab-pane">
+            <div class="panel-body">
+                <div style="margin: 10px;">
+                
+                    <div class="form-group row">
+                        <label class="col-md-12 fz-11 control-label">Pertanyaan Konsultasi:</label>
+                    </div>
+                   
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <textarea class="form-control" style="font-size: 11px;height: 50px;" id="PertanyaanKonsultasi" name="PertanyaanKonsultasi" placeholder=""></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <label class="col-md-12 fz-11 control-label">JawabanKonsultasi:</label>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <textarea class="form-control" style="font-size: 11px;height: 100px;" id="JawabanKonsultasi" name="JawabanKonsultasi" placeholder=""></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group row">
+                        <div id="btnSaveKonsultasi" class="btn btn-primary"> Simpan Kosultasi</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+       
+
+
+        <div role="tabRiwayatLama" id="tabRiwayatLama" class="tab-pane">
+            <div class="panel-body">
+
+                <div id="gridRiwayatLama" style="padding: 15px 0px;">
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <div role="tabpane4" id="tabkiri4" class="tab-pane">
+            <div class="panel-body">
+                <div style="margin: 0px 5px;">
+                    <div class="form-group row">
+                        <label class="col-md-3 fz-11 control-label">Terapi:</label>
+                        <div class="col-md-7">
+                            <input type="text" name="terapi" id="terapi" class="form-control input-sm2" required />
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 fz-11 control-label">Rencana Tindal :</label>
+                        <div class="col-md-2">
+                            <select class="form-control  input-sm2" style="height: 20px;font-size: 11px;" name="renctindal1" id="renctindal1">
+                                <option value="1">Rawat Inap</option>
+                                <option value="2">Rawat Jalan</option>
+                                <option value="3">Rujuk</option>
+                            </select>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="text" name="renctindal2" id="renctindal2" class="form-control input-sm2" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 fz-11 control-label">Edukasi Pasien:</label>
+                        <div class="col-md-2">
+                            <select class="form-control input-sm2" style="height: 20px;font-size: 11px;" name="edukasipasien1" id="edukasipasien1">
+                                <option value="1">Pasien</option>
+                                <option value="2">Keluarga Pasien</option>
+                                <option value="3">Tidak Di Edukasi Karena</option>
+                            </select>
+                        </div>
+                        <div class="col-md-7">
+                            <input type="text" name="edukasipasien2" id="edukasipasien2" class="form-control input-sm2" required />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+</div>

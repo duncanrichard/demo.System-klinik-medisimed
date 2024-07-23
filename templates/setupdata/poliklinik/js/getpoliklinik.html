@@ -1,0 +1,131 @@
+// Get poliklinik
+$(document).ready(function () {
+    $('.grid-opt-poliklinik').keypress(function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (keycode == '13') {
+            caripoliklinik(event)
+        }
+    });
+
+
+})
+
+var gridDatapoliklinik = new DevExpress.data.DataSource({
+    load: function (values) {
+        var search_kode_poliklinik = $('#search_kode_poliklinik').val();
+        var search_nama_poliklinik = $('#search_nama_poliklinik').val();
+        return $.ajax({
+            url: host + "/getpoliklinik",
+            method: "GET",
+            data: {
+                "search_kode_poliklinik": search_kode_poliklinik,
+                "search_nama_poliklinik": search_nama_poliklinik
+            },
+            success: function (datas) {
+                $('#DxGridModalpoliklinik').modal('show');
+            }
+        })
+    }
+});
+
+function caripoliklinik(e, param = null) {
+    console.log('menu cari clicked roti')
+    //e.preventDefault();
+    e.stopImmediatePropagation();
+    $("#DxgridDatapoliklinik2").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10000
+        },
+        filterRow: {
+            visible: false
+        },
+        //searchPanel : { visible: true },
+        dataSource: gridDatapoliklinik,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMPKLINIK_ID",
+                caption: "KODE",
+                width: 220,
+            },
+            {
+                dataField: "FMPKLINIKN",
+                caption: "NAMA",
+            },
+            {
+                dataField: "FMPKODEBPJS",
+                caption: "Kode BPJS",
+            },
+            {
+                dataField: "SSFHIR_KD_POLI",
+                caption: "Kode Satu Sehat",
+            }
+        ],
+        onRowClick: function (e) {
+            if (param == null) {
+                $("#kode_poliklinik").val(e.data.FMPKLINIK_ID)
+                $("#nama_poliklinik").val(e.data.FMPKLINIKN)
+                $("#kode_klinik_bpjs").val(e.data.FMPKODEBPJS)
+                $("#kode_klinik_satu_sehat").val(e.data.SSFHIR_KD_POLI)
+                $('#DxGridModalpoliklinik').modal('hide');
+            } else if (param == 1) {
+                $("#cetak_dari").val(e.data.FMPKLINIK_ID)
+            } else {
+                $("#cetak_sampai").val(e.data.FMPKLINIK_ID)
+            }
+
+            $('#DxGridModalpoliklinik').modal('hide');
+        }
+    });
+}
+
+function getDatapoliklinik(e) {
+    $.ajax({
+        url: host + "/getDatapoliklinik",
+        method: "GET",
+        data: {
+            "kode_poliklinik": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            $('#kode_poliklinik').val(datas.FMPKLINIK_ID);
+            $('#nama_poliklinik').val(datas.FMPKLINIKN);
+            $("#kode_klinik_bpjs").val(datas.FMPKODEBPJS)
+            $("#kode_klinik_satu_sehat").val(datas.SSFHIR_KLINIK_ID)
+        }
+    })
+}
+
+function cetakpoliklinik(e) {
+    var dari = $('#cetak_dari').val();
+    var sd = $('#cetak_sampai').val();
+
+    $.ajax({
+        url: host + "/cetak_poliklinik",
+        method: "GET",
+        data: {
+            'start': dari,
+            'finish': sd,
+        },
+        dataType: "json",
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            console.log(datas);
+            window.open(datas.pdf, '_blank');
+        },
+    })
+    $('#Modalprintpoliklinik').modal('show');
+}

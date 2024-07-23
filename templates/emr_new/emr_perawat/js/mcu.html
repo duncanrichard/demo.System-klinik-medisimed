@@ -1,0 +1,309 @@
+$(document).ready(function () {
+    $('#btnAddLab').click(function () {
+        resetFormLab();
+    });
+    $('#btn_simpanLab').click(function () {
+        if ($('#noKunjungan').val().trim().length == 0) {
+            alert('Silahkan Save terlebih dahulu kunjungan anda sebelum menyimpan Data Pemeriksaan Lab');
+        } else if ($('#labTglPelayanan').val().trim().length == 0) {
+            alert('Silahkan pilih tanggal Pemeriksaan Lab!');
+        } else {
+            saveLab();
+        }
+    });
+    $('#btnHapusLab').click(function () {
+        if ($('#noKunjungan').val().trim().length == 0) {
+            alert('Silahkan Save terlebih dahulu kunjungan anda sebelum menyimpan Data Pemeriksaan Lab');
+        } else if ($('#KdMCU').val().trim().length == 0) {
+            alert('Silahkan pilih kode Pemeriksaan Lab!');
+        } else {
+            deleteLab();
+        }
+    });
+})
+
+function saveLab() {
+    $.ajax({
+        url: host + "/crudBridgingBPJSLab",
+        method: "POST",
+        data: {
+            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'kdMCU': $('#KdMCU').val(),
+            'noKunjungan': $('#noKunjungan').val(),
+            'tglPelayanan': $('#labTglPelayanan').val(),
+            'tekananDarahSistole': $('#TDSis').val(),
+            'tekananDarahDiastole': $('#TDDias').val(),
+            'radiologiFoto': $('textarea#RFoto').val(),
+            'darahRutinHemo': $('#DRHemo').val(),
+            'darahRutinLeu': $('#DRLeu').val(),
+            'darahRutinErit': $('#DRErit').val(),
+            'darahRutinLaju': $('#DRLaju').val(),
+            'darahRutinHema': $('#DRHema').val(),
+            'darahRutinTrom': $('#DRTrom').val(),
+            'lemakDarahHDL': $('#LDHDL').val(),
+            'lemakDarahLDL': $('#LDLDL').val(),
+            'lemakDarahChol': $('#LDChol').val(),
+            'lemakDarahTrigli': $('#LDTrigli').val(),
+            'gulaDarahSewaktu': 0,
+            'gulaDarahPuasa': $('#GDPuasa').val(),
+            'gulaDarahPostPrandial': 0,
+            'gulaDarahHbA1c': $('#hbA1c').val(),
+            'fungsiHatiSGOT': $('#FHSGOT').val(),
+            'fungsiHatiSGPT': $('#FHSGPT').val(),
+            'fungsiHatiGamma': $('#FHGamma').val(),
+            'fungsiHatiProtKual': $('#FHProtKual').val(),
+            'fungsiHatiAlbumin': $('#FHAlbumin').val(),
+            'fungsiGinjalCrea': $('#FGCrea').val(),
+            'fungsiGinjalUreum': $('#FGUreum').val(),
+            'fungsiGinjalAsam': $('#FGAsam').val(),
+            'fungsiJantungABI': $('#Abi').val(),
+            'fungsiJantungEKG': $('textarea#ekg').val(),
+            'fungsiJantungEcho': $('textarea#echo').val(),
+            'funduskopi': $('textarea#funduskopi').val(),
+            'pemeriksaanLain': $('textarea#lain').val(),
+            'keterangan': $('textarea#saranDokter').val()
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  simpan dan Bridgging...');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 200);
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (data) {
+            if (data.success) {
+                getDataCPPT(NO_TRANSAKSI);
+                setGridRawatJalan($('#tglAwal').val(), $('#tglAkhir').val(), $("input[name='sortBy']:checked").val());
+                alert(data.message);
+            } else {
+                alert(data.message);
+            }
+        }
+    })
+}
+
+function deleteLab() {
+    $.ajax({
+        url: host + "/deleteBPJSMCU",
+        method: "GET",
+        data: {
+            'kdMCU': $('#KdMCU').val(),
+            'noKunjungan': $('#noKunjungan').val(),
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Hapus Bridgging...');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 200);
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (data) {
+            if (data.success) {
+                getDataCPPT(NO_TRANSAKSI);
+                setGridRawatJalan($('#tglAwal').val(), $('#tglAkhir').val(), $("input[name='sortBy']:checked").val());
+                alert(data.message);
+                resetFormLab();
+                loadGridPenDiagnostikBPJS();
+            } else {
+                alert(data.message);
+            }
+        }
+    })
+}
+
+function loadGridPenDiagnostikBPJS() {
+    resetFormLab();
+    $("#gridpendiagnostik").dxDataGrid({
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getBPJSMCU",
+                    data: {
+                        'noKunjungan': $("#noKunjungan").val(),
+                    },
+                    method: "GET",
+                    success: function (result) {
+                        if (result['metaData']['code'] == '200') {
+                            deferred.resolve(result['response']['list'], {
+                                totalCount: result['response']['count'],
+                            });
+                        } else {
+                            deferred.resolve([], {
+                                totalCount: 0,
+                            })
+                        }
+
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        columnAutoWidth: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 100
+        },
+        dataType: "json",
+        columns: [{
+                dataField: 'noKunjungan',
+                caption: "noKunjungan",
+                width: 200,
+            },
+            {
+                dataField: 'kdMCU',
+                caption: "kdMCU",
+                width: 160,
+            },
+            {
+                dataField: "tglPelayanan",
+                caption: "Tanggal",
+                dataType: 'date',
+                width: 120,
+                format: 'dd/MM/yyyy',
+            },
+        ],
+        editing: {
+            mode: "cell",
+            allowUpdating: false,
+            selectTextOnEditStart: true,
+            allowEditing: false,
+            allowDeleting: false,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            selectionChangedRaised = true;
+        },
+        onRowClick: function (e) {
+            if (!selectionChangedRaised) {
+                var dataGrid = e.component;
+                var keys = dataGrid.getSelectedRowKeys();
+                dataGrid.deselectRows(keys);
+            }
+            selectionChangedRaised = false;
+
+            var data = e.data;
+            resetFormLab();
+            setFormLab(data);
+        }
+    });
+
+}
+
+function setFormLab(data) {
+    $('#KdMCU').val('' + data.kdMCU);
+    $('#TDSis').val('' + data.tekananDarahSistole);
+    $('#TDDias').val('' + data.tekananDarahDiastole);
+
+    $('#GDPuasa').val('' + data.gulaDarahPuasa);
+    $('#hbA1c').val('' + data.gulaDarahHbA1c);
+
+    if (data.radiologiFoto) {
+        $('textarea#RFoto').val('' + data.radiologiFoto);
+    }
+
+
+    $('#DRHemo').val('' + data.darahRutinHemo);
+    $('#DRLeu').val('' + data.darahRutinLeu);
+    $('#DRErit').val('' + data.darahRutinErit);
+    $('#DRLaju').val('' + data.darahRutinLaju);
+    $('#DRHema').val('' + data.darahRutinHema);
+    $('#DRTrom').val('' + data.darahRutinTrom);
+
+    $('#LDHDL').val('' + data.lemakDarahHDL);
+    $('#LDLDL').val('' + data.lemakDarahLDL);
+    $('#LDChol').val('' + data.lemakDarahChol);
+    $('#LDTrigli').val('' + data.lemakDarahTrigli);
+
+    $('#FHSGOT').val('' + data.fungsiHatiSGOT);
+    $('#FHSGPT').val('' + data.fungsiHatiSGPT);
+    $('#FHGamma').val('' + data.fungsiHatiGamma);
+    $('#FHProtKual').val('' + data.fungsiHatiProtKual);
+    $('#FHAlbumin').val('' + data.fungsiHatiAlbumin);
+
+    $('#FGCrea').val('' + data.fungsiGinjalCrea);
+    $('#FGUreum').val('' + data.fungsiGinjalUreum);
+    $('#FGAsam').val('' + data.fungsiGinjalAsam);
+
+    if (data.fungsiJantungABI) {
+        $('#Abi').val('' + data.fungsiJantungABI);
+    }
+    if (data.fungsiJantungEKG) {
+        $('textarea#ekg').val('' + data.fungsiJantungEKG);
+    }
+    if (data.fungsiJantungEcho) {
+        $('textarea#echo').val('' + data.fungsiJantungEcho);
+    }
+    if (data.funduskopi) {
+        $('textarea#funduskopi').val('' + data.funduskopi);
+    }
+    if (data.pemeriksaanLain) {
+        $('textarea#lain').val('' + data.pemeriksaanLain);
+    }
+    if (data.keterangan) {
+        $('textarea#saranDokter').val('' + data.keterangan);
+    }
+}
+
+function resetFormLab() {
+    $('#KdMCU').val('0');
+    $('#TDSis').val('0');
+    $('#TDDias').val('0');
+
+    $('#GDPuasa').val('0');
+    $('#hbA1c').val('0');
+
+    $('textarea#RFoto').val('');
+
+    $('#DRHemo').val('0');
+    $('#DRLeu').val('0');
+    $('#DRErit').val('0');
+    $('#DRLaju').val('0');
+    $('#DRHema').val('0');
+    $('#DRTrom').val('0');
+
+    $('#LDHDL').val('0');
+    $('#LDLDL').val('0');
+    $('#LDChol').val('0');
+    $('#LDTrigli').val('0');
+
+    $('#FHSGOT').val('0');
+    $('#FHSGPT').val('0');
+    $('#FHGamma').val('0');
+    $('#FHProtKual').val('0');
+    $('#FHAlbumin').val('0');
+
+    $('#FGCrea').val('0');
+    $('#FGUreum').val('0');
+    $('#FGAsam').val('0');
+
+    $('#Abi').val('0');
+    $('textarea#ekg').val('');
+    $('textarea#echo').val('');
+
+    $('textarea#funduskopi').val('');
+    $('textarea#lain').val('');
+    $('textarea#saranDokter').val('');
+}

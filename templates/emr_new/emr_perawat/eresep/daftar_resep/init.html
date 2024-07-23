@@ -1,0 +1,502 @@
+$(document).ready(function () {
+    $('#frkw4paket').on("change paste keyup focus", function () {
+        $('#modalPickerCaraPakaiF').modal('show');
+        setGridCaraPakaiF();
+    });
+    $('#frkw5paket').on("change paste keyup focus", function () {
+
+        $('#modalPickerCaraPakaiS').modal('show');
+        setGridCaraPakaiS();
+    });
+    $('#crapakai1paket').on("change paste keyup focus", function () {
+
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+
+    $('#crapakaipaket').on("change paste keyup focus", function () {
+
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+    $('#frkw1paket').val('1');
+    $('#frkw2paket').val('1');
+    $("#qty1paket").on("change paste keyup", function () {
+        if ($("#qty1paket").val().trim().length > 0) {
+            if ($.isNumeric($("#qty1paket").val())) {
+                var jumqty1 = parseInt($("#qty1paket").val());
+                if (typeof jumqty1 == 'number') {
+                    $("#qty2paket").val('' + convert(parseInt(jumqty1)));
+                } else {
+                    alert("Input harus nomor");
+                }
+            } else {
+                alert("Input harus nomor");
+            }
+
+        }
+    });
+    $('#qty1paket').keyup(function (e) {
+        if (/\D/g.test(this.value)) {
+            // Filter non-digits from input value.
+            this.value = this.value.replace(/\D/g, '');
+        }
+    });
+    resetPaketEntryResep()
+    resetPaket()
+
+    $('#btnRBaru').click(function () {
+        resetPaketEntryResep();
+    });
+    $('#btnRSimpan').click(function () {
+        if ($('#qty1paket').val().trim().length == 0) {
+            alert('Banyaknya harus disi!');
+            return;
+        }
+
+        if ($('#frkw1paket').val().trim().length == 0 || $('#frkw2paket').val().trim().length == 0) {
+            alert('Frekuensi harus disi!');
+            return;
+        }
+
+        if ($('#frkw5paket').val().trim().length == 0 || $('#frkw4paket').val().trim().length == 0) {
+            alert('Pemakaian dan durasi harus disi!');
+            return;
+        }
+
+        if ($('#crapakai1paket').val().trim().length == 0) {
+            alert('Cara Pakai harus disi!');
+            return;
+        }
+        if ($('#kdPaket').val().trim().length == 0) {
+            alert('Kode Paket Harus disi!');
+        } else if ($('#kdKet').val().trim().length == 0) {
+            alert('Keterangan Harus disi!');
+
+        } else {
+            var r = confirm("Lanjut Simpan Paket Resep?");
+            if (r == true) {
+                entryPaketResep();
+            } else {
+
+            }
+        }
+
+
+
+    });
+    $('#btnRFind').click(function () {
+        $('#modalFind').modal('show');
+        setGridFindDaftarResep();
+    });
+    $('#btnRHapus').click(function () {
+        if ($('#noBatch').val().trim().length > 0 && $('#kdPaket').val().trim().length > 0) {
+            var r = confirm("Hapus Item Paket Resep?");
+            if (r == true) {
+                $.ajax({
+                    url: host + "/deleteItemPaketResep",
+                    method: "POST",
+                    data: {
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        'FDRRESEP': $('#noBatch').val(),
+                        'FDRBUKTI_ID': editoradd($('#kdPaket').val()),
+                        'PFKDDOKTER': editoradd($('#Fr_dokter1').val())
+                    },
+                    beforeSend: function () {
+                        $('#ModalLoading').modal('show');
+                        $('#loading_title').html('Proses  Hapus...');
+                        $('#loading_text').html('Tunggu Sebentar');
+                    },
+                    complete: function () {
+                        setTimeout(function () {
+                            $('#ModalLoading').modal('hide');
+                        }, 200);
+                        $('#ModalLoading').modal('hide');
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            alert("Sukses Hapus");
+                            resetPaket();
+                        } else {
+                            alert("Terjadi Kesalahan \n" + data.message);
+                        }
+                    }
+                })
+            }
+        } else {
+            alert('Silahkan Pilih Obat yg di hapus');
+        }
+
+
+
+    });
+    $('#btnExitPResep').click(function () {
+        $('#daftarResep').modal('hide');;
+    })
+
+
+
+
+})
+
+
+function resetPaket() {
+    // Headers
+    $("#gridReseppaket").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        paging: {
+            pageSize: 10000
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        allowEditing: false,
+        allowUpdating: false,
+        rowAlternationEnabled: true,
+        columns: [{
+                dataField: "FDRRESEP",
+                width: 30,
+                caption: "/R"
+            },
+            {
+                dataField: "FDRBRGN",
+                caption: "Nama Obat",
+            },
+            {
+                dataField: "FDRQTY",
+                caption: "Banyaknya",
+                alignment: 'right',
+                width: 90,
+            },
+            {
+                dataField: "FDRSATUAN",
+                caption: "Unit",
+                width: 80,
+            },
+            {
+                dataField: "FDRSIGNA",
+                caption: "Signa",
+                width: 180,
+            },
+            {
+                dataField: "HJUAL",
+                caption: "Hjual",
+                alignment: 'right',
+                dataType: "number",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "Total",
+                alignment: 'right',
+                width: 130,
+                caption: "Total",
+                format: {
+                    type: "fixedPoint",
+                    precision: 0
+                },
+                dataType: "number",
+            }
+        ],
+        summary: {
+            totalItems: [{
+                displayFormat: "Total: {0}",
+                alignment: 'right',
+                column: "Total",
+                summaryType: "sum",
+                valueFormat: 'fixedPoint',
+                displayFormat: '{0}',
+
+            }]
+        },
+
+    });
+    $.ajax({
+        url: "/emr_perawat/DaftardetailResep",
+        method: "GET",
+        data: {
+            "NO_TRANSAKSI": $('#kdPaket').val(),
+            "DOKTER_ID": $("#Fr_dokter1").val()
+        },
+        success: function (data) {
+            try {
+                $('#kdPaket').val('' + data[0].PFKODE);
+                $('#kdKet').val('' + data[0].PFKETERANGAN);
+                $('#confirmationEditBrg').html("<div id='confirmationEditBrg'>" + data[0].FDRBRGN.trim() + "</div>");
+                $('#noBatch').val('' + data[0].FDRRESEP);
+                $('#kdObatpaket').val('' + data[0].FDRBRG_ID);
+                $('#confirmationEdit_IdTransaksi').val('' + data[0].FDRBUKTI_ID);
+                $('#kdObatpaket').val('' + data[0].FDRBRG_ID);
+                $('#nmObatpaket').val('' + data[0].FDRBRGN);
+                $('#qty1paket').val('' + data[0].FDRQTY);
+                $('#qty2paket').val('' + convert(parseInt(data[0].FDRQTY)));
+                $('#frkw1paket').val('' + data[0].FDRDOSIS);
+                $('#frkw2paket').val('' + data[0].FDRDOSIS2);
+                $('#frkw3paket').val('' + data[0].FDRSATUAN);
+
+                $('#sigmapaket').text('' + data[0].FDRSIGNA);
+                setCaraPakai('' + data[0].FDRSIGNAW);
+                setCaraPakaiS('' + data[0].FDRSIGNAS);
+                setCaraPakaiF('' + data[0].FDRSIGNAF);
+                convertResep();
+            } catch (err) {
+
+            }
+
+            $("#gridReseppaket").dxDataGrid({
+                dataSource: data,
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 10000
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: true,
+                allowEditing: false,
+                allowUpdating: false,
+                rowAlternationEnabled: true,
+                columns: [{
+                        dataField: "FDRRESEP",
+                        width: 30,
+                        caption: "/R"
+                    },
+                    {
+                        dataField: "FDRBRGN",
+                        caption: "Nama Obat",
+                    },
+                    {
+                        dataField: "FDRQTY",
+                        caption: "Banyaknya",
+                        alignment: 'right',
+                        width: 90,
+                    },
+                    {
+                        dataField: "FDRSATUAN",
+                        caption: "Unit",
+                        width: 80,
+                    },
+                    {
+                        dataField: "FDRSIGNA",
+                        caption: "Signa",
+                        width: 180,
+                    },
+                    {
+                        dataField: "HJUAL",
+                        caption: "Hjual",
+                        alignment: 'right',
+                        dataType: "number",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 2
+                        },
+                        width: 80
+                    },
+                    {
+                        dataField: "Total",
+                        alignment: 'right',
+                        width: 130,
+                        caption: "Total",
+                        format: {
+                            type: "fixedPoint",
+                            precision: 0
+                        },
+                        dataType: "number",
+                    }
+                ],
+                onRowClick: function (e) {
+                    Tampilkandata(e)
+                },
+
+                summary: {
+                    totalItems: [{
+                        displayFormat: "Total: {0}",
+                        alignment: 'right',
+                        column: "Total",
+                        summaryType: "sum",
+                        valueFormat: 'fixedPoint',
+                        displayFormat: '{0}',
+
+                    }]
+                },
+
+            });
+        },
+    })
+
+
+}
+
+function Tampilkandata(e) {
+    try {
+        $('#kdPaket').val('' + e.data.PFKODE);
+        $('#kdKet').val('' + e.data.PFKETERANGAN);
+        $('#confirmationEditBrg').html("<div id='confirmationEditBrg'>" + e.data.FDRBRGN.trim() + "</div>");
+        $('#noBatch').val('' + e.data.FDRRESEP);
+        $('#kdObatpaket').val('' + e.data.FDRBRG_ID);
+        $('#confirmationEdit_IdTransaksi').val('' + e.data.FDRBUKTI_ID);
+        $('#kdObatpaket').val('' + e.data.FDRBRG_ID);
+        $('#nmObatpaket').val('' + e.data.FDRBRGN);
+        $('#qty1paket').val('' + e.data.FDRQTY);
+        $('#qty2paket').val('' + convert(parseInt(e.data.FDRQTY)));
+        $('#frkw1paket').val('' + e.data.FDRDOSIS);
+        $('#frkw2paket').val('' + e.data.FDRDOSIS2);
+        $('#frkw3paket').val('' + e.data.FDRSATUAN);
+
+        $('#sigmapaket').text('' + e.data.FDRSIGNA);
+        setCaraPakai('' + e.data.FDRSIGNAW);
+        setCaraPakaiS('' + e.data.FDRSIGNAS);
+        setCaraPakaiF('' + e.data.FDRSIGNAF);
+        convertResep();
+    } catch (err) {}
+}
+
+function resetPaketEntryResep() {
+    $('#kdObatpaket').val('');
+    $('#nmObatpaket').val('');
+    $('#qty1paket').val('');
+    $('#qty2paket').val('');
+    $('#frkw1paket').val('');
+    $('#frkw2paket').val('');
+    $('#frkw3paket').val('');
+    $('#crapakai1paket').val('');
+    $('#crapakaipaket').val('');
+    $('#crapakaiKdpaket').val('');
+    $('#sigmapaket').val('');
+
+    $('#frkw4paket').val('');
+    $('#frkw5paket').val('');
+    $('#signaspaket').val('');
+    $('#signasKdpaket').val('');
+    $('#signafpaket').val('');
+    $('#signafKdpaket').val('');
+
+    $('#signafpaket').val('dd');
+    $('#frkw4paket').val('Sehari');
+    $('#signafKdpaket').val('SF001');
+
+    $("#frkw4paket").prop("readonly", true);
+    $("#frkw5paket").prop("readonly", true);
+    $("#crapakai1paket").prop("readonly", true);
+    $("#crapakaipaket").prop("readonly", true);
+
+    signaMode = 0;
+    $('input[type="radio"][name=radioSigmapaket]').prop('checked', false);
+    $('input[type="radio"][name=radioSigmpaketa][value=' + signaMode + ']').prop('checked', true);
+    if (signaMode == 0) {
+        $("#sigmapaket").prop("readonly", true);
+
+    } else {
+        $("#sigmapaket").prop("readonly", false);
+    }
+    $('#nmObatpaket').focus()
+}
+
+function entryPaketResep() {
+    var buktiIdedit = "-";
+    console.log($('#kdPaketEdit').val().trim.length);
+    if ($('#kdPaketEdit').val().trim().length > 0) {
+        buktiIdedit = $('#kdPaketEdit').val();
+    }
+    $.post('/emr_perawat/crudDaftarResep', {
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        'q': 'entryDaftarResep',
+        'PFKODE': $('#kdPaket').val(),
+        'FDRRESEPU': editoradd($('#noBatch').val()),
+        'FDRSIGNAF': editoradd($('#signafKdpaket').val()),
+        'FDRSIGNAS': editoradd($('#signasKdpaket').val()),
+        'PFKETERANGAN': $('#kdKet').val(),
+        'DOKTER_ID': $('#Fr_dokter1').val(),
+        'FDRBRG_ID': $('#kdObatpaket').val(),
+        'FDRBRGN': $('#nmObatpaket').val(),
+        'FDRSATUAN': $('#frkw3paket').val(),
+        'FDRQTY': $('#qty1paket').val(),
+        'FDRDOSIS': $('#frkw1paket').val(),
+        'FDRDOSIS2': $('#frkw2paket').val(),
+        'FDRSIGNAW': $('#crapakaiKdpaket').val(),
+        'FDRSIGNA': $('#sigmapaket').val(),
+        'FDRBUKTI_ID': $('#kdPaket').val(),
+        'FDRBUKTI_ID_EDIT': buktiIdedit,
+        'StatusAUD': 'A'
+    }, function (data) {
+
+        if (data.success) {
+            resetPaket();
+        }
+    });
+}
+
+function editoradd(data) {
+    var hasil = "NULL";
+    if (data.trim().length > 1) {
+        // Enable submit button
+        hasil = data;
+    }
+
+    return hasil;
+}
+
+function setGridFindDaftarResep(a = null) {
+    if (a == null) {
+        a = "";
+    }
+    $.ajax({
+        url: host + "/pickerDaftarResep",
+        method: "GET",
+        data: {
+            "DOKTER_ID": $("#Fr_dokter1").val()
+        },
+        dataType: "json",
+        success: function (datas) {
+            $("#gridFind").dxDataGrid({
+                showColumnLines: false,
+                showRowLines: true,
+                rowAlternationEnabled: true,
+                showBorders: true,
+                paging: {
+                    pageSize: 7
+                },
+                filterRow: {
+                    visible: true
+                },
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                hoverStateEnabled: true,
+                // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+                columns: [
+                    "PFKODE", "PFKETERANGAN"
+                ],
+                onSelectionChanged: function (selectedItems) {
+                    var data = selectedItems.selectedRowsData[0];
+
+                    $('#modalFind').modal('hide');
+                    $('#kdPaket').val('' + data.PFKODE);
+                    $('#kdPaketEdit').val('' + data.PFKODE);
+                    $('#kdKet').val('' + data.PFKETERANGAN);
+                    resetPaket(data.PFKODE);
+                    selectionChangedRaised = true;
+
+                },
+                onRowClick: function (e) {
+                    if (!selectionChangedRaised) {
+                        var dataGrid = e.component;
+                        var keys = dataGrid.getSelectedRowKeys();
+                        dataGrid.deselectRows(keys);
+                    }
+                    selectionChangedRaised = false;
+                }
+            });
+        }
+    })
+}

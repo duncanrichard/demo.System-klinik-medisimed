@@ -1,0 +1,204 @@
+<div class="modal fade " id="dxGridModalRujukanBpjs" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h5 class="modal-title">Data Rujukan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="panel-body" style="margin-left: 7px; margin-right: 7px;">
+        <div class="row">
+          <div class="col-md-7">
+            <label class="radio-inline fz-11">
+              <input type="radio" name="jenisRujukan_rb" value="4">Rujukan Vertikal</label>
+            <label class="radio-inline fz-11" id="rujukanHorizontal">
+              <input type="radio" name="jenisRujukan_rb" value="6">Rujukan Horizontal</label>
+          </div>
+        </div>
+
+        <div class="row" id="layout_opsiRujukHorizon_rb" style="display:none;">
+          <div class="col-md-7">
+            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="1"
+                checked="checked">
+              Pelayanan Tindakan Non-Kapitasi
+            </label>
+            <div class="box box-primary box-solid" id="nonkapitasi_lyt"
+              style="display:none; margin-top:5px;margin-left:20px;width:97%;">
+              <div class="box-body">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Kategori</label>
+                  <div class="col-sm-9" style="padding-right: 85px;">
+                    <select style="width:100%" class="form-control" id="nonkapitasi_cb">
+                      <option value="1">Paket Persalinan per Vaginam dengan tindakan emergensi dasar</option>
+                      <option value="3">Paket Persalinan per Vaginam Normal (Dokter)</option>
+                      <option value="10">Pelayanan tindakan pasca persalinan</option>
+                      <option value="11">Rawat Inap di Ruang Perawatan Biasa</option>
+                      <option value="12">Pelayanan MOP/Vasektomi</option>
+                      <option value="13">Protesa Gigi</option>
+                      <option value="31">Tele EKG</option>
+                      <option value="32">Tele USG</option>
+                      <option value="33">Tele Konsultasi</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="2"
+                checked="checked">
+              Pelayanan Laboratorium
+            </label>
+            <div class="box box-primary box-solid" id="laboratorium_lyt"
+              style="display:none; margin-top:5px;margin-left:20px;width:97%;">
+              <div class="box-body">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Kategori</label>
+                  <div class="col-sm-9" style="padding-right: 85px;">
+                    <select style="width:100%" class="form-control" id="laboratorium_cb">
+                      <option value="14">Gula Darah Puasa (GDP) - PRB/Prolanis</option>
+                      <option value="15">Pemeriksaan IVA</option>
+                      <option value="16">Pemeriksaan Papsmear</option>
+                      <option value="17">Pelayanan Terapi Krio</option>
+                      <option value="18">Pemeriksaan HbA1C</option>
+                      <option value="19">Microalbuminuria</option>
+                      <option value="20">Ureum</option>
+                      <option value="21">Kreatinin</option>
+                      <option value="22">Kolesterol Total</option>
+                      <option value="23">Kolesterol LDL</option>
+                      <option value="24">Kolesterol HDL</option>
+                      <option value="25">Trigliserida</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="3"
+                checked="checked">
+              Pelayanan Progam
+            </label>
+            <div class="box box-primary box-solid" id="program_lyt"
+              style="display:none; margin-top:5px;margin-left:20px;width:97%;">
+              <div class="box-body">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Kategori</label>
+                  <div class="col-sm-9" style="padding-right: 85px;">
+                    <select style="width:100%" class="form-control" id="program_cb">
+                      <option value="26">Tuberkulosis (TBC)</option>
+                      <option value="28">HIV/AIDS</option>
+                      <option value="30">Imunisasi Rutin</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="4"
+                checked="checked">
+              Rujukan Kacamata
+            </label>
+            <div class="box box-primary box-solid" id="kacamata_lyt"
+              style="display:none; margin-top:5px;margin-left:20px;width:97%;">
+              <div class="box-body">
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Kategori</label>
+                  <div class="col-sm-9" style="padding-right: 85px;">
+                    <select style="width:100%" class="form-control" id="kacamata_cb">
+                      <option value="29">FKTP Mampu Pemeriksaan Refraksi</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="layout_opsiRujuk_rb" style="display:none;">
+          <div class="row">
+            <div class="col-md-7">
+              <label class="radio-inline fz-11"><input type="radio" name="opsiRujuk_rb" value="1">Kondisi Khusus</label>
+              <label class="radio-inline fz-11"><input type="radio" name="opsiRujuk_rb" value="2">Spesialis</label>
+            </div>
+          </div>
+        </div>
+        <div id="layout_kondisiKhusus" style="display:none;">
+          <div class="row">
+            <label class="col-sm-2 control-label">Kategori</label>
+            <div class="col-md-3">
+              <select class="form-control selecttwo kondisiKhususKategoriS input-sm" id="kondisiKhususKategori"
+                name="kondisiKhususKategori">
+              </select>
+            </div>
+          </div>
+
+          <div class="row" id="layout_kondisiKhusus_spesialis" style="display:none;">
+            <label class="col-sm-2 control-label">Spesialis</label>
+            <div class="col-md-3" id="kondisiKhususSpesialisUp">
+              <select style="width:100%" class="form-control input-sm" id="khususSpesialis_cb">
+                <option value="3" selected="">PENYAKIT DALAM</option>
+                <option value="8">HEMATOLOGI - ONKOLOGI MEDIK</option>
+                <option value="26">ANAK</option>
+                <option value="30">ANAK HEMATOLOGI ONKOLOGI</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="col-sm-2 control-label">Alasan</label>
+            <div class="col-md-3">
+              <textarea class="form-control" rows="2" maxlength="150" id="catatanRujuk_txt"></textarea>
+            </div>
+          </div>
+
+        </div>
+        <div id="layout_kondisiSpesialis" style="display:none;">
+          <div class="row">
+            <label class="col-sm-2 control-label">Spesialis</label>
+            <div class="col-md-3">
+              <select class="form-control selecttwo  input-sm" id="spesialis1" name="spesialis1">
+              </select>
+            </div>
+            <div class="col-md-3" id="layout_kondisiSpesialis3">
+              <select class="form-control selecttwo  input-sm" id="spesialis2" name="spesialis2"></select>
+            </div>
+          </div>
+
+          <div class="row">
+
+            <label class="col-sm-2 control-label">
+              <input id="sarana_chk" type="checkbox">
+              Sarana
+            </label>
+            <div class="col-md-3" id="layout_kondisiSpesialis_sarana" style="display:none;">
+              <select class="form-control selecttwo  input-sm" id="sarana_cb" name="sarana_cb">
+              </select>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <label class="col-md-2 fz-11 control-label">Tgl. Rencana Berkunjung</label>
+          <div class="col-md-3">
+            <input type="text" name="tglEstRujuk" id="tglEstRujuk" placeholder="dd-MM-yyyy"
+              class="form-control input-sm datepik tglfakturs" autocomplete="off" required="">
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-primary" id="btnCariFaskesRujukan"><i class="fa fa-search"></i> Cari
+              Faskes
+              Rujukan</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div id="modalPickerFaskesUp">
+            <div class="row">
+              <div id="modalPickerFaskes" style="height: 250px;overflow-y: auto;font-size: 12px;line-height: 0.8;">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer py-1">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>

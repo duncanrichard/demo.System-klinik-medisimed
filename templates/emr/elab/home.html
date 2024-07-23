@@ -1,0 +1,174 @@
+{% extends "emr/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+E-MR Dokter  | Assesment Elaborat | Pemeriksaan Laboratorium
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/plugins/css-toggle-switch/toggle-switch.css' %}">
+<link rel="stylesheet" href="{% static 'css/plugins/iCheck/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dxtreeview.css' %}">
+<style>
+    body {
+        background-color: #4dc9e5;
+        background-image: url("/static/img/rajal.png") !important;
+        height: 100%;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        padding-right: 0 !important
+    }
+
+    
+</style>
+
+
+<!-- <link rel="stylesheet" type="text/css" href="/static/css/farmasi.css">  -->
+<style>
+    .form-group{
+        margin-bottom: 0px !important;
+    }
+.top-navigation .quick-button .thumbnail{
+    height:50px !important;
+    margin-bottom:0px !important;
+}
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+    /* Theoretically for IE 8 & 9 (more valid) */	
+    /* ...but not required as filter works too */
+    /* should come BEFORE filter */
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+    
+    /* This works in IE 8 & 9 too */
+    /* ... but also 5, 6, 7 */
+    filter: alpha(opacity=40);
+    
+    /* Older than Firefox 0.9 */
+    -moz-opacity:0.4;
+    
+    /* Safari 1.x (pre WebKit!) */
+    -khtml-opacity: 0.4;
+    background: rgb(76, 175, 80);
+    
+    cursor: not-allowed;
+    color: rgba(0,0,0,.26);
+
+}
+
+.cppt-menu{
+    width: 550px; position: absolute; z-index: 10; margin: 0px 770px 0px;
+}
+.cppt-menu-fz{
+    font-size: 10px;
+}
+
+.cppt-menu-img-sz{
+    height: 35px;
+}
+
+.radio-inline{
+    margin-right: 10px;
+}
+
+.checkbox-inline{
+    margin-right: 10px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/drawingboard.js/dist/drawingboard.min.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'emr/cppt/layout/modal.html' %}
+{% include 'emr/amodul_icd10_picker/modal/dxGridModal.html' %}
+{% include 'emr/amodul_icd10_picker/modal/dxGridModalDiagnosa.html' %}
+{% include 'emr/amodul_icd10_picker/modal/dxGridModalSearch.html' %}
+<div class="wrapper wrapper-content  entry ">
+
+    <div class="row ">
+
+        <div class="col-md-12 card">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="
+                background: #005662;
+                color: #fff;
+                border-style: none !important;
+                ">
+                    <h3>Assesment Elaborat | Pemeriksaan Laboratorium</h3>
+                </div>
+                <div class="row" style="
+                background: #4fb3bf;
+                margin: 0px;
+                ">
+                    <div class="col-md-7">
+
+                        <div class="ibox-content " style="width: 100%;background: #4fb3bf;font-weight: bold;color: #000;border: 0px;">
+                            <form class="form-horizontal" method="POST" id="inputform" style="">
+                                {% csrf_token %}
+                                <div class="row">
+                                <div class="col-md-6 ">
+                                    {% include 'emr/elab/layout/col_kiri.html' %}
+                                </div>
+
+                                <div class="col-md-6 ">
+                                    {% include 'emr/elab/layout/col_kanan.html' %}
+                                </div>
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-5">
+                        {% include 'emr/cppt/layout/navbar_crud.html' %}
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-sm-8 card" style="margin-top: 5px;">
+            {% include 'emr/elab/layout/tabs_kiri.html' %}
+
+        </div>
+
+        <div class="col-sm-4 card" style="margin-top: 5px;">
+            <div class="tabs-container" style="padding: 5px 5px;">
+                <div class="form-group row">
+                    <label class="col-md-12 control-label">&nbsp&nbsp History Lab :  <input type="button" id="btnModeEdit" class="btn btn-default cek" value="Mode Edit : Off" /> <input type="button" id="btnRefresh" class="btn btn-default" value="Tambah Baru" /></label><br/>     
+                </div>
+
+                <div id="gridHistoryRLab">
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+  
+
+{% endblock content %}
+
+{% block script %}
+    <div class="overlay-dark"></div>
+    <img class="img-overlay">
+    <script src="/static/js/standardModal.js"></script>      
+    <script src="{% static 'bower_components/drawingboard.js/dist/drawingboard.min.js'  %}"></script>
+    <script src="{% static 'bower_components/drawingboard.js/example/yepnope.js'  %}"></script>
+    <script type="text/javascript" src="{% static 'js/html2canvas.js'%}"></script>
+    <script type="text/javascript" src="{% static 'js/moment.min.js'%}"></script>
+    {% include 'emr/elab/layout/js.html' %}
+{% endblock %}
+
+
+
+

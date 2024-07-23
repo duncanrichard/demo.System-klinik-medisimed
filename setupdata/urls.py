@@ -5,6 +5,9 @@ from . import master_perawat
 from . import master_userpriv
 from . import master_voucher
 from . import master_changeuser
+from . import master_cabang
+from . import master_poliklinik
+from pusdokkes import views_satu_sehat
 
 urlpatterns = [
     url(r'^master_dokter/', include ([
@@ -27,6 +30,34 @@ urlpatterns = [
         url(r'^$',master_changeuser.master_changeuser, name='master_changeuser'),
         url(r'^changepassword', master_changeuser.changepassword),
     ])),
+    url(
+        r"^master_cabang/",
+        include(
+            [
+                url(r"^$", master_cabang.master_cabang, name="master_cabang"),
+                url(r"^open_cabang", master_cabang.open_cabang),
+                url(r"^aud_cabang", master_cabang.aud_cabang),
+                url(r"^getProvinsi", master_cabang.getProvinsi),
+                url(r"^getKabupaten", master_cabang.getKabupaten),
+                url(r"^getKecamatan", master_cabang.getKecamatan),
+                url(r"^getKelurahan", master_cabang.getKelurahan),
+                url(r"^saveOrganization", views_satu_sehat.saveOrganization_SrvIndo),
+            ]
+        ),
+    ),
+    url(
+        r"^master_poliklinik/",
+        include(
+            [
+                url(
+                    r"^$", master_poliklinik.master_poliklinik, name="master_poliklinik"
+                ),
+                url(r"^load_poliklinik", master_poliklinik.load_poliklinik),
+                url(r"^getpoliklinik", master_poliklinik.getpoliklinik),
+                url(r"^getDatapoliklinik", master_poliklinik.getDatapoliklinik),
+            ]
+        ),
+    ),
     url(r'^master_voucher/', include ([
         url(r'^$',master_voucher.master_voucher, name='master_voucher'),
         url(r'^buka_voucher', master_voucher.buka_voucher),

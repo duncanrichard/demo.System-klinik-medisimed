@@ -1,0 +1,64 @@
+function getdokterbpjs() {
+    $("#dxGridDatadokterBpjs").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 100,
+        },
+        filterRow: {
+            visible: false,
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/Listdokter",
+                    data: {},
+                    method: "GET",
+                    success: function (result) {
+                        if (result['metaData']['code'] == '200') {
+                            deferred.resolve(result['response']['list'], {
+                                totalCount: result['response']['count'],
+                            });
+                        } else {
+                            deferred.resolve([], {
+                                totalCount: 0,
+                            })
+                        }
+                    },
+                });
+
+                return deferred.promise();
+            },
+        }),
+        selection: {
+            mode: "single",
+        },
+        columns: [{
+                dataField: "kdDokter",
+                caption: "Kode Dokter",
+            },
+            {
+                dataField: "nmDokter",
+                caption: "Nama Dokter",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#far_nama_dokter").val(e.data.nmDokter);
+            $("#far_id_dokter_bpjs").val(e.data.kdDokter);
+            $('#dxGridModalListdokterBpjs').modal('hide')
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

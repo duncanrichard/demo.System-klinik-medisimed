@@ -1,0 +1,84 @@
+<div class="modal fade " id="modal_rujukan" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Pencarian Fasilitas Kesehatan Rujukan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="row" id="rujukHorizon_lyt">
+                <div class="col-md-6">
+                    <div class="radio">
+                        <label><input type="radio" name="jenisRujukan_rb" value="6" checked><b> Rujukan
+                                Horizontal</b></label>
+                        <hr width="150%" align="left" />
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="rujukVertical_lyt">
+                <div class="col-md-6">
+                    <div class="radio">
+                        <label><input type="radio" name="jenisRujukan_rb" value="6" checked><b> Rujukan
+                                Vertical</b></label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="radio">
+                                <label><input type="radio" name="jenisRujukan_ver" value="6" checked><b> Kondisi
+                                        khusus</b></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-4">
+                            <div class="radio">
+                                <label><input type="radio" name="jenisRujukan_ver" value="6" checked><b>
+                                        Spesialist</b></label>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-left: 15px;margin-right: 5px;">
+                            <div class="col-md-6">
+                                <div class="ibox"
+                                    style="background-color:#7a7ab4;border-radius: 5px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Pilih Spesialist</div>
+                                        <div class="dx-field-value">
+                                            <div id="gridBox"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="ibox"
+                                    style="background-color:#7a7ab4;border-radius: 5px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
+                                    <div class="dx-field">
+                                        <div class="dx-field-label">Pilih Sub Spesialist</div>
+                                        <div class="dx-field-value">
+                                            <div id="gridBoxsub"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="modal-footer py-1">
+                <button type="button" class="btn btn-primary" id="btnCariRujukanHorizontal"><i class="fa fa-search"></i>
+                    Cari Faskes Rujukan</button>
+                <button type="button" class="btn btn-danger" id="btnBatalQuery" data-dismiss="modal"><i
+                        class="fa fa-close"></i> Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+</script>

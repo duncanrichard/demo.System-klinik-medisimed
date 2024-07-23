@@ -1,0 +1,173 @@
+<!-- Modal Popup Menu -->
+<div class="modal fade" id="modalsMenu" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Surat - Surat</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7 card">
+                        <div class="row">
+                            <div class="col-sm-2" style="margin-left: 0px;">
+                                <a id="btnCetakSKSehat">
+                                    <div class="thumbnail " style="width: 45px;">
+                                        <center>
+                                            <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                                class="cppt-menu-img-sz">
+                                            <div class="caption padding_button_crud ">
+                                                <p class="cppt-menu-fz">Surat Keterangan Sehat &nbsp</p>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3" style="margin-left: 0px;">
+                                <a id="btnCetakSKSakit">
+                                    <div class="thumbnail " style="width: 45px;">
+                                        <center>
+                                            <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                                class="cppt-menu-img-sz">
+                                            <div class="caption padding_button_crud ">
+                                                <p class="cppt-menu-fz">Surat Keterangan Sakit &nbsp</p>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="panel-body" style="background: rgb(70, 90, 91) !important;box-shadow: 10px 10px 5px 0 rgba(0, 0, 0,
+                                    .75);color: aliceblue;font-size: 14px;font-weight: bold;margin-bottom: 20px;">
+                                    <div class="row">
+                                        <label class="col-md-3 fz-11 control-label">Lama Ijin:</label>
+                                        <div class="col-md-9">
+                                            <input type="number" id="Lama_cuti" placeholder="hari">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 ">
+                                            <label>Tanggal Mulai</label>
+                                            <input type="date" class="form-control input-md" id="tglAwalcuti">
+                                        </div>
+                                        <div class="col-md-4 ">
+                                            <label>Tanggal Akhir</label>
+                                            <input type="date" class="form-control input-md" id="tglAkhircuti">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-2 control-label">Keterangan</label>
+                                        <div class="col-md-10 " style="margin-top: 5px;">
+                                            <input type="text" class="form-control input-md" id="idketerangancuti">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3" style="margin-left: 0px;">
+                                <a id="btnCetakSKontrol">
+                                    <div class="thumbnail " style="width: 75px;height: 60px;">
+                                        <center>
+                                            <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                                class="cppt-menu-img-sz">
+                                            <div class="caption padding_button_crud ">
+                                                <p class="cppt-menu-fz">Surat Kontrol &nbsp</p>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="panel-body" style="background: rgb(147, 145, 139) !important;box-shadow: 10px 10px 5px 0 rgba(0, 0, 0,
+                                    .75);color: aliceblue;font-size: 14px;font-weight: bold;margin-bottom: 20px;">
+                                    <div class="row">
+                                        <div class="col-md-6 ">
+                                            <label>Tanggal Kontrol Kembali</label>
+                                            <input type="date" class="form-control input-md" id="tglKontrol">
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-2 control-label">Keterangan</label>
+                                        <div class="col-md-10 " style="margin-top: 5px;">
+                                            <input type="text" class="form-control input-md" id="idketerangankontrol">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2" style="margin-left: 0px;">
+                                <a id="btnCetakSKMati">
+                                    <div class="thumbnail " style="width: 75px;height: 60px;">
+                                        <center>
+                                            <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                                class="cppt-menu-img-sz">
+                                            <div class="caption padding_button_crud ">
+                                                <p class="cppt-menu-fz">Surat Keterangan Kematian &nbsp</p>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2" style="margin-left: 0px;">
+                                <a id="btnCetakSKPTM">
+                                    <div class="thumbnail " style="width: 75px;height: 60px;">
+                                        <center>
+                                            <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                                class="cppt-menu-img-sz">
+                                            <div class="caption padding_button_crud ">
+                                                <p class="cppt-menu-fz">Persetujuan Tindakan Medis</p>
+                                            </div>
+                                        </center>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5 card">
+                        <div class="col-sm-2" style="margin-left: 0px;">
+                            <a id="btnCetakSKNOPTM">
+                                <div class="thumbnail " style="width: 75px;height: 60px;">
+                                    <center>
+                                        <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                            class="cppt-menu-img-sz">
+                                        <div class="caption padding_button_crud ">
+                                            <p class="cppt-menu-fz">Penolakan Tindakan Medis</p>
+                                        </div>
+                                    </center>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-sm-2" style="margin-left: 0px;">
+                            <a id="btnCetakResume">
+                                <div class="thumbnail" style="width: 75px;height: 60px;">
+                                    <center>
+                                        <img src="/static/img/icons/gradient/cetak.png" alt="..."
+                                            class="cppt-menu-img-sz">
+                                        <div class="caption padding_button_crud ">
+                                            <p class="cppt-menu-fz">Resume Medis</p>
+                                        </div>
+                                    </center>
+                                </div>
+                            </a>
+                        </div>
+                        
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Tutup</button>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,106 @@
+{% extends "emr_new/base.html" %}
+{% block title %}
+    E-MR Dokter | DataPasien
+{% endblock %}
+
+{% block head %}
+    {% comment %} <link rel="stylesheet" type="text/css" href="/static/css/farmasi-home.css"> {% endcomment %}
+    <link rel="stylesheet" type="text/css" href="/static/css/farmasi.css"> 
+    <style>
+    .top-navigation .quick-button .thumbnail{
+        height:100px !important;
+        margin-bottom:0px !important;
+    }
+
+    .panel-body{
+        background:#f8ac59 !important;
+        color:black;
+    }
+
+    .bgfffbc0{
+        background:#fffbc0 !important;
+        color:black;
+    }
+
+   .tabs-container .nav-tabs > li.active > a, .tabs-container .nav-tabs > li.active > a:hover, .tabs-container .nav-tabs > li.active > a:focus{
+        background:#fffbc0 !important;
+    }
+    .entry input.input-sm2{
+        font-size:11px !important;
+        height:20px !important;
+    }
+
+    .entry .form-control{
+        padding:0 5px !important;
+    }
+    .top-navigation .quick-button .thumbnail{
+        height:100px !important;
+        margin-bottom:0px !important;
+    }
+
+    .row-blue{
+        background:#23c6c8 !important;
+    }
+
+    .row-abu{
+        background: #eeeeee !important;
+    }
+
+    .row-hijau{
+        background:#1ab394 !important;
+    }
+
+    .dx-data-row.dx-state-hover:not(.dx-selection):not(.dx-row-inserted):not(.dx-row-removed):not(.dx-edit-row) > td:not(.dx-focused) {  
+  background-color: #f5f5f5 !important;  
+  color: #333 !important;  
+}  
+  
+.dx-datagrid-rowsview .dx-selection.dx-row > td, .dx-datagrid-rowsview .dx-selection.dx-row:hover > td {  
+    background-color:#92ff8b !important;  
+    color: #333 !important;  
+}
+    </style>
+{% endblock %}
+
+{% block navbar %}
+    {% include 'emrdokter/historyPasien/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+{% include 'layout/dxGridModalPasien.html' %}  
+ <div class="modal fade" id="ModalLoading" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog" style="width: 400px" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="loading_title"></h4>
+            </div>
+            <div class="modal-body">
+                <center>
+                     <img src="/static/img/loading.gif" width="100%"/>
+                     <h3 id="loading_text"></h3><br>
+                      
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="wrapper wrapper-content dashboard">
+        {% include 'emrdokter/historyPasien/nav_setter.html' %}
+
+        <div class="row" style="margin-top: 10px;">
+            {% include 'emrdokter/historyPasien/contentTabsUtama.html' %}
+            
+        </div>
+ 
+    </div>
+
+
+    {% include 'emrdokter/historyPasien/modal_layout.html' %}
+{% endblock content %}
+
+{% block script%}
+    
+
+     {% include 'emrdokter/historyPasien/js.html' %}
+{% endblock script%}
+

@@ -1,0 +1,136 @@
+<div class="row quick-button">
+    <!-- class="col-md-8 card sticky" -->
+    <div class="col-md-8 card" style="padding: 10px 0px;padding-bottom: 0px; background-color : white">
+        <div class="ibox-title" style="
+                    background: #005662;
+                    color: #fff;
+                    border-style: none !important;box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)
+                    ">
+            <h3>Bridging Satu Sehat Kemenkes</h3>
+        </div>
+
+    </div>
+    <!-- class="col-md-4 sticky" -->
+    <div class="col-md-4 "
+        style="margin-left: 0px;box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75); background-color : white">
+        <div class="panel-body" style="background: rgb(120, 84, 84) !important;padding-left: 2px;padding-right: 2px;padding-top:
+                5px;padding-bottom: 5px;">
+            <div class="row" style="margin-left: 10px;margin-bottom: 10px;">
+                <div class="col-md-3 layout_proses" style="margin-left: 0px;">
+                    <a href="#" id="btnproses">
+                        <div class="thumbnail ">
+                            <center>
+                                <img src="/static/img/emr/history.png" alt="..." class="hight70">
+                                <div class="caption">
+                                    <p>Proses &nbsp</p>
+                                </div>
+                            </center>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3" style="margin-left: 0px;">
+                    <a href="/">
+                        <div class="thumbnail ">
+                            <center>
+                                <img src="/static/img/emr/exit.png" alt="..." class="hight70">
+
+                                <div class="caption">
+                                    <p>EXIT &nbsp</p>
+                                </div>
+                            </center>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="panel-body"
+            style="background: white !important;padding-left: 2px;padding-right: 2px;padding-top: 5px;">
+            <div class="row" style="margin-left: 10px;">
+                <div class="col-md-4 ">
+                    <label>Tanggal Mulai</label>
+                    <input type="date" class="form-control input-md" id="tglAwal">
+                </div>
+                <div class="col-md-4 ">
+                    <label>Tanggal Akhir</label>
+                    <input type="date" class="form-control input-md" id="tglAkhir">
+                </div>
+                <div class="col-md-3 ">
+                    <label>&nbsp</label>
+                    <button id="btnset" type="button" class="btn btn-default "
+                        style="padding: 6px 12px;margin: 24px 0px 0px;margin-top: 15px;">Cari</button>
+                </div>
+            </div>
+            <div class="row" style="margin-left: 10px;">
+                <label class="col-md-2 fz-11">Shift</label>
+                <div class="col-md-8 form-inline">
+                    <label class="radio-inline fz-11" style="margin-right: 5px;margin-left: 5px;">
+                        <input type="radio" name="sortShiftBy" value="0" checked="">Semua
+                    </label>
+                    <label class="radio-inline fz-11" style="margin-right: 5px;margin-left: 5px;">
+                        <input type="radio" name="sortShiftBy" value="P">Pagi
+                    </label>
+                    <label class="radio-inline fz-11" style="margin-right: 5px;margin-left: 5px;">
+                        <input type="radio" name="sortShiftBy" value="S">Siang
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="col-md-12 card" style="padding: 15px 20px;">
+        <div class="tabs-container" style="padding: 5px 5px;">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="active"><a class="nav-link active" data-toggle="tab" href="#tabKunjunganPasien">List
+                        KunjunganPasien</a></li>
+                <li><a class="nav-link " data-toggle="tab" href="#tabbelum" aria-expanded="true"> Komplet</a></li>
+                <li><a class="nav-link" data-toggle="tab" href="#tabsudah">Belum Komplet</a></li>
+            </ul>
+            <div class="tab-content">
+                <div role="tabpanel" id="tabKunjunganPasien" class="tab-pane active">
+                    <div class="row">
+                        <div class="col-md-12 card">
+                            <div class="row" style="margin-left: 10px;">
+                                <div class="col-md-6 form-inline">
+                                    <center style="margin-bottom: 5px;">
+                                        <span class="dot-sudah-prw"></span> Pasien Belum Terbridging
+                                        &nbsp
+                                        <span class="dot-sudah"></span> Pasien Sudah Terbridging
+                                    </center>
+
+                                </div>
+                            </div>
+                            <div class="panel-body"
+                                style="background: white !important;padding-left: 2px;padding-right: 2px;padding-top: 5px;">
+                                <div id="gridPasienRJ" style="height: 350px;overflow-y: auto;">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div role="tabpanel" id="tabbelum" class="tab-pane">
+                    <div class="row" style="background:#69717b7a;padding:10px;">
+                        <div style="height: 280px;overflow-y: auto;" class="mt-7">
+                            <div id="dxGridDatapasienbelum"></div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" id="tabsudah" class="tab-pane">
+                    <div class="row" style="background:#69717b7a;padding:10px;">
+                        <div style="height: 280px;overflow-y: auto;" class="mt-7">
+                            <div id="dxGridDatapasiensudah"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+    </div>
+</div>

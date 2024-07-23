@@ -1,0 +1,523 @@
+<script type="text/javascript">
+	var dxgridDiagnosaKerja;
+    var diagnosaKerjaDatasource = [];
+	var defaultKasus = [];
+    var defaultStatusICD10 = [];
+    var index_kolom_satuan;
+    var index_baris_satuan;
+
+    $(document).ready(function(){
+    	init_gridDiagnosaKerja()
+		initDefaultStatusKasus()
+		$('#addDiagnosaCPPT').click(function(e){
+            if ($("#notrans").val().trim().length==0){
+                return alert("SILIHKAN MEMILIH NO TRANSAKSI KUNJUNGAN!");
+            }else{
+                e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindDiagnosaCPPT();
+            }
+            
+
+        });
+		$('#removeDiagnosaCPPT').click(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            removeDiagnosa()
+        })
+    })
+
+    $(".cariICD").on("change paste keyup", function() {
+        //name="DxGridInputSearch"
+        if(event.keyCode == 13) {
+            $("#DxGridButtonSearch").click();
+        }
+    });
+
+    function initDefaultStatusKasus()
+    {
+        $.ajax({
+            url : "/emr/icdtens/findStatusKasus",
+            method : 'get',
+            data : {
+                id : 1
+            },
+            success : function (dt){
+                defaultKasus= dt
+            }
+
+        })
+
+        $.ajax({
+            url : "/emr/icdtens/findStatusDiagnosaKlaim",
+            method : 'get',
+            success : function (dt){
+                defaultStatusICD10 = dt
+            }
+        })
+    }
+    
+    function getGridDiagnosaTindakan(noTrans)
+    {
+        $.get('/emr/data-cppt', {'q': 'Openpenyakit','NO_TRANSAKSI':noTrans}, 
+            function(data) {
+               console.log(data);
+               diagnosaKerjaDatasource=data;
+               gridDiagnosaKerja();
+        });
+       
+        // init_gridTindakan(noTrans);
+
+       
+    }
+    
+    function init_gridDiagnosaKerja()
+    {
+        
+        getGridDiagnosaTindakan(getNoTrans2());
+    }
+
+    function gridDiagnosaKerja(e=null){
+        if(e!=null)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+        
+        dxgridDiagnosaKerja = $("#gridDiagnosaCPPT").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: diagnosaKerjaDatasource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "MRPURUT_MASUK", width: 35, caption: "No" },
+                { dataField: "MRPKD_PENYAKIT", width: 100, caption: "Kode" },
+                { dataField: "PENYAKIT", width: 140, caption: "Penyakit" },
+                { dataField: "MRPSTAT_DIAG", width: 50, caption: "Kode" },
+                { 
+                    dataField: "MSDIAGNOSANAMA",
+                    caption: "Diagnosa", 
+                    cellTemplate: function(element, info){
+                        element.append('<div>'+info.text+'<div class="pull-right"><span class="fa fa-caret-square-o-down"></span></div></div>')  
+                    } 
+                },
+                { dataField: "MRPKASUS", width: 50, caption: "Kode" },
+                { 
+                    dataField: "MSKASUSNAMA", 
+                    caption: "Kasus" ,
+                    cellTemplate: function(element, info){
+                        element.append('<div>'+info.text+'<div class="pull-right"><span class="fa fa-caret-square-o-down"></span></div></div>')  
+                    }
+                },
+                { dataField: "MRPTGL_MASUK", caption: "Tanggal",customizeText:function(info){return info.value.substring(0,10) }}
+            ],
+            onCellClick :function(clickedCell){
+                index_kolom_satuan = clickedCell.columnIndex
+                index_baris_satuan = clickedCell.rowIndex
+                try {
+                    let grid = $("#DxGridData").dxDataGrid("instance");
+                    grid.clearSelection();
+                }
+                catch(err) {
+                  
+                }
+                
+                if(index_kolom_satuan == 4 || index_kolom_satuan == 3)
+                {
+                    dxGridFindJenisDiagnosaCPPT()
+                }else if (index_kolom_satuan == 6 || index_kolom_satuan == 5)
+                {
+                    dxGridFindJenisKasusCPPT()
+                }else{
+                    dxGridFindDiagnosaCPPTEdit()
+                }
+            },
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                if(data) {
+
+                }
+            }
+        });
+    }
+
+	function removeDiagnosa(e=null)
+    {
+        if(e!=null)
+        {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+        var key = dxgridDiagnosaKerja.dxDataGrid("instance").getSelectedRowKeys();
+        var idx = dxgridDiagnosaKerja.dxDataGrid("instance").getRowIndexByKey(key[0]);
+        console.log(idx);
+        console.log(diagnosaKerjaDatasource);
+        diagnosaKerjaDatasource.splice(idx,1);
+        dxgridDiagnosaKerja.dxDataGrid("instance").refresh();
+    }
+
+    function dxGridFindDiagnosaCPPT(){
+        $('[name=diagnosaFilterBy]').unbind('change');
+        $('[name=diagnosaFilterBy]').change(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindDiagnosaCPPT();
+        })
+        $('#DxGridButtonDiagnosa').unbind('click');
+        $('#DxGridButtonDiagnosa').click(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindDiagnosaCPPT();
+        })
+        startLoading();
+        // $('#DxGridModalSearch').modal('show');
+        var dxgridDataSource =  new DevExpress.data.DataSource({
+            load: function (values) {
+                
+                return $.ajax({
+                    url: "/emr/icdtens/getDiagnosaPenyakit",
+                    method: "GET",
+                    data : {
+                        key : $('#DxGridInputDiagnosa').val(),
+                        filter : $('[name=diagnosaFilterBy]:checked').val(),
+                        spesialis : $('#poli1').val()
+                    },
+                    success : function (datas){
+                        hideModal();
+                        $('#DxGridModalDiagnosa').modal('show');                       
+                    },
+                    fail: function()
+                    {
+                        $('#DxGridModalDiagnosa').modal('hide'); 
+                        hideModal();
+                        alert('terjadi kesalahan');
+                    }
+                });
+            }
+        }); 
+        $("#DxGridDataDiagnosa").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: dxgridDataSource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "KD_PENYAKIT",width: 100,  caption: "Kode" },
+                { dataField: "PENYAKIT",  caption: "Penyakit ICD" },
+                { dataField: "NOTES",  caption: "Istilah Dokter" },
+                
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                console.log(data);
+                if(data) {
+                    // setJenisPasien(data.CustId);
+                    // $('#DP_penyakit1').val(data.KD_PENYAKIT);
+                    // $('#DP_penyakit2').val(data.PENYAKIT);
+                    
+                    var no;
+                    var kd_status;
+                    var status;
+                    var kd_kasus;
+                    var kasus;
+                    var size = diagnosaKerjaDatasource.length;
+                    var isInList = false
+                    for (var i = diagnosaKerjaDatasource.length - 1; i >= 0; i--) {
+                        if(diagnosaKerjaDatasource[i].MRPKD_PENYAKIT == data.KD_PENYAKIT)
+                        {
+                            isInList = true;
+                        }
+                    }
+
+                    if(isInList)
+                    {
+                        $('#DxGridModalDiagnosa').modal('hide');
+                        alert('kode penyakit sudah ada dalam list!');
+                    }else
+                    {
+                        if(size == 0)
+                        {
+                            no = 1
+                            try{kd_status = defaultStatusICD10[0].MSDIAGNOSAID; } catch (error) {}
+                            status = defaultStatusICD10[0].MSDIAGNOSANAMA;
+                            try{kd_kasus = defaultKasus[0].MSKASUSID;} catch (error) {}
+                            
+                            kasus = defaultKasus[0].MSKASUSNAMA;
+
+                        }else
+                        {
+                            no = parseInt(diagnosaKerjaDatasource[size-1].MRPURUT_MASUK) + 1;
+                            try{kd_status = defaultStatusICD10[1].MSDIAGNOSAID;} catch (error) {}
+                            status = defaultStatusICD10[1].MSDIAGNOSANAMA;
+                            try{kd_kasus = defaultKasus[0].MSKASUSID;} catch (error) {}
+                            kasus = defaultKasus[0].MSKASUSNAMA;
+                        }
+                        
+                        // var dt = getTodayDateTime();
+                      
+                        diagnosaKerjaDatasource.push({
+                            "MRPURUT_MASUK": no,
+                            "MRPKD_PENYAKIT" : data.KD_PENYAKIT,
+                            "PENYAKIT": data.PENYAKIT ,
+                            "MRPSTAT_DIAG": kd_status ,
+                            "MSDIAGNOSANAMA": status,
+                            "MRPKASUS": kd_kasus ,
+                            "MSKASUSNAMA": kasus ,
+                            "MRPTGL_MASUK": $('#tglfaktur').val(),
+                            "MRPIMUNKE": "0",
+                            "STATUS_IMUN": "0",
+                            "MRPNO_TRANSAKSI": NO_TRANSAKSI,
+                        });
+                        gridDiagnosaKerja();
+                        $('#DxGridInputDiagnosa').val('');
+                        $('#DxGridModalDiagnosa').modal('hide');
+                    }
+                    
+                }
+            }
+        });
+    }
+
+
+    //DxGridInputDiagnosa
+    $('#DxGridInputDiagnosa').keypress(function(event) {
+        // console.log(event.keyCode);
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            dxGridFindDiagnosaCPPT();
+        }
+    });
+    function dxGridFindDiagnosaCPPTEdit(){
+        $('[name=diagnosaFilterBy]').unbind('change');
+        $('[name=diagnosaFilterBy]').change(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindDiagnosaCPPTEdit();
+        })
+        $('#DxGridButtonDiagnosa').unbind('click');
+        $('#DxGridButtonDiagnosa').click(function(e){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            dxGridFindDiagnosaCPPTEdit();
+        })
+        startLoading();
+        // $('#DxGridModalSearch').modal('show');
+        var dxgridDataSource =  new DevExpress.data.DataSource({
+            load: function (values) {
+                
+                return $.ajax({
+                    url: "/emr/icdtens/getDiagnosaPenyakit",
+                    method: "GET",
+                    data : {
+                        key : $('#DxGridInputDiagnosa').val(),
+                        filter : $('[name=diagnosaFilterBy]:checked').val(),
+                        spesialis : $('#poli1').val()
+                    },
+                    success : function (datas){
+                        hideModal();
+                        $('#DxGridModalDiagnosa').modal('show');                       
+                    },
+                    fail: function()
+                    {
+                        $('#DxGridModalDiagnosa').modal('hide'); 
+                        hideModal();
+                        alert('terjadi kesalahan');
+                    }
+                });
+            }
+        }); 
+        $("#DxGridDataDiagnosa").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: dxgridDataSource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "KD_PENYAKIT",  caption: "Kode" },
+                { dataField: "PENYAKIT",  caption: "Penyakit ICD" },
+                { dataField: "NOTES",  caption: "Istilah Dokter" },
+                
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                if(data) {
+                    // setJenisPasien(data.CustId);
+                    // $('#DP_penyakit1').val(data.KD_PENYAKIT);
+                    // $('#DP_penyakit2').val(data.PENYAKIT);
+                    
+                    var no;
+                    var kd_status;
+                    var status;
+                    var kd_kasus;
+                    var kasus;
+                    var size = diagnosaKerjaDatasource.length;
+                    var isInList = false
+                    for (var i = diagnosaKerjaDatasource.length - 1; i >= 0; i--) {
+                        if(diagnosaKerjaDatasource[i].MRPKD_PENYAKIT == data.KD_PENYAKIT)
+                        {
+                            isInList = true;
+                        }
+                    }
+
+                    if(isInList)
+                    {
+                        $('#DxGridModalDiagnosa').modal('hide');
+                        alert('kode penyakit sudah ada dalam list!');
+                    }else
+                    {
+                        
+                        // var dt = getTodayDateTime();
+                        diagnosaKerjaDatasource[index_baris_satuan].MRPKD_PENYAKIT = data.KD_PENYAKIT;
+                        diagnosaKerjaDatasource[index_baris_satuan].PENYAKIT = data.PENYAKIT;
+                        diagnosaKerjaDatasource[index_baris_satuan].MRPTGL_MASUK = $('#tglfaktur').val();
+                        gridDiagnosaKerja();
+                        $('#DxGridModalDiagnosa').modal('hide');
+                    }
+                    
+                }
+            }
+        });
+    }
+
+    function dxGridFindJenisDiagnosaCPPT(){
+        startLoading();
+        var dxgridDataSource =  new DevExpress.data.DataSource({
+            load: function (values) {
+                
+                return $.ajax({
+                    url: host+"/emr/data-cppt?q=dataPickerDiagnosa",
+                    method: "GET",
+                    success : function (datas){
+                        hideModal();
+                        $('#DxGridModal').modal('show');                       
+                    },
+                    fail: function()
+                    {
+                        $('#DxGridModal').modal('hide'); 
+                        hideModal();
+                        alert('terjadi kesalahan');
+                    }
+                });
+            }
+        }); 
+        $("#DxGridData").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: dxgridDataSource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "MSDIAGNOSAID",  caption: "kode" },
+                { dataField: "MSDIAGNOSANAMA",  caption: "jenis diagnosa" },
+                
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                if(data) {
+                    // setJenisPasien(data.CustId);
+                    diagnosaKerjaDatasource[index_baris_satuan].MRPSTAT_DIAG = data.MSDIAGNOSAID;
+                    diagnosaKerjaDatasource[index_baris_satuan].MSDIAGNOSANAMA = data.MSDIAGNOSANAMA;
+                    gridDiagnosaKerja();
+                    // $('#DP_diagnosa1').val(data.MSDIAGNOSAID);
+                    // $('#DP_diagnosa2').val(data.MSDIAGNOSANAMA);
+                    $('#DxGridModal').modal('hide');
+                    
+                }
+            }
+        });
+    }
+
+    function dxGridFindJenisKasusCPPT(){
+        startLoading();
+        var dxgridDataSource =  new DevExpress.data.DataSource({
+            load: function (values) {
+                
+                return $.ajax({
+                    url: host+"/emr/data-cppt?q=dataPickerKasus",
+                    method: "GET",
+                    success : function (datas){
+                        hideModal();
+                        $('#DxGridModal').modal('show');                       
+                    },
+                    fail: function()
+                    {
+                        $('#DxGridModal').modal('hide'); 
+                        hideModal();
+                        alert('terjadi kesalahan');
+                    }
+                });
+            }
+        }); 
+        $("#DxGridData").dxDataGrid({
+            showColumnLines: false,
+            showRowLines: true,
+            rowAlternationEnabled: true,
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            filterRow: { visible: true },
+            dataSource: dxgridDataSource,
+            selection: {
+                mode: "single"
+            },
+            hoverStateEnabled: true,
+            // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+            columns: [ 
+                { dataField: "MSKASUSID",  caption: "kode" },
+                { dataField: "MSKASUSNAMA",  caption: "jenis kasus" },
+                
+            ],
+            onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                if(data) {
+                    // setJenisPasien(data.CustId);
+                    diagnosaKerjaDatasource[index_baris_satuan].MRPKASUS = data.MSKASUSID;
+                    diagnosaKerjaDatasource[index_baris_satuan].MSKASUSNAMA = data.MSKASUSNAMA;
+                    gridDiagnosaKerja();
+                    // $('#DP_kasus1').val(data.MSKASUSID);
+                    // $('#DP_kasus2').val(data.MSKASUSNAMA);
+                    $('#DxGridModal').modal('hide');
+                    
+                }
+            }
+        });
+    }
+</script>

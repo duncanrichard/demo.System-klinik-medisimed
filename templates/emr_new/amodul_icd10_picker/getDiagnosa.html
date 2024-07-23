@@ -1,0 +1,256 @@
+var kd_status;
+var status;
+var kd_kasus;
+var kasus;
+$(document).ready(function () {
+    $('#addDiagnosaCPPT').click(function (e) {
+        if ($("#noTrans").val().trim().length == 0) {
+            return alert("SILIHKAN MEMILIH NO TRANSAKSI KUNJUNGAN!");
+        } else {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            openModalDiagnosa();
+        }
+    })
+    $('[name=diagnosaFilterBy]').unbind('change');
+    $('[name=diagnosaFilterBy]').change(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        openModalDiagnosa();
+    })
+    $('#DxGridButtonDiagnosa').unbind('click');
+    $('#DxGridButtonDiagnosa').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        openModalDiagnosa();
+    })
+    $("#DxGridInputDiagnosa").keydown(function (e) {
+        var code = e.keyCode || e.which;
+        var dataGrid = $("#DxGridDataDiagnosa").dxDataGrid("instance");
+        if (code == 27 || code == 13) {
+            if (dataGrid.getVisibleRows().length != 0) {
+                e.preventDefault()
+                $(this).blur()
+                dataGrid.focus(dataGrid.getCellElement(0, 'PENYAKIT'))
+                dataGrid.selectRowsByIndexes(0)
+            }
+        } else {
+            setTimeout(() => {
+                if ($("#DxGridInputDiagnosa").val().length > 2) {
+                    openModalDiagnosa()
+                }
+            }, 200);
+        }
+    })
+})
+
+function openModalDiagnosa() {
+    try {
+        var dxgriddiagnosa = $("#DxGridDataDiagnosa").dxDataGrid('instance');
+        dxgriddiagnosa.clearSelection();
+    } catch (err) {}
+    tempId = ''
+    tempNama = ''
+
+    $('#DxGridModalDiagnosa').modal('show')
+    $('#DxGridInputDiagnosa').val()
+    $('#DxGridModalDiagnosa').on('shown.bs.modal', function () {
+        $('#DxGridInputDiagnosa').focus()
+    })
+    $.ajax({
+        url: "/emr/icdtens/getDiagnosaPenyakit",
+        method: "GET",
+        data: {
+            key: $('#DxGridInputDiagnosa').val(),
+            filter: $('[name=diagnosaFilterBy]:checked').val(),
+            spesialis: $('#poli1').val()
+        },
+        beforeSend: function () {
+            $('#loadDataText').css("display", 'block');
+        },
+        complete: function () {
+            $('#loadDataText').css("display", 'none');
+        },
+        success: function (datas) {
+            $("#DxGridDataDiagnosa").dxDataGrid({
+                dataSource: datas,
+                keyExpr: 'KD_PENYAKIT',
+                selection: {
+                    mode: "single"
+                },
+                paging: {
+                    pageSize: 100
+                },
+                focusedRowEnabled: true,
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                columns: [{
+                    dataField: "KD_PENYAKIT",
+                    caption: "Kode",
+                    alignment: 'left',
+                    width: 100,
+                    allowSorting: false
+                }, {
+                    dataField: "PENYAKIT",
+                    caption: "Penyakit ICD",
+                    width: 350,
+                    allowSorting: false
+                }, {
+                    dataField: "NOTES",
+                    caption: "Istilah Dokter",
+                    width: 280,
+                    alignment: 'left',
+                    allowSorting: false
+                }, ],
+
+                onFocusedCellChanged: function (e) {
+                    if (e.row.data) {
+                        tempId = e.row.data.KD_PENYAKIT
+                        tempNama = e.row.data.PENYAKIT
+                        tempNotes = e.row.data.NOTES
+                        // pilihDiagnosa()
+                    }
+                },
+                onSelectionChanged: function (r) {
+                    if (r.selectedRowsData.length > 0) {
+                        tempId = r.selectedRowsData[0].KD_PENYAKIT
+                        tempNama = r.selectedRowsData[0].PENYAKIT
+                        tempNotes = r.selectedRowsData[0].NOTES
+                        pilihDiagnosa()
+                    }
+                },
+                onKeyDown: function (e) {
+                    if (e.event.originalEvent.which == 13) {
+                        pilihDiagnosa()
+                    }
+                },
+                onFocusedCellChanged: function (e) {
+                    tempId = e.row.data.KD_PENYAKIT
+                    tempNama = e.row.data.PENYAKIT
+                    tempNotes = e.row.data.NOTES
+                },
+                onContentReady: function (e) {
+                    setTimeout(() => {
+                        $('#DxGridInputDiagnosa').focus()
+                    }, 200);
+                }
+            });
+        }
+    })
+}
+
+function pilihDiagnosa() {
+
+    if (tempId != '') {
+        if (!cekDataSudahAda(tempId)) {
+            alert('Maaf Diagnosa ' + tempNama + ' Sudah Ada')
+        } else {
+            $('#DxGridInputDiagnosa').val('')
+            var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+            dataGrid.addRow();
+            dataGrid.cellValue(0, "MRPURUT_MASUK", generateNo());
+            dataGrid.cellValue(0, "MRPKD_PENYAKIT", tempId);
+            dataGrid.cellValue(0, "PENYAKIT", tempNama);
+            dataGrid.cellValue(0, "MRPSTAT_DIAG", kd_status);
+            dataGrid.cellValue(0, "MSDIAGNOSANAMA", status);
+            dataGrid.cellValue(0, "MRPKASUS", kd_kasus);
+            dataGrid.cellValue(0, "MSKASUSNAMA", kasus);
+            dataGrid.cellValue(0, "MRPTGL_MASUK", $('#tglfaktur').val());
+            $.when(dataGrid.saveEditData()).done(function () {
+                setFocustgl()
+            })
+            $('#DxGridModalDiagnosa').modal('hide')
+        }
+    } else {
+        alert('Silahkan Pilih Diagnosa')
+    }
+}
+
+function setFocustgl() {
+    var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+    qtyIndex = (dataGrid.getVisibleRows().length) - 1
+    $(dataGrid.focus(dataGrid.getCellElement(qtyIndex, 'MRPTGL_MASUK'))).promise().done(function () {
+        dataGrid.editCell(qtyIndex, 'MRPTGL_MASUK')
+    })
+
+}
+
+function Rujuk_Tacc() {
+    // Cek kode penyakit ke atas
+    var kd_penyakit = []
+    var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (dataGrid.getVisibleRows()[i].data.MRPKD_PENYAKIT != '') {
+            kd_penyakit.push("" + dataGrid.getVisibleRows()[i].data.MRPKD_PENYAKIT)
+
+        }
+    }
+    $.ajax({
+        url: host + "/cek_diagnosa_bpjs",
+        method: "POST",
+        data: {
+            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+            "kd_penyakit": JSON.stringify(kd_penyakit),
+        },
+        dataType: "json",
+        success: function (result) {
+            $('#layoutRujukan').show();
+            $('#layoutTacc').show();
+            $("#btnCetakSuratKunjunganPCARE").addClass("disabled");
+            $("#btnCetakSuratRujukan").removeClass("disabled");
+
+            // if (result['success'] == true) {
+            //     $('#layoutRujukan').show();
+            //     $('#layoutTacc').show();
+            //     $("#btnCetakSuratKunjunganPCARE").addClass("disabled");
+            //     $("#btnCetakSuratRujukan").removeClass("disabled");
+            // } else {
+            //     $('#layoutRujukan').show();
+            //     $('#layoutTacc').hide();
+            //     $("#btnCetakSuratKunjunganPCARE").addClass("disabled");
+            //     $("#btnCetakSuratRujukan").removeClass("disabled");
+            // }
+        }
+    })
+}
+
+function cekDataSudahAda(kode) {
+    var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
+        if (dataGrid.getVisibleRows()[i].data.MRPKD_PENYAKIT == kode) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function generateNo() {
+    var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+    var last_number = parseInt(dataGrid.cellValue((dataGrid.getVisibleRows().length - 1), "MRPURUT_MASUK"))
+
+    if (!last_number) {
+
+        try {
+            kd_status = defaultStatusICD10[0].MSDIAGNOSAID;
+        } catch (error) {}
+        status = defaultStatusICD10[0].MSDIAGNOSANAMA;
+        try {
+            kd_kasus = defaultKasus[0].MSKASUSID;
+        } catch (error) {}
+
+        kasus = defaultKasus[0].MSKASUSNAMA;
+        return 1
+    } else {
+        try {
+            kd_status = defaultStatusICD10[1].MSDIAGNOSAID;
+        } catch (error) {}
+        status = defaultStatusICD10[1].MSDIAGNOSANAMA;
+        try {
+            kd_kasus = defaultKasus[0].MSKASUSID;
+        } catch (error) {}
+        kasus = defaultKasus[0].MSKASUSNAMA;
+        return (last_number + 1)
+    }
+}

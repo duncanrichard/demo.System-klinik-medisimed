@@ -1,0 +1,198 @@
+// get hostname
+var host = window.location.href.split("/");
+console.log('host');
+console.log(host);
+var host3 = host[3];
+var host2 = host[0] + "//" + host[2] + "/"
+var host = host[0] + "//" + host[2] + "/" + host[3]
+var SERVER_INDO = "{{SERVER_INDO}}"
+// console.log(host)
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    $("#inlineRadioOptstatus3").prop('checked', true)
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    opencabang()
+
+    $("#Prosesakhir").click(function () {
+        if ($("#newpassword").val() == '') {
+            alert("New Password harus di isi")
+        } else if ($("#confirmnewpassword").val() != $("#newpassword").val()) {
+            alert("confirm new password tidak sama dengan New Password")
+        } else {
+            Prosesakhir()
+        }
+    })
+    $("#Batalproses").click(function () {
+        Batalproses()
+    })
+    $("#btn_bridge_satu_sehat").click(function () {
+        $.ajax({
+            url: "/views_satu_sehat/saveOrganization",
+            method: "GET",
+            data: {
+
+            },
+            beforeSend: function () {
+                $('#ModalLoading').modal('show');
+                $('#loading_title').html('Proses Bridgging cabang..');
+                $('#loading_text').html('Tunggu Sebentar');
+            },
+            complete: function () {
+                $('#ModalLoading').modal('hide');
+            },
+            success: function (data) {
+                if (data.success) {
+                    $('#SS_FHIR_ID_Organization').val('' + data.message);
+                } else {
+                    alert('gagal bridge!');
+                }
+            }
+        })
+
+        // $.get('/views_satu_sehat/saveOrganization/', {}, function (data) {
+
+        //     if (data.success) {
+        //         $('#SS_FHIR_ID_Organization').val('' + data.message);
+        //     } else {
+        //         alert('gagal bridge!');
+        //     }
+        // });
+    });
+
+
+
+})
+
+function Batalproses() {
+    window.location.href = "http://{{ request.get_host }}/";
+    // window.history.back();
+}
+
+function myFunction() {
+    var x = document.getElementById("password");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+
+    var x = document.getElementById("password_icare");
+    if (x.type === "password") {
+        x.type = "text";
+    } else {
+        x.type = "password";
+    }
+}
+
+function Prosesakhir() {
+    var result = confirm('Yakin data ingin disimpan?')
+    status_aud = "A"
+    if (result) {
+        $.ajax({
+            url: host + "/aud_cabang",
+            method: "POST",
+            data: {
+                cabang_id: $("#cabang_id").val(),
+                nama_perusahaan: $("#nama_perusahaan").val(),
+                alamat: $("#alamat").val(),
+                idKabupaten: $("#idKabupaten").val(),
+                namaKabupaten: $("#namaKabupaten").val(),
+                idKelurahan: $("#idKelurahan").val(),
+                SS_FHIR_longitude: $("#SS_FHIR_longitude").val(),
+                SS_FHIR_latitude: $("#SS_FHIR_latitude").val(),
+                SS_FHIR_website: $("#SS_FHIR_website").val(),
+                kode_pos: $("#kode_pos").val(),
+                sip: $("#sip").val(),
+                email: $("#email").val(),
+                kontak: $("#kontak").val(),
+                jabatan: $("#jabatan").val(),
+                no_telepon: $("#no_telepon").val(),
+                no_wa: $("#no_wa").val(),
+                kode_fktp: $("#kode_fktp").val(),
+                consid: $("#consid").val(),
+                Secret_Number: $("#Secret_Number").val(),
+                Userkey: $("#Userkey").val(),
+                user_pcare: $("#user_pcare").val(),
+                password: $("#password").val(),
+                user_icare: $("#user_icare").val(),
+                password_icare: $("#password_icare").val(),
+                client_id: $("#client_id").val(),
+                organization_id: $("#organization_id").val(),
+                Secret_key: $("#Secret_key").val(),
+                SS_FHIR_ID_Organization: $("#SS_FHIR_ID_Organization").val(),
+                statusMjkn: $("[name=inlineRadioOptstatus]:checked").val(),
+                "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+
+            },
+            success: function (e) {
+                alert(e[0].STATUS + ' - ' + e[0].STATE)
+            }
+        });
+    }
+}
+
+function opencabang() {
+    $.ajax({
+        type: "GET",
+        url: host + '/open_cabang',
+        data: {},
+        success: function (e) {
+            $("#cabang_id").val(e[0].CABANG_ID);
+            $("#nama_perusahaan").val(e[0].PERUSAHAAN);
+            $("#alamat").val(e[0].ALAMAT1);
+            $("#idProvinsi").val(e[0].KD_PROPINSI);
+            $("#namaProvinsi").val(e[0].PROPINSIN);
+            $("#idKabupaten").val(e[0].KD_KABUPATEN);
+            $("#namaKabupaten").val(e[0].KABUPATEN);
+            $("#idKecamatan").val(e[0].KD_KECAMATAN);
+            $("#namaKecamatan").val(e[0].KECAMATAN);
+            $("#idKelurahan").val(e[0].KD_KELURAHAN);
+            $("#namaKelurahan").val(e[0].KELURAHAN);
+            $("#kode_pos").val(e[0].KODE_POS);
+            $("#sip").val(e[0].ijinSIP);
+            $("#email").val(e[0].email);
+            $("#kontak").val(e[0].KONTAK);
+            $("#jabatan").val(e[0].JABATAN);
+            if ((e[0].USING) == 'O') {
+                $("#inlineCheckboxaktif1").prop('checked', true)
+            } else {
+                $("#inlineCheckboxaktif1").prop('checked', false)
+            }
+            $("#no_telepon").val(e[0].TELEPON);
+            $("#no_wa").val(e[0].no_whatsapp);
+            $("#kode_fktp").val(e[0].ppkpelayanan);
+            $("#consid").val(e[0].consid);
+            $("#Secret_Number").val(e[0].secret);
+            $("#Userkey").val(e[0].bpjs_userkey);
+            $("#user_pcare").val(e[0].userncc);
+            $("#password").val(e[0].passwordncc);
+            $("#user_icare").val(e[0].user_icare);
+            $("#password_icare").val(e[0].password_icare);
+            var status2 = (e[0].statusmjkn)
+            if (status2 == 'P') {
+                $("#inlineRadioOptstatus1").prop('checked', true)
+            } else if (status2 == 'S') {
+                $("#inlineRadioOptstatus2").prop('checked', true)
+            } else {
+                $("#inlineRadioOptstatus3").prop('checked', true)
+            }
+            $("#organization_id").val(e[0].organization_id);
+            $("#client_id").val(e[0].client_id);
+            $("#Secret_key").val(e[0].Secret_key);
+            $("#SS_FHIR_ID_Organization").val(e[0].SS_FHIR_KD_CABANG);
+            $("#SS_FHIR_latitude").val(e[0].SS_FHIR_latitude);
+            $("#SS_FHIR_longitude").val(e[0].SS_FHIR_longitude);
+            $("#SS_FHIR_website").val(e[0].website);
+
+        },
+    })
+}

@@ -1,0 +1,280 @@
+<div class="modal fade " id="daftarResep" data-bs-backdrop="static" tabindex="-1" role="dialog"
+    aria-labelledby="myModal" style="z-index: 15002 !important;width: 100%;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title">Daftar Resep </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="padding-top: 0px;">
+                <div class="card" style="overflow-x: visible;">
+                    <div class="panel-body" style="background: rgb(133, 162, 209) !important;padding-left: 2px;padding-right: 2px;padding-top:
+                5px;padding-bottom: 5px;margin-bottom: 5px;">
+                        <div class="row" style="margin-left: 5px;margin-bottom: 5px;padding-bottom: 0px;">
+                            <div class="col-md-12">
+                                <div class="row" style="margin-bottom: -20px;">
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRBaru">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/add.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Paket Baru</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRSimpan">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/save.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Simpan &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRHapus">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/delete.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Hapus &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRFind">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/history.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Find &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnRCetak">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/print.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>Cetak &nbsp</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-2"
+                                        style="margin-left: 0px;padding-right: 5px;padding-left: 5px;">
+                                        <a id="btnExitPResep">
+                                            <div class="thumbnail">
+                                                <center>
+                                                    <img src="/static/img/emr/exit.png" alt="..." class="hight40">
+                                                    <div class="caption" style="padding-bottom: 0px;">
+                                                        <p>exit</p>
+                                                    </div>
+                                                </center>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ibox">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <fieldset>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="nmObat"
+                                            style="text-align: left;">No.Batch</label>
+                                        <div class="col-md-2">
+                                            <input id="PFKDDOKTER" name="PFKDDOKTER" type="hidden"
+                                                class="form-control input-sm">
+                                            <input id="noBatch" name="noBatch" type="text" class="form-control input-sm"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="nmObat"
+                                            style="text-align: left;">Nama Paket Obat (yang akan di edit)</label>
+                                        <div class="col-md-9">
+                                            <input id="kdPaketEdit" name="kdPaketEdit" type="text"
+                                                class="form-control input-sm" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="nmObat"
+                                            style="text-align: left;">Nama Paket</label>
+                                        <div class="col-md-6">
+                                            <input id="kdPaket" name="kdPaket" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+                                        <div class=" col-md-3">
+                                            <div class="btn btn-default btn-xs" id="btnGantiNamaPaket"
+                                                style="padding: 0px 5px;margin: -2px -8px 0px;">Ganti Nama Paket</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="nmObat"
+                                            style="text-align: left;">Keterangan</label>
+                                        <div class="col-md-9">
+                                            <input id="kdKet" name="kdKet" type="text" class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="name" style="text-align: left;">Kode
+                                            Obat</label>
+
+                                        <div class="col-md-2">
+                                            <input type="text" name="kdObatpaket" id="kdObatpaket"
+                                                class="form-control input-sm" required />
+                                        </div>
+
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCariObatpaket"
+                                                style="padding: 0px 5px;margin: -2px -8px 0px;"><i
+                                                    class="fa fa-search"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="nmObatpaket"
+                                            style="text-align: left;">Nama Obat</label>
+                                        <div class="col-md-9">
+                                            <input id="nmObatpaket" name="nmObatpaket" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="email"
+                                            style="text-align: left;">Banyaknya</label>
+                                        <div class="col-md-4">
+                                            <input id="qty1paket" name="qty1paket" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+                                        <div class="col-md-1" style="margin-left: inherit;margin-right: inherit;">
+                                            <h3 style="padding: 1px 5px;margin: -5px 8px 0px;font-size: 20px;">/</h3>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="qty2paket" name="qty2paket" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="email"
+                                            style="text-align: left;">Frekwensi</label>
+                                        <div class="col-md-1">
+                                            <input id="frkw1paket" name="frkw1paket" type="text"
+                                                class="form-control input-sm convResep">
+                                        </div>
+                                        <div class="col-md-1" style="margin-left: inherit;margin-right: inherit;">
+                                            <h3 style="padding: 1px 5px;margin: 5px 10px;font-size: 20px;">X</h3>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input id="frkw2paket" name="frkw2paket" type="text"
+                                                class="form-control input-sm convResep">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input id="frkw3paket" name="frkw3paket" type="text"
+                                                class="form-control input-sm">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="frkw5paket" name="frkw5paket" type="text"
+                                                class="form-control input-sm" placeholder="pemakaian">
+                                            <input id="signaspaket" name="signafpaket" type="hidden"
+                                                class="form-control input-sm">
+                                            <input id="signasKdpaket" name="signafpaket" type="hidden"
+                                                class="form-control input-sm">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="frkw4paket" name="frkw4paket" type="text"
+                                                class="form-control input-sm" placeholder="durasi">
+                                            <input id="signafpaket" name="signafpaket" type="hidden"
+                                                class="form-control input-sm">
+                                            <input id="signafKdpaket" name="signafpaket" type="hidden"
+                                                class="form-control input-sm">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="crapakai"
+                                            style="text-align: left;">Cara Pakai</label>
+                                        <div class="col-md-2">
+                                            <input id="crapakaiKdpaket" name="crapakaiKdpaket" type="hidden"
+                                                class="form-control input-sm convResep">
+                                            <input id="crapakai1paket" name="crapakai1paket" type="text"
+                                                class="form-control input-sm convResep">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="crapakaipaket" name="crapakaipaket" type="text"
+                                                class="form-control  input-sm">
+                                        </div>
+
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCaraPakaidaftar"
+                                                style="padding: 0px 5px;margin: -2px -8px 0px;"><i
+                                                    class="fa fa-search"></i></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="sigma"
+                                            style="text-align: left;">Sigma</label>
+
+                                        <div class="col-md-9">
+                                            <div class="form-check-inline">
+
+                                                <label class="customradio"><span class="radiotextsty">Otomatis</span>
+                                                    <input type="radio" checked="checked" name="radioSigmapaket">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                <label class="customradio"><span class="radiotextsty">Manual</span>
+                                                    <input type="radio" name="radioSigmapaket">
+                                                    <span class="checkmark"></span>
+                                                </label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" id="sigmapaket" name="sigmapaket"
+                                                placeholder="" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12 card" style="margin-top: 5px;">
+                                            <div id="gridReseppaket" style="padding: 15px 0px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

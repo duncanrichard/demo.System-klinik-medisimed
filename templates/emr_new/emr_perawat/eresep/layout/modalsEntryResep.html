@@ -1,0 +1,371 @@
+<!-- Modal confirmationEdit -->
+<div class="modal fade" id="modalsEntryResep" tabindex="-1" role="dialog" data-backdrop="static"
+    aria-labelledby="myModal">
+
+    <div class="modal-dialog" style="max-width: 600px;" role="document">
+        <div class="modal-content mw-100">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">
+                    <div id="modalsEntryResep_aksi"></div>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12" style="padding: 0px 10px;">
+
+                        <form class="form-horizontal" action="" method="post">
+                            <fieldset>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="name" style="text-align: left;">Nama
+                                            Obat</label>
+                                        <div style="margin-right: inherit;">
+                                            <input type="hidden" name="nobatchEdit" id="nobatchEdit"
+                                                class="form-control input-md" required />
+                                            <input type="hidden" name="kdObat" id="kdObat" class="form-control input-md"
+                                                required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input id="nmObat" name="nmObat" type="text" class="form-control input-md">
+                                        </div>
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCariObat"
+                                                style="padding: 5px 10px;"><i class="fa fa-search"></i></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="email"
+                                            style="text-align: left;">Banyaknya</label>
+                                        <div class="col-md-3">
+                                            <input id="qty1" name="qty1" type="text" style="padding: 0px;"
+                                                class="form-control input-md">
+                                        </div>
+                                        <div class="col-md-1"
+                                            style="margin-left: inherit;margin-right: inherit;margin-top: -7px;">
+                                            <h3 style="padding: 1px 5px;margin: 5px 10px;font-size: 20px;">/</h3>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input id="qty2" name="qty2" type="text" class="form-control input-md">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="frkw3" name="frkw3" type="text" class="form-control input-md">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="email"
+                                            style="text-align: left;">Frekwensi</label>
+                                        <div class="col-md-1">
+                                            <input id="frkw1" style="padding: 0px;" name="frkw1" type="text"
+                                                class="form-control input-md convResep">
+                                        </div>
+                                        <div class="col-md-1"
+                                            style="margin-left: inherit;margin-right: inherit;margin-top: -7px;">
+                                            <h3 style="padding: 1px 5px;margin: 5px 10px;font-size: 20px;">X</h3>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <input id="frkw2" style="padding: 0px;" name="frkw2" type="text"
+                                                class="form-control input-md convResep">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="frkw5" name="frkw5" type="text" class="form-control input-md"
+                                                placeholder="pemakaian">
+                                            <input id="signas" name="signaf" type="hidden"
+                                                class="form-control input-md">
+                                            <input id="signasKd" name="signaf" type="hidden"
+                                                class="form-control input-md">
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <input id="frkw4" name="frkw4" type="text" class="form-control input-md"
+                                                placeholder="durasi">
+                                            <input id="signaf" name="signaf" type="hidden"
+                                                class="form-control input-md">
+                                            <input id="signafKd" name="signaf" type="hidden"
+                                                class="form-control input-md">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="crapakai"
+                                            style="text-align: left;">Cara Pakai</label>
+                                        <div class="col-md-2">
+                                            <input id="crapakaiKd" name="crapakaiKd" type="hidden"
+                                                class="form-control input-md convResep">
+                                            <input id="crapakai1" name="crapakai1" type="text"
+                                                class="form-control input-md convResep">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input id="crapakai" name="crapakai" type="text"
+                                                class="form-control input-md">
+                                        </div>
+
+                                        <div class=" col-md-1">
+                                            <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCaraPakai"
+                                                style="padding: 5px 10px;"><i class="fa fa-search"></i></div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label class="col-md-3 control-label" for="sigma"
+                                            style="text-align: left;">Signa</label>
+
+                                        <div class="col-md-6">
+
+                                            <div id="" class="form-inline">
+                                                <label class="radio-inline fz-11"><input type="radio" name="radioSigma"
+                                                        value="0">Otomatis </label>
+                                                <label class="radio-inline fz-11"><input type="radio" name="radioSigma"
+                                                        value="1">Manual </label>
+                                            </div>
+
+
+
+                                            <br />
+                                            untuk menambah kata2 di signa klik manual
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" id="sigma" name="sigma" placeholder=""
+                                                rows="5"></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </fieldset>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" id="modalsEntryResep_btnSave">Save</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal  -->
+<div class="modal fade" id="modalPickerCaraPakai" tabindex="-1" role="dialog" aria-labelledby="myModal" style="z-index: 15004 !important;width: 100%;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Cari Cara Pakai </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div id="gridCaraPakai" style="height: 300px;font-size: 12px;line-height: 0.8;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal  -->
+<div class="modal fade" id="modalPickerCaraPakaiF" tabindex="-1" role="dialog" aria-labelledby="myModal"style="z-index: 15004 !important;width: 100%;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Cari Cara Pakai </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div id="gridCaraPakaiF" style="height: 300px;font-size: 12px;line-height: 0.8;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal  -->
+<div class="modal fade" id="modalPickerIndikasi" tabindex="-1" role="dialog" aria-labelledby="myModal"style="z-index: 15004 !important;width: 100%;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Indikasi</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div id="gridModalPickerIndikasi" style="height: 300px;font-size: 12px;line-height: 0.8;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal  -->
+<div class="modal fade" id="modalPickerCaraPakaiS" tabindex="-1" role="dialog" aria-labelledby="myModal"style="z-index: 15004 !important;width: 100%;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Cari Cara Pakai </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div id="gridCaraPakaiS" style="height: 300px;font-size: 12px;line-height: 0.8;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal  -->
+<div class="modal fade" id="modalHistoryPasien" tabindex="-1" role="dialog" aria-labelledby="myModal"style="z-index: 15004 !important;width: 100%;">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">History Pasien</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="card-body" style="background: linear-gradient(to right, #78b5ce, #c4d5db, #355f71);border-radius:
+				5px;padding-bottom:5px;padding-top:5px;">
+                <div class="ibox"
+                    style="background-color:#42636b;border-radius: 5px;padding-bottom:5px;padding-top:5px;margin-bottom:5px;">
+                    <div class="form-inline">
+                        <div class="col-md-4 ">
+                            <div id="gridTransaksiResep" style="overflow-x: scroll;"></div>
+                        </div>
+                        <div class="col-md-7 ">
+                            <div class="row quick-button" style="margin: 0px 25px;">
+                                <div class="row">
+                                    <div class="col-sm-6 entry">
+                                        <label for="validationCustom01">No.Resep</label>
+                                        <input type="text" class="form-control input-sm" id="noresep" required>
+                                    </div>
+                                    <div class="col-sm-6 entry">
+                                        <label for="validationCustom01">Tgl Resep</label>
+                                        <input type="text" class="form-control input-sm" id="tglresep" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 entry">
+                                        <label for="validationCustom01">Dokter</label>
+                                        <input type="text" class="form-control input-sm" id="dokterResep" required>
+                                    </div>
+                                    <div class="col-sm-6 entry">
+                                        <label for="validationCustom01">Diagnosa</label>
+                                        <input type="text" class="form-control input-sm" id="diagnosa" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin: 10px 7px;">
+                                <div id="gridTransaksiResepD" style="overflow-x: scroll;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div id="btnBuatResep" class="btn btn-warning" data-dismiss="modal">Buat Resep</div>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal  -->
+<div class="modal fade" id="modalFind" tabindex="-1" role="dialog" aria-labelledby="myModal"style="z-index: 15005 !important;width: 100%;">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Cari</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+
+                <div class="modal-body">
+                    <div class="row" >
+                        <div id="gridFind">
+                            
+                        </div>
+                    </div>
+                </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>

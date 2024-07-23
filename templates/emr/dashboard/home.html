@@ -1,0 +1,68 @@
+{% extends "emr/base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+KLINIK
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/plugins/css-toggle-switch/toggle-switch.css' %}">
+<link rel="stylesheet" href="{% static 'css/plugins/iCheck/custom.css' %}">
+<link rel="stylesheet" href="{% static 'css/dxtreeview.css' %}">
+<style>
+    body {
+        /* background-color: deepskyblue; */
+        background-image: url("/static/img/rajal.png") !important;
+        height: 100%;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+        background-size: cover !important;
+        padding-right: 0 !important
+    }
+
+    
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+        
+             
+    <div class="col-md-6 mt-2">
+        <div class="row">
+    
+        
+            <div class="col-md-2 px-1">
+                    <a href="/emr/cppt" class="btn-link">
+                    
+                
+                    <div class="thumbnail" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="E-Rekam Medis">
+                        <center>
+                            <img src="/static/img/logo_emr.png" class="img-icon">
+                            <div class="caption">E-MR</div>
+                        </center>
+                    </div>
+                </a>
+            </div>
+        
+    
+
+    
+        
+           
+        
+    
+        </div>
+    </div>
+    
+
+</div>
+  
+{% endblock content %}
+
+{% block script %}
+    <script type="text/javascript">
+        
+       
+    </script>
+{% endblock %}

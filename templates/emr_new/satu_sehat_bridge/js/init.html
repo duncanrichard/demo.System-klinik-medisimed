@@ -1,0 +1,191 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2];
+var host = host[0] + "//" + host[2] + "/" + host[3];
+
+
+var todays = '';
+var cabangid = '{{cabangid}}'
+var user_priv = '{{user_priv}}'
+var user_privelege = '{{user_privelege}}'
+var user_name = '{{user_name}}'
+var NO_TRANSAKSI = $("#noTrans").val();
+var SERVER_INDO = "{{SERVER_INDO}}"
+$(document).ready(function () {
+    $('#Findjenis').hide()
+    $('#Findjenis2').hide()
+    // set tanggal hari ini
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var time = today.toTimeString();
+    time = time.split(' ')[0];
+
+    today = yyyy + '-' + mm + '-' + dd;
+    todays = today
+    $(".today").val(today)
+    $('#tglAwal').val(todays);
+    $('#tglAkhir').val(todays);
+    $(".layout_proses").hide();
+    setGridRawatJalan($('#tglAwal').val(), $('#tglAkhir').val(), $("input[name='sortBy']:checked").val());
+    $('#btnproses').click(function () {
+        $(".layout_proses").hide();
+        $.ajax({
+            url: host + "/SrvIndoProses_satu_sehat",
+            // url: host + "/proses_satu_sehat",
+            method: "GET",
+            data: {
+                'tglAwal': $('#tglAwal').val(),
+                'tglAkhir': $('#tglAkhir').val(),
+            },
+            beforeSend: function () {
+                $('#ModalLoading').modal('show');
+                $('#loading_title').html('Proses Bridgging pasien..');
+                $('#loading_text').html('Tunggu Sebentar');
+            },
+            complete: function () {
+                $('#ModalLoading').modal('hide');
+            },
+            success: function (e) {
+                alert("Bridging sukses")
+                $(".layout_proses").show();
+            }
+        })
+
+    });
+    $('#btnset').click(function () {
+        setGridRawatJalan($('#tglAwal').val(), $('#tglAkhir').val(), $("input[name='sortBy']:checked").val());
+    });
+})
+
+function setGridRawatJalan(start, end, sortBy, reset = null) {
+    var deferred = $.Deferred();
+    var sortShiftBy = $("input[name='sortShiftBy']:checked").val();
+    var urlsetter = "/emr_perawat/get-pasien-rj?q=listPasienTgl&tglAwal=" + start + "&tglAkhir=" + end + "&times=" + new Date().getTime() + "&sortShiftBy=" + sortShiftBy + "&FMPKLINIK_ID=" + $('#poliView').val();
+    var dataChart = "&tglAwal=" + start + "&tglAkhir=" + end + "&times=" + new Date().getTime() + "&sortShiftBy=" + sortShiftBy + "&FMPKLINIK_ID=" + $('#poliView').val();
+    urlsetter += "&cabangid=" + cabangid;
+    if (reset) {
+        urlsetter = reset
+    }
+    $("#gridPasienRJ").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        showBorders: true,
+        paging: {
+            pageSize: 500
+        },
+        columnAutoWidth: true,
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: true
+        },
+        dataSource: urlsetter,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        success: function (result) {
+            deferred.resolve(result, {
+                totalCount: result.length
+            });
+        },
+        columns: [{
+                dataField: "KD_ANTRIAN",
+                width: 60,
+
+                caption: "Antrian"
+            },
+            {
+                dataField: "PSD_NO_TRANSAKSI_FHIR",
+                width: 185,
+
+                caption: "NO TRANSAKSI FHIR"
+            },
+
+            {
+                dataField: "TGL_INDO",
+                width: 80,
+                caption: "TglPeriksa"
+            },
+            {
+                dataField: "CUSTOMER",
+                width: 85,
+
+                caption: "Customer"
+            },
+            {
+                dataField: "KPKD_PASIEN",
+                width: 85,
+
+                caption: "Norm"
+            },
+            {
+                dataField: "NO_ASURANSI",
+                width: 110,
+
+                caption: "No.BPJS"
+            },
+            {
+                dataField: "NO_PENGENAL",
+                width: 140,
+
+                caption: "No.NIK"
+            },
+            {
+                dataField: "PKD_PASIEN_FHIR",
+                width: 110,
+
+                caption: "No.PASIEN FHIR"
+            },
+            {
+                dataField: "NAMAPASIEN",
+                width: 220,
+                caption: "Nama Pasien"
+            },
+            {
+                dataField: "FMPKLINIKN",
+                width: 120,
+                caption: "Poli"
+            },
+
+            {
+                dataField: "FMDDOKTERN",
+                // width: 120,
+
+                caption: "Dokter"
+            },
+            {
+                dataField: "SSFHIR_KD_DOKTER",
+                width: 120,
+                caption: "SSFHIR_KD_DOKTER"
+            },
+
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+
+            selectionChangedRaised = true;
+        },
+
+        onRowPrepared: function (e) {
+
+            if (e.rowType == 'data') {
+
+                var STATUS_EMR = e.data.STATUS_EMR;
+                var STATUS_EMRDR = e.data.STATUS_EMRDR;
+
+                if ((parseInt(STATUS_EMR) == 1)) {
+                    e.rowElement.addClass("row-sudah-prw");
+                }
+                if (parseInt(STATUS_EMRDR) == 1) {
+                    e.rowElement.addClass("row-sudah");
+                }
+            }
+        },
+
+
+    });
+}

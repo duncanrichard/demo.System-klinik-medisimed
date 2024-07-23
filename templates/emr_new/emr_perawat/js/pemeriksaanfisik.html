@@ -1,0 +1,255 @@
+var gambar_devault = ''
+$(document).ready(function () {
+    if (bridge_pcare == 0) {
+        gambar_devault = 'static/img/emr/status_lokalis.png'
+    } else {
+        gambar_devault = 'static/img/emr/status_affandi.png'
+    }
+    var customBoardVisualGigi1 = new DrawingBoard.Board('default-board-VisualGigi1', {
+
+        controls: [
+            //{ Navigation: { back: false, forward: false } },
+            'Color',
+            {
+                Size: {
+                    type: 'dropdown'
+                }
+            },
+            //{ DrawingMode: { filler: false } },
+            {
+                Navigation: {
+                    back: true,
+                    forward: true
+                }
+            },
+            //'Navigation',
+
+            //'Download'
+        ],
+        background: host2 + '/' + gambar_devault,
+        size: 2,
+        //webStorage: 'local',
+        enlargeYourContainer: true
+    });
+
+    // var element2 = $("#layoutSLVisualGigi1"); // global variable
+    // var getCanvas; // global variable
+
+    $("#btnSLSaveVisualGigi1").on('click', function () {
+        //kondisiUpBaru2=true;
+        saveImage3();
+    });
+
+    $('#btnSLVisualGigi1').click(function () {
+        //kondisiUpBaru2=true;
+
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLVisualGigi1').css("display", "block");
+        $('#layoutSLVisualGigi1').css("display", "block");
+        $('#layoutCreateSLVisualGigi1').css("display", "none");
+        $('#layoutSLImageVisualGigi1').css("display", "none");
+
+    });
+
+    $('#btnSLEditVisualGigi1').click(function () {
+        $(".drawing-board-controls").show();
+    });
+
+    $('#btnSLBatalVisualGigi1').click(function () {
+        //kondisiUpBaru2=false;
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLVisualGigi1').css("display", "none");
+        $('#layoutSLVisualGigi1').css("display", "none");
+        $('#layoutCreateSLVisualGigi1').css("display", "block");
+        $('#layoutSLImageVisualGigi1').css("display", "block");
+    });
+
+    $("#imageVisualGigi2").change(function () {
+
+        readURL(this, '#imageVisualGigi2View');
+        NO_TRANSAKSI = $("#noTrans").val();
+        var fd = new FormData();
+        fd.append("imagev2", this.files[0], NO_TRANSAKSI + "-visual2.png");
+        fd.append('MDG_NO_TRANSAKSI', getNoTrans());
+        fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        uploadImageVisual(fd);
+    });
+
+    $("#imageVisualGigi3").change(function () {
+        //console.log(this);
+        readURL(this, '#imageVisualGigi3View');
+        NO_TRANSAKSI = $("#noTrans").val();
+        var fd = new FormData();
+        fd.append("imagev3", this.files[0], NO_TRANSAKSI + "-visual3.png");
+        fd.append('MDG_NO_TRANSAKSI', getNoTrans());
+        fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        uploadImageVisual(fd);
+    });
+
+    $("#imageVisualGigi4").change(function () {
+        //console.log(this);
+        readURL(this, '#imageVisualGigi4View');
+        NO_TRANSAKSI = $("#noTrans").val();
+        var fd = new FormData();
+        fd.append("imagev4", this.files[0], NO_TRANSAKSI + "-visual4.png");
+        fd.append('MDG_NO_TRANSAKSI', getNoTrans());
+        fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+        uploadImageVisual(fd);
+    });
+
+    // $("#imageVisualGigi5").change(function () {
+    //     //console.log(this);
+    //     readURL(this, '#imageVisualGigi5View');
+    //     NO_TRANSAKSI = $("#noTrans").val();
+    //     var fd = new FormData();
+    //     fd.append("imagev5", this.files[0], NO_TRANSAKSI + "-visual5.png");
+    //     fd.append('MDG_NO_TRANSAKSI', getNoTrans());
+    //     fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+    //     uploadImageVisual(fd);
+    // });
+});
+
+
+
+function saveImage3(kondisi = null, hasil1 = null) {
+    $(".drawing-board-controls").hide();
+    html2canvas(elementCoret2, {
+        onrendered: function (canvas) {
+            //$("#layoutSLImage").append(canvas);
+            $('#layoutSLImageVisualGigi1').css("display", "block");
+
+            getCanvas2 = canvas;
+            var today = new Date();
+            var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date + '_' + time;
+            var imgageData = getCanvas2.toDataURL("image/png");
+            // Now browser starts downloading it instead of just showing it
+            var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+            /*var a  = document.createElement('a');
+            a.href = newData;
+            a.download = "{{request.session.noTrans}}_"+dateTime+"_"+today+".png";
+
+            a.click()*/
+
+            var file = dataURLtoBlob(imgageData);
+            // Create new form data
+            var fd = new FormData();
+            NO_TRANSAKSI = $("#noTrans").val();
+            fd.append("imagev1", file, NO_TRANSAKSI + "-visual1.png");
+            fd.append('MDG_NO_TRANSAKSI', getNoTrans());
+            fd.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+
+
+            $.ajax({
+                url: '/emr/upload/',
+                type: 'POST',
+                data: fd,
+                async: true,
+                cache: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+                beforeSend: function () {
+                    console.log('Uploading...');
+                    $('.upload-progress').show();
+                },
+                success: function (response) {
+                    $('.upload-progress').hide();
+                    if (response.status == 200) {
+                        console.log(response);
+
+                        alert("berhasil upload");
+
+                        $('#layoutEditSLVisualGigi1').css("display", "none");
+                        $('#layoutSLVisualGigi1').css("display", "none");
+                        $('#layoutCreateSLVisualGigi1').css("display", "block");
+                        $('#layoutSLImageVisualGigi1').css("display", "block");
+                        $('#imageVisualGigi1').val('' + response.VisualGigi1);
+                        $('#layoutSLImageImgVisualGigi1').html("<img id='layoutSLImageImgVisualGigi1' style='width: 700px;height: 300px;'/>");
+                        $('#layoutSLImageImgVisualGigi1').attr("src", host + '/' + response.imagev1);
+
+                    } else {
+                        try {
+                            var error = JSON.parse(response.error);
+                            alert('Vailed to upload! ' + error['data']['error'] + ', error_code: ' + error['status']);
+                        } catch (error) {
+                            alert('Vailed to upload! ' + response.error + ', error_code :' + response.status);
+                        }
+                        console.log(response);
+                    }
+                },
+                error: function (response) {
+                    console.log("error", response);
+                    alert(response);
+                }
+            });
+
+            //$("#layoutSLImage").attr("download", "your_pic_name.png").attr("href", newData);
+        }
+    });
+}
+
+function uploadImageVisual(fd) {
+    $.ajax({
+        url: '/emr/upload/',
+        type: 'POST',
+        data: fd,
+        async: true,
+        cache: false,
+        contentType: false,
+        enctype: 'multipart/form-data',
+        processData: false,
+        beforeSend: function () {
+            console.log('Uploading...');
+            $('.upload-progress').show();
+        },
+        success: function (response) {
+            $('.upload-progress').hide();
+            if (response.status == 200) {
+                console.log(response);
+                alert("Sukses Upload");
+            } else {
+                try {
+                    var error = JSON.parse(response.error);
+                    alert('Vailed to upload! ' + error['data']['error'] + ', error_code: ' + error['status']);
+                } catch (error) {
+                    alert('Vailed to upload! ' + response.error + ', error_code :' + response.status);
+                }
+                console.log(response);
+            }
+        },
+        error: function (response) {
+            console.log("error", response);
+            alert(response);
+        }
+    });
+}
+
+function dataURLtoBlob(dataURL) {
+    // Decode the dataURL    
+    var binary = atob(dataURL.split(',')[1]);
+    // Create 8-bit unsigned array
+    var array = [];
+    for (var i = 0; i < binary.length; i++) {
+        array.push(binary.charCodeAt(i));
+    }
+    // Return our Blob object
+    return new Blob([new Uint8Array(array)], {
+        type: 'image/png'
+    });
+}
+
+
+function readURL(input, tujuan) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $(tujuan).attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}

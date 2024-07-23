@@ -1,0 +1,1551 @@
+<script>
+    var host = window.location.href.split("/");
+    var host = host[0] + "//" + host[2]
+    console.log(host)
+    var sta=true;
+    var now = new Date();
+    var startDate = moment(now).format('DD-MM-YYYY');
+    $('.datepik').datepicker({
+        format: 'dd-mm-yyyy',
+        autoclose: true
+    }).datepicker("setDate", new Date);
+    $('.datepik').keypress(function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+        }
+    });
+    $('.datepik').val(startDate);
+
+    var dataDiagnosaPenyakit=[];
+    var selectionChangedRaised = false;
+    var katUmur;
+    window.CSRF_TOKEN = "{{ csrf_token }}";
+    var diagnosisSementara="";
+    var defaultKeadaanUmum ="Dalam Batas Normal";
+    console.log(diagnosisSementara);
+    var kondisiUpBaru1=false;
+    var kondisiUpBaru2=false;
+    var dataChecklistTabs=[];
+    var dataListDynamic=[];
+    var dataPost=[];
+    var kdLab="IDK04";
+    var dataDetailLabRad=[];
+    var arrIdxStoreProduk=0;
+    var arrData=[];
+    var kondRI="";
+    console.log(kondRI);
+    var deleteMode=false;
+    {% comment %} var startDate = moment(now).format('DD-MM-YYYY');
+      
+     setGridRawatJalan(startDate,startDate);
+    {% endcomment %}
+     $('input').keypress(function(e){
+         console.log(e.which);
+             if(e.which != 35 && e.which != 39){
+                } else {
+                return false;
+                }
+            
+    });
+
+    $('textarea').keypress(function(e){
+        if(e.which != 35 && e.which != 39){
+        } else {
+        return false;
+        }
+            
+    });
+
+    $('.datepik').datepicker({
+            format: 'dd-mm-yyyy',
+            autoclose: true
+    }); 
+
+
+    $('#btnset').click(function(){
+        setGridRawatJalan($('#tglAwal').val(),$('#tglAkhir').val());
+    });
+   
+
+
+    //*
+    var element1 = $("#layoutSLPemeriksaanMulut"); // global variable
+    var getCanvas; // global variable
+
+        $("#btnSLSavePemeriksaanMulut").on('click', function () {
+           kondisiUpBaru1=true;
+             saveImage1();
+        });
+    //*
+
+  
+    
+    
+    $('#btnSLPemeriksaanMulut').click(function(){
+        kondisiUpBaru1=true;
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLPemeriksaanMulut').css("display", "block");
+       $('#layoutSLPemeriksaanMulut').css("display", "block");
+       $('#layoutCreateSLPemeriksaanMulut').css("display", "none");
+       $('#layoutSLImagePemeriksaanMulut').css("display", "none");
+       
+    });
+    
+    $('#btnSLEditPemeriksaanMulut').click(function(){
+       $(".drawing-board-controls").show();
+    });
+   
+    $('#btnSLBatalPemeriksaanMulut').click(function(){
+        kondisiUpBaru1=false;
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLPemeriksaanMulut').css("display", "none");
+       $('#layoutSLPemeriksaanMulut').css("display", "none");
+       $('#layoutCreateSLPemeriksaanMulut').css("display", "block");
+       $('#layoutSLImagePemeriksaanMulut').css("display", "block");
+    });
+
+    //*
+    var element2 = $("#layoutSLOdontogram"); // global variable
+    var getCanvas; // global variable
+
+        $("#btnSLSaveOdontogram").on('click', function () {
+           kondisiUpBaru2=true;
+             saveImage2();
+        });
+    //*
+
+  
+    
+    
+    $('#btnSLOdontogram').click(function(){
+        kondisiUpBaru2=true;
+        
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLOdontogram').css("display", "block");
+       $('#layoutSLOdontogram').css("display", "block");
+       $('#layoutCreateSLOdontogram').css("display", "none");
+       $('#layoutSLImageOdontogram').css("display", "none");
+       
+    });
+    
+    $('#btnSLEditOdontogram').click(function(){
+       $(".drawing-board-controls").show();
+    });
+   
+    $('#btnSLBatalOdontogram').click(function(){
+        kondisiUpBaru2=false;
+        $(".drawing-board-controls").show();
+        $('#layoutEditSLOdontogram').css("display", "none");
+       $('#layoutSLOdontogram').css("display", "none");
+       $('#layoutCreateSLOdontogram').css("display", "block");
+       $('#layoutSLImageOdontogram').css("display", "block");
+    });
+    
+    
+    
+    
+   
+
+    $(document).ready(function(){
+
+        getKunjungan("{{request.session.noTrans}}");
+        setTabsAnswer();
+        setGridHistory("{{request.session.noTrans}}",kdLab);
+        //getDataCPPT("{{request.session.noTrans}}",kdLab);
+       	if('{{request.session.user_priv}}'=="REKAMMEDIS"){
+            $('#btnCSave').hide();
+         }
+    });
+
+
+    //actionButton
+    
+    $('#btnModeEdit').click(function(){
+        if($('#btnModeEdit').val()=='Mode Edit : On'){
+            deleteMode=false;
+            $('#btnModeEdit').val('Mode Edit : Off');       
+        }else{
+            deleteMode=true;
+            $('#btnModeEdit').val('Mode Edit : On'); 
+
+        }
+            
+    });
+    $('#btnRefresh').click(function(){
+        location.reload(true);
+            
+    });
+    $('#btnCSave').click(function(){
+        //console.log(buildRequestStringData($('#formRiwayatPrenatal')));
+        //console.log(buildRequestStringData($('#formRiwayatVaksinasi')));
+       //console.log(getMRDOG_FISIK());
+      
+        setDataPost();
+      insertCPPT(arrData);
+    });
+    
+    
+    $('#renctindal1').change(function(){
+        var selectedCountry = $('#renctindal1 :selected').val()
+        
+    });
+   
+  
+   
+    $('#btnCEresep').click(function(){
+            
+         window.location.href = '/emr/eresep'; 
+        
+        
+    });
+    
+    $('#btnCLab').click(function(){
+            
+         window.location.href = '/emr/e-lab'; 
+        
+        
+    });
+    $('#btnCRad').click(function(){
+            
+         window.location.href = '/emr/e-rad'; 
+        
+        
+    });
+    $('#btnCSoapi').click(function(){
+            
+         window.location.href = '/emr/soapirj'; 
+        
+        
+    });
+   
+   $("#rw_assesmentResikoJatuh3").on("change paste keyup", function() {
+        setNutri($("#rw_assesmentResikoJatuh3").val());
+    }); 
+
+    $('#modalsEntryResep_btnSave').click(function(){
+        
+        //alert($('#modalsEntryResep_aksi').text());
+        if($('#modalsEntryResep_aksi').text()=='Tambah'){
+            
+            if($('#kdObat').val().trim().length>0 
+            && $('#nmObat').val().trim().length>0
+            && $('#qty1').val().trim().length>0
+            && $('#frkw1').val().trim().length>0
+            && $('#frkw2').val().trim().length>0
+            && $('#frkw3').val().trim().length>0
+            && $('#sigma').val().trim().length>0){
+                
+                var r = confirm("Simpan Data?");
+                if (r == true) {
+                entryResepRJ();
+                } else {
+
+                }
+            }else{
+                alert("Pengisian Belum Lengkap");
+            }
+             
+        }else{
+             if($('#kdObat').val().trim().length>0 
+            && $('#nmObat').val().trim().length>0
+            && $('#qty1').val().trim().length>0
+            && $('#frkw1').val().trim().length>0
+            && $('#frkw2').val().trim().length>0
+            && $('#frkw3').val().trim().length>0
+            && $('#sigma').val().trim().length>0){
+                
+                var r = confirm("Simpan Data?");
+                if (r == true) {
+                editResepRJ();
+                } else {
+
+                }
+            }else{
+                alert("Pengisian Belum Lengkap");
+            }
+        }
+
+        
+    });
+
+    
+    $("#qty1").on("change paste keyup", function() {
+        if($("#qty1").val().trim().length>0){
+            if($.isNumeric( $("#qty1").val() )){
+                var jumqty1= parseInt($("#qty1").val());
+                if(typeof jumqty1 == 'number'){
+                    $("#qty2").val(''+convert(parseInt(jumqty1)));
+                }else{
+                    alert("Input harus nomor");
+                }
+            }else{
+                alert("Input harus nomor");
+            }
+        }
+        
+    });
+
+      
+
+     $(".convResep").on("change paste keyup", function() {
+        convertResep();
+    }); 
+
+
+    //function
+
+    function formToJson(nameForm)
+    {
+        var jsonForm={};
+        $("input", $(nameForm)).each(function(index){
+        jsonForm[$(this).attr("id")] = this.value;
+        })
+       
+        return jsonForm;
+    }
+    
+    function removeFunction (myObjects,prop,valu)
+    {
+            return myObjects.filter(function (val) {
+            return val[prop] !== valu;
+        });
+
+    }
+    function convertResep(){
+        var sigmaawal='S.';
+        var sigma1=$('#frkw1').val();
+        var sigma2=$('#frkw2').val();
+        var sigma3=$('#crapakai1').val();
+        var sigma4=$('#signas').val();
+        var sigma5=$('#signaf').val();
+
+        var dataSigma=$('#sigma').text(''+sigmaawal+' '+sigma1+' '+sigma2+' '+sigma4+' '+sigma5+' '+sigma3);
+        
+    }
+
+    function buildRequestStringData(form) {
+    var select = form.find('select'),
+        input = form.find('input'),
+        textarea = form.find('textarea'),
+        requestString = '{';
+    for (var i = 0; i < select.length; i++) {
+        requestString += '"' + $(select[i]).attr('name') + '": "' +$(select[i]).val() + '",';
+    }
+    if (select.length > 0) {
+        requestString = requestString.substring(0, requestString.length - 1);
+    }
+    for (var i = 0; i < input.length; i++) {
+        if ($(input[i]).attr('type') !== 'checkbox') {
+            requestString += '"' + $(input[i]).attr('name') + '":"' + $(input[i]).val() + '",';
+        } else {
+            if ($(input[i]).attr('checked')) {
+                requestString += '"' + $(input[i]).attr('name') +'":"' + $(input[i]).val() +'",';
+            }
+        }
+    }
+    if (input.length > 0) {
+        requestString = requestString.substring(0, requestString.length - 1);
+    }
+    requestString += '}';
+    return requestString;
+    }
+
+    var numeralCodes = [["","I","II","III","IV","V","VI","VII","VIII","IX"],         // Ones
+                    ["","X","XX","XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"],   // Tens
+                    ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"]];        // Hundreds
+
+    function convert(num) {
+        var numeral = "";
+        var digits = num.toString().split('').reverse();
+        for (var i=0; i < digits.length; i++){
+            numeral = numeralCodes[i][parseInt(digits[i])] + numeral;
+        }
+        return numeral;  
+    }
+
+    function getValueCheckBox(name,lain=null){
+        var fav = [];
+        $.each($("input[name='"+name+"']:checked"), function(){            
+            fav.push($(this).val());
+        });
+        var  requestString = '{';
+         requestString += '"' + name +'":"' + fav +'"';
+         if(lain!=null){
+         requestString += ',"' + lain +'":"' + $('#'+lain).val() +'"';
+         }
+         if(lain=="ds_pernah"){
+         requestString += ',"' + lain +'2":"' + $('#'+lain+'2').val() +'"';
+         }
+         requestString += '}';
+        return requestString;
+    }
+
+     function getObjValueCheckBox(name,lain=null,lain2=null,lain3=null){
+        var item={};
+        var fav = [];
+        $.each($("input[name='"+name+"']:checked"), function(){            
+            fav.push($(this).val());
+        });
+        item[''+name]=''+fav;
+        if(lain!=null){
+            item[''+lain]= $('#'+lain).val();
+        }
+       
+        if(lain2!=null){
+            item[''+lain2]= $('#'+lain2).val();
+        }
+        if(lain3!=null){
+            item[''+lain3]= $('#'+lain3).val();
+        }
+        
+        
+       
+        return item;
+    }
+     
+    function getObjValueCheckBox2(name){
+        var item={};
+        var fav = [];
+        $.each($("input[name='"+name+"']:checked"), function(){            
+            fav.push($(this).val());
+        });
+        item[''+name]=''+fav;
+        
+        return ''+fav;
+    }
+
+    function resetEntryResep(){
+        $('#kdObat').val('');
+        $('#nmObat').val('');
+        $('#qty1').val('');
+        $('#qty2').val('');
+        $('#frkw1').val('');
+        $('#frkw2').val('');
+        $('#frkw3').val('');
+        $('#crapakai1').val('');
+        $('#crapakai').val('');
+        $('#crapakaiKd').val('');
+        $('#sigma').text('');
+
+        $('#frkw4').val('');
+        $('#frkw5').val('');
+        $('#signas').val('');
+        $('#signasKd').val('');
+        $('#signaf').val('');
+        $('#signafKd').val('');
+        
+    }
+    
+    function resetFormDiagnosa(){
+        $('#modalsEntryDiagnosaPenyakit_btnDelete').hide();
+        $('#DP_noUrut').val('');
+        $('#DP_penyakit1').val('');
+        $('#DP_penyakit2').val('');
+        $('#DP_diagnosa1').val('');
+        $('#DP_diagnosa2').val('');
+        $('#DP_kasus1').val('');
+        $('#DP_kasus2').val('');
+    }
+    $('#btnBack').click(function(){
+        goBack();
+    });
+    
+    function goBack() {
+        window.history.back();
+    }
+    function setDataPost(){
+        arrData=[];
+      
+        for(var i=0;i<dataListDynamic.length;i++){
+            $.each($("input[name='data"+dataListDynamic[i].FMKKLAS_ID+"']:checked"), function(){            
+                arrData.push($(this).val());       
+            });
+        }
+        console.log(arrData);
+        
+    }
+    function setTabsAnswer(){
+        $.get('/emr/data-cppt', {'q': 'listCheckListLabRad','kelPeriksa':kdLab}, 
+            function(datas) {
+               console.log('setTabsAnswer');
+               console.log(datas);
+                dataChecklistTabs=datas;
+
+                $.ajax({                                            
+                    url: '/emr/data-cppt',                        
+                    data: {'q': 'listTabLabRad','jenisPeriksa':kdLab},                                                         
+                    async:false,        
+                    type: "GET",            
+                    success: function(data)          
+                    {   
+                        dataListDynamic=data;
+                        for(var i=0;i<data.length;i++){
+
+                            if(i==0){
+                                $chk= answerNotOddTabs(data,i);
+                            }else{
+                                $chk= answerOddTabs(data,i);
+                            }
+                        
+                            $('#kelompokTab').append($chk);
+                            $wew=contentTabs(data,i,dataChecklistTabs);
+                            $('#isiKelompokTabs').append($wew);
+                            var klas=data[i].FMKKLAS_ID;
+                
+                        
+                        }
+                    }
+                 }).done(function(data){
+                     console.log('sat');
+                     console.log(data);
+                     for(var i=0;i<data.length;i++){
+
+                        $dt=isilistTabs(data,i,dataChecklistTabs);
+                        console.log('dt '+i+' '+$dt);
+                        $('#form'+data[i].FMKKLAS_ID).append($dt);
+                    
+                    }
+
+                    
+                 });
+
+               /* $.get('/emr/data-cppt', {'q': 'listTabLabRad','jenisPeriksa':kdLab}, 
+                    function(data) {
+                    console.log(data);
+                    var k=1;
+                        for(var i=0;i<data.length;i++){
+
+                                if(i==0){
+                                    $chk= answerNotOddTabs(data,i);
+                                }else{
+                                    $chk= answerOddTabs(data,i);
+                                }
+                            
+                            $('#kelompokTab').append($chk);
+                            $wew=contentTabs(data,i,dataChecklistTabs);
+                            $('#isiKelompokTabs').append($wew);
+                            var klas=data[i].FMKKLAS_ID;
+                    
+                            
+                        }
+                    
+                });*/
+        });
+       
+       
+        
+    }
+
+
+    function contentTabs(data,i,dataChecklistTabs){
+        try {
+            // console.log('4 '+i);
+           
+            if(i==0){
+                var $chk =$('<div role="tabpanel" id="'+data[i].FMKKLAS_ID+'" class="tab-pane active" >'+
+            '<div class="panel-body">'+
+                '<div style="margin: 0px 5px;" >'+
+                     '<div class="form-group row">'+
+
+                        
+                        '<div class="col-md-10">'+
+                            '<table>'+
+                            '<div id="form'+data[i].FMKKLAS_ID+'">'+
+                            
+                            '</div>'+
+                            '</table>'+
+                        '</div>'+
+
+                    '</div>'+
+                  '  </div>'+
+                '</div>');
+            }else{
+            var $chk =$('<div role="tabpanel" id="'+data[i].FMKKLAS_ID+'" class="tab-pane" >'+
+            '<div class="panel-body">'+
+                '<div style="margin: 0px 5px;" >'+
+                     '<div class="form-group row">'+
+
+                        
+                        '<div class="col-md-10">'+
+                            '<table>'+
+                            '<div id="form'+data[i].FMKKLAS_ID+'">'+
+                            
+                            '</div>'+
+                            '</table>'+
+                        '</div>'+
+
+                    '</div>'+
+                  '  </div>'+
+                '</div>');
+            }
+            //console.log('isi '+isilistTabs(data,i,dataChecklistTabs));
+            }
+        catch(err) {
+            
+            }
+        return $chk;
+    }
+
+
+    function isilistTabs(data,i,dataChecklistTabs){
+       
+        var dt='';
+        var rows=0;
+       
+
+        for(var j=0;j<dataChecklistTabs.length;j++){
+            
+            console.log(j+' '+dataChecklistTabs[j].FMB_KELOMPOKPEMERIKSAAN+' '+data[i].FMKKLAS_ID);
+                try{
+                    if(dataChecklistTabs[j].FMB_KELOMPOKPEMERIKSAAN.trim()==data[i].FMKKLAS_ID.trim()){
+            
+                       // console.log('<label class="checkbox-inline fz-11"><input type="checkbox" name="data'+data[i].FMKKLAS_ID+'" value="'+dataChecklistTabs[j].FMB_VALUE_INT+'"> '+dataChecklistTabs[j].FMB_VALUE_INT+' </label>');
+                       
+                        if(rows%2==1){
+                           dt=dt+' '+'<td><label class="checkbox-inline fz-11" id="label'+dataChecklistTabs[j].FMB_KODEPEMERIKSAAN+'" ><input type="checkbox" name="data'+data[i].FMKKLAS_ID+'" value="'+dataChecklistTabs[j].FMB_KODEPEMERIKSAAN+'" style="margin-right: 2px;">'+dataChecklistTabs[j].FMB_NAMAPEMERIKSAAN+' </label></td></tr> ';
+                        }else{
+                            dt=dt+' '+'<tr><td style="width: 300px;"><label class="checkbox-inline fz-11" id="label'+dataChecklistTabs[j].FMB_KODEPEMERIKSAAN+'"><input type="checkbox" name="data'+data[i].FMKKLAS_ID+'" value="'+dataChecklistTabs[j].FMB_KODEPEMERIKSAAN+'" style="margin-right: 2px;">'+dataChecklistTabs[j].FMB_NAMAPEMERIKSAAN+' </label></td>  ';
+                        }
+                        
+                        rows++;
+
+                    }   
+                }catch(err){}                 
+           
+
+        }
+
+         
+        return dt;
+
+    }
+    function answerNotOddTabs(data,i){
+        try {
+            // console.log('4 '+i);
+            var $chk =$('<li>'+
+            '<a class="nav-link active" data-toggle="tab" href="#'+data[i].FMKKLAS_ID+'">'+
+            data[i].FMKKLASN+
+            '</a>'+
+            '</li>');
+            }
+        catch(err) {
+            
+            }
+        return $chk;
+    }
+  
+    function answerOddTabs(data,i){
+
+        try {
+
+              
+         var $chk =$('<li>'+
+        '<a class="nav-link" data-toggle="tab" href="#'+data[i].FMKKLAS_ID+'"> '+
+        data[i].FMKKLASN+
+        '</a>'+
+        '</li>');
+        }
+        catch(err) {
+        }
+        return $chk;
+    }
+   
+
+    
+    function setFormDiagnosa(data){
+         $('#modalsEntryDiagnosaPenyakit').modal('show');
+         $('#modalsEntryDiagnosaPenyakit_btnDelete').show();
+         $("#modalsEntryDiagnosaPenyakit").css("display","block");
+        $('#DP_noUrut').val(''+data.MRPURUT_MASUK);
+        $('#DP_penyakit1').val(''+data.MRPKD_PENYAKIT);
+        $('#DP_penyakit2').val(''+data.PENYAKIT);
+        $('#DP_diagnosa1').val(''+data.MRPSTAT_DIAG);
+        $('#DP_diagnosa2').val(''+data.MSDIAGNOSANAMA);
+        $('#DP_kasus1').val(''+data.MRPKASUS);
+        $('#DP_kasus2').val(''+data.MSKASUSNAMA);
+    }
+
+    function setGridDiagnosaPenyakitOnl(noTrans){
+        var selectionChangedRaised = false;
+        $("#gridDiagnosaPenyakit").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 5
+        },
+         filterRow: { visible: false },
+        dataSource: "/emr/data-cppt?q=OpenpenyakitHIS&MRPKD_PASIEN="+noTrans,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+            {dataField: "MRPURUT_MASUK", width: 35,caption: "No"},
+            {dataField: "MRPKD_PENYAKIT",width: 50,caption: "Kode"},
+            {dataField: "PENYAKIT", width: 140,caption: "Penyakit"},
+            {dataField: "MRPSTAT_DIAG",width: 50,caption: "Kode"},
+            {dataField: "MSDIAGNOSANAMA",caption: "Diagnosa"},
+            {dataField: "MRPKASUS",width: 50,caption: "Kode"},
+            {dataField: "MSKASUSNAMA",caption: "Kasus"},
+            {dataField: "MRPTGL_MASUK",caption: "Tanggal"}],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            selectionChangedRaised = true;
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+
+        
+    }
+   
+
+    function setGridDPPenyakit(){
+        $('#modalPickerPenyakit').modal('show');
+        $("#gridDPPenyakit").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 5
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/data-cppt?q=dataPickerPenyakit",
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "KD_PENYAKIT","PENYAKIT"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerPenyakit').modal('hide');
+            $('#DP_penyakit1').val(''+data.KD_PENYAKIT);
+            $('#DP_penyakit2').val(''+data.PENYAKIT);
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+
+    function setGridDPDiagnosa(){
+        $('#modalPickerdiagnosa').modal('show');
+        $("#gridDPDiagnosa").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 5
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/data-cppt?q=dataPickerDiagnosa",
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "MSDIAGNOSAID","MSDIAGNOSANAMA"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerdiagnosa').modal('hide');
+            $('#DP_diagnosa1').val(''+data.MSDIAGNOSAID);
+            $('#DP_diagnosa2').val(''+data.MSDIAGNOSANAMA);
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridDPKasus(){
+        $('#modalPickerKasus').modal('show');
+        $("#gridDPKasus").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 5
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/data-cppt?q=dataPickerKasus",
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "MSKASUSID","MSKASUSNAMA"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerKasus').modal('hide');
+            $('#DP_kasus1').val(''+data.MSKASUSID);
+            $('#DP_kasus2').val(''+data.MSKASUSNAMA);
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+
+    function setGridObat(){
+        $("#gridObat").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/detail-entry-resep?q=pickerObat&barangId="+$("#modalPickerObat_keyword_idbarang").val()+"&zataditif="+$("#modalPickerObat_keyword_kandungan").val()+"&barangNama="+$("#modalPickerObat_keyword_barangn").val(),
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "BrgId","NamaBrg","Satuan","Harga"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerObat').modal('hide');
+            $('#kdObat').val(''+data.BrgId);
+            $('#nmObat').val(''+data.NamaBrg);
+            $('#frkw3').val(''+data.Satuan);
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridCaraPakai(){
+        $("#gridCaraPakai").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/detail-entry-resep?q=pickerCaraPakai",
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "Kode","Materi","Signa"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerCaraPakai').modal('hide');
+            try{
+                $('#crapakai1').val(''+data.Signa);
+                $('#crapakai').val(''+data.Materi);
+                $('#crapakaiKd').val(''+data.Kode);
+            }catch(err){}
+            convertResep();
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+    function setGridCaraPakaiF(){
+        $("#gridCaraPakaiF").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/detail-entry-resep?q=pickerCaraPakaiF",
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "Kode","Materi","Signa"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerCaraPakaiF').modal('hide');
+            try{
+                $('#signaf').val(''+data.Signa);
+                $('#frkw4').val(''+data.Materi);
+                $('#signafKd').val(''+data.Kode);
+            }catch(err){}
+            convertResep();
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+     function setGridCaraPakaiS(){
+        $("#gridCaraPakaiS").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/detail-entry-resep?q=pickerCaraPakaiS",
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        "Kode","Materi","Signa"],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            $('#modalPickerCaraPakaiS').modal('hide');
+            try{
+                $('#signas').val(''+data.Signa);
+                $('#frkw5').val(''+data.Materi);
+                $('#signasKd').val(''+data.Kode);
+            }catch(err){}
+            convertResep();
+            
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+     
+     function setGridTransaksiResep(){
+        $("#gridTransaksiResep").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/detail-entry-resep?q=transaksiResep&FHFJCUST_ID="+$('#detailPasien1').val(),
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+         {dataField: "FHFJBUKTI_ID",caption: "NO TRANS"},
+         {dataField: "FHFJDATE",caption: "Tgl"},
+         {dataField: "FHFJDOKTERN",caption: "Dokter"}],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            setGridTransaksiResepDetail(data.FHFJBUKTI_ID);
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+
+
+        function setGridTransaksiResepDetail(notrans){
+        $("#gridTransaksiResepD").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/detail-entry-resep?q=transaksiResepDetail&FDFJBUKTI_ID="+notrans,
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+        {dataField: "FDFJNOM",width:35,caption: "NO"},
+        {dataField: "FDFJBRGN",caption: "NAMAOBAT"},
+        {dataField: "FDFJQTY",caption: "JUMLAH"}],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+        selectionChangedRaised = false;
+        }
+    });
+    }
+    //wew
+    function getKunjungan(noTrans){
+        console.log(noTrans);
+        if(kondRI==""){
+        $.get('/emr/detail-entry-resep', {'q': 'detailKunjunganCPPT','noTrans':noTrans}, 
+            function(data) {
+                //setGridPenyakitHIS(data[0].KPKD_PASIEN);
+                $('#notrans').val(data[0].KPNO_TRANSAKSI);
+                $('#detailPasien1').val(data[0].KPKD_PASIEN);
+                $('#detailPasien2').val(data[0].NAMAPASIEN);
+                $('#jk').val(data[0].JENIS_KELAMIN);
+                $('#tglfaktur').val(data[0].KPTGL_PERIKSA);
+                $('#tglperiksa2').val(data[0].KPTGL_PERIKSA);
+                $('#kelpas1').val(data[0].KD_CUSTOMER);
+                $('#kelpas2').val(data[0].NAME);
+                $('#dokter1').val(data[0].KPKD_DOKTER);
+                $('#dokter2').val(data[0].FMDDOKTERN);
+                $('#alamat1').val(data[0].ALAMAT);
+                $('#tgllahir').val(data[0].tgl_lahir);
+                $('#poli1').val(data[0].KPKD_POLY);
+                $('#poli2').val(data[0].FMPKLINIKN);
+                $('#kelpas3').val(data[0].FMKCUST_ID);
+                $('#kelpas4').val(data[0].FMKCUSTN);
+                console.log(data[0].tgl_lahir);
+                getAge(data[0].tgl_lahir2);
+              
+        }); 
+        }else{
+         
+        }
+    }
+
+    
+    function insertCPPT(arrData=null){
+       
+        if(arrIdxStoreProduk <arrData.length){
+            console.log('arrData[arrIdxStoreProduk] '+arrData[arrIdxStoreProduk]);
+        $.post('/emr/e-lab/save', 
+            {
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+           ,'q':'entryLabPermintaan'
+           ,'FTP_KDPASIEN': $('#detailPasien1').val()
+           ,'FTP_CUSID': $('#kelpas1').val()
+           ,'FTP_UNIT': $('#poli1').val()
+           ,'FTP_STATUS_CITO': $("input[name='cito']:checked").val()
+           ,'FTP_KDPERIKSA': arrData[arrIdxStoreProduk]
+           ,'FAPTGL_APPOITMENTs': $('#tglperiksa2').val()
+           ,'FTP_PARENT': kdLab
+           ,'FTP_NOTRANSAKSI_LAB': cekKosong2($('#noTransLab').val())
+           ,'FTP_NOTRANSAKSI': '{{request.session.noTrans}}'
+           
+           }
+           ,function(data) {
+               console.log(data);
+                if(data.success){
+                   
+                   // alert("Sukses Simpan"); 
+                   arrIdxStoreProduk++;
+                   $('#noTransLab').val(data.message);
+                    getDataCPPT("{{request.session.noTrans}}",kdLab,data.message);
+                   insertCPPT(arrData);
+                   setGridHistory("",kdLab);
+                   setGridHistory("{{request.session.noTrans}}",kdLab);
+                }else{
+                    alert("Terjadi Kesalahan");
+                }
+              
+        });
+
+        } else {
+            arrIdxStoreProduk = 0;
+            getDataCPPT("{{request.session.noTrans}}",kdLab,data.message);
+            setGridHistory("",kdLab);
+            setGridHistory("{{request.session.noTrans}}",kdLab);
+            alert("Sukses Menyimpan");            
+        }
+    }
+
+    function setAfterSave(urlUpload,urlUpload2){
+        $('#layoutEditSLPemeriksaanMulut').css("display", "none");
+        $('#layoutSLPemeriksaanMulut').css("display", "none");
+        $('#layoutCreateSLPemeriksaanMulut').css("display", "block");
+        $('#layoutSLImagePemeriksaanMulut').css("display", "block");
+        $('#imagePemeriksaanMulut').val(''+urlUpload);
+        $('#layoutSLImageImgPemeriksaanMulut').html("<img id='layoutSLImageImgPemeriksaanMulut' style='width: 700px;height: 300px;'/>");
+        $('#layoutSLImageImgPemeriksaanMulut').attr("src",host+'/'+urlUpload);
+
+        $('#layoutEditSLOdontogram').css("display", "none");
+        $('#layoutSLOdontogram').css("display", "none");
+        $('#layoutCreateSLOdontogram').css("display", "block");
+        $('#layoutSLImageOdontogram').css("display", "block");
+        $('#imageOdontogram').val(''+urlUpload2);
+        $('#layoutSLImageImgOdontogram').html("<img id='layoutSLImageImgOdontogram' style='width: 700px;height: 300px;'/>");
+        $('#layoutSLImageImgOdontogram').attr("src",host+'/'+urlUpload2);
+    }
+
+    function getMDG_GEJALA(){
+        var value='';  
+        var item = {};
+        item['MDG_GEJALA']={};
+        
+        Object.assign(item['MDG_GEJALA'], getObjValueCheckBox('tesVitalitas','tesVitalitas_3b1','tesVitalitas_3b2'));
+        Object.assign(item['MDG_GEJALA'], getObjValueCheckBox('rasaSakit'));
+        Object.assign(item['MDG_GEJALA'], getObjValueCheckBox('rasaSakit1','rasaSakit6_lain'));
+        item['MDG_GEJALA']['rasaSakit1Lain']=cekKosong($('#rasaSakit1Lain').val());          
+        Object.assign(item['MDG_GEJALA'], getObjValueCheckBox('pemeriksaanObyektif','pemeriksaanObyektif8_lain','pemeriksaanObyektif9_lain'));
+        Object.assign(item['MDG_GEJALA'], getObjValueCheckBox('gambaranRadiografik','gambaranRadiografik_0d','gambaranRadiografik_7abb','gambaranRadiografik_7abc'));
+        
+        return JSON.stringify(item);
+
+    }
+    
+    function getMDG_RIWAYATPENYAKIT(){
+        var value='';  
+        var item = {};
+        item['MDG_RIWAYATPENYAKIT']={};
+        item['MDG_RIWAYATPENYAKIT']['RPMenular']=cekKosong($('#RPMenular').val());
+        item['MDG_RIWAYATPENYAKIT']['RPIdap']=cekKosong($('#RPIdap').val()) ;
+        item['MDG_RIWAYATPENYAKIT']['RPAlergiObat']=cekKosong($('#RPAlergiObat').val()) ;      
+        return JSON.stringify(item);
+
+    }
+    
+    function getMDG_OKLUSI(){
+        var value='';  
+        var item = {};
+        item['MDG_OKLUSI']={};
+        item['MDG_OKLUSI']['Oklusi_CTMR_Kiri']=cekKosong($('#Oklusi_CTMR_Kiri').val()) ;
+        item['MDG_OKLUSI']['Oklusi_CTMR_Kanan']=cekKosong($('#Oklusi_CTMR_Kanan').val()) ;
+        item['MDG_OKLUSI']['Oklusi_CTF_Kiri']=cekKosong($('#Oklusi_CTF_Kiri').val()) ;
+        item['MDG_OKLUSI']['Oklusi_CTF_Kanan']=cekKosong($('#Oklusi_CTF_Kanan').val()) ;
+        item['MDG_OKLUSI']['Oklusi_DR_Overjet']=cekKosong($('#Oklusi_DR_Overjet').val()) ;
+        item['MDG_OKLUSI']['Oklusi_DR_Overbite']=cekKosong($('#Oklusi_DR_Overbite').val()) ;
+
+        return JSON.stringify(item);
+
+    }
+   
+    function getMDG_ODONTOGRAM(urlUpload2=null){
+        var value='';  
+        var item = {};
+        item['MDG_ODONTOGRAM']={};
+        if(urlUpload2!=null){
+            item['MDG_ODONTOGRAM']['imageOdontogram']=urlUpload2;
+        }else{
+            item['MDG_ODONTOGRAM']['imageOdontogram']=cekKosong($('#imageOdontogram').val()) ;
+        }
+        item['MDG_ODONTOGRAM']['odontogramCatatan']=cekKosong($('#odontogramCatatan').val()) ;
+
+        return JSON.stringify(item);
+
+    }
+    
+   
+    
+    
+
+    function cekKosong(data){
+        var hasil="-";
+        if(data.trim().length > 0) {
+         // Enable submit button
+            hasil=data;
+        }
+
+        return hasil;
+    }
+    function cekKosong2(data){
+        var hasil="NULL";
+        if(data.trim().length > 0) {
+         // Enable submit button
+            hasil=data;
+        }
+
+        return hasil;
+    }
+   
+    function cekNull(data){
+        var hasil="-";
+        
+        if(data!=undefined) {
+         // Enable submit button
+            hasil=data;
+        }
+        if(data!="undefined") {
+         // Enable submit button
+            hasil=data;
+        }
+
+        if(data!=null) {
+         // Enable submit button
+            hasil=data;
+        }
+
+        return hasil;
+    }
+
+    function getDataCPPT(noTrans,idk=null,noTransLabs=null){
+     
+       $.get('/emr/data-cppt', {'q': 'OpenDetailLabRad','FTP_NOTRANSAKSI':noTrans,'PARENT':idk,'FTP_NOTRANSAKSI_LAB':noTransLabs}, 
+            function(data) {
+               //console.log('OpenAssesment '+data[0].FMSBB);
+             dataDetailLabRad=data;
+              setDetailRad();
+              setDataPost();
+        });
+
+
+    }
+
+    function setGridHistory(noTrans,idk=null){
+     
+      
+        $("#gridHistoryRLab").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: { visible: true },
+        dataSource: "/emr/data-cppt?q=OpenHistoryLabRad&FTP_NOTRANSAKSI="+noTrans+"&PARENT="+idk+"&times=" + new Date().getTime(),
+        selection: {
+        mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [ 
+            {
+                dataField: "NO_URUT",
+                width: 100,
+                caption: "No.Urut"
+            }, {
+                dataField: "FTP_STATUS",
+                width: 100,
+                caption: "Status"
+            }, {
+                dataField: "FTP_NOTRANSAKSI_LAB",
+                width: 150,
+                caption: "NoTransaksi"
+            },{
+                dataField: "TGL_TRANSAKSI",
+                width: 100,
+                caption: "Tgl"
+            },],onRowPrepared:function(e){
+            
+             if (e.rowType == 'data') {
+                var nilai = e.data.FTP_STATUS;
+                if (nilai == 'Sudah' ) {
+                    e.rowElement.addClass("row-blue");
+                }else{
+                    if(e.rowIndex%2!=0){
+                        e.rowElement.addClass("row-abu");                    
+                    }
+                }
+            }
+        },onSelectionChanged: function (selectedItems) {
+             var data = selectedItems.selectedRowsData[0];
+              selectionChangedRaised = true;
+         },
+        onRowClick : function(e) {
+        if (!selectionChangedRaised) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+        }
+       
+       if(!deleteMode){
+       $('#noTransLab').val(''+e.data.FTP_NOTRANSAKSI_LAB);
+       $('#tglperiksa2').val(''+e.data.TGL_TRANSAKSI);
+
+       resetDetailRad();
+       getDataCPPT("{{request.session.noTrans}}",kdLab,e.data.FTP_NOTRANSAKSI_LAB);
+       }else{
+           alert("Silahkan matikan mode edit");
+       }
+        selectionChangedRaised = false;
+        }
+    });
+
+
+    }
+
+    function deleteChecked(value){
+     
+      $.post('/emr/e-lab/del', 
+            {
+           'csrfmiddlewaretoken': '{{ csrf_token }}'
+           ,'q':'deleteLabPeriksa'
+           ,'FTP_KDPERIKSA': value
+           ,'FTP_NOTRANSAKSI_LAB': $('#noTransLab').val()
+           ,'FTP_NOTRANSAKSI': '{{request.session.noTrans}}'
+           
+           }
+           ,function(data) {
+               console.log(data);
+                if(data.success){
+                   console.log("Sukses Hapus");
+                   // alert("Sukses Simpan"); 
+                   setGridHistory("{{request.session.noTrans}}",kdLab);
+                }else{
+                    console.log("Terjadi Kesalahan");
+                }
+              
+        });
+
+
+    }
+    
+    function resetDetailRad(){
+        $("input:checkbox").prop("checked", false);
+        $(".color-selected").removeClass("color-selected");
+        /*data=dataDetailLabRad;
+        if(data.length>0){       
+            for(var i=0;i<data.length;i++){
+                $("input[name='data"+data[i].FTP_KELOMPOK+"'][value='"+data[i].FTP_KDPERIKSA+"']").prop('checked', false);
+            }
+        }*/
+    }
+
+    function setDetailRad(){
+        data=dataDetailLabRad;
+        if(data.length>0){       
+            for(var i=0;i<data.length;i++){
+                $("input[name='data"+data[i].FTP_KELOMPOK+"'][value='"+data[i].FTP_KDPERIKSA+"']").prop('checked', true);
+                $( "#label"+data[i].FTP_KDPERIKSA+"" ).addClass("color-selected");
+                //console.log("#label"+data[i].FTP_KDPERIKSA+"");
+            }
+        }
+    }
+    function defaultPemFisik(isi){
+        var isiReturn='Dalam Batas Normal'
+        if(isi.length>0){
+            isiReturn=isi;
+        }
+
+        return isiReturn;
+    }
+    
+    function cekKondisiTanggal(data){
+        var hasil="NULL";
+        if(data.trim().length > 1) {
+         // Enable submit button
+            hasil=data.split('-').reverse().join('-');
+        }
+
+        return hasil;
+    }
+    
+    function getAge(dateString) {
+        var now = new Date();
+        var today = new Date(now.getYear(),now.getMonth(),now.getDate());
+
+        var yearNow = now.getYear();
+        var monthNow = now.getMonth();
+        var dateNow = now.getDate();
+
+        var dob = new Date(dateString.substring(6,10),
+                            dateString.substring(0,2)-1,                   
+                            dateString.substring(3,5)                  
+                            );
+
+        var yearDob = dob.getYear();
+        var monthDob = dob.getMonth();
+        var dateDob = dob.getDate();
+        var age = {};
+        var ageString = "";
+        var yearString = "";
+        var monthString = "";
+        var dayString = "";
+
+
+        yearAge = yearNow - yearDob;
+
+        if (monthNow >= monthDob)
+            var monthAge = monthNow - monthDob;
+        else {
+            yearAge--;
+            var monthAge = 12 + monthNow -monthDob;
+        }
+
+        if (dateNow >= dateDob)
+            var dateAge = dateNow - dateDob;
+        else {
+            monthAge--;
+            var dateAge = 31 + dateNow - dateDob;
+
+            if (monthAge < 0) {
+            monthAge = 11;
+            yearAge--;
+            }
+        }
+
+        age = {
+            years: yearAge,
+            months: monthAge,
+            days: dateAge
+            };
+
+        if ( age.years > 1 ) yearString = " years";
+        else yearString = " year";
+        if ( age.months> 1 ) monthString = " months";
+        else monthString = " month";
+        if ( age.days > 1 ) dayString = " days";
+        else dayString = " day";
+
+
+        $('#thn').val(''+age.years);
+        $('#bln').val(''+age.months);
+        $('#hari').val(''+age.days);
+        //setKelompok(age.years,age.months);
+        return ageString;
+    }
+
+    $(document).ajaxStop(function() {
+        
+        if(sta){
+           setDetailRad();
+           console.log("selesai reqawal");
+           sta=false;
+
+           $("input:checkbox").change(function() {
+                if(deleteMode){
+                    var ischecked= $(this).is(':checked');
+                    if(!ischecked)
+                        deleteChecked($(this).val());
+                }
+                
+            });
+        }
+
+      
+    });
+    
+
+</script>

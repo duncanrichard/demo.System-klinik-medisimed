@@ -1,0 +1,76 @@
+<nav class="navbar navbar-static-top" role="navigation">
+      
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header" >
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+          </button>
+          <a href="http://{{ request.get_host }}/" class="navbar-brand" href="#">SIMRS</a>
+
+        </div> 
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse trns" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            
+           
+                {% comment %} <li class="dropdown" style="margin-left: 10px;">
+                  <a href="#" class="fz-11 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Master Data <span class="caret"></span></a>
+                  <ul class="dropdown-menu trns">
+                    <li><a href="http://{{ request.get_host }}/farmasi/supplier">Supplier</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/pabrikan">Pabrikan</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/jenis-obat">Jenis Obat</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/golongan-obat">Golongan Obat</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/sediaan">Sediaan</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/lokasi">Lokasi</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/master-obat">Master Obat</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/saldo_awal_persediaan_brg">Saldo Awal Persediaan Barang (FIFO)</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/buffer_stock_ruangan">Buffer Stock Obat Alkes</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/paket_farmasi_obatalkes">Paket Resep Obat Alkes</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/saldo_awal_hutang">Saldo Awal Hutang</a></li>
+                    <li><a href="http://{{ request.get_host }}/farmasi/saldo_faktur_hutang">Saldo Faktur Hutang</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li><a href="#">Privilege</a></li>
+                    <li><a href="#">Produk Imunisasi</a></li>
+                  </ul>
+                </li> {% endcomment %}
+            
+               
+                
+                <li><h3 href="#" style="padding: 5px;">E-MR</h3></li>
+                {% comment %} <li class="dropdown">
+                  <a href="#" class="fz-11 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Akutansi Keuangan <span class="caret"></span></a>
+                  <ul class="dropdown-menu trns">
+                    <li class="dropdown-submenu">
+                      <a tabindex="-1" href="#">Payment</a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#">Registrasi Inkaso Hutang</a></li>
+                        <li><a href="#">Pembayaran Hutang</a></li>
+                        <li><a href="#">Nota Debit</a></li>
+                        <li><a href="#">Nota Kredit</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li> {% endcomment %}
+                
+          				
+                
+                <li class="dropdown">
+                     <a href="#" class="fz-11 dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Optional Login <span class="caret"></span></a>
+                    <ul class="dropdown-menu trns">
+                       <li><a href="#">Optional Login</a></li>
+                       <li><a href="/logout">Exit</a></li>
+                    </ul>
+                </li>
+
+                
+                
+                
+          </ul>
+          
+          
+        </div><!-- /.navbar-collapse -->
+    </nav>

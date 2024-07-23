@@ -23,7 +23,7 @@
     {% csrf_token %}
     {% include 'setupdata/dokter/content.html' %}
     {% include 'setupdata/dokter/modal/dxGridModaldokter.html'%} 
-
+    {% include 'setupdata/dokter/modal/dxGridModalListdokterBpjs.html'%} 
 {% endblock content %}
 
 {% block script %}
@@ -32,6 +32,7 @@
 {% include 'setupdata/dokter/js/init.html' %}
 {% include 'setupdata/dokter/js/aud_content.html' %}
 {% include 'setupdata/dokter/js/getdokter.html' %}
+{% include 'setupdata/dokter/js/getlistdokterbpjs.html' %}
 
 
 </script>

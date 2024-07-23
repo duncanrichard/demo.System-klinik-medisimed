@@ -1,0 +1,338 @@
+{% extends "layout/master.html" %}
+{% block title %} 
+Bridging Satu Sehat Kemenkes
+{% endblock %} 
+
+
+{% block head %}
+<style>
+    div#gridPasienRJ.dx-widget {
+        font-size: 13px;
+        line-height: 0.9;
+        /* height: 240px; */
+    }
+    
+
+  .hight70{ height:40px;width: 80%;}
+  .hight40{ height:50px;width: 80%;}
+  .row-blue{
+        background:#23c6c8 !important;
+    }
+    .row-blue-3498db{
+        background:#3498db !important;
+    }
+    
+    .row-blue-1abc9c{
+        background:#1abc9c !important;
+    }
+    
+    .row-sudah-prw{
+        background:#2ca02c !important;
+    }
+
+    .row-sudah{
+        background:#ff7f0e !important;
+    }
+
+    .row-abu{
+        background: #eeeeee !important;
+    }
+
+    .row-hijau{
+        background:#1ab394 !important;
+    }
+    
+    .row-ed5565{
+        background:#ed5565 !important;
+    }
+    .dot-ed5565 {
+    height: 25px;
+    width: 25px;
+    background-color:#ed5565;
+    border-radius: 50%;
+    display: inline-block;
+    }
+    .dot-1abc9c {
+    height: 25px;
+    width: 25px;
+    background-color:#1abc9c;
+    border-radius: 50%;
+    display: inline-block;
+    }
+
+    .dot-sudah-prw {
+    height: 25px;
+    width: 25px;
+    background-color:#2ca02c;
+    border-radius: 50%;
+    display: inline-block;
+    }
+
+    .dot-sudah {
+    height: 25px;
+    width: 25px;
+    background-color:#ff7f0e;
+    border-radius: 50%;
+    display: inline-block;
+    }
+
+    .dot-3498db {
+    height: 25px;
+    width: 25px;
+    background-color:#3498db;
+    border-radius: 50%;
+    display: inline-block;
+    }
+    .btn-default {
+    color: inherit;
+    background: #a9f0b4;
+    border: 2px solid #1d1d1e;
+    }
+  
+
+    label{
+        margin-bottom: 10px;
+    }
+
+    .panel-head-CPPT_DR{
+        background: #ff7f0e !important;
+    }
+
+    .panel-head-CPPT_PRW{
+        background: #2ca02c !important;
+    }
+
+    .cppt-menu-fz{
+        font-size: 13px;
+        width: 150px;
+    }
+    .cppt-menu-img-sz{
+        height: 35px;
+
+    }
+    
+    .pulse {
+        height: 100px;
+        width: 300px;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        }
+        .pulse:after {
+        content: '';
+        display: block;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200px 100px" enable-background="new 0 0 200px 100px" xml:space="preserve"><polyline fill="none" stroke-width="3px" stroke="black" points="2.4,58.7 70.8,58.7 76.1,46.2 81.1,58.7 89.9,58.7 93.8,66.5 102.8,22.7 110.6,78.7 115.3,58.7 126.4,58.7 134.4,54.7 142.4,58.7 197.8,58.7 "/></svg>') 0 0 no-repeat;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        -webkit-animation: 2s pulse linear infinite;
+        -moz-animation: 2s pulse linear infinite;
+        -o-animation: 2s pulse linear infinite;
+        animation: 2s pulse linear infinite;
+            clip: rect(0, 0, 100px, 0);
+        }
+        .pulse:before {
+        content: '';
+        position: absolute;
+        z-index: -1;
+        left: 2px;
+        right: 2px;
+        bottom: 0;
+        top: 16px;
+        margin: auto;
+        height: 3px;
+
+        }
+
+
+        @-webkit-keyframes pulse {
+        0% {
+            clip: rect(0, 0, 100px, 0);
+            opacity: 0.4;
+        }
+        4% {
+            clip: rect(0, 66.66667px, 100px, 0);
+            opacity: 0.6;
+        }
+        15% {
+            clip: rect(0, 133.33333px, 100px, 0);
+            opacity: 0.8;
+        }
+        20% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity: 1;
+        }
+
+        80% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+
+        90% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity: 0;
+        }
+
+        100% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+        }
+        @keyframes pulse {
+        0% {
+            clip: rect(0, 0, 100px, 0);
+        }
+        4% {
+            clip: rect(0, 66.66667px, 100px, 0);
+        }
+        15% {
+            clip: rect(0, 133.33333px, 100px, 0);
+        }
+        20% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:1;
+        }
+
+        80% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+
+        90% {
+            opacity: 0;
+        }
+
+        100% {
+            clip: rect(0, 300px, 100px, 0);
+            opacity:0;
+        }
+        
+        }
+
+        .btn-custom {
+            display: block;
+            border-radius: 5px;
+            padding-top: 5px;
+            padding-bottom: 1px;
+            color: #f4f3f9;
+            background-color: #40883f;
+            position: relative;
+            -webkit-box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75);
+            -moz-box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75);
+            box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75);
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 40px;
+            color: #f4f3f9;
+            display: block;
+            text-align: center;
+        }
+        .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+        /* Theoretically for IE 8 & 9 (more valid) */	
+        /* ...but not required as filter works too */
+        /* should come BEFORE filter */
+        -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        
+        /* This works in IE 8 & 9 too */
+        /* ... but also 5, 6, 7 */
+        filter: alpha(opacity=40);
+        
+        /* Older than Firefox 0.9 */
+        -moz-opacity:0.4;
+        
+        /* Safari 1.x (pre WebKit!) */
+        -khtml-opacity: 0.4;
+        background: rgb(76, 175, 80);
+        
+        cursor: not-allowed;
+        color: rgba(0,0,0,.26);
+
+    }
+    .enablebutton {
+        
+
+        /* Theoretically for IE 8 & 9 (more valid) */	
+        /* ...but not required as filter works too */
+        /* should come BEFORE filter */
+        -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
+        
+        /* This works in IE 8 & 9 too */
+        /* ... but also 5, 6, 7 */
+        filter: alpha(opacity=40);
+        
+        /* Older than Firefox 0.9 */
+        -moz-opacity:0.4;
+        
+        /* Safari 1.x (pre WebKit!) */
+        -khtml-opacity: 0.4;
+        background: rgb(76, 175, 80);
+        
+        cursor: allowed;
+        color: rgba(0,0,0,.26);
+
+
+    }
+    
+    #white-clr label{
+        color:white;
+    }
+    .dx-datagrid-headers{
+        color : rgb(10, 11, 18)
+    }
+    .form-control{
+        color : rgb(10, 11, 18)
+    }
+
+    .form-inline label {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: center;
+    justify-content: left;
+    margin-bottom: 0;
+  }
+
+
+</style>
+{% load static %}
+<style src="{% static 'css/plugins/c3/c3.min.css'%}" rel="stylesheet"></style>
+<link rel="stylesheet" type="text/css" href="{% static 'bower_components/drawingboard.js/dist/drawingboard.min.css' %}">
+{% endblock %} 
+
+
+{% block content %} 
+{% csrf_token %} 
+
+{% include 'emr_new/satu_sehat_bridge/layout/content.html'%} 
+{% include 'dashboard/modal/ModalLoading.html' %}
+
+{% endblock %} 
+
+
+{% block script %}
+ 
+{% load static %}
+<script src="/static/js/standardModal.js"></script>  
+<script src="{% static 'js/MainProc.js'%}"></script>
+<script src="{% static 'js/terbilang.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/d3/d3.min.js'%}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/c3/c3.min.js'%}"></script>   
+<script type="text/javascript" src="{% static 'bower_components/easytimer.js/dist/easytimer.min.js'%}"></script>
+<script type="text/javascript">
+    {% include 'emr_new/satu_sehat_bridge/js/init.html' %}
+    $('.modal').on("hidden.bs.modal", function (e) { 
+        if ($('.modal:visible').length) { 
+            $('body').addClass('modal-open');
+        }
+    });
+</script>
+{% endblock %}
+
+

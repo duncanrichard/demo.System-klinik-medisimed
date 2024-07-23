@@ -1,0 +1,170 @@
+<fieldset>
+
+    <div class="form-group">
+        <div class="row">
+            <label class="col-md-3 control-label" for="dk_FERRACIK_ID" style="text-align: left;">No.RACIK</label>
+            <div class="col-md-8">
+                <input id="dk_FERRACIK_ID" name="dk_FERRACIK_ID" type="text" class="form-control input-sm" disabled>
+            </div>
+        </div>
+    </div>
+    {% comment %} 
+    <div class="form-group"><div class="row"></div>
+        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;">No.Batch</label>
+        <div class="col-md-2">
+            <input id="noBatch" name="noBatch" type="text" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group"><div class="row"></div>
+        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;">Kode Paket</label>
+        <div class="col-md-9">
+            <input id="kdPaket" name="kdPaket" type="text" class="form-control input-sm">
+        </div>
+    </div>
+    <div class="form-group"><div class="row"></div>
+        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;">Keterangan</label>
+        <div class="col-md-9">
+            <input id="kdKet" name="kdKet" type="text" class="form-control input-sm">
+        </div>
+    </div> 
+    
+      <div class="form-group"><div class="row"></div>
+        <label class="col-md-3 control-label" for="nmObat" style="text-align: left;">Nama Obat</label>
+        <div class="col-md-9">
+            <input id="nmObat" name="nmObat" type="text" class="form-control input-sm">
+        </div>
+    </div>
+    
+    {% endcomment %}
+
+    <div class="form-group">
+        <div class="row">
+            <label class="col-md-3 control-label">Usia</label>
+            <div class="col-md-1">
+                <input type="text" name="thn" id="thn" style="padding: 0px 1px;" class="form-control input-sm" required="">
+            </div>
+            <div class="col-md-1">
+            Th
+            </div>
+            <div class="col-md-1">
+                <input type="text" name="bln" id="bln" style="padding: 0px 1px;" class="form-control input-sm" required="">
+            </div>
+            <div class="col-md-1">
+            Bln
+            </div>
+            <div class="col-md-1">
+                <input type="text" name="hari" id="hari" style="padding: 0px 1px;" class="form-control input-sm" required="">
+            </div>
+            <div class="col-md-1">
+            Hri
+            </div>
+        </div>
+        
+    
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <label class="col-md-3 control-label" for="name" style="text-align: left;">Bentuk Racikan</label>
+    
+            <div class="col-md-2" >
+                <input type="hidden" name="bentukRacikKd" id="bentukRacikKd" class="form-control input-sm convResep" required />
+                <input type="hidden" name="bentukRacikS" id="bentukRacikS" class="form-control input-sm convResep" required />
+                <input type="text" name="bentukRacik" id="bentukRacik" class="form-control input-sm convResep" required />
+            </div>
+    
+            <div class=" col-md-1">
+                <div class="btn btn-default btn-xs" id="btnbentukRacik" style="padding: 0px 5px;margin: -2px -8px 0px;"><i class="fa fa-search"></i></div>
+            </div>
+        </div>
+       
+
+    </div>
+
+  
+
+    <div class="form-group">
+        <div class="row">
+            <label class="col-md-3 control-label" for="email" style="text-align: left;">Jumlah</label>
+            <div class="col-md-4">
+                <input id="qty1" name="qty1" type="text" class="form-control input-sm convResep">
+            </div>
+            <div class="col-md-1" style="margin-left: inherit;margin-right: inherit;">
+                <h3 style="padding: 1px 5px;margin: -5px 8px 0px;font-size: 20px;">/</h3>
+            </div>
+            <div class="col-md-4">
+                <input id="qty2" name="qty2" type="text" class="form-control input-sm convResep">
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+
+            <label class="col-md-3 control-label" for="email" style="text-align: left;">Dosis</label>
+             <div class="col-md-2">
+                 <input id="frkw1" name="frkw1" type="text" class="form-control input-sm convResep autoDurasi">
+             </div>
+             <div class="col-md-1" style="margin-left: inherit;margin-right: inherit;">
+                 <h3 style="padding: 1px 5px;margin: 0px 5px;font-size: 15px;">X</h3>
+             </div>
+             <div class="col-md-2">
+                 <input id="frkw2" name="frkw2" type="text" class="form-control input-sm convResep autoDurasi">
+             </div>
+             
+              <div class="col-md-3">
+                 <input id="frkw4" name="frkw4" type="text" class="form-control input-sm" placeholder="durasi">
+                 <input id="signaf" name="signaf" type="hidden" class="form-control input-sm">
+                 <input id="signafKd" name="signaf" type="hidden" class="form-control input-sm">
+             </div>
+     
+             <div class="col-md-2" style="visibility: hidden;">
+                 <input id="frkw3" name="frkw3" type="text" class="form-control input-sm">
+             </div>
+             
+             <div class="col-md-2" style="visibility: hidden;">
+                 <input id="frkw5" name="frkw5" type="text" class="form-control input-sm" placeholder="pemakaian">
+                 <input id="signas" name="signaf" type="hidden" class="form-control input-sm">
+                 <input id="signasKd" name="signaf" type="hidden" class="form-control input-sm">
+             </div>
+        </div>
+
+       
+    </div>
+
+    <div class="form-group">
+        <div class="row">
+            <label class="col-md-3 control-label" for="crapakai" style="text-align: left;">Cara Pakai</label>
+            <div class="col-md-2">
+                <input id="crapakaiKd" name="crapakaiKd" type="hidden" class="form-control input-sm convResep">
+                <input id="crapakai1" name="crapakai1" type="text" class="form-control input-sm convResep">
+            </div>
+            <div class="col-md-4">
+                <input id="crapakai" name="crapakai" type="text" class="form-control  input-sm">
+            </div>
+    
+            <div class=" col-md-1">
+                <div class="btn btn-default btn-xs" id="modalsEntryResep_BtnCaraPakai" style="padding: 0px 5px;margin: -2px -8px 0px;"><i class="fa fa-search"></i></div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="form-group">
+        <div class="row">
+            <div class="col-sm-12" style="margin-top: 5px;" >
+                
+                <div type="button" class="btn btn-primary" id="btnRacikCariObat">Tambah Obat</div>
+               
+            </div>
+        </div>
+  
+            
+     </div>
+    
+   
+
+
+   
+</fieldset>

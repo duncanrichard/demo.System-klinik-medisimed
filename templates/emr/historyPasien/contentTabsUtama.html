@@ -1,0 +1,45 @@
+<div class="col-sm-12 card" style="margin-top: 5px;">
+    <div class="tabs-container" style="padding: 5px 5px;">
+        <ul class="nav nav-tabs" role="tablist">
+                {% comment %} <li ><a class="nav-link   " data-toggle="tab" href="#tabkiri1" aria-expanded="true"> Data Pasien </a></li> {% endcomment %}
+                <li class="active"><a class="nav-link active" data-toggle="tab" href="#tabkiri2">Riwayat Kunjungan Pasien</a></li>
+                {% comment %} <li><a class="nav-link" data-toggle="tab" href="#tabkiri3">Riwayat Penyakit</a></li> {% endcomment %}
+        </ul>
+        <div class="tab-content">
+
+            <div role="tabpanel" id="tabkiri1" class="tab-pane ">
+                <div class="panel-body">
+
+                </div>
+            </div>
+
+            
+            <div role="tabpane2" id="tabkiri2" class="tab-pane active">
+                <div class="panel-body">
+                    <div style="margin: 0px 5px;">
+                            {% include 'emrdokter/historyPasien/TabsRiwayatPasien.html' %}
+                    
+                    </div>
+                </div>
+            </div>
+
+            
+            <div role="tabpane3" id="tabkiri3" class="tab-pane">
+                <div class="panel-body">
+                
+                   
+                   
+                    
+                </div>
+            </div>
+            
+            
+
+            
+
+        </div>
+
+
+    </div>
+
+</div>

@@ -1,0 +1,56 @@
+
+<div class="modal fade" id="modalPicker" tabindex="-1" role="dialog" aria-labelledby="myModal">
+
+    <div class="modal-dialog" role="document" style="width: 900px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalPickerLabel">Penyakit </h4>
+                <input type="hidden" id="kondisiPicker" />
+            </div>
+
+            <div class="modal-body">
+
+               <div class="form-group row" id="layoutSearchPasienKunjungan" style="display:none;">
+                    <label class="col-md-1 fz-11 control-label">Cari:</label>
+                    <div class="col-md-11">
+                        <div id="" class="form-inline">
+                            <label class="radio-inline fz-11"><input type="radio" name="searchPasienKunjungan" value="0" class="autoSearchPasienKunjungan">Semua Pasien </label>
+                            <label class="radio-inline fz-11">
+                                <input type="radio" name="searchPasienKunjungan" value="1" class="autoSearchPasienKunjungan" checked>Pasien Tgl
+                                <input type="text" style="width: 100px;" id="tglSearchPasienKunjungan" class="form-control input-sm datepik today autoSearchPasienKunjungan">
+                            </label>
+                       
+                            <label class="radio-inline fz-11" style="display:none;">
+                                <input type="radio" name="searchPasienKunjungan" value="2" class="autoSearchPasienKunjungan">Pasien Sdh di ICD 10 
+                                <input type="text" id="tglSearchPasienKunjunganICD10" style="width: 100px;" class="form-control input-sm datepik today autoSearchPasienKunjungan">
+                            </label>
+                            
+                            <label class="radio-inline fz-11">
+                                <input type="text" id="namaSearchPasienKunjungan"  class="form-control input-sm  autoSearchPasienKunjungan" placeholder="Cari Nama">
+                            </label>
+                            
+                            <div class="radio-inline fz-11" id="btnSearchPasienKunjungan"><i class="fa fa-search " style="padding: 4px;border-radius: 5px;background: #1ab394;color: white;"></i></div>
+                        </div>
+                    </div>
+                    {% comment %} <div class=" col-md-1">
+                        <div class="" id="btnSearchPasienKunjungan"><i class="fa fa-search " style="padding: 4px;border-radius: 5px;background: #1ab394;color: white;"></i></div>
+                    </div> {% endcomment %}
+                </div>
+
+                <div class="row">
+                    <div id="modalPickerGrid"   class=" col-md-12" style="overflow-x: scroll;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>

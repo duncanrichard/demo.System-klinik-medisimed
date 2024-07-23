@@ -1,0 +1,39 @@
+{% extends "layout/master.html" %}
+{% block title %}
+    Poliklinik
+{% endblock %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/static/css/loading.css">
+    <style>
+        div#dxGridDatapoliklinik.dx-widget {
+            font-size: 12px;
+            line-height: 0.95;
+            height: 240px;
+        }
+        div#DxgridDatapoliklinik2.dx-widget {
+            font-size: 12px;
+            line-height: 0.8;
+            height: 240px;
+        }
+        .form-group {
+        margin-bottom: 0.1rem;
+        padding: unset;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% include 'setupdata/poliklinik/form_poliklinik.html' %}
+    {% include 'setupdata/poliklinik/layout/Modalprintpoliklinik.html' %}
+    {% include 'setupdata/poliklinik/dxgrid/DxGridModalpoliklinik.html' %}
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'setupdata/poliklinik/js/init.html' %}
+{% include 'setupdata/poliklinik/js/dxgriddatapoliklinikjs.html' %}
+{% include 'setupdata/poliklinik/js/getpoliklinik.html' %}
+</script>
+{% endblock  %}

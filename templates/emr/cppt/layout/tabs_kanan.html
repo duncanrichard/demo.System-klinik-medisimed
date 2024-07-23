@@ -1,0 +1,54 @@
+<div class="tabs-container" style="padding: 5px 5px;">
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active"><a class="nav-link active " data-toggle="tab" href="#tabkanan1" aria-expanded="true"> Riwayat CPPT</a></li>
+        {% comment %} <li><a class="nav-link" data-toggle="tab" href="#tabkanan2">Riwayat Penyakit</a></li> {% endcomment %}
+        
+    </ul>
+    <div class="tab-content">
+
+        <div role="tabpanel" id="tabkanan1" class="tab-pane active">
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="radio-inline fz-11">
+                       <table>
+                        <tr>
+                            <td> <input type="date" style="width: 150px;margin-right: 10px;" id="tglSearchHPasienAwal" class="form-control input-sm form-control-sm datepikH today "></td>
+                            <td> <input type="date" style="width: 150px;" id="tglSearchHPasienAkhir" class="form-control input-sm form-control-sm datepikH today "></td>
+                        </tr>
+                       </table>
+                    </label>
+                </div>
+                <div class="form-group row">
+                        <table border="1" style="margin-left: 10px;">
+                        <tbody id="lembarHistoryCPPT">
+                            <tr style="background: #fae0c1;">
+                                <td style="width: 100px; padding: 5px;"><label class="fz-11 control-label">Tanggal Jam</label></td>
+                                <td style="width: 100px; padding: 5px;"><label class="fz-11 control-label">POLI</label></td>
+                                <td style="width: 300px; padding: 5px;"><label class="fz-11 control-label">Catatan Perkembangan Terintegrasi</label></td>
+                                <td style="width: 200px; padding: 5px;"><label class="fz-11 control-label">Paraf /Nama Petugas</label></td>
+                                
+                            </tr>
+
+
+                            <div id="lembarHistoryCPPTArea">
+                                <div id="">
+                                   
+                                </div>
+                            </div>
+                            
+
+                        </tbody>
+                        </table>
+                    </div>
+            </div>
+        </div>
+
+        
+      
+
+        
+
+    </div>
+
+
+</div>

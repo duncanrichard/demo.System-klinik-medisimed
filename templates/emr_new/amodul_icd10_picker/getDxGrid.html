@@ -1,0 +1,380 @@
+$(document).ready(function () {
+    getGridDiagnosaTindakan()
+    initDefaultStatusKasus()
+})
+
+function getGridDiagnosaTindakan() {
+    $.ajax({
+        url: host + "/Openpenyakit",
+        method: "GET",
+        data: {
+            "NO_TRANSAKSI": $('#noTrans').val(),
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.length != 0) {
+                $("#gridDiagnosaCPPT").dxDataGrid({
+                    dataSource: datas,
+                    selection: {
+                        mode: "single"
+                    },
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    allowDeleting: true,
+                    columnAutoWidth: true,
+                    rowAlternationEnabled: true,
+                    paging: {
+                        pageSize: 10
+                    },
+                    columns: [{
+                            dataField: "MRPURUT_MASUK",
+                            width: 35,
+                            caption: "No",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MRPKD_PENYAKIT",
+                            width: 75,
+                            caption: "Kode",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "PENYAKIT",
+                            width: 120,
+                            caption: "Penyakit",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MRPSTAT_DIAG",
+                            width: 50,
+                            caption: "Kode",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MSDIAGNOSANAMA",
+                            caption: "Diagnosa",
+                            allowEditing: false,
+                            cellTemplate: function (element, info) {
+                                element.append('<div>' + info.text + '<div class="pull-right"><span class="fa fa-caret-square-o-down"></span></div></div>')
+                            }
+                        },
+                        {
+                            dataField: "MRPKASUS",
+                            width: 50,
+                            caption: "Kode",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MSKASUSNAMA",
+                            caption: "Kasus",
+                            allowEditing: false,
+                            cellTemplate: function (element, info) {
+                                element.append('<div>' + info.text + '<div class="pull-right"><span class="fa fa-caret-square-o-down"></span></div></div>')
+                            }
+                        },
+                        {
+                            dataField: "MRPTGL_MASUK",
+                            caption: "Tanggal",
+                            format: 'dd/MM/yyyy',
+                            allowSorting: false,
+                            allowEditing: true,
+                        }
+                    ],
+                    editing: {
+                        mode: "cell",
+                        allowUpdating: true,
+                        selectTextOnEditStart: true,
+                        allowEditing: true,
+                        allowDeleting: true,
+                        texts: {
+                            confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                            deleteRow: "Hapus"
+                        }
+                    },
+                    keyboardNavigation: {
+                        editOnKeyPress: true,
+                        enterKeyAction: "moveFocus",
+                        enterKeyDirection: 'row'
+                    },
+                    onCellClick: function (d) {
+                        rowIndex = d.rowIndex;
+                        colIndex = d.column.dataField;
+                        index_kolom_satuan = d.columnIndex
+                        index_baris_satuan = d.rowIndex
+                        if (index_kolom_satuan == 4 || index_kolom_satuan == 3) {
+                            dxGridFindJenisDiagnosaCPPT()
+                        } else if (index_kolom_satuan == 6 || index_kolom_satuan == 5) {
+                            dxGridFindJenisKasusCPPT()
+                        }
+                    },
+                    onFocusedCellChanged: function (e) {
+                        rowIndex = e.rowIndex
+                        colIndex = e.columnIndex
+                        if (colIndex == 1) {
+                            colIndex = "MRPKD_PENYAKIT"
+                        } else if (colIndex == 3) {
+                            colIndex = "MRPSTAT_DIAG"
+                        } else if (colIndex == 5) {
+                            colIndex = "MRPKASUS"
+                        }
+                    },
+                });
+            } else {
+                $("#gridDiagnosaCPPT").dxDataGrid({
+                    dataSource: [],
+                    selection: {
+                        mode: "single"
+                    },
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    allowDeleting: true,
+                    columnAutoWidth: true,
+                    rowAlternationEnabled: true,
+                    paging: {
+                        pageSize: 10
+                    },
+                    columns: [{
+                            dataField: "MRPURUT_MASUK",
+                            width: 35,
+                            caption: "No",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MRPKD_PENYAKIT",
+                            width: 75,
+                            caption: "Kode",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "PENYAKIT",
+                            width: 120,
+                            caption: "Penyakit",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MRPSTAT_DIAG",
+                            width: 50,
+                            caption: "Kode",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MSDIAGNOSANAMA",
+                            caption: "Diagnosa",
+                            allowEditing: false,
+                            cellTemplate: function (element, info) {
+                                element.append('<div>' + info.text + '<div class="pull-right"><span class="fa fa-caret-square-o-down"></span></div></div>')
+                            }
+                        },
+                        {
+                            dataField: "MRPKASUS",
+                            width: 50,
+                            caption: "Kode",
+                            allowEditing: false,
+                        },
+                        {
+                            dataField: "MSKASUSNAMA",
+                            caption: "Kasus",
+                            allowEditing: false,
+                            cellTemplate: function (element, info) {
+                                element.append('<div>' + info.text + '<div class="pull-right"><span class="fa fa-caret-square-o-down"></span></div></div>')
+                            }
+                        },
+                        {
+                            dataField: "MRPTGL_MASUK",
+                            caption: "Tanggal",
+                            format: 'dd/MM/yyyy',
+                            allowSorting: false,
+                            allowEditing: true,
+                        }
+                    ],
+                    editing: {
+                        mode: "cell",
+                        allowUpdating: true,
+                        selectTextOnEditStart: true,
+                        allowEditing: true,
+                        allowDeleting: true,
+                        texts: {
+                            confirmDeleteMessage: "Yakin Ingin Menghapus Data Ini?",
+                            deleteRow: "Hapus"
+                        }
+                    },
+                    keyboardNavigation: {
+                        editOnKeyPress: true,
+                        enterKeyAction: "moveFocus",
+                        enterKeyDirection: 'row'
+                    },
+                    onCellClick: function (d) {
+                        rowIndex = d.rowIndex;
+                        colIndex = d.column.dataField;
+                        index_kolom_satuan = d.columnIndex
+                        index_baris_satuan = d.rowIndex
+                        if (index_kolom_satuan == 4 || index_kolom_satuan == 3) {
+                            dxGridFindJenisDiagnosaCPPT()
+                        } else if (index_kolom_satuan == 6 || index_kolom_satuan == 5) {
+                            dxGridFindJenisKasusCPPT()
+                        }
+                    },
+                    onFocusedCellChanged: function (e) {
+                        rowIndex = e.rowIndex
+                        colIndex = e.columnIndex
+                        if (colIndex == 1) {
+                            colIndex = "MRPKD_PENYAKIT"
+                        } else if (colIndex == 3) {
+                            colIndex = "MRPSTAT_DIAG"
+                        } else if (colIndex == 5) {
+                            colIndex = "MRPKASUS"
+                        }
+                    },
+                });
+            }
+        }
+
+    })
+
+
+}
+
+function initDefaultStatusKasus() {
+    $.ajax({
+        url: "/emr/icdtens/findStatusKasus",
+        method: 'get',
+        data: {
+            id: 1
+        },
+        success: function (dt) {
+            defaultKasus = dt
+        }
+
+    })
+
+    $.ajax({
+        url: "/emr/icdtens/findStatusDiagnosaKlaim",
+        method: 'get',
+        success: function (dt) {
+            defaultStatusICD10 = dt
+        }
+    })
+}
+
+function dxGridFindJenisDiagnosaCPPT() {
+    startLoading();
+    var dxgridDataSource = new DevExpress.data.DataSource({
+        load: function (values) {
+
+            return $.ajax({
+                url: "/emr_perawat/get-pasien-rj?q=dataPickerDiagnosa",
+                method: "GET",
+                success: function (datas) {
+                    hideModal();
+                    $('#DxGridModal').modal('show');
+                },
+                fail: function () {
+                    $('#DxGridModal').modal('hide');
+                    hideModal();
+                    alert('terjadi kesalahan');
+                }
+            });
+        }
+    });
+    $("#DxGridData").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: dxgridDataSource,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [{
+                dataField: "MSDIAGNOSAID",
+                caption: "kode"
+            },
+            {
+                dataField: "MSDIAGNOSANAMA",
+                caption: "jenis diagnosa"
+            },
+
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            if (data) {
+                var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, "MRPSTAT_DIAG", data.MSDIAGNOSAID);
+                dataGrid.cellValue(rowIndex, "MSDIAGNOSANAMA", data.MSDIAGNOSANAMA);
+                dataGrid.saveEditData();
+                $('#DxGridModal').modal('hide');
+
+            }
+        }
+    });
+}
+
+function dxGridFindJenisKasusCPPT() {
+    startLoading();
+    var dxgridDataSource = new DevExpress.data.DataSource({
+        load: function (values) {
+
+            return $.ajax({
+                url: "/emr_perawat/get-pasien-rj?q=dataPickerKasus",
+                method: "GET",
+                success: function (datas) {
+                    hideModal();
+                    $('#DxGridModal').modal('show');
+                },
+                fail: function () {
+                    $('#DxGridModal').modal('hide');
+                    hideModal();
+                    alert('terjadi kesalahan');
+                }
+            });
+        }
+    });
+    $("#DxGridData").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 10
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: dxgridDataSource,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [{
+                dataField: "MSKASUSID",
+                caption: "kode"
+            },
+            {
+                dataField: "MSKASUSNAMA",
+                caption: "jenis kasus"
+            },
+
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            if (data) {
+                // setJenisPasien(data.CustId);
+                var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
+                dataGrid.cellValue(rowIndex, "MRPKASUS", data.MSKASUSID);
+                dataGrid.cellValue(rowIndex, "MSKASUSNAMA", data.MSKASUSNAMA);
+                dataGrid.saveEditData();
+                $('#DxGridModal').modal('hide');
+
+            }
+        }
+    });
+}

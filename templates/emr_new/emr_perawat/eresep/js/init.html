@@ -1,0 +1,1423 @@
+var signaMode = "0";
+$(document).ready(function () {
+    //actionButton
+    $('input').on("keypress", function (e) {
+        /* ENTER PRESSED*/
+        if (e.keyCode == 13) {
+            /* FOCUS ELEMENT */
+            var inputs = $(this).parents("form").eq(0).find(":input");
+            var idx = inputs.index(this);
+
+            if (idx == inputs.length - 1) {
+                inputs[0].select()
+            } else {
+                inputs[idx + 1].focus(); //  handles submit buttons
+                inputs[idx + 1].select();
+            }
+            return false;
+        }
+    });
+    $('#btn_I_ERESEP').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if ($("#noTrans").val() == '') {
+            alert('No Transaksi Masih Kosong')
+        } else {
+            $("#noKunjunganResep").val($("#noTrans").val())
+            $('#dxGridModalEresep').modal('show');
+            setGridResep($("#noTrans").val());
+            $(".modal-backdrop").hide()
+        }
+    });
+    $('#btnEntryResep').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        if ($("#noTrans").val() == '') {
+            alert('No Transaksi Masih Kosong')
+        } else {
+            $('#dxGridModalEresep').modal('show');
+            setGridResep($("#noTrans").val());
+            $(".modal-backdrop").hide()
+        }
+    });
+    $('#btnRarikResep').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#modals_racikan').modal('show');
+        resetEntryResepracik();
+        resetEntryResepObat();
+        getDataGridDetailRacikan();
+        setDefaultValue($("#noTrans").val());
+        var idRacik = $('#dk_FERRACIK_ID').val();
+        if (idRacik.length > 0) {
+            setEditRacikan(idRacik);
+        } else {
+            setLastInsert();
+        }
+
+    });
+    $('#btnRResep').click(function () {
+        resetEntryResep();
+        $('#modalsEntryResep').modal('show');
+        $('#modalsEntryResep_aksi').html('<div id="modalsEntryResep_aksi">Tambah</div>');
+    });
+    $('#btnHapusResep').click(function () {
+        var r = confirm("Delete Obat Resep?");
+        if (r == true) {
+            batalResepPrepare($('#noKunjunganResep').val());
+        }
+    });
+    $('#btnKirimResep').click(function () {
+        var r = confirm("Resep Kirim Farmasi?");
+        if (r == true) {
+            $.ajax({
+                url: host + "/crudResepRJ",
+                method: "POST",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'q': 'kirimEntryResepRJ',
+                    'FHRNO_TRANSAKSI': $('#notransresep').val(),
+                    'KPNO_TRANSAKSI': $('#noKunjunganResep').val(),
+                },
+                // beforeSend: function () {
+                //     $('#ModalLoading').modal('show');
+                //     $('#loading_title').html('Proses  Kirim dan Bridgging...');
+                //     $('#loading_text').html('Tunggu Sebentar');
+                // },
+                // complete: function () {
+                //     setTimeout(function () {
+                //         $('#ModalLoading').modal('hide');
+                //     }, 200);
+                //     $('#ModalLoading').modal('hide');
+                // },
+                success: function (data) {
+                    if (data.success) {
+                        alert("Proses  Kirim dan Bridgging.." + data.message);
+                        setGridResep($('#noKunjunganResep').val());
+                        $('#modalsEntryResep').modal('hide');
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            })
+        }
+    });
+    $('#btnBatalResep').click(function () {
+        var r = confirm("Batalkan Resep?");
+        if (r == true) {
+            $.ajax({
+                url: host + "/crudResepRJ",
+                method: "POST",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'q': 'batalkanResepRJ',
+                    'FHRBUKTI_ID': $('#noKunjunganResep').val()
+                },
+                beforeSend: function () {
+                    $('#ModalLoading').modal('show');
+                    $('#loading_title').html('Proses  Batal...');
+                    $('#loading_text').html('Tunggu Sebentar');
+                },
+                complete: function () {
+                    setTimeout(function () {
+                        $('#ModalLoading').modal('hide');
+                    }, 200);
+                    $('#ModalLoading').modal('hide');
+                },
+                success: function (data) {
+                    console.log(data)
+                    if (data.success) {
+                        alert("" + data.message);
+                        setGridResep($('#noKunjunganResep').val());
+                        $('#modalsEntryResep').modal('hide');
+                    } else {
+                        alert(data.message);
+                    }
+                }
+            })
+        }
+    });
+    $('#btnCetakResep').click(function () {
+        var noTrans = $('#notransresep').val();
+        if (noTrans.trim().length > 0) {
+            print_resep_dokter();
+        } else {
+            alert("No Transaksi Tidak boleh kosong");
+        }
+    });
+    $('#btnHistoryResep').click(function () {
+        $('#modalHistoryPasien').modal('show');
+        $('#nocmH').html("" + $('#Fr_detailPasien1').val());
+        $('#pasienNH').html("" + $('#Fr_detailPasien2').val());
+        setGridTransaksiResep();
+        setGridTransaksiResepDetail("" + $('#Fr_detailPasien1').val());
+    });
+    $('#btnBuatResep').click(function () {
+        if ($('#notransresep').val().trim.length != 0) {
+            alert('Untuk Copy Resep : Obat Resep dan NOTRANSAKSI harus kosong!');
+        } else {
+            var r = confirm("Buat Resep dari histori sebelumnya?");
+            if (r == true) {
+                $.post('/emr/eresep/crud', {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'q': 'copyResepRJ',
+                    'NO_RESEP': $('#noresep').val(),
+                    'NO_TRANS': $("#noTrans").val(),
+                }, function (data) {
+                    if (data.success) {
+                        alert("" + data.message);
+                        setGridResep($('#noKunjunganResep').val());
+                    } else {
+                        alert("" + data.message);
+                    }
+
+                });
+            } else {
+
+            }
+        }
+
+    });
+    $('#btnSaveEresepManual').click(function () {
+        saveEresepManual();
+    });
+    $('#btnCopyEresepManual').click(function () {
+        $('#layoutCopyEresepManual').show();
+        setGridTampilHistoryLama($('#detailPasien1').val());
+    });
+    $('#btnDaftarResep').click(function () {
+        $('#daftarResep').modal('show');
+    });
+
+    $('#frkw4').on("change paste keyup focus", function () {
+        $('#modalPickerCaraPakaiF').modal('show');
+        setGridCaraPakaiF();
+    });
+    $('#frkw5').on("change paste keyup focus", function () {
+
+        $('#modalPickerCaraPakaiS').modal('show');
+        setGridCaraPakaiS();
+    });
+    $('#crapakai1').on("change paste keyup focus", function () {
+
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+
+    $('#crapakai').on("change paste keyup focus", function () {
+
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+    $('#frkw1').val('1');
+    $('#frkw2').val('1');
+    $("#qty1").on("change paste keyup", function () {
+        if ($("#qty1").val().trim().length > 0) {
+            if ($.isNumeric($("#qty1").val())) {
+                var jumqty1 = parseInt($("#qty1").val());
+                if (typeof jumqty1 == 'number') {
+                    $("#qty2").val('' + convert(parseInt(jumqty1)));
+                } else {
+                    alert("Input harus nomor");
+                }
+            } else {
+                alert("Input harus nomor");
+            }
+
+        }
+    });
+    $('#qty1').keyup(function (e) {
+        if (/\D/g.test(this.value)) {
+            // Filter non-digits from input value.
+            this.value = this.value.replace(/\D/g, '');
+        }
+    });
+    $(".convResep").on("change paste keyup", function () {
+        convertResep();
+        convertResepracik();
+
+    });
+
+    $(".convKebObat").on("change paste keyup", function () {
+        convertKebObat();
+    });
+    $('#modalsEntryResep_btnSave').click(function () {
+
+        //alert($('#modalsEntryResep_aksi').text());
+        if ($('#modalsEntryResep_aksi').text() == 'Tambah') {
+
+            if ($('#kdObat').val().trim().length > 0 &&
+                $('#nmObat').val().trim().length > 0 &&
+                $('#qty1').val().trim().length > 0 &&
+                $('#frkw1').val().trim().length > 0 &&
+                $('#frkw2').val().trim().length > 0 &&
+                $('#frkw3').val().trim().length > 0 &&
+                $('textarea#sigma').val().trim().length > 0) {
+
+                var r = confirm("Simpan Data?");
+                if (r == true) {
+                    entryResepRJ();
+                } else {
+
+                }
+            } else {
+                alert("Pengisian Belum Lengkap");
+            }
+
+        } else {
+            if ($('#kdObat').val().trim().length > 0 &&
+                $('#nmObat').val().trim().length > 0 &&
+                $('#qty1').val().trim().length > 0 &&
+                $('#frkw1').val().trim().length > 0 &&
+                $('#frkw2').val().trim().length > 0 &&
+                $('#frkw3').val().trim().length > 0 &&
+                $('#sigma').val().trim().length > 0) {
+
+                var r = confirm("Simpan Data?");
+                if (r == true) {
+                    editResepRJ();
+                } else {
+
+                }
+            } else {
+                alert("Pengisian Belum Lengkap");
+            }
+        }
+
+
+    });
+    $('input[type="radio"][name=radioSigma]').on("change paste keyup focus", function () {
+        signaMode = $("input[name='radioSigma']:checked").val();
+        if (signaMode == 0) {
+            $("#sigma").prop("readonly", true);
+        } else {
+            $("#sigma").prop("readonly", false);
+        }
+    });
+    $('#confirmationEdit_Edit').click(function () {
+        $('#confirmationEdit').modal('hide');
+        $('#modalsEntryResep').modal('show');
+        $('#modalsEntryResep_aksi').html('<div id="modalsEntryResep_aksi">Edit</div>');
+    });
+    $('#confirmationEdit_Delete').click(function () {
+        $('#confirmationEdit').modal('hide');
+        var r = confirm("Delete Obat Resep?");
+        if (r == true) {
+            $.post('/emr/eresep/crud', {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'q': 'deleteObatResep',
+                'FDRBUKTI_ID': $('#notransresep').val(),
+                'FDRRESEP': $('#nobatchEdit').val()
+            }, function (data) {
+                if (data.success) {
+                    alert("Sukses Hapus");
+                    setGridResep($('#noKunjunganResep').val());
+
+
+                } else {
+                    alert("" + data.message);
+                }
+
+            });
+        } else {
+
+        }
+
+
+    });
+    $('#modalsEntryResep_BtnCaraPakai').click(function () {
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+    $('#modalsEntryResep_BtnCaraPakaidaftar').click(function () {
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+    $('#modalsEntryResep_BtnCaraPakairacik').click(function () {
+
+        $('#modalPickerCaraPakai').modal('show');
+        setGridCaraPakai();
+    });
+
+
+})
+
+function print_resep_dokter() {
+    $('#ModalLoading').modal('show');
+    if (($('#FHRRESEPTEXT').val().length) >= 3) {
+        $.ajax({
+            url: host + "/printResepDoktermanual",
+            method: "GET",
+            data: {
+                'no_trans': $('#notransresep').val(),
+            },
+            dataType: "json",
+            success: function (datas) {
+                $('#ModalLoading').modal('hide');
+                window.open(datas.pdf, '_blank');
+            }
+        })
+    } else {
+        $.ajax({
+            url: host + "/printResepDokter",
+            method: "GET",
+            data: {
+                'no_trans': $('#notransresep').val(),
+            },
+            dataType: "json",
+            success: function (datas) {
+
+                $('#ModalLoading').modal('hide');
+                window.open(datas.pdf, '_blank');
+            }
+        })
+    }
+}
+
+
+
+function saveEresepManual() {
+    var r = confirm("Simpan EResep Manual?");
+    if (r == true) {
+        $.ajax({
+            url: host + "/crudResepRJ",
+            method: "POST",
+            data: {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'q': 'saveEResepManual',
+                'NO_TRANSAKSI': $('#noKunjunganResep').val(),
+                'FDRBUKTI_ID': cekKondisiResep($('#notransresep').val()),
+                'DOKTER_ID': $('#Fr_dokter1').val(),
+                'TANGGAL': $('#Fr_tglfaktur').val(),
+                'FHRRESEPTEXT': $('textarea#FHRRESEPTEXT').val()
+            },
+            // beforeSend: function () {
+            //     $('#ModalLoading').modal('show');
+            //     $('#loading_title').html('Proses  Simpan...');
+            //     $('#loading_text').html('Tunggu Sebentar');
+            // },
+            // complete: function () {
+            //     setTimeout(function () {
+            //         $('#ModalLoading').modal('hide');
+            //     }, 200);
+            //     $('#ModalLoading').modal('hide');
+            // },
+            success: function (data) {
+                console.log(data)
+                if (data.success) {
+                    alert("Proses  Simpan selesai.." + data.message);
+                    setGridResep($('#noKunjunganResep').val());
+                    $('#modalsEntryResep').modal('hide');
+                } else {
+                    alert(data.message);
+                }
+            }
+        })
+    }
+}
+
+function batalResepPrepare(noTrans) {
+    $.ajax({
+        url: host + "/deleteEresep",
+        method: "POST",
+        data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'NO_TRANSAKSI': noTrans,
+            'StatusAUD': 'D'
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Batal...');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 200);
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (data) {
+            if (data.success) {
+                alert("Sukses Hapus");
+                setGridResep($('#noKunjunganResep').val());
+                $('#modalsEntryResep').modal('hide');
+            } else {
+                alert("Terjadi Kesalahan \n" + data.message);
+            }
+        }
+    })
+}
+
+function setGridResep(noTrans) {
+    enablemenu()
+    $.ajax({
+        url: "/emr_perawat/detailResep",
+        method: "GET",
+        data: {
+            "NO_TRANSAKSI": noTrans,
+        },
+        success: function (data) {
+            if (data.length > 0) {
+                try {
+                    if (data[0].FHRNO_TRANSAKSI != null) {
+                        $('#notransresep').val('' + data[0].FHRNO_TRANSAKSI);
+                    }
+                } catch (err) {}
+                try {
+                    if (data[0].FHRDATE != null) {
+                        $('#Fr_tglfaktur').val('' + data[0].FHRDATE.substr(0, 10));
+                    }
+                } catch (err) {}
+                try {
+                    if (data[0].FDRRACIK_ID != null) {
+                        $('#dk_FERRACIK_ID').val('' + data[0].FDRRACIK_ID);
+                    }
+                } catch (err) {}
+                try {
+                    $('#FHRRESEPTEXT').val('' + data[0].FHRRESEPTEXT.replace(/[<]br[^>]*[>]/gi, ""));
+                } catch (err) {}
+                $('#status1').val('0');
+                $('#status2').val('Proses');
+                $('#status1').css('background', '#f00');
+                $('#status1').css('color', '#fff');
+                $('#status2').css('color', '#fff');
+                $('#status2').css('background', '#f00');
+                try {
+                    if (data[0].FHRSTATUS == '1') {
+                        $('#status1').val('' + data[0].FHRSTATUS);
+                        $('#status2').val('Farmasi');
+                        $("#btnRResep").addClass("disabledbutton");
+                        // $('#btnRResep').off('click');
+                        $("#btnRarikResep").addClass("disabledbutton");
+                        // $('#btnRarikResep').off('click');
+                        $("#btnHapusResep").addClass("disabledbutton");
+                        // $('#btnHapusResep').off('click');
+                        $("#btnKirimResep").addClass("disabledbutton");
+                        // $('#btnKirimResep').off('click');
+                        $("#btnEditResep").addClass("disabledbutton");
+                        // $('#btnEditResep').off('click');
+                        $("#btnStandartResep").addClass("disabledbutton");
+                        // $('#btnStandartResep').off('click');
+                        $('#status1').css('background', '#9ed5be');
+                        $('#status2').css('background', '#9ed5be');
+                    } else {
+                        $("#btnCetakResep").addClass("disabledbutton");
+                        // $('#btnCetakResep').off('click');
+                        $("#btnBatalResep").addClass("disabledbutton");
+                        // $('#btnBatalResep').off('click');
+                    }
+                } catch (err) {
+                    $("#btnCetakResep").addClass("disabledbutton");
+                    $('#btnCetakResep').off('click');
+
+                }
+
+                $("#gridResep").dxDataGrid({
+                    dataSource: data,
+                    selection: {
+                        mode: "single"
+                    },
+                    paging: {
+                        pageSize: 10000
+                    },
+                    rowAlternationEnabled: true,
+                    hoverStateEnabled: true,
+                    showBorders: true,
+                    allowDeleting: true,
+                    allowEditing: false,
+                    allowUpdating: false,
+                    rowAlternationEnabled: true,
+                    columns: [{
+                            dataField: "FDRRESEP",
+                            width: 30,
+                            caption: "/R"
+                        },
+                        {
+                            dataField: "FDRBRGN",
+                            caption: "Nama Obat",
+                        },
+                        {
+                            dataField: "FDRQTY",
+                            caption: "Banyaknya",
+                            alignment: 'right',
+                            width: 90,
+                        },
+                        {
+                            dataField: "FDRSATUAN",
+                            caption: "Unit",
+                            width: 80,
+                        },
+                        {
+                            dataField: "FDRSIGNA",
+                            caption: "Signa",
+                            width: 180,
+                        },
+                        {
+                            dataField: "HJUAL",
+                            caption: "Hjual",
+                            alignment: 'right',
+                            dataType: "number",
+                            format: {
+                                type: "fixedPoint",
+                                precision: 2
+                            },
+                            width: 80
+                        },
+                        {
+                            dataField: "Total",
+                            alignment: 'right',
+                            width: 130,
+                            caption: "Total",
+                            format: {
+                                type: "fixedPoint",
+                                precision: 0
+                            },
+                            dataType: "number",
+                        }
+                    ],
+                    summary: {
+                        totalItems: [{
+                                displayFormat: "Total: {0}",
+                                alignment: 'right',
+                                column: "Total",
+                                summaryType: "sum",
+                                valueFormat: 'fixedPoint',
+                                displayFormat: '{0}',
+
+                            }
+                            // ...
+                        ]
+                    },
+                    onSelectionChanged: function (selectedItems) {
+                        resetEntryResep();
+                        var data = selectedItems.selectedRowsData[0];
+                        if ($('#status1').val().trim() == "0") {
+                            if (data.FDRRACIK_ID == 'NULL') {
+                                $('#confirmationEdit').modal('show');
+                                try {
+                                    $('#confirmationEditBrg').html("<div id='confirmationEditBrg'>" + data.FDRBRGN.trim() + "</div>");
+                                    $('#confirmationEdit_IdBrg').val('' + data.FDRBRG_ID);
+                                    $('#confirmationEdit_IdTransaksi').val('' + data.FDRBUKTI_ID);
+                                    $('#kdObat').val('' + data.FDRBRG_ID);
+                                    $('#nmObat').val('' + data.FDRBRGN);
+                                    $('#qty1').val('' + data.FDRQTY);
+                                    $('#qty2').val('' + convert(parseInt(data.FDRQTY)));
+                                    $('#frkw1').val('' + data.FDRDOSIS);
+                                    $('#frkw2').val('' + data.FDRDOSIS2);
+                                    $('#frkw3').val('' + data.FDRSATUAN);
+                                    $('#nobatchEdit').val('' + data.FDRRESEP);
+                                    if (data.FDRSIGNAF.trim().length > 0) {
+                                        setCaraPakaiF('' + data.FDRSIGNAF);
+                                    }
+
+                                    if (data.FDRSIGNAS.trim().length > 0) {
+                                        setCaraPakaiS('' + data.FDRSIGNAS);
+                                    }
+
+
+
+
+                                    $('#sigma').val('' + data.FDRSIGNA);
+                                    setCaraPakai('' + data.FDRSIGNAW);
+                                    //convertResep();
+
+                                } catch (err) {
+
+                                }
+                            } else {
+                                // alert(data.FDRRACIK_ID);
+                                $('#dk_FERRACIK_ID').val(data.FDRRACIK_ID);
+                            }
+
+                        }
+
+
+                        selectionChangedRaised = true;
+                        /*if(data) {
+                            // setJenisPasien(data.CustId);
+                            $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                            $("#noRM").val(data.NORM); 
+                            $("#namaPasien").val(data.NAMAPASIEN); 
+                        }*/
+                    },
+                    onRowClick: function (e) {
+                        if (!selectionChangedRaised) {
+                            var dataGrid = e.component;
+                            var keys = dataGrid.getSelectedRowKeys();
+                            dataGrid.deselectRows(keys);
+                            $('#dk_FERRACIK_ID').val(e.FDRRACIK_ID);
+                        }
+                        selectionChangedRaised = false;
+                    }
+                });
+
+            } else {
+                resetHraderResep()
+            }
+
+        }
+    })
+}
+
+function resetHraderResep() {
+    // Headers
+    $('#notransresep').val('')
+    $("#gridResep").dxDataGrid({
+        dataSource: [],
+        selection: {
+            mode: "single"
+        },
+        paging: {
+            pageSize: 10000
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: true,
+        allowEditing: false,
+        allowUpdating: false,
+        rowAlternationEnabled: true,
+        columns: [{
+                dataField: "FDRRESEP",
+                width: 30,
+                caption: "/R"
+            },
+            {
+                dataField: "FDRBRGN",
+                caption: "Nama Obat",
+            },
+            {
+                dataField: "FDRQTY",
+                caption: "Banyaknya",
+                alignment: 'right',
+                width: 90,
+            },
+            {
+                dataField: "FDRSATUAN",
+                caption: "Unit",
+                width: 80,
+            },
+            {
+                dataField: "FDRSIGNA",
+                caption: "Signa",
+                width: 180,
+            },
+            {
+                dataField: "HJUAL",
+                caption: "Hjual",
+                alignment: 'right',
+                dataType: "number",
+                format: {
+                    type: "fixedPoint",
+                    precision: 2
+                },
+                width: 80
+            },
+            {
+                dataField: "Total",
+                alignment: 'right',
+                width: 130,
+                caption: "Total",
+                format: {
+                    type: "fixedPoint",
+                    precision: 0
+                },
+                dataType: "number",
+            }
+        ],
+        summary: {
+            totalItems: [{
+                    displayFormat: "Total: {0}",
+                    alignment: 'right',
+                    column: "Total",
+                    summaryType: "sum",
+                    valueFormat: 'fixedPoint',
+                    displayFormat: '{0}',
+
+                }
+                // ...
+            ]
+        },
+
+    });
+
+    $('#status1').val('');
+    $('#status2').val('');
+}
+
+function resetEntryResep() {
+    $('#kdObat').val('');
+    $('#nmObat').val('');
+    $('#qty1').val('');
+    $('#qty2').val('');
+    $('#frkw1').val('');
+    $('#frkw2').val('');
+    $('#frkw3').val('');
+    $('#crapakai1').val('');
+    $('#crapakai').val('');
+    $('#crapakaiKd').val('');
+    $('#sigma').val('');
+
+    $('#frkw4').val('');
+    $('#frkw5').val('');
+    $('#signas').val('');
+    $('#signasKd').val('');
+    $('#signaf').val('');
+    $('#signafKd').val('');
+
+    $('#signaf').val('dd');
+    $('#frkw4').val('Sehari');
+    $('#signafKd').val('SF001');
+
+    $("#frkw4").prop("readonly", true);
+    $("#frkw5").prop("readonly", true);
+    $("#crapakai1").prop("readonly", true);
+    $("#crapakai").prop("readonly", true);
+
+    signaMode = 0;
+    $('input[type="radio"][name=radioSigma]').prop('checked', false);
+    $('input[type="radio"][name=radioSigma][value=' + signaMode + ']').prop('checked', true);
+    if (signaMode == 0) {
+        $("#sigma").prop("readonly", true);
+
+    } else {
+        $("#sigma").prop("readonly", false);
+    }
+    $('#nmObat').focus()
+}
+
+function setCaraPakai(idSigma) {
+    $.get('/emr/detail-entry-resep', {
+            'q': 'setCaraPakai',
+            'FMSWKODE': idSigma
+        },
+        function (data) {
+            console.log(data[0]);
+
+            try {
+                $('#crapakai1').val(data[0].Signa);
+                $('#crapakai').val(data[0].Materi);
+                $('#crapakaiKd').val('' + data[0].Kode);
+                // paket
+                $('#crapakai1paket').val(data[0].Signa);
+                $('#crapakaipaket').val(data[0].Materi);
+                $('#crapakaiKdpaket').val('' + data[0].Kode);
+                convertResep();
+            } catch (err) {}
+
+        });
+}
+
+function setCaraPakaiS(idSigma) {
+    $.get('/emr/detail-entry-resep', {
+            'q': 'setCaraPakaiS',
+            'FMSWKODE': idSigma
+        },
+        function (data) {
+            console.log(data[0]);
+
+            try {
+                $('#signas').val('' + data[0].Signa);
+                $('#frkw5').val('' + data[0].Materi);
+                $('#signasKd').val('' + data[0].Kode);
+                // paket
+                $('#signaspaket').val('' + data[0].Signa);
+                $('#frkw5paket').val('' + data[0].Materi);
+                $('#signasKdpaket').val('' + data[0].Kode);
+                convertResep();
+            } catch (err) {}
+
+        });
+}
+
+function setCaraPakaiF(idSigma) {
+    $.get('/emr/detail-entry-resep', {
+            'q': 'setCaraPakaiF',
+            'FMSWKODE': idSigma
+        },
+        function (data) {
+            console.log(data[0]);
+
+            try {
+                $('#signaf').val('' + data[0].Signa);
+                $('#frkw4').val('' + data[0].Materi);
+                $('#signafKd').val('' + data[0].Kode);
+                // paket
+                $('#signafpaket').val('' + data[0].Signa);
+                $('#frkw4paket').val('' + data[0].Materi);
+                $('#signafKdpaket').val('' + data[0].Kode);
+                convertResep();
+            } catch (err) {}
+
+        });
+}
+
+function setGridCaraPakai() {
+    $("#gridCaraPakai").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 700
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: "/emr/detail-entry-resep?q=pickerCaraPakai" + "&times=" + new Date().getTime(),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [
+            "Kode", "Materi", "Signa"
+        ],
+        onFocusedCellChanged: function (e) {
+            if (e.row.data) {
+                $('#modalPickerCaraPakai').modal('hide');
+                try {
+                    $('#crapakai1').val('' + e.row.data.Signa);
+                    $('#crapakai').val('' + e.row.data.Materi);
+                    $('#crapakaiKd').val('' + e.row.data.Kode);
+                    // paket
+                    $('#crapakai1paket').val('' + e.row.data.Signa);
+                    $('#crapakaipaket').val('' + e.row.data.Materi);
+                    $('#crapakaiKdpaket').val('' + e.row.data.Kode);
+                    // racik
+                    $('#racikcrapakai1').val('' + e.row.data.Signa);
+                    $('#racikcrapakai').val('' + e.row.data.Materi);
+                    $('#racikcrapakaiKd').val('' + e.row.data.Kode);
+                } catch (err) {}
+                convertResep();
+                convertResepracik();
+                selectionChangedRaised = true;
+            }
+        },
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+
+            $('#modalPickerCaraPakai').modal('hide');
+            try {
+                $('#crapakai1').val('' + data.Signa);
+                $('#crapakai').val('' + data.Materi);
+                $('#crapakaiKd').val('' + data.Kode);
+                // paket
+                $('#crapakai1paket').val('' + data.Signa);
+                $('#crapakaipaket').val('' + data.Materi);
+                $('#crapakaiKdpaket').val('' + data.Kode);
+                // racik
+                $('#racikcrapakai1').val('' + data.Signa);
+                $('#racikcrapakai').val('' + data.Materi);
+                $('#racikcrapakaiKd').val('' + data.Kode);
+            } catch (err) {}
+            convertResep();
+            convertResepracik();
+
+            selectionChangedRaised = true;
+        },
+        onFocusedCellChanged: function (e) {
+            $('#modalPickerCaraPakai').modal('hide');
+            try {
+                $('#crapakai1').val('' + e.row.data.Signa);
+                $('#crapakai').val('' + e.row.data.Materi);
+                $('#crapakaiKd').val('' + e.row.data.Kode);
+                // paket
+                $('#crapakai1paket').val('' + e.row.data.Signa);
+                $('#crapakaipaket').val('' + e.row.data.Materi);
+                $('#crapakaiKdpaket').val('' + e.row.data.Kode);
+                // racik
+                $('#racikcrapakai1').val('' + e.row.data.Signa);
+                $('#racikcrapakai').val('' + e.row.data.Materi);
+                $('#racikcrapakaiKd').val('' + e.row.data.Kode);
+            } catch (err) {}
+            convertResep();
+            convertResepracik();
+            selectionChangedRaised = true;
+        },
+    });
+}
+
+function setGridCaraPakaiF() {
+    $("#gridCaraPakaiF").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 700
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: "/emr/detail-entry-resep?q=pickerCaraPakaiF" + "&times=" + new Date().getTime(),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [
+            "Kode", "Materi", "Signa"
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+
+            $('#modalPickerCaraPakaiF').modal('hide');
+            try {
+                $('#signaf').val('' + data.Signa);
+                $('#frkw4').val('' + data.Materi);
+                $('#signafKd').val('' + data.Kode);
+                // paket
+                $('#signafpaket').val('' + data.Signa);
+                $('#frkw4paket').val('' + data.Materi);
+                $('#signafKdpaket').val('' + data.Kode);
+                // racik
+                $('#raciksignaf').val('' + data.Signa);
+                $('#racikfrkw4').val('' + data.Materi);
+                $('#raciksignafKd').val('' + data.Kode);
+
+
+            } catch (err) {}
+            convertResep();
+            convertResepracik();
+
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick: function (e) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+
+        }
+    });
+}
+
+function setGridCaraPakaiS() {
+    $("#gridCaraPakaiS").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 700
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: "/emr/detail-entry-resep?q=pickerCaraPakaiS" + "&times=" + new Date().getTime(),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [
+            "Kode", "Materi", "Signa"
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+
+            $('#modalPickerCaraPakaiS').modal('hide');
+            try {
+                $('#signas').val('' + data.Signa);
+                $('#frkw5').val('' + data.Materi);
+                $('#signasKd').val('' + data.Kode);
+                // paket
+                $('#signaspaket').val('' + data.Signa);
+                $('#frkw5paket').val('' + data.Materi);
+                $('#signasKdpaket').val('' + data.Kode);
+                // racik
+                $('#raciksignas').val('' + data.Signa);
+                $('#racikfrkw5').val('' + data.Materi);
+                $('#raciksignasKd').val('' + data.Kode);
+
+            } catch (err) {}
+            convertResep();
+            convertResepracik();
+
+            selectionChangedRaised = true;
+            /*if(data) {
+                // setJenisPasien(data.CustId);
+                $("#noTrans").val(data.KPNO_TRANSAKSI.trim());
+                $("#noRM").val(data.NORM); 
+                $("#namaPasien").val(data.NAMAPASIEN); 
+            }*/
+        },
+        onRowClick: function (e) {
+            var dataGrid = e.component;
+            var keys = dataGrid.getSelectedRowKeys();
+            dataGrid.deselectRows(keys);
+            // if (!selectionChangedRaised) {
+            //     var dataGrid = e.component;
+            //     var keys = dataGrid.getSelectedRowKeys();
+            //     dataGrid.deselectRows(keys);
+            // }
+            // selectionChangedRaised = false;
+        }
+    });
+}
+
+function convertResep() {
+    var sigmaawal = 'S.';
+    var sigma1 = $('#frkw1').val();
+    var sigma2 = $('#frkw2').val();
+    var sigma3 = $('#crapakai1').val();
+    var sigma4 = $('#signas').val();
+    var sigma5 = $('#signaf').val();
+
+
+    var dataSigma = $('#sigma').val('' + sigmaawal + ' ' + sigma1 + ' ' + sigma2 + ' ' + sigma4 + ' ' + sigma5 + ' ' + sigma3);
+    // paket
+    var sigmaawalpaket = 'S.';
+    var sigma1paket = $('#frkw1paket').val();
+    var sigma2paket = $('#frkw2paket').val();
+    var sigma3paket = $('#crapakai1paket').val();
+    var sigma4paket = $('#signaspaket').val();
+    var sigma5paket = $('#signafpaket').val();
+    var dataSigma2 = $('#sigmapaket').val('' + sigmaawalpaket + ' ' + sigma1paket + ' ' + sigma2paket + ' ' + sigma4paket + ' ' + sigma5paket + ' ' + sigma3paket);
+}
+var numeralCodes = [
+    ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"], // Ones
+    ["", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"], // Tens
+    ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"]
+]; // Hundreds
+
+function convert(num) {
+    var numeral = "";
+    var digits = num.toString().split('').reverse();
+    for (var i = 0; i < digits.length; i++) {
+        numeral = numeralCodes[i][parseInt(digits[i])] + numeral;
+    }
+    return numeral;
+}
+
+function enablemenu() {
+    $("#btnRResep").removeClass("disabledbutton");
+    $("#btnRarikResep").removeClass("disabledbutton");
+    $("#btnHapusResep").removeClass("disabledbutton");
+    $("#btnKirimResep").removeClass("disabledbutton");
+    $("#btnEditResep").removeClass("disabledbutton");
+    $("#btnDaftarResep").removeClass("disabledbutton");
+    $("#btnStandartResep").removeClass("disabledbutton");
+    $("#btnBatalResep").removeClass("disabledbutton");
+    $("#btnBatalResep").removeClass("disabledbutton");
+    $("#btnCetakResep").removeClass("disabledbutton");
+
+
+    $("#btnRResep").addClass("enablebutton");
+    $("#btnRarikResep").addClass("enablebutton");
+    $("#btnHapusResep").addClass("enablebutton");
+    $("#btnKirimResep").addClass("enablebutton");
+    $("#btnEditResep").addClass("enablebutton");
+    $("#btnDaftarResep").addClass("enablebutton");
+    $("#btnStandartResep").addClass("enablebutton");
+    $("#btnBatalResep").addClass("enablebutton");
+    $("#btnCetakResep").addClass("enablebutton");
+}
+
+function entryResepRJ() {
+    $.ajax({
+        url: host + "/crudResepRJ",
+        method: "POST",
+        data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'q': 'entryResepRJ',
+            'DOKTER_ID': $('#Fr_dokter1').val(),
+            'NOTRANSAKSI': cekKondisiResep($('#notransresep').val()),
+            'TANGGAL': ($('#Fr_tglfaktur').val()),
+            'BUKTI_ID': $('#noKunjunganResep').val(),
+            'BRG_ID': $('#kdObat').val(),
+            'BRGN': $('#nmObat').val(),
+            'SATUAN': $('#frkw3').val(),
+            'QTY': $('#qty1').val(),
+            'QTYOUT': '0',
+            'DOSIS': $('#frkw1').val(),
+            'SIGNAF': cekKondisiResep($('#signafKd').val()),
+            'DOSIS2': $('#frkw2').val(),
+            'SIGNAS': cekKondisiResep($('#signasKd').val()),
+            'SIGNAW': cekKondisiResep($('#crapakaiKd').val()),
+            'SIGNA': $('textarea#sigma').val(),
+            'SIGNAMODE': signaMode,
+            'StatusAUD': 'A'
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses simpan...');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 200);
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (data) {
+            if (data.success) {
+                setGridResep($('#noKunjunganResep').val());
+                $('#notransresep').val(data.message);
+
+                var r = confirm("Lanjut Entri Resep?");
+                if (r == true) {
+                    resetEntryResep();
+                    $('#modalsEntryResep').modal('show');
+                    $('#modalsEntryResep_aksi').html('<div id="modalsEntryResep_aksi">Tambah</div>');
+                } else {
+                    $('#modalsEntryResep').modal('hide');
+                }
+
+            } else {
+                alert("Terjadi Kesalahan \n" + data.message);
+            }
+        }
+    })
+
+}
+
+function cekKondisiResep(data) {
+    var hasil = "NULL";
+    if (data.trim().length > 1) {
+        // Enable submit button
+        hasil = data;
+    }
+
+    return hasil;
+}
+
+function cekKondisiTanggal(data) {
+    var hasil = "NULL";
+    if (data.trim().length > 1) {
+        // Enable submit button
+        hasil = data.split('-').reverse().join('-');
+    }
+
+    return hasil;
+}
+
+function editResepRJ() {
+    $.ajax({
+        url: host + "/crudResepRJ",
+        method: "POST",
+        data: {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'q': 'editResepRJ',
+            'DOKTER_ID': $('#Fr_dokter1').val(),
+            'batchno': cekKondisiResep($('#nobatchEdit').val()),
+            'NOTRANSAKSI': cekKondisiResep($('#notransresep').val()),
+            'TANGGAL': $('#Fr_tglfaktur').val(),
+            'BUKTI_ID': $('#noKunjunganResep').val(),
+            'BRG_ID': $('#kdObat').val(),
+            'BRGN': $('#nmObat').val(),
+            'SATUAN': $('#frkw3').val(),
+            'QTY': $('#qty1').val(),
+            'QTYOUT': '0',
+            'DOSIS': $('#frkw1').val(),
+            'SIGNAF': cekKondisiResep($('#signafKd').val()),
+            'DOSIS2': $('#frkw2').val(),
+            'SIGNAS': cekKondisiResep($('#signasKd').val()),
+            'SIGNAW': cekKondisiResep($('#crapakaiKd').val()),
+            'SIGNA': $('textarea#sigma').val(),
+            'StatusAUD': 'U'
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  simpan...');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 200);
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (data) {
+            if (data.success) {
+                setGridResep($('#noKunjunganResep').val());
+                $('#modalsEntryResep').modal('hide');
+
+            } else {
+                alert("Terjadi Kesalahan \n" + data.message);
+            }
+        }
+    })
+
+}
+
+function setGridTransaksiResep() {
+    $("#gridTransaksiResep").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: "/emr/detail-entry-resep?q=transaksiResep&FHFJCUST_ID=" + $('#Fr_detailPasien1').val() + "&times=" + new Date().getTime(),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [{
+                    dataField: "KPNO_TRANSAKSI",
+                    caption: "NO TRANS"
+                },
+                {
+                    dataField: "KPTGL_PERIKSA",
+                    caption: "Tgl"
+                },
+                {
+                    dataField: "FMDDOKTERN",
+                    caption: "Dokter"
+                }
+            ]
+            /*,onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            
+            
+            
+            selectionChangedRaised = true;
+            
+        }*/
+            ,
+        onRowClick: function (e) {
+            if (!selectionChangedRaised) {
+                var dataGrid = e.component;
+                var keys = dataGrid.getSelectedRowKeys();
+                dataGrid.deselectRows(keys);
+            }
+            setGridTransaksiResepDetail(e.data.FHRNO_TRANSAKSI);
+            $('#noresep').val('' + e.data.FHRNO_TRANSAKSI);
+            $('#tglresep').val('' + e.data.KPTGL_PERIKSA);
+            $('#dokterResep').val('' + e.data.FMDDOKTERN);
+            $('#diagnosa').val('' + e.data.MRPKD_PENYAKIT + ' ' + e.data.MRPKD_PENYAKITN);
+
+            selectionChangedRaised = false;
+        }
+    });
+}
+
+
+function setGridTransaksiResepDetail(notrans) {
+    $("#gridTransaksiResepD").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 7
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: "/emr/detail-entry-resep?q=transaksiResepDetail&FDRBUKTI_ID=" + notrans + "&times=" + new Date().getTime(),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        // columns: [{"kdPoliklinik", "namapasien", "alamat", "telepon"}]
+        columns: [{
+                    dataField: "FDRRESEP",
+                    width: 35,
+                    caption: "NO"
+                },
+                {
+                    dataField: "FDRBRGN",
+                    caption: "NAMAOBAT"
+                },
+                {
+                    dataField: "FDRSATUAN",
+                    caption: "SATUAN"
+                },
+                {
+                    dataField: "FDRQTY",
+                    caption: "JUMLAH"
+                },
+                {
+                    dataField: "FDRSIGNA",
+                    caption: "SIGNA"
+                },
+
+            ]
+            /*,onSelectionChanged: function (selectedItems) {
+                var data = selectedItems.selectedRowsData[0];
+                
+                
+                
+                selectionChangedRaised = true;
+                
+            }*/
+            ,
+        onRowClick: function (e) {
+            if (!selectionChangedRaised) {
+                var dataGrid = e.component;
+                var keys = dataGrid.getSelectedRowKeys();
+                dataGrid.deselectRows(keys);
+            }
+            var data = e.data;
+            var isi = 'Detail Obat \n';
+            isi += 'NO:' + data.FDRRESEP + '\n';
+            isi += 'NAMA OBAT:' + data.FDRBRGN + '\n';
+            isi += 'SATUAN:' + data.FDRSATUAN + '\n';
+            isi += 'JUMLAH:' + data.FDRQTY + '\n';
+            isi += 'SIGNA:' + data.FDRSIGNA + '\n';
+
+            alert(isi);
+            selectionChangedRaised = false;
+        }
+    });
+}
+
+function setGridTampilHistoryLama(kdPasien) {
+    $("#gridHistoryResepManual").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 1000
+        },
+        scrolling: {
+            columnRenderingMode: "virtual"
+        },
+        filterRow: {
+            visible: true
+        },
+        dataSource: "/emr/eresep/pickerHistoryResepManual?kdPasien=" + kdPasien + "&times=" + new Date().getTime(),
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "FMDDOKTERN",
+                caption: "Dokter"
+            },
+            {
+                dataField: "TGL",
+                caption: "tanggal"
+            },
+            {
+                dataField: "FHRRESEPTEXT",
+                caption: "Resep"
+            },
+
+        ],
+        onRowClick: function (e) {
+            if (!selectionChangedRaised) {
+                var dataGrid = e.component;
+                var keys = dataGrid.getSelectedRowKeys();
+                dataGrid.deselectRows(keys);
+            }
+            var data = e.data;
+            $('#FHRRESEPTEXT').val('' + data.FHRRESEPTEXT.replace(/[<]br[^>]*[>]/gi, ""));
+            selectionChangedRaised = false;
+        }
+    })
+};

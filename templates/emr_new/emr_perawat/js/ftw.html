@@ -1,0 +1,375 @@
+// get hostname
+var host = window.location.href.split("/");
+var host2 = host[0] + "//" + host[2];
+var host = host[0] + "//" + host[2] + "/" + host[3];
+
+$(document).ready(function () {
+    $('#btn_simpan_FTW').click(function () { 
+        if ($("#noTrans").val().trim().length == 0) {
+            return alert("SILAHKAN MEMILIH NO TRANSAKSI!");
+        }
+        //ketika di klik nanti jalanin fungsi saveFTW
+        saveFTW();
+    });
+    $('#btn_tambah_aktv').click(function () {
+        
+            tambahrowaktiv()
+        
+    })
+    $('#btn_tambah_mampu').click(function () {
+        
+        
+            tambahrowmampu()
+        
+    })
+})
+
+
+function getFTW(notrans,kelamin){
+    $("#FTW_NAMA").val($("#namaPasien").val())
+    $("#FTW_NOTRANS").val(notrans)
+    $("#FTW_TGL_LHR").val($("#tgllahir").val())
+    $("#FTW_JEN_KEL").val(kelamin)
+    $("#FTW_ALAMAT").val($("#alamat1").val())
+    $("#FTW_TGL_NILAI").val($("#tglfaktur").val())
+    $.get(host + "/ftw/get", {
+        'noTrans': notrans
+    },
+    function (data) {
+       if(data.length>0){
+            $('#FTW_NOTRANS').val(''+data[0].FTW_NOTRANS);
+
+            
+            $('#FTW_PERUSAHAAN').val(''+data[0].FTW_PERUSAHAAN);
+            $('#FTW_TGL_NILAI').val(''+data[0].FTW_TGL_NILAI);
+            $('#FTW_KELUHAN_UTAMA').val(''+data[0].FTW_KELUHAN_UTAMA);
+            $('#FTW_RWYT_SKT_SKRG').val(''+data[0].FTW_RWYT_SKT_SKRG);
+            $('#FTW_RWYT_SKT_DL').val(''+data[0].FTW_RWYT_SKT_DL);
+            $('#FTW_BIASA').val(''+data[0].FTW_BIASA);
+            $('#FTW_KELUHAN_RASA').val(''+data[0].FTW_KELUHAN_RASA);
+            $('#FTW_PMR_FISIK').val(''+data[0].FTW_PMR_FISIK);
+            $('#FTW_PMR_PENUNJANG').val(''+data[0].FTW_PMR_PENUNJANG);
+            $('#FTW_KRITERIA_SEMBUH').val(''+data[0].FTW_KRITERIA_SEMBUH);
+            $('#FTW_BAHAYA').val(''+data[0].FTW_BAHAYA);
+            $('#FTW_BAHAYA_NOTE').val(''+data[0].FTW_BAHAYA_NOTE);
+            $('#FTW_KESIMPULAN').val(''+data[0].FTW_KESIMPULAN);
+            $('#FTW_REKOMENDASI').val(''+data[0].FTW_REKOMENDASI);
+            $('#FTW_KD_PASIEN').val(''+data[0].FTW_KD_PASIEN);
+            gridaktivitas(JSON.parse(''+data[0].FTW_HARIAN));
+            gridkemampuan(JSON.parse(''+data[0].FTW_KEMAMPUAN))
+
+            // 'FTW_PERUSAHAAN': $('textarea#FTW_PERUSAHAAN').val(),
+            // 'FTW_TGL_NILAI': $('#FTW_TGL_LHR').val(),
+            // 'FTW_KELUHAN_UTAMA': $('textarea#FTW_KELUHAN_UTAMA').val(),
+            // 'FTW_RWYT_SKT_SKRG': $('textarea#FTW_RWYT_SKT_SKRG').val(),
+            // 'FTW_RWYT_SKT_DL': $('textarea#FTW_RWYT_SKT_DL').val(),
+            // 'FTW_BIASA': $('textarea#FTW_BIASA').val(),
+            // 'FTW_KELUHAN_RASA': $('textarea#FTW_KELUHAN_RASA').val(),
+            // 'FTW_PMR_FISIK': $('textarea#FTW_PMR_FISIK').val(),
+            // 'FTW_PMR_PENUNJANG': $('textarea#FTW_PMR_PENUNJANG').val(),
+            // 'FTW_KRITERIA_SEMBUH': $('textarea#FTW_KRITERIA_SEMBUH').val(),
+            // 'FTW_BAHAYA': ''+getCheckedBox('FTW_BAHAYA'), //carane dapet checkbox yg di centang pke fungsi
+            // 'FTW_BAHAYA_NOTE': $('textarea#FTW_BAHAYA_NOTE').val(),
+            
+            // 'FTW_KESIMPULAN': $("input[name='FTW_KESIMPULAN']:checked").val(),//nek radio button pke ini mas
+            // 'FTW_REKOMENDASI': $('#FTW_REKOMENDASI').val(),
+            // 'FTW_KD_PASIEN': $('#noRM').val(),//oke mas di coba 
+       }
+
+       else {
+        gridaktivitas([])
+        gridkemampuan([])
+       }
+    });
+}
+
+function ProsescetakFTW() {
+
+    $.ajax({
+        url: url2,
+        method: "GET",
+        data: {
+            'no_transaksi': $("#noTrans").val(),
+            'tglAwalcuti': $('#tglAkhircuti').val()
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses Cetak..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (datas) {
+            if (datas.success === false) {
+                alert(datas.message)
+            } else {
+                window.open(datas.pdf);
+            }
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+}
+
+function saveFTW() {
+    var dataaktivitas=$("#gridaktivitas").dxDataGrid('instance')
+    var datakemampuan=$("#gridkemampuan").dxDataGrid('instance')
+    var JSON_aktivitas="[]"
+    var JSON_kemampuan="[]"
+    
+    if(dataaktivitas.getVisibleRows().length>0){
+        JSON_aktivitas=JSON.stringify( dataaktivitas.getVisibleRows().map(i => i.data))
+    }
+    if(datakemampuan.getVisibleRows().length>0){
+        JSON_kemampuan=JSON.stringify(datakemampuan.getVisibleRows().map(i => i.data))
+    }
+    $.ajax({
+        url: host + "/ftw/save",
+        method: "POST",
+        data: {
+            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'noTrans': getNoTrans(),
+            'FTW_NOTRANS': $('#FTW_NOTRANS').val(), 
+            'no_rm': $('#noRM').val(),
+            // nah terus ini mas e nanti set ke get dari formnya misal ini ya perusahaan
+            //namane kalo di samakan column lebih enak
+            //nah misale mas e get dari form input misal tgl ki
+            //nah monggo lanjutin nek misal textarea ki inputan e gedi mas
+            //nek cuman inputan ndak usah pke textarea kayak tgl
+            //lanjut
+            'FTW_PERUSAHAAN': $('textarea#FTW_PERUSAHAAN').val(),
+            'FTW_TGL_NILAI': $('#FTW_TGL_NILAI').val(),
+            'FTW_KELUHAN_UTAMA': $('textarea#FTW_KELUHAN_UTAMA').val(),
+            'FTW_RWYT_SKT_SKRG': $('textarea#FTW_RWYT_SKT_SKRG').val(),
+            'FTW_RWYT_SKT_DL': $('textarea#FTW_RWYT_SKT_DL').val(),
+            'FTW_BIASA': $('textarea#FTW_BIASA').val(),
+            'FTW_KELUHAN_RASA': $('textarea#FTW_KELUHAN_RASA').val(),
+            'FTW_PMR_FISIK': $('textarea#FTW_PMR_FISIK').val(),
+            'FTW_PMR_PENUNJANG': $('textarea#FTW_PMR_PENUNJANG').val(),
+            'FTW_KRITERIA_SEMBUH': $('textarea#FTW_KRITERIA_SEMBUH').val(),
+            'FTW_BAHAYA': ''+getCheckedBox('FTW_BAHAYA'), //carane dapet checkbox yg di centang pke fungsi
+            'FTW_BAHAYA_NOTE': $('textarea#FTW_BAHAYA_NOTE').val(),
+            
+            'FTW_KESIMPULAN': $("input[name='FTW_KESIMPULAN']:checked").val(),//nek radio button pke ini mas
+            'FTW_REKOMENDASI': $('#FTW_REKOMENDASI').val(),
+            'FTW_KD_PASIEN': $('#noRM').val(),
+            'FTW_HARIAN':JSON_aktivitas,
+            'FTW_KEMAMPUAN': JSON_kemampuan,
+            
+            //oke mas di coba 
+            //nek button klik e wes paham belum konsepe?
+            // brarti yg atas ini nantinya yg kesimpan? iya isian yg mau di save
+
+            'StatusAUD': 'A',
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  simpan dan Bridgging...');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 200);
+            $('#ModalLoading').modal('hide');
+        },
+        success: function (e) {
+            alert("SUKSES SIMPAN")
+        }
+    })
+}
+
+function getCheckedBox(name){
+    var checkboxValues = [];
+    $('input[name='+name+']:checked').map(function() {
+                checkboxValues.push($(this).val());
+    });
+    return checkboxValues;
+}
+
+function gridaktivitas(datas){
+    
+
+            dataGrid = $("#gridaktivitas").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                sorting: {
+                    mode: 'multiple',
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: 
+                [
+                    {
+                        dataField: "WAKTU",
+                        caption: "WAKTU",
+                    },
+                    {
+                        dataField: "AKTIVITAS",
+                        caption: "AKTIVITAS",
+                    },
+                    
+                ],
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: true,
+                    selectTextOnEditStart: true,
+                    allowEditing: true,
+                    allowDeleting: true,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+        
+} 
+
+function gridkemampuan(datas){
+    
+
+    dataGrid = $("#gridkemampuan").dxDataGrid({
+        dataSource: datas,
+        selection: {
+            mode: "single"
+        },
+        sorting: {
+            mode: 'multiple',
+        },
+        rowAlternationEnabled: true,
+        hoverStateEnabled: true,
+        showBorders: true,
+        allowDeleting: false,
+        paging: {
+            pageSize: 100000
+        },
+        export: {
+            enabled: true
+        },
+        grouping: {
+            autoExpandAll: true,
+        },
+        searchPanel: {
+            visible: true
+        },
+        groupPanel: {
+            visible: true
+        },
+        columns: 
+        [
+            {
+                dataField: "AKTIVITAS",
+                caption: "AKTIVITAS",
+            },
+            {
+                dataField: "KEMAMPUAN",
+                caption: "KEMAMPUAN",
+            },
+            {
+                dataField: "KETERANGAN",
+                caption: "KETERANGAN",
+            },
+            
+        ],
+
+        editing: {
+            mode: "cell",
+            allowUpdating: true,
+            selectTextOnEditStart: true,
+            allowEditing: true,
+            allowDeleting: true,
+        },
+        keyboardNavigation: {
+            editOnKeyPress: true,
+            enterKeyAction: "moveFocus",
+            enterKeyDirection: 'row'
+        },
+    }).dxDataGrid("instance");
+
+
+} 
+function tambahrowaktiv() {
+    tempWaktu = ''
+    tempAktivitas = ''
+    
+
+    var dataGrid = $("#gridaktivitas").dxDataGrid("instance");
+    // var prevRow = dataGrid.getVisibleRows().length;
+    // var lastRow = dataGrid.getVisibleRows().length + 1;
+    dataGrid.addRow();
+    dataGrid.cellValue(0, "NO", generateNo());
+
+    // var current_no = dataGrid.getVisibleRows()[prevRow].values[0]
+    // if(prevRow == 0)
+    // {
+    //     dataGrid.cellValue(0, "NO", '');
+    // }else if( current_no =='' || current_no == undefined)
+    // {
+    //     dataGrid.cellValue(prevRow, "NO", generateNo());
+    // }
+
+    dataGrid.cellValue(0, "WAKTU", tempWaktu);
+    dataGrid.cellValue(0, "AKTIVITAS", tempAktivitas);
+    
+    // $.when(dataGrid.saveEditData()).done(function () {
+    //     colIndex = 'ID_BARANG'
+    //     setFocusID_BARANG()
+    // })
+}
+
+function tambahrowmampu() {
+    tempAktivitas = ''
+    tempKemampuan = ''
+    tempKeterangan = ''
+    
+
+    var dataGrid = $("#gridkemampuan").dxDataGrid("instance");
+    // var prevRow = dataGrid.getVisibleRows().length;
+    // var lastRow = dataGrid.getVisibleRows().length + 1;
+    dataGrid.addRow();
+    dataGrid.cellValue(0, "NO", generateNo());
+
+    // var current_no = dataGrid.getVisibleRows()[prevRow].values[0]
+    // if(prevRow == 0)
+    // {
+    //     dataGrid.cellValue(0, "NO", '');
+    // }else if( current_no =='' || current_no == undefined)
+    // {
+    //     dataGrid.cellValue(prevRow, "NO", generateNo());
+    // }
+
+    dataGrid.cellValue(0, "AKTIVITAS", tempAktivitas);
+    dataGrid.cellValue(0, "KEMAMPUAN", tempKemampuan);
+    dataGrid.cellValue(0, "KETERANGAN", tempKeterangan);
+    
+    // $.when(dataGrid.saveEditData()).done(function () {
+    //     colIndex = 'ID_BARANG'
+    //     setFocusID_BARANG()
+    // })
+}

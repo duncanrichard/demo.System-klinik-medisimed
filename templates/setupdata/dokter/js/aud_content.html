@@ -11,6 +11,11 @@ $(document).ready(function () {
   enterFocusTo('far_kode_antri', 'far_kode_bpjs')
   enterFocusTo('far_kode_bpjs', 'far_no_telepon')
 
+  $('#btnFindDokter').click(function (e) {
+    $('#dxGridModalListdokterBpjs').modal('show')
+    getdokterbpjs()
+
+  })
   $('#menu_tambah').click(function (e) {
     status_aud = 'A'
     menumati()
@@ -75,8 +80,8 @@ $(document).ready(function () {
   });
 
   $('#menu_hapus').click(function () {
-    if ($('#far_kode_dokter').val() == '') {
-      alert('Pilih kode dokter Dulu!')
+    if ($('#kode_Sumber').val() == '') {
+      alert('Pilih kode sumber Dulu!')
     } else {
       var result = confirm('Yakin data akan dihapus?')
       var status_aud = "D"
@@ -119,6 +124,17 @@ $(document).ready(function () {
   $('#menu_find').click(function (e) {
     $('#dxGridModaldokter').modal('show')
     load_Dokter()
+  });
+  $("#btn_bridge_satu_sehat").click(function () {
+    // $.get('/views_satu_sehat/savePractitionerDokter/', {}, function (data) {
+    $.get('/views_satu_sehat/savePractitionerDokter/', {}, function (data) {
+
+      if (data.success) {
+        $('#kode_dokter_satu_sehat').val('' + data.id);
+      } else {
+        alert('gagal bridge!');
+      }
+    });
   });
   $('#menu_keluar').click(function () {
     window.open('/', "_self");

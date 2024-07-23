@@ -1,0 +1,78 @@
+  {% load staticfiles %}
+  <div class="row quick-button">
+            
+        <div class="col-sm-6 card" style="padding: 10px 0px;">
+
+         <div class="row" style="margin-left: 10px;">
+              <div class="col-md-4 ">
+                <label for="validationCustom01">No.Rekam Medis</label>
+                <input type="text" class="form-control " id="nocmH" required="">
+                
+              </div>
+              <div class="col-md-4 ">
+                <label for="validationCustom02">Nama</label>
+                <input type="text" class="form-control " id="pasienNH" required="">
+                
+              </div>
+
+
+              {% comment %} <div class="col-md-2 ">
+                <label for="validationCustom02">&nbsp;</label>
+               <button id="btnset" type="button" class="btn btn-default " style="padding: 6px 12px;margin: 24px 0px 0px;">Cari</button>
+                
+              </div> {% endcomment %}
+            </div>
+
+         
+            
+
+
+        </div>
+
+        <div class="col-sm-6" style="margin-left: 0px;" >
+
+          <div class="col-sm-2" style="margin-left: 0px;">
+                <a href="#" id="btnRFind">
+                <div class="thumbnail " style="height: 72px !important;">
+                  <center>
+                      <img src="/static/img/emr/history.png" alt="..." class="height35">
+                      <div class="caption padding_button_crud ">
+                        <p>Find &nbsp;</p>
+                      </div>
+                  </center>
+                </div>
+                </a>
+          </div>
+
+          <div class="col-sm-2" style="margin-left: 0px;">
+            <div href="#" id="btnRCetak">
+            <div class="thumbnail " style="height: 72px !important;">
+              <center>
+                  <img src="/static/img/emr/print.png" alt="..." class="height35">
+                  <div class="caption padding_button_crud ">
+                    <p>Cetak &nbsp;</p>
+                  </div>
+              </center>
+            </div>
+            </div>
+          </div>
+
+          <div class="col-sm-2" style="margin-left: 0px;">
+            <div onclick="window.history.go(-1); return false;">
+            <div class="thumbnail " style="height: 72px !important;">
+              <center>
+                  <img src="{% static 'img/emr/exit.png' %}" alt="..." class="height35">
+                  <div class="caption padding_button_crud">
+                    <p>EXIT &nbsp</p>
+                  </div>
+              </center>
+            </div>
+            </div>
+          </div>
+
+        </div>
+
+        
+
+        
+      </div>

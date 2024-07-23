@@ -1,0 +1,66 @@
+<div class="modal fade" id="modalKunjunganPasien" tabindex="-1"  aria-labelledby="modalKunjunganPasien" aria-hidden="true">
+
+    <div class="modal-dialog mw-100" role="document" >
+        <div class="modal-content">
+
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">List Pasien</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+            <div class="modal-body">
+
+              
+
+               <div class="form-group row" id="layoutSearchPasienKunjungan" >
+                    <label class="col-md-1 fz-11 form-control-label">Cari:</label>
+                    <div class="col-md-11">
+                        <div id="" class="form-inline">
+                            <!-- <label class="radio-inline fz-11"><input type="radio" name="searchPasienKunjungan" value="0" class="autoSearchPasienKunjungan">Semua Pasien </label> -->
+                            <label class="radio-inline fz-11">
+                                <input type="radio" name="searchPasienKunjungan" value="1" class="autoSearchPasienKunjungan" checked>Pasien Tgl &nbsp
+                                <input type="date" style="width: 150px;margin-right: 10px;" id="tglSearchPasienKunjunganAwal" class="form-control input-sm form-control-sm datepik today autoSearchPasienKunjungan">
+                                <input type="date" style="width: 150px;" id="tglSearchPasienKunjunganAkhir" class="form-control input-sm form-control-sm datepik today autoSearchPasienKunjungan">
+                            </label>
+                            
+                            <!-- <label class="radio-inline fz-11">
+                                <input type="radio" name="searchPasienKunjungan" value="2" class="autoSearchPasienKunjungan" >Berdasarkan Dokter
+                                <input type="hidden" style="width: 150px;margin-right: 10px;" id="tglSearchPasienKunjungan" class="form-control input-sm form-control-sm datepik today autoSearchPasienKunjungan">
+                                <input type="text" style="width: 150px;" id="tglSearchPasienKunjungan" class="form-control input-sm form-control-sm datepik today autoSearchPasienKunjungan">
+                            </label> -->
+                       
+                            
+                            <!-- <label class="radio-inline fz-11">
+                                <input type="text" id="namaSearchPasienKunjungan"  class="form-control form-control-sm  autoSearchPasienKunjungan" placeholder="Cari Nama">
+                            </label>
+                            
+                            <div class="radio-inline fz-11" id="btnSearchPasienKunjungan"><i class="fa fa-search " style="padding: 4px;border-radius: 5px;background: #1ab394;color: white;"></i></div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row" >
+                    <label class="row-sudah">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <label> &nbsp; ARTINYA SUDAH DI ISI CPPT</label>
+                    <!-- <label class="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <label> &nbsp; ARTINYA SUDAH DI ISI CPPT</label> -->
+                </div>
+                
+                <div class="row" id="layoutmodalKunjunganPasienGrid">
+                    <div id="modalKunjunganPasienGrid"   class=" col-md-12 mw-100" style="overflow-x: scroll;">
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>

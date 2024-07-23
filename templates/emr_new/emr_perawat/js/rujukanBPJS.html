@@ -1,0 +1,323 @@
+$(document).ready(function () {
+    $("#btnCariRujukan").click(function (e) {
+        if ($('#noTrans').val() == '') {
+            alert('Data Pasien Masih Kosong')
+        } else {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            $('#dxGridModalRujukanBpjs').modal('show');
+        }
+    });
+    $("#tglEstRujuk").on("change paste keyup", function () {
+        $('#tglRujukan').val($("#tglEstRujuk").val());
+    });
+    $('#btnCariFaskesRujukan').click(function () {
+        if ($("input[name='jenisRujukan_rb']:checked").val() == "4") {
+            if ($("input[name='opsiRujuk_rb']:checked").val() == "1") {
+                if ($('#catatanRujuk_txt').val().length > 20) {
+                    if ($("select[name='kondisiKhususKategori'] option:selected").val() == "THA" && $("select[name='kondisiKhususKategori'] option:selected").val() == "HEM") {
+                        loadpicker("getFaskesRujukanKhusus2");
+                    } else {
+                        loadpicker("getFaskesRujukanKhusus1");
+                    }
+                } else {
+                    alert("Alasan Wajib di isi minimal 20 Karakter!");
+                }
+            } else {
+                loadpicker("getFaskesRujukanSubSpes");
+            }
+        } else {
+            if ($("input[name='opsiRujukHorizon_rb']:checked").val() == "1") {
+                $('#nonkapitasi_cb').show();
+            }
+
+        }
+
+    });
+    $("input[name='jenisRujukan_rb']").on("change paste keyup", function () {
+        if ($("input[name='jenisRujukan_rb']:checked").val() == "4") {
+            $('#layout_opsiRujuk_rb').show();
+            $('#layout_opsiRujukHorizon_rb').hide();
+            $('#nonkapitasi_lyt').hide();
+            $('#laboratorium_lyt').hide();
+            $('#program_lyt').hide();
+            $('#kacamata_lyt').hide();
+
+            loadpicker("refKhusus");
+            loadpicker("refSarana");
+            loadpicker("refSpesialis");
+
+        } else {
+            $('#layout_opsiRujuk_rb').hide();
+            $('#layout_kondisiKhusus').hide();
+            $('#layout_kondisiSpesialis').hide();
+            $('#layout_opsiRujukHorizon_rb').show();
+        }
+    });
+    $("#spesialis1").on("change paste keyup", function () {
+        loadpicker("refSubspesialis");
+    });
+
+    $("input[name='opsiRujuk_rb']").on("change paste keyup", function () {
+        if ($("input[name='opsiRujuk_rb']:checked").val() == "1") {
+            $('#layout_kondisiKhusus').show();
+            $('#layout_kondisiSpesialis').hide();
+        } else {
+            $('#layout_kondisiKhusus').hide();
+            $('#layout_kondisiSpesialis').show();
+            $("textarea#catatanRujukan").val('');
+        }
+    });
+
+    $("select[name='sarana_cb']").on("change paste keyup", function () {
+        kdSaranaV = $("select[name='sarana_cb'] option:selected").val();
+        $('#rujukanSarana').val(kdSaranaV);
+    });
+    $("select[name='kondisiKhususKategori']").on("change paste keyup", function () {
+        if ($("select[name='kondisiKhususKategori'] option:selected").val() == "THA") {
+
+            $('#layout_kondisiKhusus_spesialis').show();
+
+        } else if ($("select[name='kondisiKhususKategori'] option:selected").val() == "HEM") {
+            $('#layout_kondisiKhusus_spesialis').show();
+        } else {
+            $('#layout_kondisiKhusus_spesialis').hide();
+        }
+    });
+
+    $("input[name='opsiRujukHorizon_rb']").on("change paste keyup", function () {
+        if ($("input[name='opsiRujukHorizon_rb']:checked").val() == "1") {
+            $('#nonkapitasi_lyt').show();
+            $('#laboratorium_lyt').hide();
+            $('#program_lyt').hide();
+            $('#kacamata_lyt').hide();
+        } else if ($("input[name='opsiRujukHorizon_rb']:checked").val() == "2") {
+            $('#nonkapitasi_lyt').hide();
+            $('#laboratorium_lyt').show();
+            $('#program_lyt').hide();
+            $('#kacamata_lyt').hide();
+        } else if ($("input[name='opsiRujukHorizon_rb']:checked").val() == "3") {
+            $('#nonkapitasi_lyt').hide();
+            $('#laboratorium_lyt').hide();
+            $('#program_lyt').show();
+            $('#kacamata_lyt').hide();
+        } else if ($("input[name='opsiRujukHorizon_rb']:checked").val() == "4") {
+            $('#nonkapitasi_lyt').hide();
+            $('#laboratorium_lyt').hide();
+            $('#program_lyt').hide();
+            $('#kacamata_lyt').show();
+        }
+    });
+
+})
+
+function loadpicker(kond) {
+    if (kond == "refKhusus") {
+
+        $.get('/emr/pickerpcare?type=refKhusus', function (data) {
+            data.forEach(function (data) {
+
+                $('#kondisiKhususKategori')
+                    .append($('<option></option>', {
+                            value: data.kdKhusus
+                        })
+                        .text(data.nmKhusus));
+            });
+
+        });
+
+    } else if (kond == "refSarana") {
+
+        $.get('/emr/pickerpcare?type=refSarana', function (data) {
+            data.forEach(function (data) {
+
+                $('#sarana_cb')
+                    .append($('<option></option>', {
+                            value: data.kdSarana
+                        })
+                        .text(data.nmSarana));
+            });
+
+        });
+
+    } else if (kond == "refSpesialis") {
+
+        $.get('/emr/pickerpcare?type=refSpesialis', function (data) {
+            data.forEach(function (data) {
+
+                $('#spesialis1')
+                    .append($('<option></option>', {
+                            value: data.kdSpesialis
+                        })
+                        .text(data.nmSpesialis));
+            });
+
+        });
+        setTimeout('loadpicker("refSubspesialis")', 3000);
+
+    } else if (kond == "refSubspesialis") {
+        $('#layout_kondisiSpesialis3').html('<select class="form-control selecttwo  input-sm" id="spesialis2" name="spesialis2"></select>');
+        $.get('/emr/pickerpcare?type=refSubspesialis&kdSpesialis=' + $('#spesialis1').val(), function (data) {
+            data.forEach(function (data) {
+
+                $('#spesialis2')
+                    .append($('<option></option>', {
+                            value: data.kdSubSpesialis
+                        })
+                        .text(data.nmSubSpesialis));
+            });
+
+        });
+
+    } else if (kond == "getFaskesRujukanSubSpes") {
+        $('#modalPickerFaskesUp').html('<div id="modalPickerFaskes" style="height: 250px;overflow-y: auto;font-size: 12px;line-height: 0.8;" ></div>');
+        if ($("#sarana_chk").is(":checked")) {
+            var url = '/emr/pickerpcare?type=getFaskesRujukanSubSpes&kdSubSpesialis=' + $("select[name='spesialis2'] option:selected").val() + '&kdSarana=' + $("select[name='sarana_cb'] option:selected").val() + '&tglEstRujuk=' + $('#tglEstRujuk').val();
+        } else {
+            var url = '/emr/pickerpcare?type=getFaskesRujukanSubSpes&kdSubSpesialis=' + $("select[name='spesialis2'] option:selected").val() + '&kdSarana=-&tglEstRujuk=' + $('#tglEstRujuk').val();
+        }
+        loadGridPickerBPJS(url);
+        loadGridPickerBPJS(url, '');
+    } else if (kond == "getFaskesRujukanKhusus1") {
+        $('#modalPickerFaskesUp').html('<div id="modalPickerFaskes"style="height: 250px;overflow-y: auto;font-size: 12px;line-height: 0.8;" ></div>');
+        var url = '/emr/pickerpcare?type=getFaskesRujukanKhusus1&kdKhusus=' + $("select[name='kondisiKhususKategori'] option:selected").val() + '&noKartu=' + $("#noBPJS").val() + '&tglEstRujuk=' + $('#tglEstRujuk').val();
+        loadGridPickerBPJS(url);
+        loadGridPickerBPJS(url, '');
+    } else if (kond == "getFaskesRujukanKhusus2") {
+        $('#modalPickerFaskesUp').html('<div id="modalPickerFaskes"style="height: 250px;overflow-y: auto;font-size: 12px;line-height: 0.8;"></div>');
+        var url = '/emr/pickerpcare?type=getFaskesRujukanKhusus2&kdSubSpesialis=' + $("select[name='khususSpesialis_cb'] option:selected").val() + '&kdKhusus=' + $("select[name='khusus_cb'] option:selected").val() + '&noKartu=' + $("#noBPJS").val() + '&tglEstRujuk=' + $('#tglEstRujuk').val();
+        loadGridPickerBPJS(url);
+        loadGridPickerBPJS(url, '');
+    }
+
+}
+
+function loadGridPickerBPJS(url, url2 = null) {
+    $("#modalPickerFaskes").dxDataGrid({
+        showColumnLines: false,
+        showRowLines: true,
+        rowAlternationEnabled: true,
+        showBorders: true,
+        paging: {
+            pageSize: 25
+        },
+        filterRow: {
+            visible: false
+        },
+        dataSource: url2 + url,
+        selection: {
+            mode: "single"
+        },
+        hoverStateEnabled: true,
+        columns: [{
+                dataField: "kdppk",
+                width: 75,
+                caption: "NO"
+            },
+            {
+                dataField: "nmppk",
+                width: 200,
+                caption: "FASKES"
+            },
+            {
+                dataField: "kelas",
+                width: 100,
+                caption: "KELAS"
+            },
+            {
+                caption: "JARAK",
+                width: 100,
+                calculateCellValue: function (rowData) {
+                    return (rowData.distance / 1000).toFixed(2) + " KM";
+                }
+            },
+            {
+                dataField: "jmlRujuk",
+                width: 100,
+                caption: "TOT.RUJUKAN"
+            },
+            {
+                dataField: "kapasitas",
+                width: 100,
+                caption: "KAPASITAS"
+            },
+            {
+                dataField: "persentase",
+                width: 50,
+                caption: "(%)"
+            },
+            {
+                dataField: "jadwal",
+                width: 300,
+                caption: "JADWAL"
+            },
+            {
+                dataField: "nmkc",
+                width: 100,
+                caption: "KANTOR CBG"
+            },
+            {
+                dataField: "alamatPpk",
+                width: 300,
+                caption: "ALAMAT"
+            },
+            {
+                dataField: "telpPpk",
+                width: 200,
+                caption: "TELP"
+            },
+
+        ],
+        onSelectionChanged: function (selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            selectionChangedRaised = true;
+        },
+        onRowClick: function (e) {
+            if (!selectionChangedRaised) {
+                var dataGrid = e.component;
+                var keys = dataGrid.getSelectedRowKeys();
+                dataGrid.deselectRows(keys);
+            }
+            selectionChangedRaised = false;
+
+            var data = e.data;
+            try {
+                if ($("textarea#catatanRujuk_txt").val().length > 0) {
+                    $('#catatanRujukan').val($("#catatanRujuk_txt").val());
+                }
+            } catch (err) {}
+            try {
+                $('#jenisRujukan_rbs').val("" + $("input[name='jenisRujukan_rb']:checked").val());
+            } catch (err) {}
+            try {
+                $('#opsiRujuk_rbs').val("" + $("input[name='opsiRujuk_rb']:checked").val());
+            } catch (err) {}
+            try {
+                $('#kondisiKhususKategoris').val("" + $("select[name='kondisiKhususKategori'] option:selected").val());
+            } catch (err) {}
+            try {
+                $('#rujukanSarana').val(kdSaranaV);
+            } catch (err) {}
+            try {
+                $('#ppkRujukan').val('' + data.kdppk);
+            } catch (err) {}
+            // try {
+            //     $('#ppkRujukanN').val('' + data.nmppk);
+            // } catch (err) {}
+            $('#ppkRujukanN').val('' + data.nmppk);
+            try {
+                $('#spesialisRujukan').val('' + $("select[name='spesialis2'] option:selected").val());
+            } catch (err) {}
+            try {
+                $('#spesialisRujukanN').val('' + $("select[name='spesialis2'] option:selected").text());
+            } catch (err) {}
+            try {
+                $('#jamRujuk').val('' + data.jadwal);
+            } catch (err) {}
+            try {
+                $('#dxGridModalRujukanBpjs').modal('hide');
+            } catch (err) {}
+            $('#tglRujukan').val($("#tglEstRujuk").val());
+        }
+    });
+}

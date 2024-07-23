@@ -1,0 +1,117 @@
+
+/*
+buat kliknya
+.proses_list_jkn nama button classnya
+*/ 
+
+$(".proses_list_jkn").on("click change paste keyup", function () {
+    getjkn();
+});
+
+function getjkn() {
+
+    dataGrid = $("#datagrid").dxDataGrid("instance");
+    $.ajax({
+        url: "/emr_perawat/getjkn",
+        method: "GET",
+        data: {
+            "tglAwal": $("#tglAwal").val(),
+            "tglAkhir": $("#tglAkhir").val()
+        },
+        success: function (datas) {
+
+            dataGrid = $("#dxGridDatapasienjkn").dxDataGrid({
+                dataSource: datas,
+                selection: {
+                    mode: "single"
+                },
+                sorting: {
+                    mode: 'multiple',
+                },
+                rowAlternationEnabled: true,
+                hoverStateEnabled: true,
+                showBorders: true,
+                allowDeleting: false,
+                paging: {
+                    pageSize: 100000
+                },
+                export: {
+                    enabled: true
+                },
+                grouping: {
+                    autoExpandAll: true,
+                },
+                searchPanel: {
+                    visible: true
+                },
+                groupPanel: {
+                    visible: true
+                },
+                columns: 
+                [
+                    {
+                        dataField: "TGL_APP",
+                        caption: "TGL",
+                    },
+                    {
+                        dataField: "FAPANTRIDOKTER",
+                        caption: "NO.ANTRIAN",
+                    },
+                    {
+                        dataField: "FAPNOBPJS",
+                        caption: "NO.BPJS",
+                    },
+                    {
+                        dataField: "STATUS",
+                        caption: "STATUS",
+                    },
+                    {
+                        dataField: "FAPNAMAPASIEN",
+                        caption: "Nama Pasien",
+                    },
+                    {
+                        dataField: "FAPALAMAT",
+                        caption: "ALAMAT",
+                    },
+                    {
+                        dataField: "FAPTELEPON",
+                        caption: "TELEPON",
+                    },
+                    {
+                        dataField: "FMDDOKTERN",
+                        caption: "DOKTER",
+                    },
+                    {
+                        dataField: "FMPKLINIKN",
+                        caption: "POLI",
+                    },
+                ],
+
+                editing: {
+                    mode: "cell",
+                    allowUpdating: false,
+                    selectTextOnEditStart: true,
+                    allowEditing: false,
+                    allowDeleting: false,
+                },
+                keyboardNavigation: {
+                    editOnKeyPress: true,
+                    enterKeyAction: "moveFocus",
+                    enterKeyDirection: 'row'
+                },
+            }).dxDataGrid("instance");
+
+        },
+        beforeSend: function () {
+            $('#ModalLoading').modal('show');
+            $('#loading_title').html('Proses  Data..');
+            $('#loading_text').html('Tunggu Sebentar');
+        },
+        complete: function () {
+            setTimeout(function () {
+                $('#ModalLoading').modal('hide');
+            }, 500);
+            $('#ModalLoading').modal('hide');
+        },
+    })
+}

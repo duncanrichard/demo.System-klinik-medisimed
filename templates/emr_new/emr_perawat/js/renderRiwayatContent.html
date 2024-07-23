@@ -1,0 +1,234 @@
+<script type="text/javascript">
+
+    function loadRiwayatEMR(norm) {
+        $.ajax({
+            url : "/emr/riwayat-cppt/",
+            method : 'get',
+            data : {
+                norm : norm,
+                time :new Date().getTime()
+            },
+            success : function (dt){
+                $('#listRiwayat').html('');
+
+                listTransaksi = dt;
+                var dom ;
+                var jns_trans;
+                var tgl_trans;
+                var label;
+                var tgl;
+                var options;
+                var status_CPPT;
+                var statusCPPT;
+				var user_emr;
+                for (var i = 0; i <= listTransaksi.length - 1; i++) {
+                    
+                    jns_trans = listTransaksi[i].jenis_trans;
+                    tgl_trans = listTransaksi[i].created_at;
+                    // tgl = new Date(tgl_trans);
+                    options = {year: 'numeric', month: 'long',day:'numeric',weekday: 'long'}
+                    // tgl_trans = (tgl.toLocaleDateString('id-ID', options))
+					if(listTransaksi[i].USER_EMR!="")
+						user_emr="("+listTransaksi[i].USER_EMR+")";
+                    label=listTransaksi[i].pemeriksaan+' '+user_emr;
+                    // if(listTransaksi[i].pemeriksaan=="CPPT PERAWAT"){
+                    //     label='CPPT <b class="jenisUser_'+listTransaksi[i].no_transaksi+'">PERAWAT</b> '+user_emr+' '+statusCPPT;
+                    //     showCPPTbyPriv(listTransaksi[i].no_transaksi,listTransaksi[i].USER_EMR);
+                    // }else if(listTransaksi[i].pemeriksaan=="SBAR INAP PERAWAT"){
+                    //     label='SBAR INAP <b class="jenisUser_'+listTransaksi[i].no_transaksi+'">PERAWAT</b> '+user_emr+' '+statusCPPT;
+                    //     showCPPTbyPriv(listTransaksi[i].no_transaksi,listTransaksi[i].USER_EMR);
+                    // }else{
+                        label=listTransaksi[i].pemeriksaan+' '+user_emr;
+                    // }
+                    // if(jns_trans == 'AAD')
+                    // {
+                    //     label = 'Asesmen Awal Dokter';
+                    // }else if (jns_trans == 'CPTD') {
+                    //     label = 'CPPT Dokter'+statusCPPT;
+                    // }else if (jns_trans == 'AAP') {
+                    //     label = 'Asesmen Awal Perawat';
+                    // }else if (jns_trans == 'CPTP') {
+                    //     label = 'CPPT Perawat'+statusCPPT;
+                    // }else if (jns_trans == 'SBAR') {
+                    //     label = 'SBAR Perawat';
+                    // }
+                    dom = '<div class="col-md-12"><div class="col-md-12">'
+                    dom += "<div class='panel panel-default'>"
+                    dom +='<div class="panel-heading panel-head-'+jns_trans+'"  role="tab" id="heading_'+i+'">'
+                    dom += '<h4 class="panel-title">'
+                        // data-parent="#accordion"
+                    dom += '<a role="button" data-toggle="collapse"  href="#'+jns_trans+'_'+listTransaksi[i].no_transaksi+'" aria-expanded="false" aria-controls="'+jns_trans+'_'+listTransaksi[i].no_transaksi+'">'
+                    dom += ''+label+' <span class="pull-right"> '+tgl_trans+'</span>'
+                    dom += '</a>'
+                    dom += '</h4>'
+                    dom += '</div>'
+                    dom += '<div id="'+jns_trans+'_'+listTransaksi[i].no_transaksi+'" class="collapse collapse-riwayat"  data-jenis="'+jns_trans+'" data-loaded="0" role="tabpanel" aria-labelledby="headingOne" >'
+                    dom += '<div class="panel-body">'
+                    dom += ''
+                    dom += '</div>'
+                    dom += '</div>'
+                    dom += '</div>'
+                    dom += '</div>'
+                    dom += '</div>'
+                    $('#listRiwayat').append(dom);	
+					$('.pulse').hide();
+                }
+				
+
+				if(listTransaksi.length<1){
+					$('.pulse').hide();
+				}
+                $('.collapse-riwayat').on('show.bs.collapse', function () {
+                    if($(this).data('loaded') == 0)
+                    {
+                        loadContentTransaksi(this);
+                    }
+                })
+            }
+        })
+
+    }
+
+
+    function loadContentTransaksi(elm){
+        var jns = $(elm).data('jenis');
+        var no_trans = $(elm).attr('id').split("_")[2];
+        
+        $.ajax({
+            // url : "/emr/riwayat-cppt/detail",
+            url: host + "/getRiwayatPemeriksaanByNORMDetail",
+            method : 'get',
+            data : {
+                'jenis' :jns,
+                'no_transaksi' : no_trans,
+            },
+            success : function(dt){
+   
+                /*IGD*/
+                if(jns == 'CPPT_DR')
+                {
+                    renderContentCPTD(elm,dt);
+                }else if (jns == 'CPPT_PRW')
+                {
+                    renderContentCPTP(elm,dt);
+                }
+            }
+        })
+
+    }
+
+
+    function renderContentCPTD(elm, data)
+    {
+            
+        var dt = data[0];
+        var dom = '';
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> Waktu Pemeriksaan </b></div>'
+        dom += '<div class="col-md-8">: '+dt.TTVUPDATED_ATS+'</div></div></div>';
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> Keluhan Utama </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTD_KELUHANUTAMA+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> R/Skrng </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTD_RIWAYAT_SKG+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> S </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTD_S+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> O </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTD_O.replace(/; /g, "<br/>")+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> A </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTD_A.replace(/; /g, "<br/>")+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> P </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTD_P+'</div></div></div>';
+       
+        dom += '<div class="col-md-12" style="margin: 7px 0 ;"><div class="row"><div class="col-md-4"><b> Resep </b></div>'
+        dom += '<div class="col-md-8"><span style="float:left;position:relative">:</span>'
+        dom += '<div class="col-md-10" style="margin-left:0px;font-size:12px;"><div id="riwayat_farmasi_'+dt.CPTDNO_TRANSAKSI_RJ+'"></div></div></div></div></div>';
+
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> Petugas </b></div>';
+
+       
+        dom += '<div class="col-md-8">: '+dt.USER_EMR+'</div></div></div>';
+        
+        
+        
+        
+        $(elm).children( ".panel-body" ).html(dom);
+        $(elm).data('loaded','1');
+
+        setTimeout(function(){
+            setResepRiwayat(dt.CPTDNO_TRANSAKSI_RJ);
+        }, 1000);
+        // getLoadDisplayRencanaTindakanCPPTPRW(dt.CPTDNO_TRANSAKSI);
+    }
+
+
+    function setResepRiwayat(noTrans){
+        $.get('/emr/detail-entry-resep', {'q':'generateResepTXT','noTrans':noTrans,'times':new Date().getTime()}, 
+            function(data) {
+               if(data.success){
+                    try{
+                    $("#riwayat_farmasi_"+noTrans).html(''+(data.message).replace(/;/g, "<br/>"));
+                    }catch(err){}
+               }
+        });
+    
+    }
+    function renderContentCPTP(elm, data)
+    {
+
+        
+        var dt = data[0];
+        var dom = '';
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> Waktu Pemeriksaan </b></div>'
+        dom += '<div class="col-md-8">: '+dt.TTVUPDATED_ATS+'</div></div></div>';
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> S </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTP_S+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> O </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTP_O+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> A </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTP_A+'</div></div></div>';
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> P </b></div>'
+        dom += '<div class="col-md-8">: '+dt.CPTP_P+'</div></div></div>';
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> TTV </b></div>'
+        dom += '<div class="col-md-8"><span style="float:left;position:relative">:</span>'
+        dom += '<div class="col-md-9" style="margin-left:5px;"><ul> '
+        
+            if(dt.TTVTSISTOL!=null)
+                dom += '<li>Sistol : '+dt.TTVTSISTOL+' mmHg</li>';
+            if(dt.TTVDIASTOL!=null)
+                dom += '<li>Diastol : '+dt.TTVDIASTOL+' mmHg</li>';
+            if(dt.TTVNADI!=null)
+                dom += '<li>HR : '+dt.TTVNADI+' x/mnt</li>';
+            if(dt.TTVNAFAS!=null)
+                dom += '<li>RR : '+dt.TTVNAFAS+' x/mnt</li>';
+            if(dt.TTVO2!=null)
+                dom += '<li>SpO<sup>2</sup> : '+dt.TTVO2+' %</li>';
+            if(dt.TTVSUHU!=null)
+                dom += '<li>Suhu : '+dt.TTVSUHU+' °C</li>';
+            if(dt.TTVTINGGI_BADAN!=null)
+                dom += '<li>TB : '+dt.TTVTINGGI_BADAN+' cm</li>';
+            if(dt.TTVBERAT_BADAN!=null)
+                dom += '<li>BB : '+dt.TTVBERAT_BADAN+' kg</li>';
+        
+        dom += '</ul></div>';
+        dom += '</div></div></div>';
+        
+     
+        
+        dom += '<div class="col-md-12"><div class="row"><div class="col-md-4"><b> Petugas </b></div>';
+
+        
+        dom += '<div class="col-md-8">: '+dt.USER_EMR+'</div></div></div>';
+
+        
+        
+        
+        $(elm).children( ".panel-body" ).html(dom);
+        $(elm).data('loaded','1');
+        // getLoadDisplayRencanaTindakanCPPTPRW(dt.CPTPNO_TRANSAKSI);
+    }
+</script>

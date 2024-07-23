@@ -1,0 +1,780 @@
+
+
+<div class="modal fade" id="modalPicker" tabindex="-1" role="dialog" aria-labelledby="myModal">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalPickerLabel">Penyakit </h4>
+            </div>
+
+                <div class="modal-body">
+                    <div class="row" id="layoutAddTemplateSOAP" style="display:none;padding: 10px;">
+                        <div class="form-group row">
+                            <label class="col-md-7 fz-11 control-label">Nama Template:</label><br>
+                            <textarea class="form-control" style="font-size: 11px;height: 50px;" id="judulSOAP"  name="judulSOAP" placeholder=""></textarea>                    
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-7 fz-11 control-label">Isi Template:</label><br>
+                            <textarea class="form-control" style="font-size: 11px;height: 100px;" id="isiSOAP"  name="isiSOAP" placeholder=""></textarea>                    
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btnSaveSOAP">Save</button>
+                        <button type="button" class="btn btn-warning" id="btnDelSOAP">Delete</button>
+                    </div>
+                    <div class="row" >
+                        <div id="modalPickerGridUp">
+                            <div id="modalPickerGrid">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary"  data-dismiss="modal" id="btnSaveModalPicker">Ok</button>
+                <button type="button" class="btn btn-primary"  data-dismiss="modal" >Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="modal fade" id="modalPickerPencarianFaskesRujukan" tabindex="-1" role="dialog" aria-labelledby="myModal">
+
+    <div class="modal-dialog" role="document" style="width: 1100px;">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="modalPickerLabel">Pencarian Faskes Rujukan </h4>
+            </div>
+
+                <div class="modal-body">
+                     
+                    <div class="form-group row">
+                       
+                        <div class="col-md-7">
+                            <label class="radio-inline fz-11"><input type="radio" name="jenisRujukan_rb" value="4" >Rujukan Vertikal </label>
+                            <label class="radio-inline fz-11"  id="rujukanHorizontal" style="display:none;" ><input type="radio" name="jenisRujukan_rb" value="6">Rujukan Horizontal</label>
+
+                        </div>
+                    </div>
+                    <div class="form-group row" id="layout_opsiRujukHorizon_rb" style="display:none;">
+                       
+                        <div class="col-md-7">
+                            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="1" checked="checked">
+                                Pelayanan Tindakan Non-Kapitasi
+                            </label>
+                            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="2" checked="checked">
+                                Pelayanan Laboratorium
+                            </label>
+                            <label class="radio-inline fz-11"><input type="radio" name="opsiRujukHorizon_rb" value="3" checked="checked">
+                                Pelayanan Progam
+                            </label>
+                        </div>
+                    </div>
+
+
+                    <div id="layout_opsiRujuk_rb"  style="display:none;">
+                        <div class="form-group row" >
+                        
+                            <div class="col-md-7">
+                                <label class="radio-inline fz-11"><input type="radio" name="opsiRujuk_rb" value="1" >Kondisi Khusus</label>
+                                <label class="radio-inline fz-11"><input type="radio" name="opsiRujuk_rb" value="2" >Spesialis</label>
+                            
+                            </div>
+                        </div>
+                    
+                       
+                    </div>
+
+                    <div id="layout_kondisiKhusus" style="display:none;">
+                        <div class="form-group row" >
+                            <label class="col-sm-2 control-label">Kategori</label>
+                            <div class="col-md-3">
+                                <select class="form-control selecttwo kondisiKhususKategoriS input-sm" id="kondisiKhususKategori" name="kondisiKhususKategori">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" id="layout_kondisiKhusus_spesialis" style="display:none;">
+                            <label class="col-sm-2 control-label">Spesialis</label>
+                            <div class="col-md-3" id="kondisiKhususSpesialisUp">
+                                {% comment %} <select class="form-control selecttwo kondisiKhusus" id="kondisiKhususSpesialis" name="kondisiKhususSpesialis">
+                                </select> {% endcomment %}
+                                <select style="width:100%" class="form-control input-sm" id="khususSpesialis_cb">
+                                    <option value="3" selected="">PENYAKIT DALAM</option>
+                                    <option value="8">HEMATOLOGI - ONKOLOGI MEDIK</option>
+                                    <option value="26">ANAK</option>
+                                    <option value="30">ANAK HEMATOLOGI ONKOLOGI</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" >
+                            <label class="col-sm-2 control-label">Alasan</label>
+                            <div class="col-md-3">
+                                <textarea class="form-control" rows="2" maxlength="150" id="catatanRujuk_txt"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div id="layout_kondisiSpesialis" style="display:none;">
+                       
+
+                        <div class="form-group row" >
+                            <label class="col-sm-2 control-label">Spesialis</label>
+                            <div class="col-md-3">
+                                <select class="form-control selecttwo  input-sm" id="spesialis1" name="spesialis1">
+                                </select>
+                            </div>
+                            <div class="col-md-3" id="layout_kondisiSpesialis3" >
+                                <select class="form-control selecttwo  input-sm" id="spesialis2" name="spesialis2"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" >
+                            
+                            <label class="col-sm-2 control-label">
+                                <input id="sarana_chk" type="checkbox">
+                                Sarana
+                            </label>
+                            <div class="col-md-3" id="layout_kondisiSpesialis_sarana" style="display:none;">
+                                <select class="form-control selecttwo  input-sm" id="sarana_cb" name="sarana_cb">
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 fz-11 control-label">Tgl. Rencana Berkunjung</label>
+                        <div class="col-md-3">
+                            <input type="text" name="tglEstRujuk" id="tglEstRujuk" placeholder="dd-MM-yyyy" class="form-control input-sm datepik tglfakturs"  autocomplete="off" required="">
+                        </div>
+                        <div class="col-md-3">
+                           <button type="button" class="btn btn-primary" id="btnCariFaskesRujukan"><i class="fa fa-search"></i> Cari Faskes Rujukan</button>
+                           <button type="button" class="btn btn-danger" id="btnBatalFaskesQuery" data-dismiss="modal"><i class="fa fa-close"></i> Batal</button>
+                        </div>
+                    </div>
+                    <div class="row" >
+                        <div id="modalPickerFaskesUp">
+                            <div id="modalPickerFaskes" ></div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary"  data-dismiss="modal" >Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-lab" tabindex="-1" role="dialog" aria-labelledby="myModal">
+
+    <div class="modal-dialog fz-11" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Data Pemeriksaan Lab</h4>
+            </div>
+            
+            <form class="form-horizontal form-disable-enter" id="insertLab" novalidate="novalidate">
+                <div class="modal-body" style="height:80%; overflow-y:auto">
+                    <input type="hidden" id="KdMCU" name="KdMCU" value="0">
+                    
+                    <div id="divEditLab">
+                        <div id="btnEditLab" class="btn btn-primary">Edit</div>
+                        <div id="btnHapusLab" class="btn btn-danger">Hapus</div>
+                    </div>
+                    <div id="divInsertLab">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Kode PPK</label>
+                        <div class="col-sm-5">
+                            <div class="input-group">
+                                <input type="text" class="form-control input-sm" id="labKdPPK" name="labKdPPK" disabled="">
+                                <span class="input-group-btn" style="width:70%; max-width:50px;">
+                                    <input class="form-control input-sm" id="labNmPPK" type="text" disabled="disabled">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                        <div class="form-group">
+                            <label class="col-md-2 control-label">Tanggal Pelayanan</label>
+                            <div class="col-md-3">
+                                <div class="input-group date">
+                                    <input type="text" class="tglfakturs form-control datepik input-sm " id="labTglPelayanan"  maxlength="10" autocomplete="off">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-group" id="accordion">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseTekanan">
+                                            Tekanan Darah (Tensi)
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseTekanan" class="panel-collapse collapse in">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Sistole</label>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control input-sm" id="TDSis" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" name="TDSis" value="0" maxlength="3">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mmHg</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Diastole</label>
+                                            <div class="col-sm-2">
+                                                <input type="text" class="form-control input-sm" id="TDDias" onkeypress="return event.charCode >= 48 &amp;&amp; event.charCode <= 57" name="TDDias" value="0" maxlength="3">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mmHg</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseGula">
+                                            Gula Darah
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseGula" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group" style="display:none">
+                                            <label class="col-sm-3 control-label">Gula Darah Sewaktu</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="GDSewaktu" name="GDSewaktu" value="0" maxlength="10" onfocusout="HasilPemeriksaanGDS();">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr/dl</label>
+                                            <label class="col-sm-1 control-label" id="hasilGDSewaktu"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Gula Darah Puasa</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="GDPuasa" name="GDPuasa" value="0" maxlength="10" onfocusout="HasilPemeriksaanGDP();">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr/dl</label>
+                                            <label class="col-sm-1 control-label" id="hasilGDPuasa"></label>
+                                        </div>
+                                        <div class="form-group" style="display:none">
+                                            <label class="col-sm-3 control-label">Gula Darah Post Prandial</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="GDPostPrandial" name="GDPostPrandial" value="0" maxlength="10" onfocusout="HasilPemeriksaanGDPP();">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr/dl</label>
+                                            <label class="col-sm-1 control-label" id="hasilGDPostPrandial"></label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">HbA1c</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="hbA1c" name="hbA1c" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr/dl</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseRadiologi">
+                                            Radiologi
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseRadiologi" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">Foto</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="RFoto" name="RFoto"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseDarah">
+                                            Darah Rutin
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseDarah" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Hemoglobin</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="DRHemo" name="DRHemo" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">gr %</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Leukosit</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="DRLeu" name="DRLeu" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">/mm3</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Eritrosit</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="DRErit" name="DRErit" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">juta/m3</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Laju Endap Darah</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="DRLaju" name="DRLaju" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mm/jam</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Hematokrit</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="DRHema" name="DRHema" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mm/jam</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Trombosit</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="DRTrom" name="DRTrom" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mm/jam</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseLemak">
+                                            Lemak Darah
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseLemak" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">HDL</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="LDHDL" name="LDHDL" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">LDL</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="LDLDL" name="LDLDL" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Cholesterol Total</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="LDChol" name="LDChol" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Trigliserid</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="LDTrigli" name="LDTrigli" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseHati">
+                                            Fungsi Hati
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseHati" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">SGOT</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FHSGOT" name="FHSGOT" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">u/l</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">SGPT</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FHSGPT" name="FHSGPT" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">u/l</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Gamma GT</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FHGamma" name="FHGamma" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">u/l</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Protein Kualitatif</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FHProtKual" name="FHProtKual" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mg/24jam</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Albumin</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FHAlbumin" name="FHAlbumin" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">u/l</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseGinjal">
+                                            Fungsi Ginjal
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseGinjal" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Creatinin</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FGCrea" name="FGCrea" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Ureum</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FGUreum" name="FGUreum" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Asam Urat</label>
+                                            <div class="col-sm-2">
+                                                <input type="number" class="form-control input-sm" id="FGAsam" name="FGAsam" value="0" maxlength="10">
+                                            </div>
+                                            <label class="col-sm-1 control-label">mgr %</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseJantung">
+                                            Fungsi Jantung / EKG
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseJantung" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">ABI</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="Abi" name="Abi"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">EKG</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="ekg" name="ekg"></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label">Echo</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="echo" name="echo"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseMata">
+                                            Mata
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseMata" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Funduskopi</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="funduskopi" name="funduskopi"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseLain">
+                                            Pemeriksaan Lain
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseLain" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Lain-lain</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="lain" name="lain"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class="panel-title">
+                                        <a data-toggle="collapse" href="#collapseKesimpulan">
+                                            Kesimpulan
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div id="collapseKesimpulan" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Saran Dokter</label>
+                                            <div class="col-sm-4">
+                                                <textarea rows="2" maxlength="5000" class="form-control input-sm" id="saranDokter" name="saranDokter"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="modal-footer">
+                <button  class="btn btn-primary" id="btn_simpanLab">Simpan</button>
+                <button type="button" class="btn btn-primary"  data-dismiss="modal" >Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal  -->
+<div class="modal fade" id="modalPrintPCAREBPJS" tabindex="-1" role="dialog" aria-labelledby="myModal">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Print Rujukan </h4>
+            </div>
+
+                <div class="modal-body">
+                    <div class="form-group row">
+                        
+                            <label class="col-md-3 fz-11 control-label">Cetak Rujukan:</label>
+                            <div class="col-md-7">
+                                <div id="" class="form-inline">
+                                    <label class="radio-inline fz-11"><input type="radio" name="jenisPrintRujukan" value="1" checked="checked"> Surat Rujuk Lanjut</label>
+                                    <label class="radio-inline fz-11"><input type="radio" name="jenisPrintRujukan" value="2">Surat Rujuk Lanjut+ Rujuk Balik</label>
+                                    
+                                    
+                                </div>
+                            </div>
+
+                    </div>
+                </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnjenisPrintRujukan">Print</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal -->
+<div class="modal fade" id="modal-tacc" style="overflow-y: scroll;" tabindex="-1" role="dialog" aria-labelledby="myModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">TACC</h4>
+            </div>
+            <div class="modal-body" style="height:80%;">
+                <form class="form-horizontal form-disable-enter">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label"></label>
+                        <div class="col-sm-11">
+                            <label class="control-label">Diagnosa yang dipilih merupakan diagnosa non-spesialistik apakah pasien tersebut akan tetap dirujuk?</label>
+                        </div>
+                    </div>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="rdRujukTACC" value="1"> Rujuk dengan TACC
+                        </label>
+                    </div>
+                    <div class="box box-primary box-solid" id="rujukanTACC_lyt" style="padding: 10px;display:none; margin-top:5px;margin-left:20px;width:97%;">
+                        <div class="box-body">
+                            <div class="radio" style="margin-top:-18px;">
+                                <label class="radio">
+                                    <input type="radio" name="rdTACCFaktorRujuk" value="1">Time (Waktu)</label>
+                                <div class="bs-callout bs-callout-info" id="alasanTime_lyt" style="padding: 10px;margin-top: 5px;background-color: rgb(216, 238, 245);margin-left: 20px;padding-top: 5px;padding-bottom: 10px;border-top: 1px solid #5bc0de;border-bottom: 1px solid #5bc0de;border-right: 1px solid #5bc0de;">
+                                    <label class="radio">
+                                        <input type="radio" name="rdTACCAlasanTime" value="0">&lt; 3 Hari</label>
+                                    <label class="radio">
+                                        <input type="radio" name="rdTACCAlasanTime" value="1">&gt;= 3 - 7 Hari</label>
+                                    <label class="radio">
+                                        <input type="radio" name="rdTACCAlasanTime" value="2">&gt;= 7 Hari</label>
+                                </div>
+                                <label class="radio">
+                                    <input type="radio" name="rdTACCFaktorRujuk" value="2">Age (Umur)</label>
+                                <div class="bs-callout bs-callout-info" id="alasanAge_lyt" style="padding: 10px;margin-top: 5px;background-color: rgb(216, 238, 245);margin-left: 20px;padding-top: 5px;padding-bottom: 10px;border-top: 1px solid #5bc0de;border-bottom: 1px solid #5bc0de;border-right: 1px solid #5bc0de;">
+                                    <label class="radio">
+                                        <input type="radio" name="rdTACCAlasanAge" value="0">
+                                        < 1 Bulan</label>
+                                            <label class="radio">
+                                                <input type="radio" name="rdTACCAlasanAge" value="1">>= 1 Bulan s/d
+                                                < 12 Bulan</label>
+                                                    <label class="radio">
+                                                        <input type="radio" name="rdTACCAlasanAge" value="2">>= 1 Tahun s/d
+                                                        < 5 Tahun</label>
+                                                            <label class="radio">
+                                                                <input type="radio" name="rdTACCAlasanAge" value="3">>= 5 Tahun s/d
+                                                                < 12 Tahun</label>
+                                                                    <label class="radio">
+                                                                        <input type="radio" name="rdTACCAlasanAge" value="4">>= 12 Tahun s/d
+                                                                        < 55 Tahun</label>
+                                                                            <label class="radio">
+                                                                                <input type="radio" name="rdTACCAlasanAge" value="5">>= 55 Tahun</label>
+                                </div>
+                                <label class="radio">
+                                    <input type="radio" name="rdTACCFaktorRujuk" value="3">Complication (Komplikasi)</label>
+                                <div class="bs-callout bs-callout-info" id="alasanComplication_lyt" style="margin-top: 5px;background-color: rgb(216, 238, 245);margin-left: 20px;padding-top: 5px;padding-bottom: 10px;border-top: 1px solid #5bc0de;border-bottom: 1px solid #5bc0de;border-right: 1px solid #5bc0de;">
+                                    <div class="form-horizontal form-disable-enter">
+                                        <div class="form-group" style="width: 70%;">
+                                            <label class="col-sm-4 control-label">Diagnosa :</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" maxlength="6" id="kdDiagnosaTACCComplication" name="kdDiagnosaTACCComplication"  style="width: 60px;">
+                                                    <span class="input-group-btn" style="width: 100%;max-width:50px;">
+                                                        <input class="form-control" id="nmDiagnosaTACCComplication" type="text" disabled="disabled">
+                                                        <button type="button" class="btn btn-default" id="DiagnosaTACCComplication" >
+                                                            <i class="fa fa-ellipsis-h"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <label class="radio">
+                                    <input type="radio" name="rdTACCFaktorRujuk" value="4">Comorbidity (Pemberat)</label>
+                                <div class="bs-callout bs-callout-info" id="alasanComorbidity_lyt" style="margin-top: 5px;background-color: rgb(216, 238, 245);margin-left: 20px;padding-top: 5px;padding-bottom: 10px;border-top: 1px solid #5bc0de;border-bottom: 1px solid #5bc0de;border-right: 1px solid #5bc0de;">
+                                    <div class="form-horizontal form-disable-enter">
+                                        <div class="form-group" style="width: 70%;">
+                                            <label class="col-sm-4 control-label">Diagnosa :</label>
+                                            <div class="col-sm-8">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" maxlength="6" id="kdDiagnosaTACCComorbidity" name="kdDiagnosaTACCComorbidity"  style="width: 60px;">
+                                                    <span class="input-group-btn" style="width: 100%;max-width:50px;">
+                                                        <input class="form-control" id="nmDiagnosaTACCComorbidity" type="text" disabled="disabled">
+                                                        <button type="button" class="btn btn-default" id="DiagnosaTACCComorbidity" >
+                                                            <i class="fa fa-ellipsis-h"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="rdRujukTACC" value="-1"> Rujuk tanpa TACC
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="col-sm-8">
+                            <button type="button" class="btn btn-primary" id="btnSimpanLabTacc">Setuju</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Batal</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+
+
+<!-- Modal  -->
+<div class="modal fade"  id="modalPickerPenyakit2" tabindex="-1" role="dialog" aria-labelledby="myModal">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Penyakit </h4>
+            </div>
+
+                <div class="modal-body">
+                    <div class="row" >
+                        <div id="gridDPPenyakit2">
+                            
+                        </div>
+                    </div>
+                </div>
+
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

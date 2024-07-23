@@ -46,6 +46,14 @@ function load_Dokter() {
                 dataField: "FMDDOKTERN",
                 caption: "Nama Dokter",
             },
+            {
+                dataField: "FMDDOKTER_ID_BPJS",
+                caption: "Kode BPJS",
+            },
+            {
+                dataField: "SSFHIR_KD_DOKTER",
+                caption: "Kode Satu Sehat",
+            },
         ],
         onRowClick: function (e) {
             $("#far_kode_dokter").val(e.data.FMDDOKTER_ID);
@@ -62,6 +70,7 @@ function load_Dokter() {
             } else {
                 $("#inlineCheckboxaktif1").prop('checked', false)
             }
+            $("#kode_dokter_satu_sehat").val(e.data.SSFHIR_KD_DOKTER);
             $('#dxGridModaldokter').modal('hide')
             menuhidup();
         },

@@ -1,0 +1,370 @@
+{% extends "layout/master.html" %}
+{% block title %}
+Cabang / DPP / Klinik
+{% endblock %}
+{% block content %}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKelurahan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKecamatan.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalKabupaten.html'%}
+{% include 'dashboard/data_pasien/dxgrid/dxGridModalProvinsi.html'%} 
+<div class=''>
+    <div class="wrapper wrapper-content entry">
+        <div class="row ">
+            <div class="col-lg-12" style="padding-top: 16px;">
+                <div class="ibox">
+                    <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                        <h3 style="text-align: center">Cabang / DPP / Klinik</h3>
+                    </div>
+                    <div class="card-body" style="background: linear-gradient(to right, #0f2027, #203a43, #2c5364);">
+                        <div class="form-row">
+                            <label class="col-md-3 col-form-label text-white">Cabang Id</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-md " id="cabang_id" readonly>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-3 col-form-label text-white">Nama Perusahaan</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control input-md " id="nama_perusahaan">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-3 col-form-label text-white">Alamat</label>
+                            <div class="col-md-5">
+                                <input type="text" class="form-control input-md " id="alamat">
+                            </div>
+                        </div>
+                        <div class=" row">
+                            <label class="col-md-3 control-label text-white"
+                                style="padding-top:5px">Provinsi</label>
+                            <div class="col-md-2">
+                                <input id="idProvinsi" name="idProvinsi" type="text"
+                                    class="form-control input-md" style="" readonly>
+                            </div>
+                            <div class="col-md-5">
+                                <input id="namaProvinsi" name="namaProvinsi" type="text"
+                                    class="form-control input-md" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="btnFindProvinsi"
+                                    class="btn  btn-success btn-xs">cari </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-3 control-label text-white" style="padding-top:5px">Kodya/Kab </label>
+                            <div class="col-md-2">
+                                <input id="idKabupaten" name="idKabupaten" type="text" class="form-control input-md"
+                                    readonly>
+                            </div>
+                            <div class="col-md-5">
+                                <input id="namaKabupaten" name="namaKabupaten" type="text" class="form-control input-md"
+                                    readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="btnFindKabupaten" class="btn  btn-success btn-xs">cari </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-3 control-label text-white"
+                                style="padding-top:5px">Kecamatan </label>
+                            <div class="col-md-2">
+                                <input id="idKecamatan" name="idKecamatan" type="text"
+                                    class="form-control input-md" readonly>
+                            </div>
+                            <div class="col-md-5">
+                                <input id="namaKecamatan" name="namaKecamatan" type="text"
+                                    class="form-control input-md" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn  btn-success btn-xs"
+                                    id="btnFindKecamatan">cari </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-md-3 control-label text-white"
+                                style="padding-top:5px">Kelurahan </label>
+                            <div class="col-md-2">
+                                <input id="idKelurahan" name="idKelurahan" type="text"
+                                    class="form-control input-md" readonly>
+                            </div>
+                            <div class="col-md-5">
+                                <input id="namaKelurahan" name="namaKelurahan" type="text"
+                                    class="form-control input-md" readonly>
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn  btn-success btn-xs"
+                                    id="btnFindKelurahan">cari </button>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-6 col-form-label text-white">Kode Pos</label>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control input-md " id="kode_pos">
+                                    </div>
+                                    <div class="col-md-3 col-form-label text-white">
+                                        <label class="checkbox-inline">
+                                            <input type="checkbox" id="inlineCheckboxaktif1" value="1">
+                                            Aktif / Non Aktif
+                                        </label>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="col-md-5 col-form-label text-white">LATITUDE</label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control input-md " id="SS_FHIR_latitude">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="row">
+                                    <label class="col-md-5 col-form-label text-white">LONGITUDE</label>
+                                    <div class="col-md-7">
+                                        <input type="text" class="form-control input-md " id="SS_FHIR_longitude">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-3 col-form-label text-white">S I P</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-md " id="sip">
+                            </div>
+                            <label class="col-md-1 col-form-label text-white">Website</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-md " id="SS_FHIR_website">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="col-md-3 col-form-label text-white">email</label>
+                            <div class="col-md-3">
+                                <input type="text" class="form-control input-md " id="email">
+                            </div>
+                            <label class="col-md-1 col-form-label text-white">Jadwal Mjkn</label>
+                            <label class="radio-inline">
+                                <input type="radio" name="inlineRadioOptstatus" id="inlineRadioOptstatus1" value="P">
+                                Pagi
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="inlineRadioOptstatus" id="inlineRadioOptstatus2" value="S">
+                                Sore
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="inlineRadioOptstatus" id="inlineRadioOptstatus3" value="B">
+                                Jam Daftar
+                            </label>
+
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-6 col-form-label text-white">Kontak</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-md " id="kontak">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-2 col-form-label text-white">jabatan</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-md " id="jabatan">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-6 col-form-label text-white">No. Telepon</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-md " id="no_telepon">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <label class="col-md-2 col-form-label text-white">No. WA</label>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control input-md " id="no_wa">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body"
+                            style="display: none;background: linear-gradient(to right, #343636, #33829c, #064c69);padding-bottom: 5px;
+padding-top: 5px;">
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <div class="row">
+                                        <label class="col-md-5 col-form-label text-black">Kode FKTP</label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control input-md " id="kode_fktp">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="row">
+                                        <label class="col-md-5 col-form-label text-white">Cons ID</label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control input-md " id="consid">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <label class="col-md-5 col-form-label text-white">Secret Number </label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control input-md " id="Secret_Number">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class="col-md-3 col-form-label text-white">Userkey </label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control input-md " id="Userkey">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body" style="display: none;background: linear-gradient(to right, #4d504e, #3b4b41, #608797);border-bottom-width:
+                            5px;border-bottom-style: solid;padding-bottom: 5px;
+padding-top: 5px;">
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <label class="col-md-5 col-form-label text-white">User Pcare</label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control input-md " id="user_pcare">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class="col-md-3 col-form-label text-white">Password Pcare</label>
+                                        <div class="col-md-5">
+                                            <input type="password" class="form-control input-md " id="password">
+                                        </div>
+                                        <div class="col-md-4 col-form-label text-white">
+                                            <input type="checkbox" style="margin-bottom: 10px;border-radius: 25px;"
+                                                onclick="myFunction()">Show Password
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <label class="col-md-5 col-form-label text-white">User I-care</label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control input-md " id="user_icare">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class="col-md-3 col-form-label text-white">Password I-care</label>
+                                        <div class="col-md-5">
+                                            <input type="password" class="form-control input-md " id="password_icare">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body"
+                            style="background: linear-gradient(to right, #343636, #33829c, #064c69);">
+                            <div class="row"style="margin-top: -20px;margin-bottom: 10px;">
+                                <div class="ibox-title" style="box-shadow: 10px 10px 5px 0 rgba(0, 0, 0, .75)">
+                                    <h5 style="text-align: center">Bridgging Satu Sehat</h5>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-2">
+                                    <div class="row">
+                                        <label class="col-md-6 col-form-label text-black">organization id</label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control input-md " id="organization_id">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class="col-md-3 col-form-label text-white">client id</label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control input-md " id="client_id">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="row">
+                                        <label class="col-md-3 col-form-label text-white">Secret key </label>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control input-md " id="Secret_key">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <label class="col-md-5 col-form-label text-white">ORG ID SATUSEHAT</label>
+                                        <div class="col-md-7">
+                                            <input type="text" class="form-control input-md " id="SS_FHIR_ID_Organization"style="margin-top: 10px;margin-left: -8px;">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="row">
+                                        <div class="btn btn-primary  btn-lg active" id="btn_bridge_satu_sehat"
+                                            style="font-size: 15px;height: 30px;margin-bottom: 10px;border-radius: 25px;margin-right: 10px;padding-bottom: 2rem;">
+                                            <span class="fa fa-book"></span> Briding GET ORG ID SATUSEHAT
+                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 offset-md-3">
+                                <button class="btn btn-primary  btn-lg active" id="Prosesakhir"
+                                    style="font-size: 15px;height: 30px;margin-bottom: 10px;border-radius: 25px;margin-right: 10px;padding-bottom: 2rem;">
+                                    <span class="fa fa-save"></span> Save
+                                </button>
+                                <button class="btn btn-default btn-lg active" id="Batalproses"
+                                    style="font-size: 15px;height: 30px;margin-bottom: 10px;border-radius: 25px;margin-right: 10px;padding-bottom: 2rem;"
+                                    data-dismiss="modal">
+                                    <span class="fa fa-recycle"></span> Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block script %}
+{% load static %}
+<script type="text/javascript">
+{% include 'dashboard/data_pasien/js/getKelurahan.html' %}
+{% include 'dashboard/data_pasien/js/getKecamatan.html' %}
+{% include 'dashboard/data_pasien/js/getKabupaten.html' %}
+{% include 'dashboard/data_pasien/js/getProvinsi.html' %}
+{% include 'setupdata/cabang/js/init.html' %}
+</script>
+{% endblock  %}

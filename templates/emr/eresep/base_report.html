@@ -1,0 +1,110 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        {% block title%}
+        {% endblock %}
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Fonts 
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>-->
+    <!-- CSS Libs -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dropdown.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'font-awesome/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/plugins/dataTables/datatables.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/plugins/datapicker/datepicker3.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/dataTables.bootstrap.css' %}">
+    <!-- CSS App -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'datepick/css/jquery.datepick.css' %}"> 
+	<!-- <script src="https://code.jquery.com/jquery-1.10.2.js"></script> -->
+	
+    {% comment %} <!-- DevExtreme themes -->
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/18.1.4/css/dx.common.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/18.1.4/css/dx.light.css" />
+    <!-- A DevExtreme library -->
+    <script type="text/javascript" src="https://cdn3.devexpress.com/jslib/18.1.4/js/dx.all.js"></script> {% endcomment %}
+      <!-- DevExtreme themes -->
+    <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.common.css'%}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'dxgrid/dx.light.css'%}" />
+    
+    
+    <style type="text/css">
+        html, body{
+            /*overflow-x:hidden;*/
+            background: #fff !important;
+        }
+        *{
+            padding: 0;margin: 0;
+        }
+        /*.alt-grid [class*="col-"] {padding-left:0;padding-right:0}*/
+        .alt-grid .row {margin-left:0;margin-right:0}
+
+        /* container adjusted */
+        .alt-grid .container {width:100%;max-width:none;padding:0;}
+        .tinggi120{
+            height: 110px;
+        }
+        .trns{background: rgba(255, 255, 255, 0.8) !important;}
+        .mt40{ margin-top: -40px;}
+        .hight70{ height:70px;}
+        .colorhtm{color: #000 !important;}
+        .textwhite{color: #fff !important;  margin: 15px;}
+        .bghijau{background: #353d47;}
+        .borderputih{
+        border-style: solid !important;
+        border: white;
+        border-width: 1px;
+        }
+		.row > [class*="s col-"] {
+		margin-bottom: 0px !important; }
+
+        .padding_button_crud{
+            padding: 0px 2px !important;
+        }
+        .height35{
+            height:  35px;
+        }
+    </style>
+    {% block head%}
+    {% endblock %}
+</head>
+
+<body class="top-navigation" >
+    {% block content %}
+    {% endblock %}
+		 
+
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> -->
+        <script type="text/javascript" src="{% static 'js/jquery-3.1.1.min.js'%}"></script>
+        <script type="text/javascript" src="{% static 'datepick/js/jquery.plugin.js' %}"></script> 
+        <script type="text/javascript" src="{% static 'datepick/js/jquery.datepick.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery.tabledit.js'%}"></script>
+        <script type="text/javascript" src="{% static 'js/date.format.js'%}"></script>
+        <script type="text/javascript" src="{% static 'js/moment.min.js'%}"></script>
+        <!-- A DevExtreme library -->
+        <script type="text/javascript" src="{% static 'dxgrid/dx.all.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/html2canvas.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/bootstrap.min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/bootstrap-switch.min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/jquery.matchHeight-min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/plugins/dataTables/datatables.min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/dataTables.bootstrap.min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/select2.full.min.js'%}"></script>
+		<script type="text/javascript" src="{% static 'js/plugins/datapicker/bootstrap-datepicker.js'%}"></script>
+		
+		<script type="text/javascript" src="{% static 'js/jspdf.min.js'%}"></script>
+		<!-- Javascript -->
+		<script type="text/javascript" src="{% static 'js/app.js'%}"></script>   
+        {% block script %}
+        {% endblock %}
+</body>
+
+</html>

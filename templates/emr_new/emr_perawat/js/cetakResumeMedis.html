@@ -1,0 +1,32 @@
+<script>
+    $(document).ready(function () {
+        $("#btnCetakResume").click(function() {
+            $.ajax({
+            url: host + "/printSuratResumeMedis",
+            method: "GET",
+            data: {
+                'no_transaksi': $("#noTrans").val(),
+
+            },
+            beforeSend: function () {
+                $('#ModalLoading').modal('show');
+                $('#loading_title').html('Proses Cetak..');
+                $('#loading_text').html('Tunggu Sebentar');
+            },
+            complete: function () {
+                $('#ModalLoading').modal('hide');
+            },
+            success: function (datas) {
+                if (datas.success === false) {
+                    alert(datas.message)
+                } else {
+                    window.open(datas.pdf);
+                }
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        })
+        })
+    })
+</script>

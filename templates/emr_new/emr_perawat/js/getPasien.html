@@ -1,0 +1,293 @@
+var kondisi_pasien = '{{kondisi_pasien}}'
+$(document).ready(function () {
+    if (kondisi_pasien == 0) {
+        $('#cabang_all').hide()
+    }
+    $('input[name=search_by]').click(function () {
+        cariPasien(event)
+    })
+    $("#btnFindPasien").click(function () {
+        $('#DxGridModalPasien').modal('show')
+        cariPasien()
+    })
+
+    $('#btnFindPasienId').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        cariPasien()
+    })
+
+});
+
+function getDataPasien(e) {
+    $.ajax({
+        url: host + "/getDataKunjunganPasien",
+        method: "GET",
+        data: {
+            "PasienId": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+            if (datas.length != 0) {
+                $('#noRM').val(datas[0].KD_PASIEN);
+                $('#namaPasien').val(datas[0].NAMAPASIEN);
+                $("#gridPasienRJ").dxDataGrid({
+                    showColumnLines: false,
+                    showRowLines: true,
+                    showBorders: true,
+                    paging: {
+                        pageSize: 500
+                    },
+                    columnAutoWidth: true,
+                    filterRow: {
+                        visible: false
+                    },
+                    searchPanel: {
+                        visible: true
+                    },
+                    dataSource: datas,
+                    selection: {
+                        mode: "single"
+                    },
+                    hoverStateEnabled: true,
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    },
+                    columns: [{
+                            dataField: "KD_ANTRIAN",
+                            width: 60,
+
+                            caption: "Antrian"
+                        },
+                        {
+                            caption: "Loket",
+                            type: "buttons",
+                            width: 75,
+                            buttons: [{
+                                hint: "Panggil",
+                                text: "Panggil",
+                                cssClass: "btn btn-primary btn-sm text-white",
+                                visible(e) {
+                                    if (e.row.data.STATUS_EMR == 1) {
+                                        STATUS_EMR = 1
+                                    } else {
+                                        STATUS_EMR = 0
+                                    }
+                                    return !STATUS_EMR;
+                                },
+                                onClick: function (e) {
+                                    // var no_klinik = $('#no_klinik').val()
+                                    var no_klinik = $("input[name='channel']:checked").val()
+                                    var data = e.row.data;
+                                    TampilDataCPPT(data)
+                                    kode_antrian = data.KD_ANTRIAN
+                                    panggilAntrianPendaftaran(data.KD_ANTRIAN, no_klinik)
+
+                                }
+                            }, ]
+                        },
+                        {
+                            caption: "Periksa",
+                            type: "buttons",
+                            width: 75,
+                            buttons: [{
+                                hint: "Panggil",
+                                text: "Panggil",
+                                cssClass: "btn btn-danger btn-sm text-white",
+                                visible(e) {
+                                    if (e.row.data.STATUS_EMRDR == 1) {
+                                        STATUS_EMRDR = 1
+                                    } else {
+                                        STATUS_EMRDR = 0
+                                    }
+                                    return !STATUS_EMRDR;
+                                },
+                                onClick: function (e) {
+                                    // var no_klinik = $('#no_klinik').val()
+                                    var no_klinik = $("input[name='channel']:checked").val()
+                                    var data = e.row.data;
+                                    TampilDataCPPT(data)
+                                    kode_antrian = data.KD_ANTRIAN
+                                    panggilAntrian(data.KD_ANTRIAN, no_klinik)
+
+                                }
+                            }, ]
+                        },
+                        {
+                            dataField: "TGL_INDO",
+                            width: 80,
+                            caption: "TglPeriksa"
+                        },
+                        {
+                            dataField: "CUSTOMER",
+                            width: 85,
+
+                            caption: "Customer"
+                        },
+                        {
+                            dataField: "KPKD_PASIEN",
+                            width: 85,
+
+                            caption: "Norm"
+                        },
+                        {
+                            dataField: "NO_ASURANSI",
+                            width: 110,
+
+                            caption: "No.BPJS"
+                        },
+                        {
+                            dataField: "NAMAPASIEN",
+                            width: 220,
+                            caption: "Nama Pasien"
+                        },
+                        {
+                            dataField: "FMPKLINIKN",
+                            width: 120,
+                            caption: "Poli"
+                        },
+
+                        {
+                            dataField: "FMDDOKTERN",
+                            width: 120,
+
+                            caption: "Dokter"
+                        },
+                        // {
+                        //     dataField: "KPNO_TRANSAKSI",
+                        //     width: 0,
+
+                        //     caption: "NoTrans"
+                        // },
+
+
+                    ],
+                    onSelectionChanged: function (selectedItems) {
+                        var data = selectedItems.selectedRowsData[0];
+
+                        selectionChangedRaised = true;
+                    },
+
+                    onRowPrepared: function (e) {
+
+                        if (e.rowType == 'data') {
+
+                            var STATUS_EMR = e.data.STATUS_EMR;
+                            var STATUS_EMRDR = e.data.STATUS_EMRDR;
+
+                            if ((parseInt(STATUS_EMR) == 1)) {
+                                e.rowElement.addClass("row-sudah-prw");
+                            }
+                            if (parseInt(STATUS_EMRDR) == 1) {
+                                e.rowElement.addClass("row-sudah");
+                            }
+                        }
+                    },
+                    onRowClick: function (e) {
+                        if (!selectionChangedRaised) {
+                            var dataGrid = e.component;
+                            var keys = dataGrid.getSelectedRowKeys();
+                            dataGrid.deselectRows(keys);
+                        }
+                        selectionChangedRaised = false;
+
+                        var data = e.data;
+                        TampilDataCPPT(data)
+                        getriwayat(data.KPKD_PASIEN)
+                        getFTW(data.KPNO_TRANSAKSI, data.JENIS_KELAMIN)
+
+                    }
+
+                });
+            }
+        }
+    })
+}
+
+function cariPasien() {
+    $("#DxGridDataPasien").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        // searchPanel: {
+        //     visible: true
+        // },
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                var pilihan = $('input[name=search_by]:checked').val();
+                $.ajax({
+                    url: host + "/getPasien",
+                    method: "GET",
+                    data: {
+                        "search_name": $('#search_name').val(),
+                        "search_almt": $('#search_almt').val(),
+                        "search_kdpas": $('#search_kdpas').val(),
+                        'id_bpjs': $('#id_bpjs_pasien').val(),
+                        "search_telp": $('#search_telp').val(),
+                        "pilihan": pilihan,
+                    },
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "KD_PASIEN",
+                caption: "Kode Pasien",
+            },
+            {
+                dataField: "NO_KIP_BPJS",
+                caption: "No BPJS",
+            },
+
+            {
+                dataField: "NAMAPASIEN",
+                caption: "Nama Pasien",
+            },
+            {
+                dataField: "ALAMAT",
+                caption: "Alamat Pasien",
+            },
+            {
+                dataField: "TGL_LAHIR",
+                caption: "TGL_LAHIR",
+                dataType: 'date',
+                width: 120,
+                format: 'dd/MM/yyyy',
+            },
+            {
+                dataField: "NAMA_KELUARGA",
+                caption: "Nama Keluarga",
+            },
+            {
+                dataField: "TELEPON",
+                caption: "Telepon",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#noRM").val(e.data.KD_PASIEN);
+            getDataPasien(e.data.KD_PASIEN);
+            $('#DxGridModalPasien').modal('hide');
+        }
+    });
+}

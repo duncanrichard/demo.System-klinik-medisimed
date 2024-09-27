@@ -473,51 +473,6 @@ def getPanggilAntrian(request):
     return HttpResponse(json_data, content_type="application/json")
 
 
-def cekNoka(request):
-    # -------
-    nomor = request.GET["nomor"]
-    kdCabang = request.session["kdCabang"]
-    BPJS_USERPCARE = request.session["BPJS_USERPCARE"]
-    url_pcare = getattr(
-        env, "URL_PCARE", "https://new-api.bpjs-kesehatan.go.id/pcare-rest-v3.0"
-    )
-    url = url_pcare + "/peserta/noka/" + nomor
-    method = "get"
-    data = Globals().bridgeBPJS(url, method, kdCabang)
-    # print (data)
-    if data["metaData"]["code"] == 401:
-        data = {"status": "gagal", "pesan": data["response"]["message"], "next": 0}
-    if data["metaData"]["code"] == 412:
-        data = {"status": "gagal", "pesan": data["response"]["message"], "next": 0}
-    elif data["metaData"]["code"] != 200:
-        data = {
-            "status": "gagal",
-            "pesan": "Nomor Tidak Valid \n Cek Kembali",
-            "next": 0,
-        }
-    elif data["response"]["aktif"] == False:
-        data = {
-            "status": "gagal",
-            "pesan": 'Nomor Tidak Aktif Karena "' + data["response"]["ketAktif"] + '"',
-            "next": 0,
-        }
-    elif (
-        (data["response"]["kdProviderPst"]["kdProvider"] != BPJS_USERPCARE)
-        and (getattr(env, "NO_FASKES") == "0")
-        and (
-            data["response"]["kdProviderPst"]["kdProvider"]
-            not in getattr(env, "WHITELIST_FASKES", [])
-        )
-    ):
-        data = {
-            "status": "gagal",
-            "pesan": "Nomor BPJS Tidak Terdaftar Di Faskes Tingkat I Ini \n Silahkan Daftar Pasien Umum",
-            "next": 1,
-        }
-
-    json_data = json.dumps(data, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
-
 
 def SP_ALERGI(request):
     kd_pasien = request.POST["kd_pasien"]

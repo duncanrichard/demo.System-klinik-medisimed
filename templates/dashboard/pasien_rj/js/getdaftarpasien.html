@@ -87,6 +87,10 @@ function cariDaftarPasien() {
             $("#idPasien").val(e.data.KPKD_PASIEN);
             $("#no_transaksi").val(e.data.KPNO_TRANSAKSI);
             $('#tgl_periksa').val(e.data.TANGGAL.substr(0, 10));
+            $("#idPoliklinik").val(e.data.KPKD_POLY);
+            $("#namaPoliklinik").val(e.data.FMPKLINIKN);
+            $("#far_kode_dokter").val(e.data.ID_DOKTER);
+            $("#far_nama_dokter").val(e.data.NAMA_DOKTER);
             getDataPasien($("#idPasien").val());
             $('#ModalDaftarRJ').modal('hide');
             $('#nama_pasien').focus()

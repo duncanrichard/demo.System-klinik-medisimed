@@ -1,0 +1,87 @@
+$(document).ready(function () {
+    $('#btn_kyc_ss').click(function () {
+        if ($('#nama_pasien').val().trim().length == 0) {
+            return alert('Nama Pasien tidak boleh kosong!');
+        }
+        if ($('#noKTP').val().trim().length == 0) {
+            return alert('NIK/No.KTP tidak boleh kosong!');
+        }
+
+        // $.get('/views_satu_sehat/getUrlKYC', {
+        $.get('/views_satu_sehat/SrvIndoGetUrlKYC', {
+                'nama': $('#nama_pasien').val(),
+                'nik': $('#noKTP').val()
+            },
+            function (data) {
+                if (data.metadata.code == "200") {
+                    window.open(data.data.url, "MsgPreview_KYC", "width=1360,height=768");
+                } else {
+                    alert(data.metadata.message);
+                }
+            });
+    })
+
+    $('#btnFind1sehat').click(function () {
+        if ($('#noKTP').val().trim().length == 16) {
+
+            // $.get('/views_satu_sehat/getUrlKYC', {
+            $.get('/views_satu_sehat/getIHSPatientNumber', {
+                    'nik': $('#noKTP').val()
+                },
+                function (data) {
+                    $('#nama_pasien').val(data["entry"][0]["resource"]["name"][0]["text"])
+
+                });
+        }
+
+
+    })
+    $('#btnFind1sehatname').click(function () {
+        var jenis_kelamin = ''
+        if ($('#idKelamin').val() == '1') {
+            jenis_kelamin = 'male'
+        } else {
+            jenis_kelamin = 'female'
+        }
+
+        if ($('#nama_pasien').val().trim().length == 0) {
+            return alert('Nama Pasien tidak boleh kosong!');
+        } else if ($('#namaKelamin').val().trim().length == 0) {
+            return alert('nama Kelamin tidak boleh kosong!');
+        } else {
+            // $.get('/views_satu_sehat/getUrlKYC', {
+            $.get('/views_satu_sehat/getIHSPatientName', {
+                    'name': $('#nama_pasien').val(),
+                    'birthdate': $('#tgl_lahir').val(),
+                    'gender': jenis_kelamin
+                },
+                function (data) {
+                    console.log(data)
+                    // $('#alamat').val(data["entry"][0]["resource"]["address"][0]["line"][0])
+                    $('#idKelurahan').val(data["entry"][0]["resource"]["address"][0]["extension"][0]["extension"][3]["valueCode"])
+                    if ($('#idKelurahan').val().trim().length == 0) {
+                        $.ajax({
+                            url: host + "/getidKelurahan",
+                            method: "GET",
+                            data: {
+                                "idKelurahan": $('#idKelurahan').val(),
+                            },
+                            dataType: "json",
+                            success: function (datas) {
+
+                                if (datas.length != 0) {
+                                    $('#idPoliklinik').val(datas[0].FMPKLINIK_ID);
+                                    $('#namaPoliklinik').val(datas[0].FMPKLINIKN);
+                                } else {
+                                    $('#dxGridModalPoliklinik').modal('show');
+                                    cariPoliklinik()
+                                }
+
+                            }
+                        })
+                    }
+                });
+        }
+    })
+
+})

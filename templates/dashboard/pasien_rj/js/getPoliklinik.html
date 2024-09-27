@@ -1,0 +1,107 @@
+$(document).ready(function () {
+    $('#idPoliklinik').keypress(function (e) {
+        // e.preventDefault();
+        e.stopImmediatePropagation();
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if (canAdd == 1) {
+            if (keycode == '13') {
+                if ($("#idPoliklinik").val() != '') {
+                    getDataPoliklinik($("#idPoliklinik").val());
+                } else {}
+            }
+        }
+
+    })
+
+    $('#btnFindPoly').click(function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        $('#dxGridModalPoliklinik').modal('show');
+        cariPoliklinik(event)
+    })
+
+});
+
+function getDataPoliklinik(e) {
+    $.ajax({
+        url: host + "/getDataPoliklinik",
+        method: "GET",
+        data: {
+            "idPoliklinik": e,
+        },
+        dataType: "json",
+        success: function (datas) {
+
+            if (datas.length != 0) {
+                $('#idPoliklinik').val(datas[0].FMPKLINIK_ID);
+                $('#namaPoliklinik').val(datas[0].FMPKLINIKN);
+            } else {
+                $('#dxGridModalPoliklinik').modal('show');
+                cariPoliklinik()
+            }
+
+        }
+    })
+}
+
+function cariPoliklinik() {
+    $("#dxGridPoliklinik").dxDataGrid({
+        showBorders: true,
+        showRowLines: true,
+        columnAutoWidth: true,
+        showColumnLines: false,
+        hoverStateEnabled: true,
+        rowAlternationEnabled: true,
+        paging: {
+            pageSize: 1000
+        },
+        filterRow: {
+            visible: false
+        },
+        searchPanel: {
+            visible: true,
+            text: ''
+        },
+
+
+        dataSource: new DevExpress.data.DataSource({
+            load: function (e) {
+                var deferred = $.Deferred();
+                $.ajax({
+                    url: host + "/getPoliklinik",
+                    method: "GET",
+                    data: {},
+                    success: function (result) {
+                        deferred.resolve(result, {
+                            totalCount: result.length
+                        });
+                    }
+                });
+
+                return deferred.promise();
+            }
+        }),
+        selection: {
+            mode: "single"
+        },
+        columns: [{
+                dataField: "FMPKLINIK_ID",
+                caption: "Kode Poliklinik",
+            },
+            {
+                dataField: "FMPKLINIKN",
+                caption: "Nama Poliklinik",
+            },
+        ],
+        onRowClick: function (e) {
+            $("#idPoliklinik").val(e.data.FMPKLINIK_ID);
+            $("#namaPoliklinik").val(e.data.FMPKLINIKN);
+            $('#dxGridModalPoliklinik').modal('hide');
+        },
+        onContentReady: function (e) {
+            setTimeout(function () {
+                $($('.dx-texteditor-input')[0]).focus()
+            }, 500);
+        },
+    });
+}

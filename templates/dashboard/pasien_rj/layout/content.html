@@ -1,7 +1,23 @@
 <div class="wrapper wrapper-content animated fadeInRight p-1">
 	<div class="col-md-12">
 		<div class="card">
-			<div class="card-header text-center h6 bg-danger font-bold text-white">Pendaftaran Pasien </div>
+			<div class="card-header text-center h6 bg-danger font-bold text-white">
+				<div class="row">
+					<div class="col-md-5">
+						<div style="font-size: 25px;">Pendaftaran Pasien </div>
+					</div>
+					<div class="col-md-5">
+						<div class="well well-sm" style="text-align: center;padding: 3px;">
+							<strong id="rm_terakhir" style="font-size: 25px;">000000</strong>
+						</div>
+					</div>
+					<div class="col-md-2 col-md-offset-1">
+						<div class="well well-sm" style="background-color: #353d41;text-align: center;padding: 3px;">
+							<strong id="member_id" style="font-size: 28px;">Silver</strong>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="card-body" style="background: linear-gradient(to right, #78b5ce, #c4d5db, #355f71);border-radius:
 				5px;padding-bottom:5px;padding-top:5px;">
 				<div class="text-white font-bold justify-content-between">
@@ -107,16 +123,18 @@
 												</div>
 
 											</div>
-											<div class="col-md-2 col-md-offset-1">
-												<div class="well well-sm"
-													style="background-color: #e3be97;text-align: center;padding: 3px;">
-													<strong id="rm_terakhir" style="font-size: 28px;">000000</strong>
-												</div>
-											</div>
-											<div class="col-md-2 col-md-offset-1">
-												<div class="well well-sm"
-													style="background-color: #70b5da;text-align: center;padding: 3px;">
-													<strong id="member_id" style="font-size: 28px;">Silver</strong>
+											<div class="form-group col-md-4">
+												<label class="control-label">no KTP
+												</label>
+												<div class="form-row">
+													<div class="col-md-7">
+														<input id="noKTP" name="noKTP" type="text"
+															class="form-control input-md ">
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-danger btn-xs" id="btnFind1sehat">1 Sht
+														</button>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -346,34 +364,73 @@
 												</div>
 											</div>
 											<div class="col-md-4">
-												<div class=" row">
-													<label class="col-md-4 control-label" style="padding-top:5px">No.
-														Kunjungan</label>
-													<div class="col-md-8">
-														<input id="no_transaksi" name="no_transaksi" type="text"
-															readonly class="form-control input-md ">
+												<div class="row">
+													<label class="col-md-2 control-label"
+														style="padding-top:5px;padding-left:20px">Poli</label>
+													<div class="col-md-2">
+														<input id="idPoliklinik" name="idPoliklinik" type="text"
+															class="form-control input-md" readonly
+															style="padding-left: 0px;padding-right: 0px;">
 													</div>
+													<div class="col-md-6">
+														<input id="namaPoliklinik" name="namaPoliklinik" type="text"
+															class="form-control input-md" readonly
+															style="padding-left: 0px;padding-right: 0px;">
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs" id="btnFindPoly">cari
+														</button>
+													</div>
+
 												</div>
 											</div>
-
 											<div class="col-md-5">
-												<div class=" row">
-													<label class="col-md-4 control-label"
-														style="padding-top:5px">Catatan</label>
-													<div class="col-md-6">
-														<input id="catatan" name="catatan" type="text" 
-															class="form-control input-md ">
+												<div class="row">
+													<label class="col-md-2 control-label"
+														style="padding-top:5px;padding-left:0px">Dokter</label>
+													<div class="col-md-2">
+														<input id="far_kode_dokter" name="far_kode_dokter" type="text"
+															class="form-control input-md" readonly=""
+															style="padding-left: 0px;padding-right: 0px;">
 													</div>
-													<label style="background:#ed55657a;"
-														class="col-md-2 checkbox-inline">
-														<input type="checkbox" id="inlineCheckboxclose"
-															name="inlineCheckboxclose" value="0">Close
-													</label>
+													<div class="col-md-6">
+														<input id="far_nama_dokter" name="far_nama_dokter" type="text"
+															class="form-control input-md"
+															readonlystyle="padding-left: 0px;padding-right: 0px;">
+													</div>
+													<div class="col-md-2">
+														<button class="btn  btn-success btn-xs"
+															id="cari_far_kode_dokter">cari
+														</button>
+													</div>
+
 												</div>
 											</div>
 
 										</div>
-
+										<div class="form-row"
+											style="background-color:#a89393;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
+											<label class="col-md-2 control-label" style="padding-top:5px">No.
+												Kunjungan</label>
+											<div class="col-md-3">
+												<input id="no_transaksi" name="no_transaksi" type="text" readonly
+													style="padding-left: 0px;padding-right: 0px;"
+													class="form-control input-md ">
+											</div>
+											<label class="col-md-2 control-label"
+												style="padding-top:5px">Catatan</label>
+											<div class="col-md-4">
+												<input id="catatan" name="catatan" type="text"
+													class="form-control input-md ">
+											</div>
+											<div class="col-md-1">
+												<label style="background:#ed55657a;padding-top:5px;"
+													class="checkbox-inline">
+													<input type="checkbox" id="inlineCheckboxclose"
+														name="inlineCheckboxclose" value="0">Close
+												</label>
+											</div>
+										</div>
 										<div hidden class="form-row"
 											style="background-color:#f0f0f0;border-radius: 5px;padding-top:5px; border-bottom: 1px solid #ddd">
 											<div class="col-md-6">

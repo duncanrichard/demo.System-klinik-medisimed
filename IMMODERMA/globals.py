@@ -8,6 +8,17 @@ from .settings import DATABASES
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import connection, connections, ProgrammingError, DatabaseError
 from pyreportjasper import JasperPy
+# from datetime import datetime as DTime
+# # bpjs
+# import requests
+# import hashlib
+# import base64
+# import urllib
+# import hmac
+
+# from Crypto.Cipher import AES
+# from Crypto.Util.Padding import pad, unpad
+# import lzstring
 
 class Globals:
 	def generateReportDB(self, input_filename, output_filename, user,param={}, db='', list_format=["pdf"]):
@@ -382,3 +393,5 @@ class Globals:
 			return default
 		else: 
 			return method[key]
+		
+	

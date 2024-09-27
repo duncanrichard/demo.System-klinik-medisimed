@@ -40,6 +40,8 @@ Pendaftaran Pasien
 {% block content %} 
 {% csrf_token %} 
 
+{% include 'dashboard/farmasi/dxgrid/dxGridModalDokter.html'%}
+{% include 'dashboard/pasien_rj/modal/dxGridModalPoliklinik.html'%}
 {% include 'dashboard/sumber/modal/dxGridModalsumber.html'%} 
 {% include 'dashboard/pasien_rj/modal/ModalDaftarRJ.html'%}
 {% include 'dashboard/data_pasien/dxgrid/dxGridModalPasien.html'%}
@@ -73,6 +75,8 @@ Pendaftaran Pasien
 
 <script type="text/javascript">
   
+  {% include 'dashboard/farmasi/js/getDokter.html'%}
+  {% include 'dashboard/pasien_rj/js/getPoliklinik.html' %}
   {% include 'dashboard/pasien_rj/js/getdaftarpasien.html' %}
   {% include 'dashboard/data_pasien/js/getPasien.html' %}
   {% include 'dashboard/data_pasien/js/getCustomer.html' %}
@@ -91,6 +95,7 @@ Pendaftaran Pasien
   {% include 'dashboard/data_pasien/js/getSuku.html' %}
   {% include 'dashboard/data_pasien/js/getBahasa.html' %}
   {% include 'dashboard/pasien_rj/js/init.html' %}
+  {% include 'dashboard/pasien_rj/js/kyc_satusehat.html' %}
 </script>
 {% endblock %}
 

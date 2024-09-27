@@ -4,10 +4,13 @@ from . import master_dokter
 from . import master_perawat
 from . import master_userpriv
 from . import master_voucher
+<<<<<<< Updated upstream
 from . import master_changeuser
 from . import master_cabang
 from . import master_poliklinik
 from pusdokkes import views_satu_sehat
+=======
+>>>>>>> Stashed changes
 
 urlpatterns = [
     url(r'^master_dokter/', include ([
@@ -24,6 +27,7 @@ urlpatterns = [
         url(r'^$',master_userpriv.master_userpriv, name='master_userpriv'),
         url(r'^open_userpriv', master_userpriv.open_userpriv),
         url(r'^aud_userpriv', master_userpriv.aud_userpriv),
+<<<<<<< Updated upstream
         url(r'^getprivelige', master_userpriv.getprivelige),
     ])),
     url(r'^master_changeuser/', include ([
@@ -58,6 +62,9 @@ urlpatterns = [
             ]
         ),
     ),
+=======
+    ])),
+>>>>>>> Stashed changes
     url(r'^master_voucher/', include ([
         url(r'^$',master_voucher.master_voucher, name='master_voucher'),
         url(r'^buka_voucher', master_voucher.buka_voucher),

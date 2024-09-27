@@ -1,3 +1,4 @@
+var klik_kounter = 0;
 var global_KodeTransferApt = 'ADL002'
 var global_NamaTransferApt = 'BIAYA OBAT DAN ALKES'
 

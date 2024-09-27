@@ -342,7 +342,7 @@ $(document).ready(function () {
             kdTacc = "-1";
             alasanTacc = "";
         }
-        
+
         if ($("#noTrans").val().trim().length == 0) {
             return alert("SILAHKAN MEMILIH NO TRANSAKSI!");
         }
@@ -353,43 +353,7 @@ $(document).ready(function () {
                 saveCPPT();
             }
         } else {
-            //KALO TANPA TACC WAJIB CEK ICD10nya bridging
-            if (kdTacc == "-1") {        
-                var kd_penyakit = []
-                    var dataGrid = $("#gridDiagnosaCPPT").dxDataGrid("instance");
-                    for (let i = 0; i < dataGrid.getVisibleRows().length; i++) {
-                        if (dataGrid.getVisibleRows()[i].data.MRPKD_PENYAKIT != '') {
-                            kd_penyakit.push("" + dataGrid.getVisibleRows()[i].data.MRPKD_PENYAKIT)
-                
-                        }
-                    }
-                    $.ajax({
-                        url: host + "/cek_diagnosa_bpjs",
-                        method: "POST",
-                        data: {
-                            "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
-                            "kd_penyakit": JSON.stringify(kd_penyakit),
-                        },
-                        dataType: "json",
-                        success: function (result) {
-                            console.log('result');
-                            console.log(result);
-                            saveCPPT();
-                            {% comment %} if (result['success'] == true) {
-                                $('#layoutTacc').show();
-                                return alert('TACC wajib di ISI!');
-                            }else{
-                                saveCPPT();
-                            }  {% endcomment %}
-                           
-                        }
-                    });
-                
-        
-            }else{
-
-                saveCPPT();
-            }
+            saveCPPT();
         }
         document.documentElement.scrollTop = 0;
     });
@@ -441,8 +405,7 @@ $(document).ready(function () {
         }
     });
     $('.ttv').keypress(function (e) {
-        console.log(e.currentTarget.id);
-        console.log(e.which);
+
         if (e.which != 44) {
 
         } else {
@@ -990,9 +953,6 @@ function TampilDataCPPT(data) {
         $("#inlineCheckboxRujukan").prop('checked', false)
     }
     kode_antrian = data.KD_ANTRIAN
-    if ($("#noAsuransi").val() != '' && bridge_pcare == 0) {
-        getDataPasienBPJS($("#noBPJS").val());
-    }
     NO_TRANSAKSI = $("#noTrans").val();
     getDataCPPT(NO_TRANSAKSI)
     KODEASSESMENT = data.KODEASSESMENT;
@@ -2304,15 +2264,15 @@ function saveCPPT(urlImage1 = null, urlImage2 = null) {
 
         },
         beforeSend: function () {
-            $('#ModalLoading').modal('show');
-            $('#loading_title').html('Proses  simpan dan Bridgging...');
-            $('#loading_text').html('Tunggu Sebentar');
+            // $('#ModalLoading').modal('show');
+            // $('#loading_title').html('Proses  simpan dan Bridgging...');
+            // $('#loading_text').html('Tunggu Sebentar');
         },
         complete: function () {
-            setTimeout(function () {
-                $('#ModalLoading').modal('hide');
-            }, 200);
-            $('#ModalLoading').modal('hide');
+            // setTimeout(function () {
+            //     $('#ModalLoading').modal('hide');
+            // }, 200);
+            // $('#ModalLoading').modal('hide');
         },
         success: function (data) {
             if (data.success) {
@@ -2320,6 +2280,7 @@ function saveCPPT(urlImage1 = null, urlImage2 = null) {
                 getDataCPPT(NO_TRANSAKSI);
                 setGridRawatJalan($('#tglAwal').val(), $('#tglAkhir').val(), $("input[name='sortBy']:checked").val());
                 alert(data.message);
+
             } else {
                 alert(data.message);
             }
@@ -2386,33 +2347,6 @@ function saveCPPT_PERAWAT() {
     })
 }
 
-
-function getDataPasienBPJS(e) {
-    $.ajax({
-        url: host + "/cekNoka",
-        method: "GET",
-        data: {
-            "nomor": e,
-        },
-        dataType: "json",
-        success: function (datas) {
-            if (datas['status'] == 'gagal') {
-                alert(datas['pesan'])
-            } else {
-                if (datas.length != 0) {
-                    if (datas['response']['aktif'] == true) {
-                        $("#inlineCheckboxaktif").prop('checked', true)
-                    } else {
-                        $("#inlineCheckboxaktif").prop('checked', false)
-                    }
-                    $('#inlineCheckboxpstProl').val(datas['response']['pstProl']);
-                    $('#inlineCheckboxPRB').val(datas['response']['pstPrb']);
-                }
-            }
-
-        }
-    })
-}
 
 function panggilAntrianPendaftaran(no_antri, channel) {
     if ($("#no_klinik").val() == '') {

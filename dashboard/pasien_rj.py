@@ -58,6 +58,7 @@ def AUD_PASIENRJ(request):
     TELEPON = request.POST['TELEPON']
     KD_POS = request.POST['KD_POS']
     NO_ASURANSI = request.POST['NO_ASURANSI']
+    NO_PENGENAL = request.POST["NO_PENGENAL"]
     Sumber_id = request.POST['Sumber_id']
     CATATANMEDIK = request.POST['CATATANMEDIK']
     NAMA_KELUARGA = request.POST['NAMA_KELUARGA']
@@ -74,12 +75,14 @@ def AUD_PASIENRJ(request):
 
     TGL_PERIKSA= request.POST['TGL_PERIKSA']
     NO_TRANSAKSI= request.POST['NO_TRANSAKSI']
+    ID_POLIKLINIK = request.POST["ID_POLIKLINIK"]
+    ID_DOKTER = request.POST["ID_DOKTER"]
 
     try:
-        q = "EXEC AUD_KUNJUNGAN_PASIEN  %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
+        q = "EXEC AUD_KUNJUNGAN_PASIEN  %s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
         param = [KD_PASIEN, KD_KELURAHAN, KD_PENDIDIKAN,KD_PEKERJAAN, KD_PERUSAHAAN, NAMAPASIEN, TGL_LAHIR, GOL_DARAH, JENIS_KELAMIN, STATUS_MARITA, 
-                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI, Sumber_id,CATATANMEDIK, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
-                KD_RESELER, USERRS,TGL_PERIKSA,NO_TRANSAKSI,KD_ASAL_CABANG,status_aud]
+                AGAMA,ALAMAT, TELEPON, KD_POS,NO_ASURANSI,NO_PENGENAL, Sumber_id,CATATANMEDIK, NAMA_KELUARGA, TEMPAT_LAHIR, BAHASA, SUKU, EMAIL, 
+                KD_RESELER, USERRS,TGL_PERIKSA,NO_TRANSAKSI,ID_POLIKLINIK,ID_DOKTER,KD_ASAL_CABANG,status_aud]
         # print (q % tuple(param))
         result = Globals().getDataSP(
             q, param,setIndex=2)
@@ -99,13 +102,13 @@ def getDaftarPasien(request):
     idAsal_cabang= request.GET['idAsal_cabang']
 
     if(tipe == 'mutasi_by_bulan'):
-        q = "select top 100  a.KPKD_PASIEN,a.KD_RESELER,a.KPNO_TRANSAKSI,a.KD_CABANG ,b.NAMAPASIEN,b.ALAMAT, convert(varchar, KPTGL_PERIKSA, 23) as TANGGAL "
-        q +="from KUNJUNGANPASIEN a inner join PASIEN b on a.KPKD_PASIEN=b.KD_PASIEN where (KPNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
+        q = "select top 100  a.KPKD_PASIEN,a.KD_RESELER,a.KPNO_TRANSAKSI,a.KD_CABANG ,b.NAMAPASIEN,b.ALAMAT, convert(varchar, KPTGL_PERIKSA, 23) as TANGGAL,a.KPKD_POLY,c.FMPKLINIKN,a.KPKD_DOKTER as ID_DOKTER,d.FMDDOKTERN as NAMA_DOKTER "
+        q +="from KUNJUNGANPASIEN a inner join PASIEN b on a.KPKD_PASIEN=b.KD_PASIEN inner join POLIKLINIK c on a.KPKD_POLY=c.FMPKLINIK_ID inner join DOKTER d on a.KPKD_DOKTER=d.FMDDOKTER_ID where (KPNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
         q += "(NAMAPASIEN like %s) and (YEAR(KPTGL_PERIKSA) = %s) and (MONTH(KPTGL_PERIKSA) = %s) and (a.KD_CABANG = %s) "
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal.year, tanggal.month,idAsal_cabang])
     else:
-        q = "select top 100 a.KPKD_PASIEN,a.KD_RESELER,a.KPNO_TRANSAKSI,a.KD_CABANG ,b.NAMAPASIEN,b.ALAMAT, convert(varchar, KPTGL_PERIKSA, 23) as TANGGAL "
-        q +="from KUNJUNGANPASIEN a inner join PASIEN b on a.KPKD_PASIEN=b.KD_PASIEN  where (KPNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
+        q = "select top 100 a.KPKD_PASIEN,a.KD_RESELER,a.KPNO_TRANSAKSI,a.KD_CABANG ,b.NAMAPASIEN,b.ALAMAT, convert(varchar, KPTGL_PERIKSA, 23) as TANGGAL,a.KPKD_POLY,c.FMPKLINIKN,a.KPKD_DOKTER as ID_DOKTER,d.FMDDOKTERN as NAMA_DOKTER "
+        q +="from KUNJUNGANPASIEN a inner join PASIEN b on a.KPKD_PASIEN=b.KD_PASIEN inner join POLIKLINIK c on a.KPKD_POLY=c.FMPKLINIK_ID inner join DOKTER d on a.KPKD_DOKTER=d.FMDDOKTER_ID where (KPNO_TRANSAKSI like %s) and (KPKD_PASIEN like %s) and "
         q += "(NAMAPASIEN like %s) and (KPTGL_PERIKSA = %s  ) and (a.KD_CABANG = %s) "
         result = Globals().getDataQuery(q, [no_bukti, pasien, nama_pasien, tanggal,idAsal_cabang])
 
@@ -120,5 +123,19 @@ def getHistoricalpasien(request):
     q +="left join RESELER C ON A.KD_RESELER=C.KD_RESELER  "
     q +="WHERE A.KPKD_PASIEN=%s ORDER BY KPTGL_PERIKSA DESC "
     result = Globals().getDataQuery(q, [ pasien])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+def getDataPoliklinik(request):
+    idPoliklinik = request.GET["customerId"]
+    q = "select a.FMPKLINIK_ID,a.FMPKLINIKN,FMPKODEBPJS,KODEASSESMENT from POLIKLINIK a where FMPKLINIK_ID= %s "
+    result = Globals().getDataQuery(q, [idPoliklinik])
+    json_data = json.dumps(result, cls=DjangoJSONEncoder)
+    return HttpResponse(json_data, content_type="application/json")
+
+
+def getPoliklinik(request):
+    q = "select a.FMPKLINIK_ID,a.FMPKLINIKN,FMPKODEBPJS,KODEASSESMENT from POLIKLINIK a "
+    result = Globals().getDataQuery(q)
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

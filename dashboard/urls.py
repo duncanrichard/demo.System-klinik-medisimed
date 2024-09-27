@@ -128,6 +128,10 @@ urlpatterns = [
         url(r'^getDaftarPasien', pasien_rj.getDaftarPasien),
         url(r'^open_sumber', master_sumber.open_sumber),
         url(r'^getHistoricalpasien', pasien_rj.getHistoricalpasien),
+        url(r"^getDataPoliklinik", pasien_rj.getDataPoliklinik),
+        url(r"^getPoliklinik", pasien_rj.getPoliklinik),
+        url(r"^getDataDokter", farmasi.getDataDokter),
+        url(r"^getdokter", farmasi.getdokter),
     ])),
     url(r'^master_produk/', include ([
         url(r'^$',master_produk.master_produk, name='master_produk'),

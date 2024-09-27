@@ -126,6 +126,10 @@ $(document).ready(function () {
         Livetext()
         Cleartext()
         canAdd = 1
+        // default poliyklinik
+        $('#idPoliklinik').val('PK001')
+        $('#namaPoliklinik').val('Klinik Kecantikan')
+
         $('#idAsal_cabang').val("{{request.session.kdCabang}}");
         $('#namaAsal_cabang').val("{{request.session.nama_cabang}}");
     })
@@ -174,6 +178,7 @@ $(document).ready(function () {
                         TELEPON: $("#telepon").val(),
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
+                        NO_PENGENAL: $("#noKTP").val(),
                         Sumber_id: $("#kode_Sumber").val(),
                         CATATANMEDIK: $("#catatan").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
@@ -201,11 +206,21 @@ $(document).ready(function () {
         }
     })
 
-    $("#menu_simpan").click(function () {
-        checkError()
-        if (cekError == true) {
+    $("#menu_simpan").click(async function () {
+        if ($('#far_kode_dokter').val().trim().length == 0) {
+            klik_kounter = 0;
+            return alert('Dokter Wajib di isi!');
+        }
+        // fungsi sycronues
+        const datas = await checkError()
+        if (datas) {
             var result = confirm('Yakin data ingin disimpan?')
             var status_aud = "A"
+            klik_kounter = klik_kounter + 1;
+            if (klik_kounter > 1) {
+                klik_kounter = 0;
+                return alert('transaksi sedang di proses!');
+            }
             if (result) {
                 $.ajax({
                     url: host + "/AUD_PASIENRJ",
@@ -226,6 +241,7 @@ $(document).ready(function () {
                         TELEPON: $("#telepon").val(),
                         KD_POS: $("#kd_pos").val(),
                         NO_ASURANSI: $("#noAsuransi").val(),
+                        NO_PENGENAL: $("#noKTP").val(),
                         Sumber_id: $("#kode_Sumber").val(),
                         CATATANMEDIK: $("#catatan").val(),
                         NAMA_KELUARGA: $("#nama_keluarga").val(),
@@ -236,6 +252,8 @@ $(document).ready(function () {
                         KD_RESELER: $("#idReseler").val(),
                         KD_ASAL_CABANG: "{{request.session.kdCabang}}",
                         TGL_PERIKSA: $("#tgl_periksa").val(),
+                        ID_POLIKLINIK: $("#idPoliklinik").val(),
+                        ID_DOKTER: $("#far_kode_dokter").val(),
                         NO_TRANSAKSI: $("#no_transaksi").val(),
                         status_aud: status_aud,
                         "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
@@ -246,6 +264,7 @@ $(document).ready(function () {
                         $('#no_transaksi').val(e[0].NOMOR_TRANSAKSI);
                         Deathtext()
                         cekRMTerakhir()
+                        klik_kounter = 0;
                         setGridEmpty()
                     }
                 });
@@ -278,7 +297,7 @@ function cekRMTerakhir() {
     })
 }
 
-function checkError() {
+async function checkError() {
     cekError = true;
 
     if ($('#nama_pasien').val() == '') {
@@ -300,6 +319,16 @@ function checkError() {
     if ($('#alamat').val() == '') {
         cekError = false;
         alert('Isi Alamat!')
+    }
+    if ($('#namaPoliklinik').val() == '') {
+        cekError = false;
+        alert('Isi Poliklinik!')
+        return cekError;
+    }
+    if ($('#far_kode_dokter').val() == '') {
+        cekError = false;
+        alert('Isi dokter!')
+        return cekError;
     }
     return cekError;
 }
@@ -349,7 +378,7 @@ function Cleartext() {
     $('#customerId').val('');
     $('#namaPerusahaan').val('');
     $('#noAsuransi').val('');
-
+    $('#noKTP').val('');
     $('#idAgama').val('');
     $('#namaAgama').val('');
     $('#idMarital').val('');
@@ -367,6 +396,11 @@ function Cleartext() {
     $('#catatan').val('');
     $('#member_id').html('');
     $("#inlineCheckboxclose").prop('checked', false)
+
+    $('#idPoliklinik').val('');
+    $('#namaPoliklinik').val('');
+    $('#far_kode_dokter').val('');
+    $('#far_nama_dokter').val('');
 }
 
 function Deathtext() {
@@ -472,6 +506,14 @@ function Deathtext() {
     btnDisable('inlineCheckboxclose')
 
     setReadOnly('catatan')
+    setReadOnly('idPoliklinik')
+    setReadOnly('namaPoliklinik')
+    btnDisable('btnFindPoly')
+
+    setReadOnly('far_kode_dokter')
+    setReadOnly('far_nama_dokter')
+    btnDisable('cari_far_kode_dokter')
+    setReadOnly('noKTP')
 
 }
 
@@ -567,6 +609,9 @@ function Livetext() {
 
     setUnReadOnly('tgl_periksa')
     setUnReadOnly('catatan')
+    btnEnable('btnFindPoly')
+    btnEnable('cari_far_kode_dokter')
+    setUnReadOnly('noKTP')
 
 }
 

@@ -27,13 +27,13 @@ $(document).ready(function () {
     $(".today").val(today)
     $('#tglAwal').val(todays);
     $('#tglAkhir').val(todays);
-    $(".layout_proses").hide();
+    $(".layout_proses").show();
     setGridRawatJalan($('#tglAwal').val(), $('#tglAkhir').val(), $("input[name='sortBy']:checked").val());
     $('#btnproses').click(function () {
         $(".layout_proses").hide();
         $.ajax({
-            url: host + "/SrvIndoProses_satu_sehat",
-            // url: host + "/proses_satu_sehat",
+            // url: host + "/SrvIndoProses_satu_sehat",
+            url: host + "/proses_satu_sehat",
             method: "GET",
             data: {
                 'tglAwal': $('#tglAwal').val(),

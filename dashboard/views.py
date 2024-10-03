@@ -23,7 +23,6 @@ def dashboard(request):
 			request.session['kota_cabang'] = cabang[0]['KOTA']
 			request.session['nama_cabang'] = cabang[0]['PERUSAHAAN']
 			request.session['alamat_cabang'] = cabang[0]['ALAMAT1']
-<<<<<<< Updated upstream
 			request.session["BPJS_CONSID"] = cabang[0]["consid"]
 			request.session["BPJS_SECRET"] = cabang[0]["secret"]
 			request.session["BPJS_USERKEY"] = cabang[0]["bpjs_userkey"]
@@ -36,8 +35,6 @@ def dashboard(request):
 			request.session["Status_DCG"] = int(cabang[0]["Status_DCG"])
 			request.session["bridge_pcare"] = int(cabang[0]["bridge_pcare"])
 			request.session["jns_cabang"] = cabang[0]["jns_cabang"]
-=======
->>>>>>> Stashed changes
 			# parameter
 			q= 'SELECT TOP 1 * FROM PARAMETER WHERE COMPANY=%s '
 			datares = Globals().getDataQuery(q,[kdCabang]);

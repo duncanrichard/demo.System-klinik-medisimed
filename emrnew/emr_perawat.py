@@ -523,11 +523,11 @@ def getEresepTxT(noTrans):
     pengobatan = ""
     result = []
     query = " SELECT a.FDRRESEP, a.FDRBRG_ID, a.FDRBRG_ID2, a.FDRBRGN, a.FDRSATUAN, CAST(a.FDRQTY AS int) AS FDRQTY, CONVERT(varchar(MAX), a.FDRQTYOUT) AS FDRQTYOUT, CONVERT(varchar(MAX), a.FDRDOSIS) AS FDRDOSIS"
-    query += " , a.FDRSIGNAF, CONVERT(varchar(MAX), a.FDRDOSIS2) AS FDRDOSIS2, a.FDRSIGNAS, a.FDRSIGNAW, a.FDRSIGNA, a.FDRBUKTI_ID, ISNULL(CASE WHEN a.FDRSTATUS = 0 THEN ' da ' +(SELECT NAME_BRG FROM BARANG WHERE BARANGC = a.FDRBRG_ID2 and BRANCH=LEFT(b.FHRBUKTI_ID,3)) + ' ' ELSE '' END, '') AS FDRBRGDA"
+    query += " , a.FDRSIGNAF, CONVERT(varchar(MAX), a.FDRDOSIS2) AS FDRDOSIS2, a.FDRSIGNAS, a.FDRSIGNAW, a.FDRSIGNA, a.FDRBUKTI_ID, ISNULL(CASE WHEN a.FDRSTATUS = 0 THEN ' da ' +(SELECT NAME_BRG FROM BARANG WHERE BARANGC = a.FDRBRG_ID2 ) + ' ' ELSE '' END, '') AS FDRBRGDA"
     query += " , b.FHRNO_TRANSAKSI, b.FHRBUKTI_ID, CONVERT(varchar, b.FHRDATE, 20) AS FHRDATE, b.FHRUSER, CONVERT(varchar, b.FHRUPDATE, 20)  AS FHRUPDATE, b.FHRSTATUS, CONVERT(varchar(MAX), c.HJUAL) AS HJUAL, CONVERT(varchar(MAX), a.FDRQTY * c.HJUAL) AS Total"
     query += " FROM ERESEPDOKTERD AS a"
     query += " LEFT JOIN ERESEPDOKTER AS b ON a.FDRBUKTI_ID = b.FHRNO_TRANSAKSI "
-    query += " LEFT JOIN BARANG AS c ON a.FDRBRG_ID = c.BARANGC AND c.BRANCH=LEFT(b.FHRBUKTI_ID,3)"
+    query += " LEFT JOIN BARANG AS c ON a.FDRBRG_ID = c.BARANGC "
     query += " WHERE (b.FHRBUKTI_ID = '{}') AND (a.FDRSTATUS2 IS NOT NULL) AND (a.FDRRACIK_ID = 'NULL')".format(
         noTrans
     )
@@ -556,14 +556,14 @@ def getEresepTxT(noTrans):
         q1 = "Select a.FDRRESEP, FDRBRG_ID, FDRBRGN, FDRSATUAN, FDRQTY, FDRQTYOUT, FDRDOSIS, FDRSIGNAF, FDRDOSIS2, FDRSIGNAS, FDRSIGNAW, FDRSIGNA, FDRBUKTI_ID,"
         q2 = " ISNULL(CASE WHEN a.FDRSTATUS=0 THEN "
         q2 += "' da '"
-        q2 += "+(SELECT NAME_BRG FROM BARANG WHERE BARANGC=a.FDRBRG_ID2 and BRANCH=LEFT(b.FHRBUKTI_ID,3))+' '"
+        q2 += "+(SELECT NAME_BRG FROM BARANG WHERE BARANGC=a.FDRBRG_ID2 )+' '"
         q2 += " ELSE '' END,'') as FDRBRGDA,"
         q2 += " (SELECT TOP 1 CONVERT(varchar(max),FERDKEBQTY2)+' '+FERRACIKDQTYJENIS FROM ERESEPRACIKD WHERE FERRACIKD_ID='{}' AND FERRACIKDBRG_ID=FDRBRG_ID AND FERRACIKDQTY=FDRQTY) as FDRKEB,".format(
             isidataResepRacikH["FDRRACIK_ID"]
         )
         q2 += " b.FHRNO_TRANSAKSI, FHRBUKTI_ID, convert(varchar, FHRDATE, 20) as FHRDATE, FHRUSER,convert(varchar, FHRUPDATE, 20) as FHRUPDATE, FHRSTATUS,c.HJUAL,(a.FDRQTY*c.Hjual) As Total "
         q3 = " from ERESEPDOKTERD a,ERESEPDOKTER b,Barang c "
-        q4 = " where a.FDRSTATUS2 IS NOT NULL and a.FDRRACIK_ID<>'NULL' and a.FDRBUKTI_ID=b.FHRNO_TRANSAKSI and A.FDRBRG_ID=c.barangc and c.BRANCH=LEFT(b.FHRBUKTI_ID,3) and b.FHRBUKTI_ID='{}' AND a.FDRRACIK_ID='{}' ORDER BY FDRRESEP".format(
+        q4 = " where a.FDRSTATUS2 IS NOT NULL and a.FDRRACIK_ID<>'NULL' and a.FDRBUKTI_ID=b.FHRNO_TRANSAKSI and A.FDRBRG_ID=c.barangc  and b.FHRBUKTI_ID='{}' AND a.FDRRACIK_ID='{}' ORDER BY FDRRESEP".format(
             noTrans, isidataResepRacikH["FDRRACIK_ID"]
         )
         query = "{}{}{}{}".format(q1, q2, q3, q4)
@@ -2352,11 +2352,11 @@ def detailResep(request):
     query += " FROM  ERESEPDOKTER AS b "
     query += " LEFT JOIN ERESEPDOKTERD AS a ON b.FHRNO_TRANSAKSI = a.FDRBUKTI_ID "
     query += (
-        " LEFT JOIN BARANG AS c ON a.FDRBRG_ID = c.BARANGC and c.BRANCH= LEFT(%s,3)"
+        " LEFT JOIN BARANG AS c ON a.FDRBRG_ID = c.BARANGC "
     )
     query += " WHERE (b.FHRBUKTI_ID = %s)"
     query += " ORDER BY a.FDRRESEP"
-    result = Globals().getDataQuery(query, [NO_TRANSAKSI, kdCabang, NO_TRANSAKSI])
+    result = Globals().getDataQuery(query, [NO_TRANSAKSI, NO_TRANSAKSI])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -2368,10 +2368,10 @@ def DaftardetailResep(request):
     query = "Select a.FDRRESEP, FDRBRG_ID, FDRBRGN, FDRSATUAN, FDRQTY, FDRDOSIS, FDRSIGNAF, FDRDOSIS2, FDRSIGNAS, FDRSIGNAW, "
     query += "FDRSIGNA, FDRBUKTI_ID, b.PFKODE, PFKETERANGAN,c.HJUAL,(a.FDRQTY*c.Hjual) As Total  "
     query += "from ERESEPPAKETD a inner join ERESEPPAKET b on a.FDRBUKTI_ID=b.PFKODE  "
-    query += "inner join Barang c on A.FDRBRG_ID=c.barangc and c.BRANCH=%s "
+    query += "inner join Barang c on A.FDRBRG_ID=c.barangc  "
     query += "where b.PFKODE=%s and b.PFKDDOKTER=%s ORDER BY FDRRESEP "
 
-    result = Globals().getDataQuery(query, [kdCabang, NO_TRANSAKSI, DOKTER_ID])
+    result = Globals().getDataQuery(query, [ NO_TRANSAKSI, DOKTER_ID])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
@@ -2528,7 +2528,7 @@ def getIdDataBarang(request):
         q += " when %s=2 then 1  when %s=3 then 1 "
         q += " when %s=4 then 0 else 0 end) AS STATUS, "
         q += " TTYPEC,B.STATUSPRODUK,A.SATKEKUATAN,A.KEKUATAN  "
-        q += " FROM BARANG A INNER JOIN PRODUKOBAT B ON  A.TTYPEC=B.PRD_ID where AKTIF<>1 and  BARANGC=%s and A.BRANCH=%s order by BARANGC "
+        q += " FROM BARANG A INNER JOIN PRODUKOBAT B ON  A.TTYPEC=B.PRD_ID where AKTIF<>1 and  BARANGC=%s  order by BARANGC "
         result = Globals().getDataQuery(
             q,
             [
@@ -2564,7 +2564,7 @@ def getIdDataBarang(request):
         q += " when %s=2 then 1  when %s=3 then 1 "
         q += " when %s=4 then 0 else 0 end) AS STATUS, "
         q += " TTYPEC,B.STATUSPRODUK,A.SATKEKUATAN,KEKUATAN  "
-        q += " FROM BARANG A INNER JOIN PRODUKOBAT B ON  A.TTYPEC=B.PRD_ID where AKTIF<>1 and  BARANGC=%s or BARCODE=%s and A.BRANCH=%s order by BARANGC "
+        q += " FROM BARANG A INNER JOIN PRODUKOBAT B ON  A.TTYPEC=B.PRD_ID where AKTIF<>1 and  BARANGC=%s or BARCODE=%s  order by BARANGC "
         result = Globals().getDataQuery(
             q,
             [
@@ -2586,7 +2586,6 @@ def getIdDataBarang(request):
                 tarifobat,
                 kode,
                 kode,
-                cabang_id,
             ],
         )
 
@@ -2622,7 +2621,7 @@ def getDataBarang(request):
         q += " when %s=4 then 0 else 0 end) AS STATUS, "
         q += " TTYPEC,B.STATUSPRODUK,A.SATKEKUATAN,KEKUATAN  "
         q += " FROM BARANG A INNER JOIN PRODUKOBAT B ON  A.TTYPEC=B.PRD_ID "
-        q += " where AKTIF<>1 and name_brg like %s and A.BRANCH=%s order by BARANGC "
+        q += " where AKTIF<>1 and name_brg like %s  order by BARANGC "
 
         result = Globals().getDataQuery(
             q,
@@ -2644,7 +2643,7 @@ def getDataBarang(request):
                 tarifobat,
                 tarifobat,
                 nama,
-                cabang_id,
+
             ],
         )
 
@@ -2660,8 +2659,8 @@ def getHistoryBarang(request):
     q += "(isnull(b.FSBPENJUALAN,0)+isnull(b.FSBRPEMBELIAN,0)+isnull(b.FSBLAIN_KELUAR,0)+isnull(b.FSBKANVAS,0))) AS INT) AS STOK "
     q += "from BARANG a left join SALDOBARANG b on "
     q += "a.BARANGC = b.FSBBRG_ID  left join WAREHOUSE c on "
-    q += "b.FSBWH_ID=c.WH_ID where a.BARANGC =  %s AND a.BRANCH =  %s "
-    result = Globals().getDataQuery(q, [kode_barang, cabang_id])
+    q += "b.FSBWH_ID=c.WH_ID where a.BARANGC =  %s  "
+    result = Globals().getDataQuery(q, [kode_barang])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 

@@ -70,12 +70,14 @@ function cari_paketpasien() {
         rowAlternationEnabled: true,
         showBorders: true,
         paging: {
-            pageSize: 1000
+            pageSize: 100000
         },
         filterRow: {
             visible: false
         },
-        //searchPanel : { visible: true },
+        searchPanel: {
+            visible: true
+        },
         dataSource: new DevExpress.data.DataSource({
             load: function (values) {
                 var deferred = $.Deferred();
@@ -167,7 +169,9 @@ function cari_paketpasien() {
         filterRow: {
             visible: false
         },
-        //searchPanel : { visible: true },
+        searchPanel: {
+            visible: true
+        },
         dataSource: new DevExpress.data.DataSource({
             load: function (values) {
                 var deferred = $.Deferred();

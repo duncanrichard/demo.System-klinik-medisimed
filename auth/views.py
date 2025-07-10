@@ -80,8 +80,8 @@ def login(request):
             # print (request.session['user_id'])
 
             # DELETE STATIC FILES
-            Globals().deleteFiles()
-            Globals().deleteFiles("/DEBUG/")
+            # Globals().deleteFiles()
+            # Globals().deleteFiles("/DEBUG/")
 
 
             

@@ -1,5 +1,5 @@
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 
 import os
 import json

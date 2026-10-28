@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import re_path as url
 from django.urls import include, path
 from . import emr_perawat
 from dashboard import data_pasien

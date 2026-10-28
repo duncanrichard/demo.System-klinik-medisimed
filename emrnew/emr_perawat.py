@@ -6,9 +6,9 @@ from urllib.parse import unquote
 from inspect import getmembers
 from pprint import pprint
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 from datetime import datetime
-from django.conf.urls import url, include
+from django.urls import include, re_path as url
 import requests
 import os
 import datetime
@@ -1855,7 +1855,7 @@ def printSuratKeteranganSehat(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(
@@ -1881,7 +1881,7 @@ def printSuratRTW(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(
@@ -1907,7 +1907,7 @@ def printSuratResumeMedis(request):
     # if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
     #     logo_url = os.path.abspath(
     #         os.path.dirname(__name__)
-    #     ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+    #     ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     # else:
     #     logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(
@@ -1933,7 +1933,7 @@ def printSuratFTW(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(
@@ -1961,10 +1961,10 @@ def printSuratKeteranganDokter(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
         TTD_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["TTD"])
+        ) + "/static/img/logo/{}".format(cabang[0]["TTD"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
         TTD_url = "static/img/logo/{}".format(cabang[0]["TTD"])
@@ -1995,7 +1995,7 @@ def printSuratRujukanDPP(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     kdCabang = cabang[0]["CABANG_ID"]
@@ -2031,7 +2031,7 @@ def printSuratPenolakanTindakanKedokteran(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(
@@ -2057,7 +2057,7 @@ def printSuratPersetujuanTindakanKedokteran(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(
@@ -2083,7 +2083,7 @@ def printSuratKematianKlinik(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
 
@@ -2171,12 +2171,12 @@ def printSuratRujukanPCAREBPJS(request):
         no_trans = Globals().input(request.GET, "no_transaksi")
         noRujukan = Globals().input(request.GET, "noRujukan")
         logo_url = (
-            os.path.abspath(os.path.dirname(__name__)) + "\static\img\logobpjs.png"
+            os.path.abspath(os.path.dirname(__name__)) + "/static/img/logobpjs.png"
         )
 
         if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
             logo_url = (
-                os.path.abspath(os.path.dirname(__name__)) + "\static\img\logobpjs.png"
+                os.path.abspath(os.path.dirname(__name__)) + "/static/img/logobpjs.png"
             )
         else:
             logo_url = (
@@ -2320,10 +2320,10 @@ def printCPPT(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         logo_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
         TTD_url = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["TTD"])
+        ) + "/static/img/logo/{}".format(cabang[0]["TTD"])
     else:
         logo_url = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
         TTD_url = "static/img/logo/{}".format(cabang[0]["TTD"])
@@ -2476,7 +2476,7 @@ def printResepDokter(request):
     if getattr(env, "JDBC_MODE", "WINDOWS") == "WINDOWS":
         file_logo = os.path.abspath(
             os.path.dirname(__name__)
-        ) + "\static\img\logo\{}".format(cabang[0]["logoKlinik"])
+        ) + "/static/img/logo/{}".format(cabang[0]["logoKlinik"])
     else:
         file_logo = "static/img/logo/{}".format(cabang[0]["logoKlinik"])
     pdf_file = Globals().generateReportDB(

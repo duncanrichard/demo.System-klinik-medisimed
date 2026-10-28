@@ -1,5 +1,5 @@
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 
 import os
 import json
@@ -1457,7 +1457,7 @@ def printSuratRujukanPCAREBPJS(request):
         noRujukan = Globals().input(request.GET, "noRujukan")
         jenisPrint = Globals().input(request.GET, "jenisPrint")
         logo_url = (
-            os.path.abspath(os.path.dirname(__name__)) + "\static\img\logobpjs.png"
+            os.path.abspath(os.path.dirname(__name__)) + "/static/img/logobpjs.png"
         )
 
         fktp = "{} ({})".format(
@@ -1730,7 +1730,7 @@ def printSuratKunjunganPCAREBPJS(request):
         noRujukan = Globals().input(request.GET, "noRujukan")
         jenisPrint = Globals().input(request.GET, "jenisPrint")
         logo_url = (
-            os.path.abspath(os.path.dirname(__name__)) + "\static\img\logobpjs.png"
+            os.path.abspath(os.path.dirname(__name__)) + "/static/img/logobpjs.png"
         )
 
         fktp = "{} ({})".format(nmProvider, kdProvider)
@@ -1916,7 +1916,7 @@ def printSuratSPPPCAREBPJS(request):
         no_trans = Globals().input(request.GET, "no_transaksi")
         noRujukan = Globals().input(request.GET, "noRujukan")
         logo_url = (
-            os.path.abspath(os.path.dirname(__name__)) + "\static\img\logobpjs.png"
+            os.path.abspath(os.path.dirname(__name__)) + "/static/img/logobpjs.png"
         )
 
         cursorKunjunganKlinikBrd = connection.cursor()
@@ -1983,7 +1983,7 @@ def printSuratSPPPCAREBPJS(request):
 
         jenisPelayanan = data["tkp"]["nmTkp"]
         subReport = (
-            os.path.abspath(os.path.dirname(__name__)) + "\jrxml\ListNonKapitasi.jasper"
+            os.path.abspath(os.path.dirname(__name__)) + "/jrxml/ListNonKapitasi.jasper"
         )
         inputan = {
             "noRujukan": noRujukan,

@@ -17,7 +17,7 @@ from django.db import IntegrityError
 
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 import os
 import json
 from django.conf import settings
@@ -25,7 +25,7 @@ import decimal
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import DatabaseError
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 
 # Create your views here.
 import hmac

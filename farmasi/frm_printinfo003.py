@@ -6,7 +6,7 @@ from urllib.parse import unquote
 from inspect import getmembers
 from pprint import pprint
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 from datetime import datetime
 
 def frm_printinfo003(request):

@@ -1,6 +1,6 @@
 from django.template.response import TemplateResponse
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.db import connection
 # from .form import PabrikanForm, SupplierForm
 import datetime
@@ -9,6 +9,7 @@ import json
 from django.core import serializers
 from django.db import transaction
 from django.db import IntegrityError
+from django.views.decorators.http import require_POST
 # from privilege.models import PrivilegeModul
 from IMMODERMA.globals import Globals
 from pprint import pprint
@@ -27,15 +28,16 @@ def menu(request):
 	# Check Session
 	# Code
 	if(Globals().isLogin(request)):
-		q1 = "select id,name,icon,url from (select * from PRIVILEGE_MODUL where USER_PRIV = 'FISIOTERAPI') as x right join PROPERTIES_MENU on x.MENU_PRIV=id where x.MENU_PRIV is null;"
-		q2 = "select id,name,icon,url from PRIVILEGE_MODUL inner join PROPERTIES_MENU on MENU_PRIV=id and USER_PRIV = 'FISIOTERAPI';"
+		privilege = request.session['user_priv']
+		q1 = "select id,name,icon,url from (select * from PRIVILEGE_MODUL where USER_PRIV = %s) as x right join PROPERTIES_MENU on x.MENU_PRIV=id where x.MENU_PRIV is null;"
+		q2 = "select id,name,icon,url from PRIVILEGE_MODUL inner join PROPERTIES_MENU on MENU_PRIV=id and USER_PRIV = %s;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
 
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [privilege])
+		selected=Globals().getDataQuery(q2, [privilege])
 		user_priv=Globals().getDataQuery(q3)
 
-		response = render(request, 'privilege/menus/base.html', {"selecteds": selected, "unselecteds":unselected, "user_privs":user_priv})
+		response = render(request, 'privilege/menus/base.html', {"selecteds": selected, "unselecteds":unselected, "user_privs":user_priv, "privilege": privilege})
 		response['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
 		return response
 	else:
@@ -45,12 +47,15 @@ def menu_priv(request):
 	# Check Session
 	# Code
 	if(Globals().isLogin(request)):
-		q1 = "select id,name,icon,url from (select * from PRIVILEGE_MODUL where USER_PRIV = '"+request.GET['menu_user']+"') as x right join PROPERTIES_MENU on x.MENU_PRIV=id where x.MENU_PRIV is null;"
-		q2 = "select id,name,icon,url from PRIVILEGE_MODUL inner join PROPERTIES_MENU on MENU_PRIV=id and USER_PRIV = '"+request.GET['menu_user']+"';"
+		privilege = request.GET.get('menu_user')
+		if not privilege:
+			return JsonResponse({"detail": "Parameter menu_user wajib diisi."}, status=400)
+		q1 = "select id,name,icon,url from (select * from PRIVILEGE_MODUL where USER_PRIV = %s) as x right join PROPERTIES_MENU on x.MENU_PRIV=id where x.MENU_PRIV is null;"
+		q2 = "select id,name,icon,url from PRIVILEGE_MODUL inner join PROPERTIES_MENU on MENU_PRIV=id and USER_PRIV = %s;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
 
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [privilege])
+		selected=Globals().getDataQuery(q2, [privilege])
 		user_priv=Globals().getDataQuery(q3)
 
 		# datane.get('selecteds').append(selected)
@@ -63,20 +68,22 @@ def menu_priv(request):
 	else:
 		return redirect('/login')
 
+@require_POST
 def menu_post(request):
 	if(Globals().isLogin(request)):
-		PrivilegeModul.objects.filter(user_priv=request.POST['priv']).delete()
+		privilege = request.POST.get('priv')
+		if not privilege:
+			return JsonResponse({"detail": "Parameter priv wajib diisi."}, status=400)
 
-		for rule in request.POST.getlist('rules[]'):
-			data = PrivilegeModul(user_priv=request.POST['priv'],menu_priv=rule)
-			data.save()
+		with transaction.atomic():
+			Globals().executeQuery("DELETE FROM PRIVILEGE_MODUL WHERE USER_PRIV = %s", [privilege])
+			for rule in request.POST.getlist('rules[]'):
+				Globals().executeQuery(
+					"INSERT INTO PRIVILEGE_MODUL (USER_PRIV, MENU_PRIV) VALUES (%s, %s)",
+					[privilege, rule],
+				)
 
-		response = json.dumps({
-			"success": True,
-			"message": "success",
-		})
-
-		return HttpResponse(response, content_type="application/json")
+		return JsonResponse({"success": True, "message": "success"})
 	else:
 		return redirect('/login')
 
@@ -117,16 +124,17 @@ def navbars_priv(request):
 	# Check Session
 	# Code
 	if(Globals().isLogin(request)):
-
-		q1 = "SELECT B.id, B.name, B.parent, B.link, B.submodul FROM (SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"') AS A RIGHT JOIN (SELECT * FROM PROPERTIES_NAVBAR WHERE modul = '"+request.GET['modul_priv']+"') as B ON A.NAVBAR_PRIV = B.id WHERE A.NAVBAR_PRIV IS NULL AND B.submodul IS NULL"
-		q2 = "SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV, B.submodul FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"'  AND B.submodul is null;"
+		user_priv = request.GET['user_priv']
+		modul_priv = request.GET['modul_priv']
+		q1 = "SELECT B.id, B.name, B.parent, B.link, B.submodul FROM (SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s) AS A RIGHT JOIN (SELECT * FROM PROPERTIES_NAVBAR WHERE modul = %s) as B ON A.NAVBAR_PRIV = B.id WHERE A.NAVBAR_PRIV IS NULL AND B.submodul IS NULL"
+		q2 = "SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV, B.submodul FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul is null;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
-		q5 = "SELECT distinct submodul FROM PROPERTIES_NAVBAR where submodul is not null and modul = '"+request.GET['modul_priv']+"';"
+		q5 = "SELECT distinct submodul FROM PROPERTIES_NAVBAR where submodul is not null and modul = %s;"
 
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [user_priv, modul_priv, modul_priv])
+		selected=Globals().getDataQuery(q2, [user_priv, modul_priv])
 		user_priv=Globals().getDataQuery(q3)
-		submodul_priv=Globals().getDataQuery(q5)
+		submodul_priv=Globals().getDataQuery(q5, [modul_priv])
 
 
 		response = json.dumps({'selecteds':selected, 
@@ -139,15 +147,16 @@ def navbars_priv(request):
 	else:
 		return redirect('/login')
 
+@require_POST
 def navbars_post(request):
 
 	if(Globals().isLogin(request)):
-		delete_query = "DELETE FROM PRIVILEGE_NAVBAR WHERE USER_PRIV = '"+request.POST['user_priv']+"' AND modul = '"+request.POST['modul_priv']+"' AND submodul IS NULL"
-		Globals().executeQuery(delete_query)
-
-		for rule in request.POST.getlist('rules[]'):
-			query = "insert into PRIVILEGE_NAVBAR (USER_PRIV, NAVBAR_PRIV, modul) values ('"+request.POST['user_priv']+"','"+rule+"','"+request.POST['modul_priv']+"');"
-			Globals().executeQuery(query)
+		user_priv = request.POST['user_priv']
+		modul_priv = request.POST['modul_priv']
+		with transaction.atomic():
+			Globals().executeQuery("DELETE FROM PRIVILEGE_NAVBAR WHERE USER_PRIV = %s AND modul = %s AND submodul IS NULL", [user_priv, modul_priv])
+			for rule in request.POST.getlist('rules[]'):
+				Globals().executeQuery("INSERT INTO PRIVILEGE_NAVBAR (USER_PRIV, NAVBAR_PRIV, modul) VALUES (%s, %s, %s)", [user_priv, rule, modul_priv])
 
 		response = json.dumps({
 			"success": True,
@@ -163,15 +172,18 @@ def subnavbars_priv(request):
 	# Code
 	if(Globals().isLogin(request)):
 
-		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"' AND B.submodul = '"+request.GET['submodul_priv']+"') AS A RIGHT JOIN (SELECT * FROM PROPERTIES_NAVBAR WHERE modul = '"+request.GET['modul_priv']+"' AND submodul = '"+request.GET['submodul_priv']+"') as B ON A.NAVBAR_PRIV = B.id WHERE A.NAVBAR_PRIV IS NULL"
-		q2 = "SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"' AND B.submodul = '"+request.GET['submodul_priv']+"';"
+		user_priv = request.GET['user_priv']
+		modul_priv = request.GET['modul_priv']
+		submodul = request.GET['submodul_priv']
+		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul = %s) AS A RIGHT JOIN (SELECT * FROM PROPERTIES_NAVBAR WHERE modul = %s AND submodul = %s) as B ON A.NAVBAR_PRIV = B.id WHERE A.NAVBAR_PRIV IS NULL"
+		q2 = "SELECT B.id, B.name, B.parent, B.link, A.NAVBAR_PRIV FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul = %s;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
-		q5 = "SELECT distinct submodul FROM PROPERTIES_NAVBAR where submodul is not null and modul = '"+request.GET['modul_priv']+"';"
+		q5 = "SELECT distinct submodul FROM PROPERTIES_NAVBAR where submodul is not null and modul = %s;"
 
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [user_priv, modul_priv, submodul, modul_priv, submodul])
+		selected=Globals().getDataQuery(q2, [user_priv, modul_priv, submodul])
 		user_priv=Globals().getDataQuery(q3)
-		submodul_priv=Globals().getDataQuery(q5)
+		submodul_priv=Globals().getDataQuery(q5, [modul_priv])
 
 		response = json.dumps({'selecteds':selected, 
 							 'unselecteds':unselected,
@@ -183,15 +195,17 @@ def subnavbars_priv(request):
 	else:
 		return redirect('/login')
 
+@require_POST
 def subnavbars_post(request):
 	if(Globals().isLogin(request)):
 
-		delete_query = "DELETE FROM PRIVILEGE_NAVBAR WHERE USER_PRIV = '"+request.POST['user_priv']+"' AND modul = '"+request.POST['modul_priv']+"' AND submodul = '"+request.POST['submodul_priv']+"'"
-		Globals().executeQuery(delete_query)
-
-		for rule in request.POST.getlist('rules[]'):
-			query = "insert into PRIVILEGE_NAVBAR (USER_PRIV, NAVBAR_PRIV, modul, submodul) values ('"+request.POST['user_priv']+"','"+rule+"','"+request.POST['modul_priv']+"','"+request.POST['submodul_priv']+"');"
-			Globals().executeQuery(query)
+		user_priv = request.POST['user_priv']
+		modul_priv = request.POST['modul_priv']
+		submodul = request.POST['submodul_priv']
+		with transaction.atomic():
+			Globals().executeQuery("DELETE FROM PRIVILEGE_NAVBAR WHERE USER_PRIV = %s AND modul = %s AND submodul = %s", [user_priv, modul_priv, submodul])
+			for rule in request.POST.getlist('rules[]'):
+				Globals().executeQuery("INSERT INTO PRIVILEGE_NAVBAR (USER_PRIV, NAVBAR_PRIV, modul, submodul) VALUES (%s, %s, %s, %s)", [user_priv, rule, modul_priv, submodul])
 
 		response = json.dumps({
 			"success": True,
@@ -228,13 +242,15 @@ def actionbars_priv(request):
 	# Code
 	if(Globals().isLogin(request)):
 
-		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT * FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"') AS A RIGHT JOIN (SELECT * FROM PROPERTIES_NAVBAR WHERE modul = '"+request.GET['modul_priv']+"') as B ON A.NAVBAR_PRIV = B.id WHERE A.NAVBAR_PRIV IS NULL"
-		q2 = "SELECT * FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"';"
+		user_priv = request.GET['user_priv']
+		modul_priv = request.GET['modul_priv']
+		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT * FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s) AS A RIGHT JOIN (SELECT * FROM PROPERTIES_NAVBAR WHERE modul = %s) as B ON A.NAVBAR_PRIV = B.id WHERE A.NAVBAR_PRIV IS NULL"
+		q2 = "SELECT * FROM PRIVILEGE_NAVBAR AS A RIGHT JOIN PROPERTIES_NAVBAR AS B ON A.NAVBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
 
 
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [user_priv, modul_priv, modul_priv])
+		selected=Globals().getDataQuery(q2, [user_priv, modul_priv])
 		user_priv=Globals().getDataQuery(q3)
 
 		response = json.dumps({'selecteds':selected, 
@@ -246,15 +262,15 @@ def actionbars_priv(request):
 	else:
 		return redirect('/login')
 
+@require_POST
 def actionbars_post(request):
 	if(Globals().isLogin(request)):
 
-		delete_query = "DELETE FROM PRIVILEGE_NAVBAR WHERE USER_PRIV = '"+request.POST['user_priv']+"'"
-		Globals().executeQuery(delete_query)
-
-		for rule in request.POST.getlist('rules[]'):
-			query = "insert into PRIVILEGE_NAVBAR (USER_PRIV, NAVBAR_PRIV) values ('"+request.POST['user_priv']+"','"+rule+"');"
-			Globals().executeQuery(query)
+		user_priv = request.POST['user_priv']
+		with transaction.atomic():
+			Globals().executeQuery("DELETE FROM PRIVILEGE_NAVBAR WHERE USER_PRIV = %s", [user_priv])
+			for rule in request.POST.getlist('rules[]'):
+				Globals().executeQuery("INSERT INTO PRIVILEGE_NAVBAR (USER_PRIV, NAVBAR_PRIV) VALUES (%s, %s)", [user_priv, rule])
 
 		response = json.dumps({
 			"success": True,
@@ -295,14 +311,16 @@ def menubars_priv(request):
 	# Code
 	if(Globals().isLogin(request)):
 
-		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"' AND B.submodul is null) AS A RIGHT JOIN (SELECT * FROM PROPERTIES_MENUBAR WHERE modul = '"+request.GET['modul_priv']+"' AND submodul is null) as B ON A.MENUBAR_PRIV = B.id WHERE A.MENUBAR_PRIV IS NULL"
-		q2 = "SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"' AND B.submodul is null;"
+		user_priv = request.GET['user_priv']
+		modul_priv = request.GET['modul_priv']
+		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul is null) AS A RIGHT JOIN (SELECT * FROM PROPERTIES_MENUBAR WHERE modul = %s AND submodul is null) as B ON A.MENUBAR_PRIV = B.id WHERE A.MENUBAR_PRIV IS NULL"
+		q2 = "SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul is null;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
 
 		q5 = "SELECT distinct submodul FROM PROPERTIES_MENUBAR where submodul is not null"
 
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [user_priv, modul_priv, modul_priv])
+		selected=Globals().getDataQuery(q2, [user_priv, modul_priv])
 		user_priv=Globals().getDataQuery(q3)
 		submodul_priv=Globals().getDataQuery(q5)
 		
@@ -321,17 +339,20 @@ def submenubars_priv(request):
 	# Code
 	if(Globals().isLogin(request)):
 
-		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"' AND B.submodul = '"+request.GET['submodul_priv']+"') AS A RIGHT JOIN (SELECT * FROM PROPERTIES_MENUBAR WHERE modul = '"+request.GET['modul_priv']+"' AND submodul = '"+request.GET['submodul_priv']+"') as B ON A.MENUBAR_PRIV = B.id WHERE A.MENUBAR_PRIV IS NULL"
-		q2 = "SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = '"+request.GET['user_priv']+"' AND B.modul = '"+request.GET['modul_priv']+"' AND B.submodul = '"+request.GET['submodul_priv']+"';"
+		user_priv = request.GET['user_priv']
+		modul_priv = request.GET['modul_priv']
+		submodul = request.GET['submodul_priv']
+		q1 = "SELECT B.id, B.name, B.parent, B.link FROM (SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul = %s) AS A RIGHT JOIN (SELECT * FROM PROPERTIES_MENUBAR WHERE modul = %s AND submodul = %s) as B ON A.MENUBAR_PRIV = B.id WHERE A.MENUBAR_PRIV IS NULL"
+		q2 = "SELECT B.id, B.name, B.parent, B.link, A.MENUBAR_PRIV FROM PRIVILEGE_MENUBAR AS A RIGHT JOIN PROPERTIES_MENUBAR AS B ON A.MENUBAR_PRIV = B.id WHERE A.USER_PRIV = %s AND B.modul = %s AND B.submodul = %s;"
 		q3 = "select distinct USER_PRIV from USERSPRIV;"
 
-		q5 = "SELECT distinct submodul FROM PROPERTIES_MENUBAR where submodul is not null and modul = '"+request.GET['modul_priv']+"';"
+		q5 = "SELECT distinct submodul FROM PROPERTIES_MENUBAR where submodul is not null and modul = %s;"
 
 		
-		unselected =Globals().getDataQuery(q1) 
-		selected=Globals().getDataQuery(q2)
+		unselected =Globals().getDataQuery(q1, [user_priv, modul_priv, submodul, modul_priv, submodul])
+		selected=Globals().getDataQuery(q2, [user_priv, modul_priv, submodul])
 		user_priv=Globals().getDataQuery(q3)
-		submodul_priv=Globals().getDataQuery(q5)
+		submodul_priv=Globals().getDataQuery(q5, [modul_priv])
 
 		response = json.dumps({'selecteds':selected, 
 							 'unselecteds':unselected,
@@ -343,15 +364,16 @@ def submenubars_priv(request):
 	else:
 		return redirect('/login')
 
+@require_POST
 def menubars_post(request):
 	if(Globals().isLogin(request)):
 
-		delete_query = "DELETE FROM PRIVILEGE_MENUBAR WHERE USER_PRIV = '"+request.POST['user_priv']+"' AND modul = '"+request.POST['modul_priv']+"' AND submodul IS NULL"
-		Globals().executeQuery(delete_query)
-
-		for rule in request.POST.getlist('rules[]'):
-			query = "insert into PRIVILEGE_MENUBAR (USER_PRIV, MENUBAR_PRIV, modul) values ('"+request.POST['user_priv']+"','"+rule+"','"+request.POST['modul_priv']+"');"
-			Globals().executeQuery(query)
+		user_priv = request.POST['user_priv']
+		modul_priv = request.POST['modul_priv']
+		with transaction.atomic():
+			Globals().executeQuery("DELETE FROM PRIVILEGE_MENUBAR WHERE USER_PRIV = %s AND modul = %s AND submodul IS NULL", [user_priv, modul_priv])
+			for rule in request.POST.getlist('rules[]'):
+				Globals().executeQuery("INSERT INTO PRIVILEGE_MENUBAR (USER_PRIV, MENUBAR_PRIV, modul) VALUES (%s, %s, %s)", [user_priv, rule, modul_priv])
 
 		response = json.dumps({
 			"success": True,
@@ -362,16 +384,17 @@ def menubars_post(request):
 	else:
 		return redirect('/login')
 
+@require_POST
 def submenubars_post(request):
 	if(Globals().isLogin(request)):
 
-		delete_query = "DELETE FROM PRIVILEGE_MENUBAR WHERE USER_PRIV = '"+request.POST['user_priv']+"' AND modul = '"+request.POST['modul_priv']+"' AND submodul = '"+request.POST['submodul_priv']+"'"
-		Globals().executeQuery(delete_query)
-
-		for rule in request.POST.getlist('rules[]'):
-			# print("hasil "+rule)
-			query = "insert into PRIVILEGE_MENUBAR (USER_PRIV, MENUBAR_PRIV, modul, submodul) values ('"+request.POST['user_priv']+"','"+rule+"','"+request.POST['modul_priv']+"','"+request.POST['submodul_priv']+"');"
-			Globals().executeQuery(query)
+		user_priv = request.POST['user_priv']
+		modul_priv = request.POST['modul_priv']
+		submodul = request.POST['submodul_priv']
+		with transaction.atomic():
+			Globals().executeQuery("DELETE FROM PRIVILEGE_MENUBAR WHERE USER_PRIV = %s AND modul = %s AND submodul = %s", [user_priv, modul_priv, submodul])
+			for rule in request.POST.getlist('rules[]'):
+				Globals().executeQuery("INSERT INTO PRIVILEGE_MENUBAR (USER_PRIV, MENUBAR_PRIV, modul, submodul) VALUES (%s, %s, %s, %s)", [user_priv, rule, modul_priv, submodul])
 
 		response = json.dumps({
 			"success": True,

@@ -6,9 +6,9 @@ from urllib.parse import unquote
 from inspect import getmembers
 from pprint import pprint
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 from datetime import datetime
-from django.conf.urls import url, include
+from django.urls import include, re_path as url
 
 
 def data_pasien(request):

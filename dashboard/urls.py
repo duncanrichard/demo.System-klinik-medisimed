@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import include, re_path as url
 from . import views
 from . import shift
 from . import privelige
@@ -17,10 +17,14 @@ from . import rptkunjungan002
 from . import rptkunjungan003
 from . import rptkunjungan004
 from . import update_member
+from . import pemasukan_realtime
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
     url(r'^cabang', views.cabang, name='cabang'),
+    url(r'^pemasukan_realtime/$', pemasukan_realtime.pemasukan_realtime, name='pemasukan_realtime'),
+    url(r'^pemasukan_realtime/data/$', pemasukan_realtime.data, name='pemasukan_realtime_data'),
+    url(r'^pemasukan_realtime/export/$', pemasukan_realtime.export, name='pemasukan_realtime_export'),
     url(r'^shift/', include([
         url(r'^setShift', shift.setShift),
         url(r'^tutupShift', shift.tutupShift),

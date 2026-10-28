@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    server_name demo-medisismed.dsicorp.id;
+
+    location /static/ {
+        alias /opt/immoderma/staticfiles/;
+        access_log off;
+        expires 7d;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/run/immoderma.sock;
+    }
+}

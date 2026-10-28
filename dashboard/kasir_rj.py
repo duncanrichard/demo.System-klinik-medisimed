@@ -1,14 +1,29 @@
 from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import json
+import logging
 from django.core.serializers.json import DjangoJSONEncoder
 from urllib.parse import unquote
 from inspect import getmembers
 from pprint import pprint
 from IMMODERMA.globals import Globals
-from IMMODERMA.environment import env
+from IMMODERMA.config import env
 from datetime import datetime
-from django.conf.urls import url, include
+from django.urls import include, re_path as url
+
+
+logger = logging.getLogger(__name__)
+
+
+def _database_error_response(operation):
+    logger.exception("Operasi kasir gagal: %s", operation)
+    return JsonResponse(
+        {
+            'status': 'gagal',
+            'pesen': 'Terjadi kesalahan pada server. Silakan coba kembali.',
+        },
+        status=500,
+    )
 
 
 def kasir_rj(request):
@@ -302,8 +317,8 @@ def SP_AUD_TRANSAKSI(request):
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 
-    except ValueError:
-        print(q)
+    except Exception:
+        return _database_error_response('simpan transaksi')
 
 def getTransaksi(request):
     no_bukti = '%'+request.GET['no_bukti']+'%'
@@ -420,14 +435,18 @@ def getTpay(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def getVoucherPay(request):
-    # novoucher = request.GET['novoucher']
-    tipe = request.GET['tipe']
+    tipe = request.GET.get('tipe', '')
     if(tipe == 'idvoucher'):
+        novoucher = request.GET.get('novoucher', '').strip()
+        if not novoucher:
+            return JsonResponse(
+                {'status': 'gagal', 'pesen': 'Nomor voucher wajib diisi.'},
+                status=400,
+            )
         q = " SELECT  NO_VOUCHER, TGL_TRANSAKSI, NILAI_VOUCHER, STATUS_VOUCHER, NORM_VOUCHER, EXPR_VOUCHER, GROUP_VOUCHER FROM  VOUCHER_PASIEN a "
         q += " WHERE a.NO_VOUCHER = %s and STATUS_VOUCHER = 0 "
         q += " ORDER BY a.NO_VOUCHER "
-        
-        result = Globals().getDataQuery(q,)
+        result = Globals().getDataQuery(q, [novoucher])
     else :
         q = " SELECT  NO_VOUCHER, TGL_TRANSAKSI, NILAI_VOUCHER, STATUS_VOUCHER, NORM_VOUCHER, EXPR_VOUCHER, GROUP_VOUCHER FROM  VOUCHER_PASIEN  a "
         q += " WHERE STATUS_VOUCHER = 0 "
@@ -435,9 +454,7 @@ def getVoucherPay(request):
         
         result = Globals().getDataQuery(q)
 
-    json_data = json.dumps(result,cls=DjangoJSONEncoder)
-    edit=json_data
-    return HttpResponse(edit, content_type="application/json")
+    return JsonResponse(result, safe=False)
 
 def SP_AUD_BAYAR_TRANSAKSI(request):
     FH_BUKTI_ID = request.POST['FH_BUKTI_ID']
@@ -529,8 +546,8 @@ def SP_AUD_BAYAR_TRANSAKSI(request):
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 
-    except ValueError:
-        print(q)
+    except Exception:
+        return _database_error_response('simpan pembayaran')
 
 def findDepositPaket(request):
     kd_pasien = request.GET['kd_pasien']
@@ -578,7 +595,13 @@ def findDepositPaketD(request):
 def getGridPaketprodukpasien(request):
     no_bukti = request.GET['no_bukti']
     nominal_deposit= request.GET['nominal_deposit']
-    databukti=no_bukti.split(',')
+    databukti = [value.strip() for value in no_bukti.split(',') if value.strip()]
+    if not databukti:
+        return JsonResponse(
+            {'status': 'gagal', 'pesen': 'Nomor bukti wajib diisi.'},
+            status=400,
+        )
+    placeholders = ','.join(['%s'] * len(databukti))
     KD_CABANG= request.session['kdCabang']
     q = "select A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, a.FDPTGL_DEPOSIT, 23) as TANGGAL,a.FDPKD_PASIEN,c.NAMAPASIEN,C.ALAMAT, "
     q += "a.FDPKD_PAKET,a.FDPKETERANGAN,isnull(a.FDPSTATUS,0) as FDPSTATUS,a.USERRS,a.UPDATERS,d.FMPKPAKETN,  "
@@ -592,18 +615,9 @@ def getGridPaketprodukpasien(request):
     q += "left join PRODUK_PAKET d on a.FDPKD_PAKET=d.FMPKKD_PAKET "
     q += "left join PRODUK e on b.FDPDKD_PRODUK=e.FMPPRODUK_ID "
     q += "left join TARIF AS G ON b.FDPDKD_PRODUK=G.FMTKD_PRODUK AND G.FMTTGL_BERLAKU in (SELECT MAX(FMTTGL_BERLAKU) AS TGL_AKHIR FROM TARIF WHERE FMTKD_PRODUK =b.FDPDKD_PRODUK) "
-    q += "where A.FDPNO_DEPOSIT in( "
-    i=0
-    for x in databukti:
-        if i==0:
-            q +="'"+ x +"'"
-        else :
-            q +=",'"+ x +"'"
-        i+=1
-
-    q += ")  "
+    q += "where A.FDPNO_DEPOSIT in (" + placeholders + ") "
     q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s order by NO "
-    result = Globals().getDataQuery(q , [KD_CABANG])
+    result = Globals().getDataQuery(q, databukti + [KD_CABANG])
 
 
     q = "SELECT *,ISNULL(TOTAL_JAMINAN,0)+ISNULL(Detail_sisa,0) AS JAMINAN FROM (select ROW_NUMBER() OVER (ORDER BY FDPNO_DEPOSIT) AS NO,A.FDPNO_DEPOSIT as NOFAKTUR, convert(varchar, getdate(), 23) as TANGGAL,  "
@@ -611,17 +625,11 @@ def getGridPaketprodukpasien(request):
     q += "(select sum(dbo.fungsiCalculasiDeposit(FDPDTARIF,1,FDPD_DISCKONSUMEN,FDPD_DISC1,FDPD_DISC2,FDPD_DISC3,FDPD_DISC4))   "
     q += "FROM DEPOSIT_PAKETD b where b.FDPDNO_DEPOSIT=a.FDPNO_DEPOSIT) as Detail_sisa   "
     q += "from DEPOSIT_PAKET a   "
-    q += "where A.FDPNO_DEPOSIT in( "
-    i=0
-    for x in databukti:
-        if i==0:
-            q +="'"+ x +"'"
-        else :
-            q +=",'"+ x +"'"
-        i+=1
-    q += ")  "
+    q += "where A.FDPNO_DEPOSIT in (" + placeholders + ") "
     q += "AND FDPSTATUS = 1 AND a.FDPKD_CABANG= %s ) AS XYZ order by NOFAKTUR "
-    result5 = Globals().getDataQuery(q , [nominal_deposit,KD_CABANG])
+    result5 = Globals().getDataQuery(
+        q, [nominal_deposit] + databukti + [KD_CABANG]
+    )
 
     json_data = json.dumps({
 		'data1':result,'data5':result5
@@ -654,8 +662,8 @@ def SP_BATAL_BAYAR(request):
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 
-    except ValueError:
-        print(q)
+    except Exception:
+        return _database_error_response('batalkan pembayaran')
 
 def SP_UBAH_PAKET(request):
     FH_BUKTI_ID = request.POST['FH_BUKTI_ID']
@@ -682,8 +690,8 @@ def SP_UBAH_PAKET(request):
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 
-    except ValueError:
-        print(q)
+    except Exception:
+        return _database_error_response('ubah paket')
 
 def Cekdepositfarmasi(request):
     bukti = request.GET['bukti']

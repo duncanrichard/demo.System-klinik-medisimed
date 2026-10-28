@@ -64,6 +64,8 @@ db.sqlite3-journal
 # Environments
 .env
 .venv
+.audit-venv/
+.audit-tmp/
 env/
 venv/
 ENV/

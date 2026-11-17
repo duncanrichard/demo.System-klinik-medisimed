@@ -108,14 +108,10 @@ class Migration(migrations.Migration):
                 ("prepared_at", models.DateTimeField(auto_now_add=True, verbose_name="Waktu Disiapkan")),
                 ("prepared_by", models.CharField(blank=True, max_length=100, verbose_name="Disiapkan Oleh")),
             ],
-            options={"db_table": "APOTEKER_PERSIAPAN_BMHP"},
-        ),
-        migrations.AddConstraint(
-            model_name="apotekerpreparation",
-            constraint=models.UniqueConstraint(
-                fields=("transaction_id", "transaction_detail_number"),
-                name="unique_apoteker_preparation_detail",
-            ),
+            options={
+                "db_table": "APOTEKER_PERSIAPAN_BMHP",
+                "unique_together": {("transaction_id", "transaction_detail_number")},
+            },
         ),
         migrations.RunPython(add_apoteker_menu, remove_apoteker_menu),
     ]

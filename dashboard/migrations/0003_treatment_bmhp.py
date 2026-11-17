@@ -108,11 +108,11 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("bmhp", models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name="treatment_usages", to="dashboard.bmhp")),
             ],
-            options={"db_table": "TREATMENT_BMHP", "ordering": ["treatment_id", "bmhp__nama_bmhp"]},
-        ),
-        migrations.AddConstraint(
-            model_name="treatmentbmhp",
-            constraint=models.UniqueConstraint(fields=("treatment_id", "bmhp", "satuan"), name="unique_treatment_bmhp_unit"),
+            options={
+                "db_table": "TREATMENT_BMHP",
+                "ordering": ["treatment_id", "bmhp__nama_bmhp"],
+                "unique_together": {("treatment_id", "bmhp", "satuan")},
+            },
         ),
         migrations.RunPython(add_treatment_bmhp_navigation, remove_treatment_bmhp_navigation),
     ]

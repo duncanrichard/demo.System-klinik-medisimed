@@ -25,12 +25,7 @@ class TreatmentBMHP(models.Model):
     class Meta:
         db_table = "TREATMENT_BMHP"
         ordering = ["treatment_id", "bmhp__nama_bmhp"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["treatment_id", "bmhp", "satuan"],
-                name="unique_treatment_bmhp_unit",
-            )
-        ]
+        unique_together = [("treatment_id", "bmhp", "satuan")]
 
 
 class ApotekerPreparation(models.Model):
@@ -41,9 +36,4 @@ class ApotekerPreparation(models.Model):
 
     class Meta:
         db_table = "APOTEKER_PERSIAPAN_BMHP"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["transaction_id", "transaction_detail_number"],
-                name="unique_apoteker_preparation_detail",
-            )
-        ]
+        unique_together = [("transaction_id", "transaction_detail_number")]

@@ -7,6 +7,7 @@ environment variables.
 
 import json
 import os
+from importlib.util import find_spec
 
 
 try:
@@ -44,6 +45,13 @@ def _json_object(name, default):
     return parsed if isinstance(parsed, dict) else default
 
 
+def _legacy_sql_server_backend_available():
+    try:
+        return find_spec("sql_server.pyodbc") is not None
+    except ModuleNotFoundError:
+        return False
+
+
 class env:
     DEBUG = _boolean("DEBUG", False)
     SECRET_KEY = _value("SECRET_KEY", "")
@@ -51,13 +59,21 @@ class env:
     CSRF_TRUSTED_ORIGINS = _value("CSRF_TRUSTED_ORIGINS", "")
     TIME_ZONE = _value("TIME_ZONE", "Asia/Jakarta")
 
-    # ``sql_server.pyodbc`` is the backend identifier used by the retired
-    # django-pyodbc-azure package.  Keep old environment.py files usable with
-    # the supported mssql-django package.
+    # Existing deployments can still provide the retired backend through the
+    # legacy environment.py module. Keep that explicit configuration intact;
+    # a new environment-variable configuration with the old name is mapped to
+    # the supported mssql-django backend instead.
+    _configured_db_engine = _value("DB_ENGINE", "mssql")
     DB_ENGINE = (
-        "mssql"
-        if _value("DB_ENGINE", "mssql") == "sql_server.pyodbc"
-        else _value("DB_ENGINE", "mssql")
+        _configured_db_engine
+        if (
+            _legacy_env is not None
+            and _configured_db_engine == "sql_server.pyodbc"
+            and _legacy_sql_server_backend_available()
+        )
+        else "mssql"
+        if _configured_db_engine == "sql_server.pyodbc"
+        else _configured_db_engine
     )
     DB_NAME = _value("DB_NAME", "")
     DB_NAME_2 = _value("DB_NAME_2", "")

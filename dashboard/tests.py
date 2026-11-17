@@ -3,6 +3,7 @@ from datetime import date
 
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, SimpleTestCase
+from django.urls import resolve, reverse
 
 from . import apoteker, kasir_rj, pemasukan_realtime
 
@@ -51,6 +52,14 @@ class KasirPageTests(SimpleTestCase):
 
 
 class ApotekerPageTests(SimpleTestCase):
+    def test_apoteker_urls_use_lowercase_paths(self):
+        self.assertEqual(reverse("apoteker"), "/apoteker/")
+        self.assertEqual(resolve("/apoteker/").url_name, "apoteker")
+        self.assertEqual(
+            resolve("/apoteker/sudah-disiapkan/").url_name,
+            "apoteker_mark_prepared",
+        )
+
     @patch("dashboard.apoteker.Globals.isLogin", return_value=False)
     def test_apoteker_page_requires_login(self, _is_login):
         response = apoteker.apoteker(request_with_session("/apoteker/"))

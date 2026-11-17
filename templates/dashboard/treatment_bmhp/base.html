@@ -1,0 +1,183 @@
+{% extends "layout/master.html" %}
+
+{% block title %}Treatment BMHP{% endblock %}
+
+{% block content %}
+<div class="wrapper wrapper-content entry" style="padding: 8px 8px 0;">
+    <div class="row"><div class="col-lg-12"><div class="ibox"><div class="ibox-title d-flex justify-content-between align-items-center">
+        <div><h3 class="mb-1">Treatment BMHP</h3><p class="mb-0 text-muted">Kelola bahan medis habis pakai untuk setiap treatment.</p></div>
+        <button type="button" class="btn btn-primary" id="open-create-treatment-modal" data-toggle="modal" data-target="#create-treatment-modal">Tambah data</button>
+    </div><div class="ibox-content">
+        {% if messages %}{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>{% endfor %}{% endif %}
+
+        <h5 class="mb-3">Treatment yang sudah memiliki BMHP</h5>
+        <div class="table-responsive mb-0"><table class="table table-striped table-hover mb-0"><thead><tr><th style="width:70px;">No.</th><th>Kode treatment</th><th>Nama treatment</th><th>Jumlah BMHP</th><th class="text-right">Aksi</th></tr></thead><tbody>
+            {% for treatment in mapped_treatments %}<tr><td>{{ forloop.counter }}</td><td>{{ treatment.treatment_id }}</td><td>{{ treatment.treatment_name }}</td><td>{{ treatment.total_bmhp }}</td><td class="text-right treatment-bmhp-actions"><button type="button" class="btn btn-sm btn-primary open-edit-treatment-modal" data-toggle="modal" data-target="#edit-treatment-modal" data-treatment-id="{{ treatment.treatment_id }}" data-treatment-name="{{ treatment.treatment_name }}" data-action="{% url 'treatment_bmhp_bulk_update' treatment.treatment_id %}">Edit</button> <button type="button" class="btn btn-sm btn-danger open-delete-treatment-modal" data-toggle="modal" data-target="#delete-modal" data-treatment-id="{{ treatment.treatment_id }}" data-treatment-name="{{ treatment.treatment_name }}" data-action="{% url 'treatment_bmhp_delete_mapping' treatment.treatment_id %}">Hapus</button></td></tr>
+            {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">Belum ada treatment yang memiliki BMHP.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </div></div></div></div>
+</div>
+
+<div class="modal fade" id="edit-treatment-modal" tabindex="-1" role="dialog" aria-labelledby="edit-treatment-modal-title" aria-hidden="true"><div class="modal-dialog modal-lg" role="document"><div class="modal-content">
+    <form method="post" id="edit-treatment-form">{% csrf_token %}
+        <div class="modal-header"><h5 class="modal-title" id="edit-treatment-modal-title">Edit BMHP treatment</h5><button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span aria-hidden="true">&times;</span></button></div>
+        <div class="modal-body p-4">
+            {% if bulk_error %}<div class="alert alert-danger" role="alert">{{ bulk_error }}</div>{% endif %}
+            <div class="d-flex justify-content-between align-items-center mb-3"><h6 class="mb-0">Daftar BMHP</h6><button type="button" class="btn btn-sm btn-outline-primary" id="add-bmhp-row">Tambah BMHP</button></div>
+            <div id="bmhp-rows" aria-live="polite"></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary">Simpan perubahan</button></div>
+    </form>
+</div></div></div>
+
+<div class="modal fade" id="create-treatment-modal" tabindex="-1" role="dialog" aria-labelledby="create-treatment-modal-title" aria-hidden="true"><div class="modal-dialog modal-lg" role="document"><div class="modal-content">
+    <form method="post" id="create-treatment-form" action="{% url 'treatment_bmhp_create' %}">{% csrf_token %}
+        <div class="modal-header"><h5 class="modal-title" id="create-treatment-modal-title">Tambah BMHP treatment</h5><button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span aria-hidden="true">&times;</span></button></div>
+        <div class="modal-body p-4">
+            {% if create_error %}<div class="alert alert-danger" role="alert">{{ create_error }}</div>{% endif %}
+            <div class="form-group"><label for="create-treatment-id">Treatment</label><select id="create-treatment-id" name="treatment_id" class="form-control" required><option value="">Cari kode atau nama treatment</option>{% for treatment in unmapped_treatments %}<option value="{{ treatment.FMPPRODUK_ID }}" {% if treatment.FMPPRODUK_ID == selected_create_treatment_id %}selected{% endif %}>{{ treatment.FMPPRODUK_ID }} - {{ treatment.FMPPRODUKN }}</option>{% endfor %}</select><small class="form-text text-muted">Hanya treatment yang belum memiliki BMHP ditampilkan.</small></div>
+            <div class="d-flex justify-content-between align-items-center mb-3"><h6 class="mb-0">Daftar BMHP</h6><button type="button" class="btn btn-sm btn-outline-primary" id="add-create-bmhp-row">Tambah BMHP</button></div>
+            <div id="create-bmhp-rows" aria-live="polite"></div>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Batal</button><button type="submit" class="btn btn-primary">Simpan data</button></div>
+    </form>
+</div></div></div>
+
+<template id="bmhp-row-template">
+    <div class="bmhp-edit-row border rounded p-3 mb-3">
+        <input type="hidden" name="usage_id" class="usage-id-field">
+        <div class="form-row">
+            <div class="form-group col-md-6 mb-md-0"><label class="bmhp-label">BMHP</label><select name="bmhp_id" class="form-control bmhp-field" required><option value="">Pilih BMHP</option>{% for bmhp in form.bmhp.field.queryset %}<option value="{{ bmhp.id }}">{{ bmhp.nama_bmhp }}</option>{% endfor %}</select></div>
+            <div class="form-group col-md-3 mb-md-0"><label class="jumlah-label">Jumlah</label><input type="number" name="jumlah" class="form-control jumlah-field" min="0.01" step="0.01" required></div>
+            <div class="form-group col-md-2 mb-0"><label class="satuan-label">Satuan</label><input type="text" name="satuan" class="form-control satuan-field" maxlength="30" placeholder="CC atau pcs" required></div>
+            <div class="form-group col-md-1 mb-0 bmhp-remove-group"><label class="d-none d-md-block">&nbsp;</label><button type="button" class="btn btn-outline-danger btn-block remove-bmhp-row" aria-label="Hapus BMHP" title="Hapus BMHP"><i class="fa fa-trash" aria-hidden="true"></i><span class="sr-only">Hapus BMHP</span></button></div>
+        </div>
+    </div>
+</template>
+
+<div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="delete-modal-title" aria-hidden="true"><div class="modal-dialog" role="document"><div class="modal-content">
+    <form method="post" id="delete-form">{% csrf_token %}<div class="modal-header"><h5 class="modal-title" id="delete-modal-title">Hapus BMHP treatment</h5><button type="button" class="close" data-dismiss="modal" aria-label="Tutup"><span aria-hidden="true">&times;</span></button></div><div class="modal-body"><p class="mb-0">Hapus seluruh BMHP pada treatment <strong id="delete-treatment-name"></strong>?</p></div><div class="modal-footer"><button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Batal</button><button type="submit" class="btn btn-danger">Hapus</button></div></form>
+</div></div></div>
+{% endblock %}
+
+{% block script %}
+{{ mapped_usage_data|json_script:"mapped-usage-data" }}
+{{ edit_rows|json_script:"edit-rows-data" }}
+{{ create_rows|json_script:"create-rows-data" }}
+<style>
+    .treatment-bmhp-actions .btn,
+    #edit-treatment-modal .modal-footer .btn,
+    #create-treatment-modal .modal-footer .btn,
+    #delete-modal .modal-footer .btn,
+    #add-bmhp-row,
+    #add-create-bmhp-row,
+    .remove-bmhp-row,
+    #edit-treatment-modal .close,
+    #create-treatment-modal .close,
+    #delete-modal .close {
+        cursor: pointer;
+        min-height: 44px;
+    }
+    .treatment-bmhp-actions .btn { min-width: 64px; }
+    .bmhp-remove-group { display: flex; align-items: flex-end; }
+    .select2-container { width: 100% !important; }
+    .select2-selection--single { border: 1px solid #b9c8d5 !important; border-radius: 3px !important; height: 38px !important; }
+    .select2-selection__rendered { color: #34495e !important; line-height: 36px !important; padding-left: 12px !important; }
+    .select2-selection__arrow { height: 36px !important; }
+    #edit-treatment-modal .modal-content,
+    #create-treatment-modal .modal-content { overflow: visible; }
+    #edit-treatment-modal .select2-container--open,
+    #create-treatment-modal .select2-container--open { z-index: 2201 !important; }
+    #edit-treatment-modal .select2-dropdown,
+    #create-treatment-modal .select2-dropdown {
+        z-index: 2202 !important;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+</style>
+<script>
+    jQuery(function ($) {
+        var mappedUsages = JSON.parse(document.getElementById('mapped-usage-data').textContent);
+        var submittedRows = JSON.parse(document.getElementById('edit-rows-data').textContent);
+        var createRows = JSON.parse(document.getElementById('create-rows-data').textContent);
+        var rowCounter = 0;
+
+        function usagesForTreatment(treatmentId) {
+            return mappedUsages.filter(function (usage) { return usage.treatment_id === treatmentId; });
+        }
+
+        function positionDropdown(select, modal) {
+            var selectContainer = select.next('.select2')[0];
+            var dropdown = modal.find('.select2-container--open .select2-dropdown').last();
+            if (!selectContainer || !dropdown.length) { return; }
+
+            var bounds = selectContainer.getBoundingClientRect();
+            dropdown.css({ position: 'fixed', top: bounds.bottom, left: bounds.left, width: bounds.width, zIndex: 2202 });
+        }
+
+        function initialiseSelect(select, modal, placeholder) {
+            select.select2({ width: '100%', placeholder: placeholder, dropdownParent: modal.find('.modal-content') })
+                .on('select2:open', function () { positionDropdown($(this), modal); });
+        }
+
+        function addBmhpRow(row, target, modal) {
+            var newRow = $($('#bmhp-row-template').html());
+            var rowId = 'bmhp-row-' + rowCounter++;
+            newRow.find('.bmhp-field').attr('id', rowId + '-bmhp');
+            newRow.find('.jumlah-field').attr('id', rowId + '-jumlah');
+            newRow.find('.satuan-field').attr('id', rowId + '-satuan');
+            newRow.find('.bmhp-label').attr('for', rowId + '-bmhp');
+            newRow.find('.jumlah-label').attr('for', rowId + '-jumlah');
+            newRow.find('.satuan-label').attr('for', rowId + '-satuan');
+            newRow.find('.usage-id-field').val(row.usage_id || row.id || '');
+            newRow.find('.bmhp-field').val(String(row.bmhp_id || ''));
+            newRow.find('.jumlah-field').val(row.jumlah || '');
+            newRow.find('.satuan-field').val(row.satuan || '');
+            target.append(newRow);
+            initialiseSelect(newRow.find('.bmhp-field'), modal, 'Pilih BMHP');
+            newRow.find('.remove-bmhp-row').on('click', function () {
+                newRow.find('.bmhp-field').select2('destroy');
+                newRow.remove();
+            });
+        }
+
+        $('.open-edit-treatment-modal').on('click', function () {
+            var button = $(this);
+            var usages = usagesForTreatment(button.data('treatment-id'));
+            $('#bmhp-rows').empty();
+            usages.forEach(function (usage) { addBmhpRow(usage, $('#bmhp-rows'), $('#edit-treatment-modal')); });
+            $('#edit-treatment-modal-title').text('Edit BMHP: ' + button.data('treatment-name'));
+            $('#edit-treatment-form').attr('action', button.data('action'));
+        });
+        $('#add-bmhp-row').on('click', function () { addBmhpRow({}, $('#bmhp-rows'), $('#edit-treatment-modal')); });
+        initialiseSelect($('#create-treatment-id'), $('#create-treatment-modal'), 'Cari treatment');
+        $('#open-create-treatment-modal').on('click', function () {
+            $('#create-treatment-form')[0].reset();
+            $('#create-treatment-id').val('').trigger('change');
+            $('#create-bmhp-rows').empty();
+            addBmhpRow({}, $('#create-bmhp-rows'), $('#create-treatment-modal'));
+        });
+        $('#add-create-bmhp-row').on('click', function () { addBmhpRow({}, $('#create-bmhp-rows'), $('#create-treatment-modal')); });
+        $('.open-delete-treatment-modal').on('click', function () {
+            $('#delete-form').attr('action', $(this).data('action'));
+            $('#delete-treatment-name').text($(this).data('treatment-name'));
+        });
+        {% if open_edit_modal %}
+        (function () {
+            $('#bmhp-rows').empty();
+            submittedRows.forEach(function (row) { addBmhpRow(row, $('#bmhp-rows'), $('#edit-treatment-modal')); });
+            $('#edit-treatment-form').attr('action', '{% url "treatment_bmhp_bulk_update" selected_treatment_id %}');
+            $('#edit-treatment-modal').modal('show');
+        }());
+        {% endif %}
+        {% if open_create_modal %}
+        (function () {
+            $('#create-bmhp-rows').empty();
+            createRows.forEach(function (row) { addBmhpRow(row, $('#create-bmhp-rows'), $('#create-treatment-modal')); });
+            $('#create-treatment-id').val('{{ selected_create_treatment_id }}').trigger('change');
+            $('#create-treatment-modal').modal('show');
+        }());
+        {% endif %}
+    });
+</script>
+{% endblock %}

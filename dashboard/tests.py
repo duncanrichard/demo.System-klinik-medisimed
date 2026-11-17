@@ -4,7 +4,7 @@ from datetime import date
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, SimpleTestCase
 
-from . import kasir_rj, pemasukan_realtime
+from . import apoteker, kasir_rj, pemasukan_realtime
 
 
 def request_with_session(path, data=None):
@@ -48,6 +48,39 @@ class KasirPageTests(SimpleTestCase):
         self.assertEqual(
             response["Cache-Control"], "no-cache, no-store, max-age=0, must-revalidate"
         )
+
+
+class ApotekerPageTests(SimpleTestCase):
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=False)
+    def test_apoteker_page_requires_login(self, _is_login):
+        response = apoteker.apoteker(request_with_session("/apoteker/"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/login")
+
+    @patch("dashboard.apoteker.Globals.getSeparator", return_value=[])
+    @patch("dashboard.apoteker.Globals.getMenubars", return_value=[])
+    @patch("dashboard.apoteker.Globals.getNavbars", return_value=[])
+    @patch("dashboard.apoteker.Globals.getDataQuery", return_value=[])
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
+    def test_default_filter_uses_today_and_pending_status(self, _login, query, _navbars, _menubars, _separator):
+        request = request_with_session("/apoteker/")
+        request.session.update(
+            {
+                "user_priv": "TEST",
+                "kdCabang": "001",
+                "kota_cabang": "Jakarta",
+                "nama_cabang": "Klinik Test",
+                "par_MTH": "10",
+                "par_TAHUNYR": "2026",
+            }
+        )
+
+        response = apoteker.apoteker(request)
+
+        self.assertContains(response, 'value="%s"' % date.today().isoformat())
+        self.assertContains(response, "Belum disiapkan")
+        self.assertEqual(query.call_args.args[1], ["001", date.today()])
 
 
 class KasirVoucherTests(SimpleTestCase):

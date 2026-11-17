@@ -1,0 +1,66 @@
+{% extends "layout/master.html" %}
+
+{% block title %}Master BMHP{% endblock %}
+
+{% block content %}
+<div class="wrapper wrapper-content entry" style="padding: 8px 8px 0;">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h3>Master BMHP</h3>
+                    <p class="mb-0 text-muted">Kelola nama bahan medis habis pakai.</p>
+                </div>
+                <div class="ibox-content">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags|default:'info' }}" role="alert">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" action="{% if editing %}{% url 'master_bmhp_update' editing.id %}{% else %}{% url 'master_bmhp_create' %}{% endif %}" class="border-bottom pb-3 mb-3">
+                        {% csrf_token %}
+                        <div class="form-row align-items-end">
+                            <div class="form-group col-md-8 mb-md-0">
+                                <label for="{{ form.nama_bmhp.id_for_label }}">Nama BMHP</label>
+                                {{ form.nama_bmhp }}
+                                {% for error in form.nama_bmhp.errors %}
+                                    <small class="text-danger d-block mt-1">{{ error }}</small>
+                                {% endfor %}
+                            </div>
+                            <div class="form-group col-md-4 mb-md-0">
+                                <button type="submit" class="btn btn-primary">{% if editing %}Simpan perubahan{% else %}Tambah BMHP{% endif %}</button>
+                                {% if editing %}<a class="btn btn-outline-secondary" href="{% url 'master_bmhp' %}">Batal</a>{% endif %}
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover mb-0">
+                            <thead>
+                                <tr><th scope="col" style="width: 90px;">No.</th><th scope="col">Nama BMHP</th><th scope="col" class="text-right" style="width: 180px;">Tindakan</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for bmhp in bmhps %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ bmhp.nama_bmhp }}</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-sm btn-success" href="{% url 'master_bmhp_edit' bmhp.id %}">Ubah</a>
+                                            <form method="post" action="{% url 'master_bmhp_delete' bmhp.id %}" class="d-inline" onsubmit="return confirm('Hapus BMHP ini?');">
+                                                {% csrf_token %}<button type="submit" class="btn btn-sm btn-danger">Hapus</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="3" class="text-center text-muted py-4">Belum ada BMHP. Tambahkan nama BMHP melalui formulir di atas.</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

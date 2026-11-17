@@ -18,6 +18,9 @@ from . import rptkunjungan003
 from . import rptkunjungan004
 from . import update_member
 from . import pemasukan_realtime
+from . import master_bmhp
+from . import treatment_bmhp
+from . import apoteker
 
 urlpatterns = [
     url(r'^$', views.dashboard, name='dashboard'),
@@ -25,6 +28,20 @@ urlpatterns = [
     url(r'^pemasukan_realtime/$', pemasukan_realtime.pemasukan_realtime, name='pemasukan_realtime'),
     url(r'^pemasukan_realtime/data/$', pemasukan_realtime.data, name='pemasukan_realtime_data'),
     url(r'^pemasukan_realtime/export/$', pemasukan_realtime.export, name='pemasukan_realtime_export'),
+    url(r'^master_bmhp/$', master_bmhp.master_bmhp, name='master_bmhp'),
+    url(r'^master_bmhp/tambah/$', master_bmhp.create_bmhp, name='master_bmhp_create'),
+    url(r'^master_bmhp/(?P<bmhp_id>\d+)/ubah/$', master_bmhp.edit_bmhp, name='master_bmhp_edit'),
+    url(r'^master_bmhp/(?P<bmhp_id>\d+)/simpan/$', master_bmhp.update_bmhp, name='master_bmhp_update'),
+    url(r'^master_bmhp/(?P<bmhp_id>\d+)/hapus/$', master_bmhp.delete_bmhp, name='master_bmhp_delete'),
+    url(r'^treatment_bmhp/$', treatment_bmhp.treatment_bmhp, name='treatment_bmhp'),
+    url(r'^treatment_bmhp/tambah/$', treatment_bmhp.create_treatment_bmhp, name='treatment_bmhp_create'),
+    url(r'^treatment_bmhp/(?P<usage_id>\d+)/ubah/$', treatment_bmhp.edit_treatment_bmhp, name='treatment_bmhp_edit'),
+    url(r'^treatment_bmhp/(?P<usage_id>\d+)/simpan/$', treatment_bmhp.update_treatment_bmhp, name='treatment_bmhp_update'),
+    url(r'^treatment_bmhp/(?P<treatment_id>[^/]+)/simpan-semua/$', treatment_bmhp.bulk_update_treatment_bmhp, name='treatment_bmhp_bulk_update'),
+    url(r'^treatment_bmhp/(?P<usage_id>\d+)/hapus/$', treatment_bmhp.delete_treatment_bmhp, name='treatment_bmhp_delete'),
+    url(r'^treatment_bmhp/(?P<treatment_id>[^/]+)/hapus-semua/$', treatment_bmhp.delete_treatment_bmhp_mapping, name='treatment_bmhp_delete_mapping'),
+    url(r'^apoteker/$', apoteker.apoteker, name='apoteker'),
+    url(r'^apoteker/sudah-disiapkan/$', apoteker.mark_prepared, name='apoteker_mark_prepared'),
     url(r'^shift/', include([
         url(r'^setShift', shift.setShift),
         url(r'^tutupShift', shift.tutupShift),

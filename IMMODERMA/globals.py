@@ -186,7 +186,12 @@ class Globals:
 			params.extend([user_priv, modul, submodul])
 
 		qmenubar += "ORDER BY menu_order"
-		return self.getDataQuery(qmenubar, params)
+		menubars = self.getDataQuery(qmenubar, params)
+		if modul == 'IMMODERMA' and submodul is None:
+			for menubar in menubars:
+				if str(menubar.get('name', '')).strip().casefold() == 'kasir':
+					menubar['name'] = 'Pembelian'
+		return menubars
 
 	def getSeparator(self, n):
 		separator = []

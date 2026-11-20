@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Receipt Apoteker {{ transaction.FTNO_TRANSAKSI }}</title>
+    <style>
+        :root { color-scheme: light; }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #eef0f2; color: #17191c; font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.4; }
+        button, a[href] { cursor: pointer; }
+        .toolbar { display: flex; justify-content: flex-end; gap: 8px; max-width: 900px; margin: 20px auto 10px; padding: 0 12px; }
+        .toolbar a, .toolbar button { min-height: 44px; border: 1px solid #343a40; border-radius: 4px; padding: 10px 18px; font: inherit; font-weight: 600; text-decoration: none; }
+        .toolbar a { background: #fff; color: #17191c; }
+        .toolbar button { background: #343a40; color: #fff; }
+        .toolbar a:hover { background: #e2e6ea; }
+        .toolbar button:hover { background: #23272b; }
+        .toolbar a:active, .toolbar button:active { transform: translateY(1px); }
+        .toolbar a:focus-visible, .toolbar button:focus-visible { outline: 3px solid #005a9c; outline-offset: 2px; }
+        .receipt { width: min(900px, calc(100% - 24px)); margin: 0 auto 24px; padding: 34px 38px; background: #fff; border: 1px solid #b8bdc3; }
+        .receipt-header { padding-bottom: 16px; border-bottom: 2px solid #17191c; text-align: center; }
+        .receipt-header h1 { margin: 0; font-size: 23px; }
+        .receipt-header h2 { margin: 12px 0 2px; font-size: 17px; }
+        .receipt-header p { margin: 2px 0; }
+        .meta { display: grid; grid-template-columns: 145px minmax(0, 1fr) 135px minmax(0, 1fr); gap: 6px 12px; margin: 20px 0; }
+        .meta dt { font-weight: 700; }
+        .meta dd { min-width: 0; margin: 0; overflow-wrap: anywhere; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #696f75; padding: 8px; text-align: left; vertical-align: top; }
+        th { background: #e7e9eb; font-weight: 700; }
+        .number { width: 42px; text-align: center; }
+        .treatment-quantity { width: 105px; text-align: right; white-space: nowrap; }
+        .bmhp-quantity { width: 115px; text-align: right; white-space: nowrap; }
+        .bmhp-list { margin: 0; padding-left: 20px; }
+        .bmhp-list li + li { margin-top: 3px; }
+        .list-unstyled { margin: 0; padding: 0; list-style: none; }
+        .list-unstyled li + li { margin-top: 3px; }
+        .signatures { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; margin-top: 48px; text-align: center; break-inside: avoid; }
+        .signature-space { height: 72px; }
+        .signature-name { margin: 0 auto; border-bottom: 1px solid #17191c; width: min(220px, 100%); }
+        .signature-hint { margin: 5px 0 0; font-size: 12px; }
+        @media screen and (max-width: 680px) {
+            .receipt { padding: 24px 18px; }
+            .meta { grid-template-columns: 120px minmax(0, 1fr); }
+            .table-wrap > table, .table-wrap > table tbody, .table-wrap > table tr, .table-wrap > table td { display: block; width: 100%; }
+            .table-wrap > table thead { display: none; }
+            .table-wrap > table tr { border: 1px solid #696f75; padding: 7px; }
+            .table-wrap > table tr + tr { margin-top: 10px; }
+            .table-wrap > table td { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 8px; border: 0; padding: 4px; text-align: left; white-space: normal; overflow-wrap: anywhere; }
+            .table-wrap > table td::before { content: attr(data-label); font-weight: 700; }
+            .number, .treatment-quantity, .bmhp-quantity { width: auto; text-align: left; }
+            .signatures { gap: 24px; }
+        }
+        @media screen and (max-width: 480px) {
+            .toolbar { flex-direction: column-reverse; }
+            .toolbar a, .toolbar button { width: 100%; text-align: center; }
+            .signatures { grid-template-columns: 1fr; gap: 36px; }
+        }
+        @media print {
+            @page { size: A4; margin: 14mm; }
+            body { background: #fff; font-size: 11pt; }
+            .no-print { display: none !important; }
+            .receipt { width: 100%; margin: 0; padding: 0; border: 0; }
+            th { background: #e7e9eb !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+            tr { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar no-print" aria-label="Kontrol receipt">
+        <a href="{% url 'apoteker' %}">Kembali</a>
+        <button type="button" onclick="window.print()">Cetak Receipt</button>
+    </div>
+
+    <main class="receipt">
+        <header class="receipt-header">
+            <h1>{{ clinic_name|default:"Klinik" }}</h1>
+            {% if clinic_address %}<p>{{ clinic_address }}</p>{% endif %}
+            {% if clinic_city %}<p>{{ clinic_city }}</p>{% endif %}
+            <h2>RECEIPT SERAH TERIMA TREATMENT DAN BMHP</h2>
+        </header>
+
+        <dl class="meta">
+            <dt>No. transaksi</dt><dd>{{ transaction.FTNO_TRANSAKSI }}</dd>
+            <dt>Tanggal</dt><dd>{{ transaction.TANGGAL }} {{ transaction.WAKTU }}</dd>
+            <dt>Pasien</dt><dd>{{ transaction.KD_PASIEN }} / {{ transaction.NAMAPASIEN }}</dd>
+            <dt>Dokter</dt><dd>{% if doctors %}{{ doctors|join:", " }}{% else %}-{% endif %}</dd>
+            <dt>BC</dt><dd>{% if bc %}{{ bc|join:", " }}{% else %}-{% endif %}</dd>
+            <dt>Perawat</dt><dd>{% if nurses %}{{ nurses|join:", " }}{% else %}-{% endif %}</dd>
+        </dl>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th class="number">No.</th><th>Treatment</th><th class="treatment-quantity">Jumlah Treatment</th><th>BMHP</th><th class="bmhp-quantity">Jumlah BMHP</th></tr>
+                </thead>
+                <tbody>
+                    {% for treatment in treatments %}
+                    <tr>
+                        <td class="number" data-label="No.">{{ forloop.counter }}</td>
+                        <td data-label="Treatment">{{ treatment.NAMA_TREATMENT }}</td>
+                        <td class="treatment-quantity" data-label="Jumlah Treatment">{{ treatment.JUMLAH_TREATMENT|floatformat:"0" }}</td>
+                        <td data-label="BMHP">
+                            {% if treatment.bmhp_items %}
+                            <ul class="bmhp-list">
+                                {% for item in treatment.bmhp_items %}<li>{{ item.nama }}</li>{% endfor %}
+                            </ul>
+                            {% else %}
+                            Belum ada BMHP
+                            {% endif %}
+                        </td>
+                        <td class="bmhp-quantity" data-label="Jumlah BMHP">
+                            {% if treatment.bmhp_items %}
+                            <ul class="list-unstyled">
+                                {% for item in treatment.bmhp_items %}<li><strong>{{ item.jumlah }} {{ item.satuan }}</strong></li>{% endfor %}
+                            </ul>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <section class="signatures" aria-label="Tanda tangan serah terima">
+            <div><strong>Yang Mengambil</strong><div class="signature-space"></div><p class="signature-name"></p><p class="signature-hint">Nama jelas dan tanda tangan</p></div>
+            <div><strong>Yang Menyerahkan</strong><div class="signature-space"></div><p class="signature-name"></p><p class="signature-hint">Nama jelas dan tanda tangan</p></div>
+        </section>
+    </main>
+</body>
+</html>

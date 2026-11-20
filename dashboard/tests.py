@@ -1,7 +1,10 @@
+from decimal import Decimal
+from types import SimpleNamespace
 from unittest.mock import patch
 from datetime import date
 
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.http import Http404
 from django.test import RequestFactory, SimpleTestCase
 from django.urls import resolve, reverse
 
@@ -59,6 +62,10 @@ class ApotekerPageTests(SimpleTestCase):
             resolve("/apoteker/sudah-disiapkan/").url_name,
             "apoteker_mark_prepared",
         )
+        self.assertEqual(
+            reverse("apoteker_receipt", args=["TRX-001"]),
+            "/apoteker/TRX-001/receipt/",
+        )
 
     @patch("dashboard.apoteker.Globals.isLogin", return_value=False)
     def test_apoteker_page_requires_login(self, _is_login):
@@ -90,6 +97,82 @@ class ApotekerPageTests(SimpleTestCase):
         self.assertContains(response, 'value="%s"' % date.today().isoformat())
         self.assertContains(response, "Belum disiapkan")
         self.assertEqual(query.call_args.args[1], ["001", date.today()])
+
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=False)
+    def test_receipt_requires_login(self, _is_login):
+        response = apoteker.receipt(
+            request_with_session("/apoteker/TRX-001/receipt/"), "TRX-001"
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/login")
+
+    @patch("dashboard.apoteker.Globals.getDataQuery", return_value=[])
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
+    def test_receipt_rejects_transaction_outside_active_branch(self, _is_login, query):
+        request = request_with_session("/apoteker/TRX-OTHER/receipt/")
+        request.session["kdCabang"] = "001"
+
+        with self.assertRaises(Http404):
+            apoteker.receipt(request, "TRX-OTHER")
+
+        self.assertEqual(query.call_args.args[1], ["TRX-OTHER", "001"])
+
+    @patch("dashboard.apoteker.TreatmentBMHP.objects")
+    @patch("dashboard.apoteker.Globals.getDataQuery")
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
+    def test_receipt_renders_transaction_and_staff(self, _is_login, query, mappings):
+        query.side_effect = [
+            [
+                {
+                    "FTNO_TRANSAKSI": "TRX-001",
+                    "FDTNOMER": 1,
+                    "TANGGAL": "2026-11-20",
+                    "WAKTU": "09:30:00",
+                    "KD_PASIEN": "P-001",
+                    "NAMAPASIEN": "Pasien Uji",
+                    "TREATMENT_ID": "T-001",
+                    "NAMA_TREATMENT": "Treatment Uji",
+                    "JUMLAH_TREATMENT": Decimal("1.00"),
+                }
+            ],
+            [{"NAMA": "dr. Uji"}],
+            [{"NAMA": "Perawat Uji"}],
+            [{"NAMA": "BC Uji"}],
+        ]
+        mappings.select_related.return_value.filter.return_value = [
+            SimpleNamespace(
+                treatment_id="T-001",
+                jumlah=Decimal("4"),
+                satuan="pcs",
+                bmhp=SimpleNamespace(nama_bmhp="BMHP 3"),
+            )
+        ]
+        request = request_with_session("/apoteker/TRX-001/receipt/")
+        request.session.update(
+            {
+                "kdCabang": "001",
+                "nama_cabang": "Klinik Test",
+                "kota_cabang": "Jakarta",
+                "alamat_cabang": "Jalan Uji",
+            }
+        )
+
+        response = apoteker.receipt(request, "TRX-001")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Treatment Uji")
+        self.assertContains(response, "Jumlah Treatment")
+        self.assertContains(response, "Jumlah BMHP")
+        self.assertContains(response, 'data-label="Jumlah Treatment">1</td>')
+        self.assertContains(response, "BMHP 3")
+        self.assertContains(response, "4.00 pcs")
+        self.assertContains(response, "dr. Uji")
+        self.assertContains(response, "BC Uji")
+        self.assertContains(response, "Perawat Uji")
+        self.assertContains(response, "Yang Mengambil")
+        self.assertContains(response, "Yang Menyerahkan")
+        self.assertEqual(query.call_args_list[0].args[1], ["TRX-001", "001"])
 
 
 class KasirVoucherTests(SimpleTestCase):

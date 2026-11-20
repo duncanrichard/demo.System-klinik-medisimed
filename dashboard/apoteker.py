@@ -4,13 +4,59 @@ from urllib.parse import urlencode
 
 from django.contrib import messages
 from django.db import IntegrityError
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.core.paginator import Paginator
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from IMMODERMA.globals import Globals
 
 from .models import ApotekerPreparation, TreatmentBMHP
+
+
+def _attach_bmhp_items(treatments):
+    mappings = {}
+    treatment_ids = {item["TREATMENT_ID"] for item in treatments}
+    if treatment_ids:
+        for usage in TreatmentBMHP.objects.select_related("bmhp").filter(
+            treatment_id__in=treatment_ids
+        ):
+            mappings.setdefault(usage.treatment_id, []).append(usage)
+
+    for item in treatments:
+        treatment_quantity = Decimal(str(item["JUMLAH_TREATMENT"] or 0))
+        item["bmhp_items"] = [
+            {
+                "nama": usage.bmhp.nama_bmhp,
+                "jumlah": format(usage.jumlah * treatment_quantity, ".2f"),
+                "satuan": usage.satuan,
+            }
+            for usage in mappings.get(item["TREATMENT_ID"], [])
+        ]
+
+
+def _staff_names(
+    transaction_id, branch_id, relation_table, transaction_column, staff_column
+):
+    query = (
+        "SELECT staff.NAMA FROM ("
+        "SELECT dokter.FMDDOKTERN AS NAMA "
+        f"FROM {relation_table} AS relasi "
+        f"INNER JOIN DOKTER AS dokter ON relasi.{staff_column} = dokter.FMDDOKTER_ID "
+        f"WHERE relasi.{transaction_column} = %s AND dokter.KD_CABANG = %s "
+        "UNION "
+        "SELECT perawat.FMPPERAWATN AS NAMA "
+        f"FROM {relation_table} AS relasi "
+        f"INNER JOIN PERAWAT AS perawat ON relasi.{staff_column} = perawat.FMPPERAWAT_ID "
+        f"WHERE relasi.{transaction_column} = %s AND perawat.KD_CABANG = %s"
+        ") AS staff ORDER BY staff.NAMA"
+    )
+    return [
+        item["NAMA"]
+        for item in Globals().getDataQuery(
+            query, [transaction_id, branch_id, transaction_id, branch_id]
+        )
+    ]
 
 
 def _page_context(request):
@@ -49,24 +95,7 @@ def _page_context(request):
         [request.session["kdCabang"], filter_date],
     )
 
-    mappings = {}
-    treatment_ids = {item["TREATMENT_ID"] for item in queue}
-    if treatment_ids:
-        for usage in TreatmentBMHP.objects.select_related("bmhp").filter(
-            treatment_id__in=treatment_ids
-        ):
-            mappings.setdefault(usage.treatment_id, []).append(usage)
-
-    for item in queue:
-        treatment_quantity = Decimal(str(item["JUMLAH_TREATMENT"] or 0))
-        item["bmhp_items"] = [
-            {
-                "nama": usage.bmhp.nama_bmhp,
-                "jumlah": format(usage.jumlah * treatment_quantity, ".2f"),
-                "satuan": usage.satuan,
-            }
-            for usage in mappings.get(item["TREATMENT_ID"], [])
-        ]
+    _attach_bmhp_items(queue)
 
     transactions = {}
     for item in queue:
@@ -117,6 +146,77 @@ def apoteker(request):
         return redirect("/login")
 
     response = render(request, "dashboard/apoteker/base.html", _page_context(request))
+    response["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+    return response
+
+
+@require_GET
+def receipt(request, transaction_id):
+    if not Globals().isLogin(request):
+        return redirect("/login")
+
+    branch_id = request.session["kdCabang"]
+    treatments = Globals().getDataQuery(
+        "SELECT transaksi.FTNO_TRANSAKSI, detail.FDTNOMER, "
+        "CONVERT(varchar, transaksi.FTTGL_TRANSAKSI, 23) AS TANGGAL, "
+        "CONVERT(varchar, transaksi.FTTGL_TRANSAKSI, 108) AS WAKTU, "
+        "pasien.KD_PASIEN, pasien.NAMAPASIEN, "
+        "detail.FDTKD_PRODUK AS TREATMENT_ID, detail.FDTKDPRODUKN AS NAMA_TREATMENT, "
+        "detail.FDTQTY AS JUMLAH_TREATMENT "
+        "FROM TRANSAKSIPASIEN AS transaksi "
+        "INNER JOIN KUNJUNGANPASIEN AS kunjungan "
+        "ON transaksi.FTNO_KUNJUNGAN = kunjungan.KPNO_TRANSAKSI "
+        "INNER JOIN PASIEN AS pasien ON kunjungan.KPKD_PASIEN = pasien.KD_PASIEN "
+        "INNER JOIN TRANSAKSIPASIEND AS detail "
+        "ON transaksi.FTNO_TRANSAKSI = detail.FDTNO_TRANSAKSI "
+        "WHERE transaksi.FTNO_TRANSAKSI = %s AND transaksi.KD_CABANG = %s "
+        "ORDER BY detail.FDTNOMER",
+        [transaction_id, branch_id],
+    )
+    if not treatments:
+        raise Http404("Transaksi tidak ditemukan.")
+
+    _attach_bmhp_items(treatments)
+    doctors = _staff_names(
+        transaction_id,
+        branch_id,
+        "TRANSAKSIDOKTERD",
+        "FDDNO_TRANSAKSI",
+        "FDDKD_DOKTER",
+    )
+    nurses = _staff_names(
+        transaction_id,
+        branch_id,
+        "TRANSAKSIPERAWATD",
+        "FDPNO_TRANSAKSI",
+        "FDPKD_PERAWAT",
+    )
+    bc = [
+        item["NAMA"]
+        for item in Globals().getDataQuery(
+            "SELECT DISTINCT perawat.FMPPERAWATN AS NAMA "
+            "FROM TRANSAKSIBCD AS relasi "
+            "INNER JOIN PERAWAT AS perawat ON relasi.FDBC_ID = perawat.FMPPERAWAT_ID "
+            "WHERE relasi.FDBCNO_TRANSAKSI = %s AND perawat.KD_CABANG = %s "
+            "ORDER BY perawat.FMPPERAWATN",
+            [transaction_id, branch_id],
+        )
+    ]
+
+    response = render(
+        request,
+        "dashboard/apoteker/receipt.html",
+        {
+            "transaction": treatments[0],
+            "treatments": treatments,
+            "doctors": doctors,
+            "bc": bc,
+            "nurses": nurses,
+            "clinic_name": request.session.get("nama_cabang", ""),
+            "clinic_city": request.session.get("kota_cabang", ""),
+            "clinic_address": request.session.get("alamat_cabang", ""),
+        },
+    )
     response["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     return response
 

@@ -1,36 +1,7 @@
 var status_aud = null
 var status_cetak = null
-var gridDataprivilege = [];
-$.ajax({
-  url: host + "/getprivelige",
-  method: "GET",
-  data: {},
-  dataType: "json",
-  success: function (datas) {
-    if (datas.length != 0) {
-      // gridDataprivilege = datas
-      for (let i = 0; i < datas.length; i++) {
 
-        gridDataprivilege.push(datas[i].USER_PRIV);
-      }
-
-
-    } else {
-      gridDataprivilege = []
-    }
-  }
-})
 $(document).ready(function () {
-  $('#privelege_userpriv').dxLookup({
-    dropDownOptions: {
-      showTitle: false,
-    },
-    items: gridDataprivilege,
-    value: gridDataprivilege[0],
-    onItemClick: function (d) {
-      $('#privelege_userpriv').val(d.itemData)
-    },
-  });
   menuhidup()
   enterFocusTo('nama_userpriv', 'password_userpriv')
   enterFocusTo('password_userpriv', 'privelege_userpriv')
@@ -174,7 +145,7 @@ function menuhidup() {
   setReadOnly('kode_userpriv')
   setReadOnly('nama_userpriv')
   setReadOnly('password_userpriv')
-  setReadOnly('privelege_userpriv')
+  setDisabled('privelege_userpriv', 0)
   setReadOnly('kode_nip')
   setReadOnly('sip')
   setReadOnly('kode_antri')
@@ -195,7 +166,7 @@ function menumati() {
   setReadOnly('kode_userpriv')
   setUnReadOnly('nama_userpriv')
   setUnReadOnly('password_userpriv')
-  setUnReadOnly('privelege_userpriv')
+  setDisabled('privelege_userpriv', 1)
   setUnReadOnly('kode_nip')
   setUnReadOnly('sip')
   setUnReadOnly('kode_antri')

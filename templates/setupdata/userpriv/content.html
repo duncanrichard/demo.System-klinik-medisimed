@@ -26,7 +26,12 @@
                 <div class="form-row">
                     <label class="col-md-3 col-form-label text-white">User Privilege</label>
                     <div class="col-md-5">
-                        <input type="text" class="form-control input-md " id="privelege_userpriv">
+                        <select class="form-control input-md" id="privelege_userpriv" disabled>
+                            <option value="">Pilih privilege</option>
+                            {% for privilege in privileges %}
+                            <option value="{{ privilege.USER_PRIV }}">{{ privilege.USER_PRIV }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                 </div>
                 <div class="form-row">

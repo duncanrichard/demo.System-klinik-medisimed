@@ -22,6 +22,9 @@ def master_userpriv(request):
         menubars = Globals().getMenubars(user_priv, 'IMMODERMA', "master_userpriv", '0')
         menubarsChild = Globals().getMenubars(user_priv, 'IMMODERMA', "master_userpriv", '1')
         menubarCount = len(menubars)
+        privileges = Globals().getDataQuery(
+            "select USER_PRIV from PRIVILEGE order by USER_PRIV"
+        )
 
         response = render(request, 'setupdata/userpriv/base.html', {
             'navbars': navbars,
@@ -30,7 +33,8 @@ def master_userpriv(request):
             'menubarsType': 1,
             'count_': menubarCount,
             'list_': Globals().getSeparator(menubarCount),
-            'user_id': user_privelege
+            'user_id': user_privelege,
+            'privileges': privileges,
         })
         response['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
         return response
@@ -73,5 +77,4 @@ def getprivelige(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def createHashPass(password):
-    return bcrypt.hashpw(password.encode("utf-8") , bcrypt.gensalt()).decode("utf-8") 
-  
+    return bcrypt.hashpw(password.encode("utf-8") , bcrypt.gensalt()).decode("utf-8")

@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -11,6 +12,7 @@ from .models import BMHP
 def _page_context(request, form=None, editing=None):
     user_priv = request.session["user_priv"]
     menubars = Globals().getMenubars(user_priv, "IMMODERMA", None, "0")
+    page_obj = Paginator(BMHP.objects.all(), 20).get_page(request.GET.get("page"))
     return {
         "navbars": Globals().getNavbars(user_priv, "IMMODERMA", None),
         "menubars": menubars,
@@ -20,7 +22,8 @@ def _page_context(request, form=None, editing=None):
         "list_": Globals().getSeparator(len(menubars)),
         "form": form or BMHPForm(),
         "editing": editing,
-        "bmhps": BMHP.objects.all(),
+        "bmhps": page_obj,
+        "page_obj": page_obj,
     }
 
 

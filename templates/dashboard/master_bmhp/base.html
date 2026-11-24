@@ -43,7 +43,7 @@
                             <tbody>
                                 {% for bmhp in bmhps %}
                                     <tr>
-                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
                                         <td>{{ bmhp.nama_bmhp }}</td>
                                         <td class="text-right">
                                             <a class="btn btn-sm btn-success" href="{% url 'master_bmhp_edit' bmhp.id %}">Ubah</a>
@@ -58,6 +58,35 @@
                             </tbody>
                         </table>
                     </div>
+                    {% if page_obj.has_other_pages %}
+                        <nav class="mt-3" aria-label="Halaman Master BMHP">
+                            <ul class="pagination justify-content-center mb-0">
+                                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                                    {% if page_obj.has_previous %}
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Sebelumnya</a>
+                                    {% else %}
+                                        <span class="page-link" aria-disabled="true">Sebelumnya</span>
+                                    {% endif %}
+                                </li>
+                                {% for page_number in page_obj.paginator.page_range %}
+                                    <li class="page-item {% if page_number == page_obj.number %}active{% endif %}">
+                                        {% if page_number == page_obj.number %}
+                                            <span class="page-link" aria-current="page">{{ page_number }}</span>
+                                        {% else %}
+                                            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                                    {% if page_obj.has_next %}
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Berikutnya</a>
+                                    {% else %}
+                                        <span class="page-link" aria-disabled="true">Berikutnya</span>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    {% endif %}
                 </div>
             </div>
         </div>

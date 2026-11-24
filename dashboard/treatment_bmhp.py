@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.db import IntegrityError, transaction
+from django.core.paginator import Paginator
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -55,6 +56,7 @@ def _page_context(
     user_priv = request.session["user_priv"]
     menubars = Globals().getMenubars(user_priv, "IMMODERMA", None, "0")
     selected_treatment_id = treatment_id or request.GET.get("treatment_id", "")
+    mapped_page = Paginator(_mapped_treatments(), 20).get_page(request.GET.get("page"))
     usages = TreatmentBMHP.objects.none()
     if selected_treatment_id:
         usages = TreatmentBMHP.objects.filter(treatment_id=selected_treatment_id).select_related("bmhp")
@@ -81,7 +83,8 @@ def _page_context(
         "list_": Globals().getSeparator(len(menubars)),
         "treatments": _treatments(),
         "unmapped_treatments": _unmapped_treatments(),
-        "mapped_treatments": _mapped_treatments(),
+        "mapped_treatments": mapped_page,
+        "mapped_page": mapped_page,
         "selected_treatment_id": selected_treatment_id,
         "form": form or TreatmentBMHPForm(),
         "editing": editing,

@@ -27,7 +27,7 @@
                                                         {% elif submenubar.onclick == '##' %}
                                                         <li><a href="http://{{ request.get_host }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
                                                         {% else %}
-                                                        <li><a href="/{{ url }}/{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
+                                                        <li><a href="{{ submenubar.link }}" class="btn-link">{{ submenubar.name }}</a></li>
                                                         {% endif %}
                                                     {% endif %}
                                                 {% endif %}
@@ -48,7 +48,7 @@
                             {% elif menubar.onclick == '##' %}
                             <a href="http://{{ request.get_host }}/{{ menubar.link}}" class="btn-link">
                             {% else %}
-                            <a href="/{{ url }}/{{ menubar.link}}" class="btn-link">
+                            <a href="{{ menubar.link}}" class="btn-link">
                             {% endif %}
                         {% endif %}
                             <div class="thumbnail" data-toggle="tooltip" data-placement="bottom" title="{{ menubar.tooltips|default_if_none:''}}">

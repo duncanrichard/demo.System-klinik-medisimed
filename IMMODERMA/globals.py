@@ -154,6 +154,21 @@ class Globals:
 		with self._connection(db).cursor() as cursor:
 			cursor.execute(query, params or [])
 
+	def _absolute_internal_links(self, items):
+		for item in items:
+			link = item.get('link')
+			onclick = item.get('onclick')
+			if not link or onclick in ('#', '##'):
+				continue
+			link = str(link).strip()
+			if link and link != '#' and not link.startswith(('http://', 'https://', 'mailto:', 'javascript:')):
+				if not link.startswith('/'):
+					link = '/' + link
+				if '?' not in link and '#' not in link and not link.endswith('/'):
+					link += '/'
+				item['link'] = link
+		return items
+
 	def getNavbars(self, user_priv, modul, submodul = None):
 		if submodul == None:	
 			qnavbar = "SELECT * FROM PROPERTIES_NAVBAR WHERE modul = %s AND submodul IS NULL AND id IN "
@@ -165,7 +180,7 @@ class Globals:
 			params = [modul, submodul, user_priv, modul, submodul]
 
 		qnavbar += "ORDER BY nav_order"
-		return self.getDataQuery(qnavbar, params)
+		return self._absolute_internal_links(self.getDataQuery(qnavbar, params))
 
 	def getMenubars(self, user_priv, modul, submodul = None, level = 'default'):
 		if submodul == None:	
@@ -186,7 +201,7 @@ class Globals:
 			params.extend([user_priv, modul, submodul])
 
 		qmenubar += "ORDER BY menu_order"
-		menubars = self.getDataQuery(qmenubar, params)
+		menubars = self._absolute_internal_links(self.getDataQuery(qmenubar, params))
 		if modul == 'IMMODERMA' and submodul is None:
 			for menubar in menubars:
 				if str(menubar.get('name', '')).strip().casefold() == 'kasir':

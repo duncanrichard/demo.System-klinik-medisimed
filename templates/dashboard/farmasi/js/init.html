@@ -93,15 +93,16 @@ $(document).ready(function () {
         setAwal()
     })
     $('#menu_simpan,#FRMRSPRJ00201').click(function () {
-        canAdd = 0
         error_in_field()
         if (Cekeror == true) {
             var dataGrid = $("#datagrid").dxDataGrid("instance");
             if (dataGrid.getVisibleRows().length == 0) {
                 alert('Data Barang Masih Kosong')
             } else {
+                validateFarmasiStock(dataGrid, function () {
                 var c = confirm('Yakin Ingin Menyimpan Data Ini ?')
                 if (c) {
+                    canAdd = 0
                     var NO = []
                     var TTYPEC = []
                     var ID_BARANG = []
@@ -206,9 +207,11 @@ $(document).ready(function () {
 
                         },
                         success: function (e) {
-
-                            alert(e[0].STATUS + ' - ' + e[0].STATE + e[0].ERROR_MESSAGE)
-                            if (e[0].STATUS == 'SUKSES') {
+                            var response = e[0] || {};
+                            var state = response.STATE ? ' - ' + response.STATE : '';
+                            var message = response.ERROR_MESSAGE ? ' - ' + response.ERROR_MESSAGE : '';
+                            alert((response.STATUS || 'GAGAL') + state + message);
+                            if (response.STATUS == 'SUKSES') {
                                 $("#no_fakturid").val(e[0].no_trans)
                                 deathtext()
                                 $('#btnfar_tambah_produk').css("display", 'none');
@@ -219,6 +222,7 @@ $(document).ready(function () {
                         }
                     })
                 }
+                });
             }
         }
     })

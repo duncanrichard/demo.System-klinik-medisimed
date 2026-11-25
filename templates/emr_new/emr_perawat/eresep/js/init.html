@@ -1130,10 +1130,45 @@ function enablemenu() {
     $("#btnCetakResep").addClass("enablebutton");
 }
 
+var ereSepLoadingTimer = null;
+
+function openEresepLoading(title) {
+    clearTimeout(ereSepLoadingTimer);
+    $('#loading_title').html(title);
+    $('#loading_text').html('Tunggu Sebentar');
+    $('#ModalLoading').modal('show');
+    ereSepLoadingTimer = setTimeout(function () {
+        closeEresepLoading();
+        showEresepSaveMessage('warning', 'Respons terlalu lama', 'Data mungkin sudah tersimpan. Periksa daftar e-Resep sebelum menyimpan ulang.');
+    }, 30000);
+}
+
+function closeEresepLoading() {
+    clearTimeout(ereSepLoadingTimer);
+    ereSepLoadingTimer = null;
+    var loadingModal = $('#ModalLoading');
+    loadingModal.modal('hide');
+    loadingModal.removeClass('show').attr('aria-hidden', 'true').css('display', 'none');
+    $('.modal-backdrop').last().remove();
+    if ($('.modal.show').length) {
+        $('body').addClass('modal-open');
+    }
+}
+
+function showEresepSaveMessage(icon, title, text) {
+    if (window.Swal) {
+        Swal.fire({ icon: icon, title: title, text: text });
+    } else {
+        alert(title + '\n' + text);
+    }
+}
+
 function entryResepRJ() {
     $.ajax({
         url: host + "/crudResepRJ",
         method: "POST",
+        dataType: 'json',
+        timeout: 30000,
         data: {
             'csrfmiddlewaretoken': '{{ csrf_token }}',
             'q': 'entryResepRJ',
@@ -1156,33 +1191,29 @@ function entryResepRJ() {
             'StatusAUD': 'A'
         },
         beforeSend: function () {
-            $('#ModalLoading').modal('show');
-            $('#loading_title').html('Proses simpan...');
-            $('#loading_text').html('Tunggu Sebentar');
+            openEresepLoading('Proses simpan...');
         },
         complete: function () {
-            setTimeout(function () {
-                $('#ModalLoading').modal('hide');
-            }, 200);
-            $('#ModalLoading').modal('hide');
+            closeEresepLoading();
         },
         success: function (data) {
+            closeEresepLoading();
             if (data.success) {
                 setGridResep($('#noKunjunganResep').val());
                 $('#notransresep').val(data.message);
-
-                var r = confirm("Lanjut Entri Resep?");
-                if (r == true) {
-                    resetEntryResep();
-                    $('#modalsEntryResep').modal('show');
-                    $('#modalsEntryResep_aksi').html('<div id="modalsEntryResep_aksi">Tambah</div>');
-                } else {
-                    $('#modalsEntryResep').modal('hide');
-                }
-
+                $('#modalsEntryResep').modal('hide');
+                showEresepSaveMessage('success', 'Berhasil disimpan', 'Obat telah ditambahkan ke e-Resep.');
             } else {
-                alert("Terjadi Kesalahan \n" + data.message);
+                showEresepSaveMessage('error', 'Penyimpanan gagal', data.message || 'Data tidak dapat disimpan.');
             }
+        },
+        error: function (xhr) {
+            closeEresepLoading();
+            var message = 'Terjadi gangguan saat menyimpan data.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            }
+            showEresepSaveMessage('error', 'Penyimpanan gagal', message);
         }
     })
 
@@ -1212,6 +1243,8 @@ function editResepRJ() {
     $.ajax({
         url: host + "/crudResepRJ",
         method: "POST",
+        dataType: 'json',
+        timeout: 30000,
         data: {
             'csrfmiddlewaretoken': '{{ csrf_token }}',
             'q': 'editResepRJ',
@@ -1235,24 +1268,28 @@ function editResepRJ() {
             'StatusAUD': 'U'
         },
         beforeSend: function () {
-            $('#ModalLoading').modal('show');
-            $('#loading_title').html('Proses  simpan...');
-            $('#loading_text').html('Tunggu Sebentar');
+            openEresepLoading('Proses simpan...');
         },
         complete: function () {
-            setTimeout(function () {
-                $('#ModalLoading').modal('hide');
-            }, 200);
-            $('#ModalLoading').modal('hide');
+            closeEresepLoading();
         },
         success: function (data) {
+            closeEresepLoading();
             if (data.success) {
                 setGridResep($('#noKunjunganResep').val());
                 $('#modalsEntryResep').modal('hide');
-
+                showEresepSaveMessage('success', 'Berhasil disimpan', 'Perubahan e-Resep telah disimpan.');
             } else {
-                alert("Terjadi Kesalahan \n" + data.message);
+                showEresepSaveMessage('error', 'Penyimpanan gagal', data.message || 'Data tidak dapat disimpan.');
             }
+        },
+        error: function (xhr) {
+            closeEresepLoading();
+            var message = 'Terjadi gangguan saat menyimpan data.';
+            if (xhr.responseJSON && xhr.responseJSON.message) {
+                message = xhr.responseJSON.message;
+            }
+            showEresepSaveMessage('error', 'Penyimpanan gagal', message);
         }
     })
 

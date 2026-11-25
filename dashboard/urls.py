@@ -244,6 +244,7 @@ urlpatterns = [
         url(r'^getgudang', farmasi.getgudang),
         url(r'^getIdDataBarang', farmasi.getIdDataBarang),
         url(r'^getDataBarang', farmasi.getDataBarang),
+        url(r'^getEresepFarmasi', farmasi.getEresepFarmasi),
         url(r'^getDiscCustomer', farmasi.getDiscCustomer),
         url(r'^getParameter', farmasi.getParameter),
         url(r'^getHistoryBarang', farmasi.getHistoryBarang),

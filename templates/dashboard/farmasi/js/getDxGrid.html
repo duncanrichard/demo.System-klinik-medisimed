@@ -381,6 +381,84 @@ function setGridEmpty() {
 
 }
 
+function loadEresepToFarmasi() {
+    var patientId = $('#far_kode_pasien').val();
+    var doctorId = $('#far_kode_dokter').val();
+    var visitDate = $('#far_tanggal').val();
+    var dataGrid = $('#datagrid').dxDataGrid('instance');
+
+    if (!patientId || !doctorId || !visitDate || !dataGrid || dataGrid.getVisibleRows().length > 0) {
+        return;
+    }
+
+    $.ajax({
+        url: host + '/getEresepFarmasi',
+        method: 'GET',
+        dataType: 'json',
+        data: {
+            patient_id: patientId,
+            doctor_id: doctorId,
+            visit_date: visitDate
+        },
+        success: function (items) {
+            if (!items || items.length === 0) {
+                return;
+            }
+            dataGrid.option('dataSource', items);
+            dataGrid.refresh();
+            $('#opt_resep1').prop('checked', true);
+            setTotal();
+            setDiskon();
+            setResep();
+            setPembulatan();
+        },
+        error: function () {
+            alert('Data e-Resep tidak dapat dimuat. Silakan coba lagi.');
+        }
+    });
+}
+
+function validateFarmasiStock(dataGrid, onValid) {
+    var checks = [];
+    var shortages = [];
+
+    dataGrid.getVisibleRows().forEach(function (row) {
+        var item = row.data;
+        var quantity = Number(item.QTY || 0);
+        var needsStock = String(item.STATUS) === 'Non' || Number(item.STATUSPRODUK) === 0;
+
+        if (!item.ID_BARANG || quantity <= 0 || !needsStock) {
+            return;
+        }
+
+        checks.push($.ajax({
+            url: host + '/cekStokBarangFarmasi',
+            method: 'GET',
+            dataType: 'json',
+            data: {
+                kode: item.ID_BARANG,
+                kode_gudang: $('#far_kode_gudang').val()
+            }
+        }).done(function (stockData) {
+            var available = stockData.item ? Number(stockData.item.STOK || 0) : 0;
+            if (stockData.status !== 'ok' || quantity > available) {
+                shortages.push((item.NAMA_BARANG || item.ID_BARANG) + ': perlu ' + quantity + ', stok ' + available);
+            }
+        }).fail(function () {
+            shortages.push((item.NAMA_BARANG || item.ID_BARANG) + ': stok tidak dapat diperiksa');
+        }));
+    });
+
+    $.when.apply($, checks).always(function () {
+        if (shortages.length > 0) {
+            canAdd = 1;
+            alert('Transaksi belum dapat disimpan. Stok gudang ' + $('#far_kode_gudang').val() + ' tidak cukup:\n- ' + shortages.join('\n- '));
+            return;
+        }
+        onValid();
+    });
+}
+
 function tambahrow() {
     tempId = ''
     tempNama = ''

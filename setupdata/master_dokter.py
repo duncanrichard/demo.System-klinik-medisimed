@@ -130,10 +130,11 @@ def aud_dokter(request):
 
 def open_dokter(request):
     cabang_id = request.session["kdCabang"]
-    q = "SELECT dokter.FMDDOKTER_ID,dokter.FMDDOKTERN,dokter.FMDJABATAN,dokter.FMDDOKTER_ID_BPJS,dokter.FMDNIP,dokter.KODEDOKTER,dokter.KODEDPJP,dokter.FMDNOTELP,dokter.SIP,dokter.FMDSTATUS,dokter.KD_CABANG,dokter.USERRS,dokter.UPDATERS,dokter.SSFHIR_KD_DOKTER,ISNULL(visibility.is_hidden, 0) AS IS_HIDDEN FROM DOKTER AS dokter LEFT JOIN NAKES_PEMBELIAN_VISIBILITY AS visibility ON visibility.nakes_type = 'DOKTER' AND visibility.nakes_id = dokter.FMDDOKTER_ID AND visibility.kd_cabang = dokter.KD_CABANG WHERE dokter.KD_CABANG = %s ORDER BY dokter.FMDDOKTERN"
+    q = "SELECT dokter.FMDDOKTER_ID,dokter.FMDDOKTERN,dokter.FMDJABATAN,dokter.FMDDOKTER_ID_BPJS,dokter.FMDNIP,dokter.KODEDOKTER,dokter.KODEDPJP,dokter.FMDNOTELP,dokter.SIP,dokter.FMDSTATUS,dokter.KD_CABANG,dokter.USERRS,dokter.UPDATERS,dokter.SSFHIR_KD_DOKTER,ISNULL(visibility.is_hidden, 0) AS IS_HIDDEN FROM DOKTER AS dokter LEFT JOIN NAKES_PEMBELIAN_VISIBILITY AS visibility ON visibility.nakes_type = 'DOKTER' AND visibility.nakes_id = dokter.FMDDOKTER_ID AND (visibility.kd_cabang = dokter.KD_CABANG OR TRY_CONVERT(int, visibility.kd_cabang) = TRY_CONVERT(int, dokter.KD_CABANG)) WHERE dokter.KD_CABANG = %s ORDER BY dokter.FMDDOKTERN"
     result = Globals().getDataQuery(q, [cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
 
 
 def Listdokter(request):

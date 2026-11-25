@@ -31,6 +31,9 @@ $(document).ready(function () {
       })
 
     } else {
+      // Stored procedure MST_AUD_DOKTER uses A as its legacy upsert mode.
+      // Keeping this value prevents an edit from being interpreted as a
+      // non-upsert operation; the Pembelian visibility is saved separately.
       status_aud = 'A'
       menumati()
       $('#far_nama_dokter').focus()

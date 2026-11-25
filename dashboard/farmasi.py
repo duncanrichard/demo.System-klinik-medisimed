@@ -96,19 +96,56 @@ def getDataPasien(request):
     return HttpResponse(json_data, content_type="application/json")
 
 def getDataDokter(request):
-    idDokter=request.GET['search_name']
+    idDokter = request.GET.get('idDokter', request.GET.get('search_name', ''))
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where FMDDOKTER_ID=%s and KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMDDOKTERN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where FMDDOKTER_ID=%s and KD_CABANG=%s and a.FMDSTATUS='0' order by FMDDOKTERN "
     result = Globals().getDataQuery(q,[idDokter,cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
 
 def getdokter(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMDDOKTERN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' order by FMDDOKTERN "
     result = Globals().getDataQuery(q,[cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
+
+
+def getEresepFarmasi(request):
+    patient_id = request.GET.get("patient_id", "").strip()
+    doctor_id = request.GET.get("doctor_id", "").strip()
+    visit_date = request.GET.get("visit_date", "").strip()
+    branch_id = request.session["kdCabang"]
+
+    if not patient_id or not doctor_id or not visit_date:
+        return HttpResponse("[]", content_type="application/json")
+
+    query = (
+        "SELECT ROW_NUMBER() OVER (ORDER BY detail.FDRRESEP) AS NO, "
+        "barang.TTYPEC, barang.BARANGC AS ID_BARANG, barang.BARANGC AS ID_BARANG2, "
+        "barang.NAME_BRG AS NAMA_BARANG, barang.SATSTAND, barang.HJUAL, "
+        "detail.FDRQTY AS QTY, CAST(0 AS decimal(18,2)) AS DISC, "
+        "CAST(0 AS decimal(18,2)) AS DISC2, CAST(0 AS decimal(18,2)) AS RESEP, "
+        "barang.HJUAL * detail.FDRQTY AS TOTAL, "
+        "IIF(ISNULL(produk.STATUSPRODUK, 0) = 0, 'Non', 'KRSM') AS STATUS, "
+        "ISNULL(produk.STATUSPRODUK, 0) AS STATUSPRODUK "
+        "FROM ERESEPDOKTER AS header "
+        "INNER JOIN ERESEPDOKTERD AS detail ON detail.FDRBUKTI_ID = header.FHRNO_TRANSAKSI "
+        "INNER JOIN BARANG AS barang ON barang.BARANGC = detail.FDRBRG_ID "
+        "INNER JOIN PRODUKOBAT AS produk ON produk.PRD_ID = barang.TTYPEC "
+        "INNER JOIN TRANSAKSIPASIEN AS transaksi ON transaksi.FTNO_TRANSAKSI = header.FHRBUKTI_ID "
+        "INNER JOIN KUNJUNGANPASIEN AS kunjungan ON kunjungan.KPNO_TRANSAKSI = transaksi.FTNO_KUNJUNGAN "
+        "WHERE kunjungan.KPKD_PASIEN = %s AND kunjungan.KPKD_DOKTER = %s "
+        "AND transaksi.KD_CABANG = %s AND CAST(kunjungan.KPTGL_PERIKSA AS date) = CAST(%s AS date) "
+        "AND ISNULL(header.FHRSTATUS, 0) IN (0, 1) "
+        "ORDER BY detail.FDRRESEP"
+    )
+    result = Globals().getDataQuery(query, [patient_id, doctor_id, branch_id, visit_date])
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
 
 def getDataBC(request):
     idBC=request.GET['search_name']

@@ -119,28 +119,31 @@ def getDiscCustomer(request):
 
 def getdokter(request):
     cabang_id = request.session['kdCabang']
-    q ="select ROW_NUMBER() OVER (ORDER BY NAMA_DOKTER) AS NO, nakes.* from (SELECT a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) "
-    q +="UNION select a.FMPPERAWAT_ID AS ID_DOKTER,A.FMPPERAWATN AS NAMA_DOKTER from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1)) as nakes "
+    q ="select ROW_NUMBER() OVER (ORDER BY NAMA_DOKTER) AS NO, nakes.* from (SELECT a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.is_hidden=1 and (visibility.kd_cabang=a.KD_CABANG or (TRY_CONVERT(int, visibility.kd_cabang)=TRY_CONVERT(int, a.KD_CABANG)))) "
+    q +="UNION select a.FMPPERAWAT_ID AS ID_DOKTER,A.FMPPERAWATN AS NAMA_DOKTER from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.is_hidden=1 and (visibility.kd_cabang=a.KD_CABANG or (TRY_CONVERT(int, visibility.kd_cabang)=TRY_CONVERT(int, a.KD_CABANG)))) ) as nakes "
     result = Globals().getDataQuery(q,[cabang_id,cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
 
 def getperawat(request):
     cabang_id = request.session['kdCabang']
     q = " select ROW_NUMBER() OVER (ORDER BY ID_PERAWAT) AS NO, nakes.* from (select a.FMPPERAWAT_ID AS ID_PERAWAT,a.FMPPERAWATN AS NAMA_PERAWAT "
-    q += " from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) "
+    q += " from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.is_hidden=1 and (visibility.kd_cabang=a.KD_CABANG or (TRY_CONVERT(int, visibility.kd_cabang)=TRY_CONVERT(int, a.KD_CABANG)))) "
     q += " union SELECT a.FMDDOKTER_ID AS ID_PERAWAT,FMDDOKTERN AS NAMA_PERAWAT "
-    q += " from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1)) as nakes order by NAMA_PERAWAT "
+    q += " from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.is_hidden=1 and (visibility.kd_cabang=a.KD_CABANG or (TRY_CONVERT(int, visibility.kd_cabang)=TRY_CONVERT(int, a.KD_CABANG)))) ) as nakes order by NAMA_PERAWAT "
     result = Globals().getDataQuery(q,[cabang_id,cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
 
 def getBC(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,A.FMPPERAWATN AS NAMA_BC from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMPPERAWATN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,A.FMPPERAWATN AS NAMA_BC from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.is_hidden=1 and (visibility.kd_cabang=a.KD_CABANG or (TRY_CONVERT(int, visibility.kd_cabang)=TRY_CONVERT(int, a.KD_CABANG)))) order by FMPPERAWATN "
     result = Globals().getDataQuery(q,[cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response
 
 def getIdDokterProduk(request):
     id_produk = request.GET['id_produk']

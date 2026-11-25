@@ -97,7 +97,8 @@ def aud_perawat(request):
 
 def open_perawat(request):
     cabang_id = request.session['kdCabang']
-    q = "SELECT perawat.FMPPERAWAT_ID,perawat.FMPPERAWATN,perawat.FMPJABATAN,perawat.FMPNIP,perawat.FMPSTATUS,perawat.FMPBIDAN,perawat.KD_CABANG,perawat.USERRS,perawat.UPDATERS,ISNULL(visibility.is_hidden, 0) AS IS_HIDDEN FROM perawat AS perawat LEFT JOIN NAKES_PEMBELIAN_VISIBILITY AS visibility ON visibility.nakes_type = 'PERAWAT' AND visibility.nakes_id = perawat.FMPPERAWAT_ID AND visibility.kd_cabang = perawat.KD_CABANG WHERE perawat.KD_CABANG = %s ORDER BY perawat.FMPPERAWATN"
+    q = "SELECT perawat.FMPPERAWAT_ID,perawat.FMPPERAWATN,perawat.FMPJABATAN,perawat.FMPNIP,perawat.FMPSTATUS,perawat.FMPBIDAN,perawat.KD_CABANG,perawat.USERRS,perawat.UPDATERS,ISNULL(visibility.is_hidden, 0) AS IS_HIDDEN FROM perawat AS perawat LEFT JOIN NAKES_PEMBELIAN_VISIBILITY AS visibility ON visibility.nakes_type = 'PERAWAT' AND visibility.nakes_id = perawat.FMPPERAWAT_ID AND (visibility.kd_cabang = perawat.KD_CABANG OR TRY_CONVERT(int, visibility.kd_cabang) = TRY_CONVERT(int, perawat.KD_CABANG)) WHERE perawat.KD_CABANG = %s ORDER BY perawat.FMPPERAWATN"
     result = Globals().getDataQuery(q,[cabang_id])
-    json_data = json.dumps(result, cls=DjangoJSONEncoder)
-    return HttpResponse(json_data, content_type="application/json")
+    response = HttpResponse(json.dumps(result, cls=DjangoJSONEncoder), content_type="application/json")
+    response["Cache-Control"] = "no-store"
+    return response

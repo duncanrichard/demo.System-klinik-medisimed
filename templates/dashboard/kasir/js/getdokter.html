@@ -37,6 +37,7 @@ function cari_dokter() {
                 return $.ajax({
                     url: host + "/getdokter",
                     method: "GET",
+                    cache: false,
                     data: {},
                     success: function (datas) {}
                 })

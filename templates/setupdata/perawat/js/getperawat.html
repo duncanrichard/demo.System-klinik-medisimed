@@ -57,6 +57,7 @@ function load_perawat() {
             } else {
                 $("#inlineCheckboxaktif1").prop('checked', false)
             }
+            $("#inlineCheckboxhidden1").prop('checked', parseInt(e.data.IS_HIDDEN || 0) !== 1)
             $("#far_kode_nip").val(e.data.FMPNIP);
             if (parseInt(e.data.FMPBIDAN) == 0) {
                 $("#inlineCheckboxbidan").prop('checked', false)

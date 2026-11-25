@@ -1,9 +1,10 @@
 from decimal import Decimal
 from types import SimpleNamespace
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from datetime import date
 
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.contrib.messages.middleware import MessageMiddleware
 from django.http import Http404
 from django.test import RequestFactory, SimpleTestCase
 from django.urls import resolve, reverse
@@ -66,6 +67,10 @@ class ApotekerPageTests(SimpleTestCase):
             reverse("apoteker_receipt", args=["TRX-001"]),
             "/apoteker/TRX-001/receipt/",
         )
+        self.assertEqual(
+            reverse("apoteker_save_signature", args=["TRX-001"]),
+            "/apoteker/TRX-001/tanda-tangan/",
+        )
 
     @patch("dashboard.apoteker.Globals.isLogin", return_value=False)
     def test_apoteker_page_requires_login(self, _is_login):
@@ -79,7 +84,7 @@ class ApotekerPageTests(SimpleTestCase):
     @patch("dashboard.apoteker.Globals.getNavbars", return_value=[])
     @patch("dashboard.apoteker.Globals.getDataQuery", return_value=[])
     @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
-    def test_default_filter_uses_today_and_pending_status(self, _login, query, _navbars, _menubars, _separator):
+    def test_default_queue_uses_today_without_status_filter(self, _login, query, _navbars, _menubars, _separator):
         request = request_with_session("/apoteker/")
         request.session.update(
             {
@@ -95,8 +100,75 @@ class ApotekerPageTests(SimpleTestCase):
         response = apoteker.apoteker(request)
 
         self.assertContains(response, 'value="%s"' % date.today().isoformat())
-        self.assertContains(response, "Belum disiapkan")
+        self.assertContains(response, "belum disiapkan")
+        self.assertNotContains(response, 'id="filter-aksi"')
         self.assertEqual(query.call_args.args[1], ["001", date.today()])
+
+    @patch("dashboard.apoteker.Globals.getSeparator", return_value=[])
+    @patch("dashboard.apoteker.Globals.getMenubars", return_value=[])
+    @patch("dashboard.apoteker.Globals.getNavbars", return_value=[])
+    @patch("dashboard.apoteker.TreatmentBMHP.objects")
+    @patch("dashboard.apoteker.Globals.getDataQuery")
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
+    def test_apoteker_lists_treatments_with_and_without_bmhp(
+        self, _login, query, mappings, _navbars, _menubars, _separator
+    ):
+        query.return_value = [
+            {
+                "FTNO_TRANSAKSI": "TRX-001",
+                "FDTNOMER": 1,
+                "TANGGAL": date.today().isoformat(),
+                "WAKTU_PERMINTAAN": "09:30:00",
+                "KD_PASIEN": "P-001",
+                "NAMAPASIEN": "Pasien Uji",
+                "TREATMENT_ID": "T-MAPPED",
+                "NAMA_TREATMENT": "Treatment Bermapping",
+                "JUMLAH_TREATMENT": Decimal("1"),
+                "PREPARATION_ID": "PREP-001",
+            },
+            {
+                "FTNO_TRANSAKSI": "TRX-002",
+                "FDTNOMER": 1,
+                "TANGGAL": date.today().isoformat(),
+                "WAKTU_PERMINTAAN": "09:35:00",
+                "KD_PASIEN": "P-002",
+                "NAMAPASIEN": "Pasien Tanpa BMHP",
+                "TREATMENT_ID": "T-UNMAPPED",
+                "NAMA_TREATMENT": "Treatment Tanpa Mapping",
+                "JUMLAH_TREATMENT": Decimal("1"),
+                "PREPARATION_ID": None,
+            },
+        ]
+        mappings.select_related.return_value.filter.return_value = [
+            SimpleNamespace(
+                treatment_id="T-MAPPED",
+                jumlah=Decimal("2"),
+                satuan="pcs",
+                bmhp=SimpleNamespace(nama_bmhp="BMHP Uji"),
+            )
+        ]
+        request = request_with_session("/apoteker/")
+        request.session.update(
+            {
+                "user_priv": "TEST",
+                "kdCabang": "001",
+                "kota_cabang": "Jakarta",
+                "nama_cabang": "Klinik Test",
+                "par_MTH": "10",
+                "par_TAHUNYR": "2026",
+            }
+        )
+
+        response = apoteker.apoteker(request)
+
+        self.assertContains(response, "Treatment Bermapping")
+        self.assertContains(response, "Treatment Tanpa Mapping")
+        self.assertContains(response, "Belum ada BMHP")
+        self.assertContains(response, "Baris kuning: sudah disiapkan")
+        self.assertContains(response, "Baris putih: belum disiapkan")
+        self.assertContains(response, 'class="table-warning"')
+        rendered = response.content.decode()
+        self.assertLess(rendered.index("TRX-002"), rendered.index("TRX-001"))
 
     @patch("dashboard.apoteker.Globals.isLogin", return_value=False)
     def test_receipt_requires_login(self, _is_login):
@@ -118,10 +190,13 @@ class ApotekerPageTests(SimpleTestCase):
 
         self.assertEqual(query.call_args.args[1], ["TRX-OTHER", "001"])
 
+    @patch("dashboard.apoteker.ApotekerSignature.objects")
     @patch("dashboard.apoteker.TreatmentBMHP.objects")
     @patch("dashboard.apoteker.Globals.getDataQuery")
     @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
-    def test_receipt_renders_transaction_and_staff(self, _is_login, query, mappings):
+    def test_receipt_renders_transaction_and_staff(
+        self, _is_login, query, mappings, signatures
+    ):
         query.side_effect = [
             [
                 {
@@ -134,6 +209,7 @@ class ApotekerPageTests(SimpleTestCase):
                     "TREATMENT_ID": "T-001",
                     "NAMA_TREATMENT": "Treatment Uji",
                     "JUMLAH_TREATMENT": Decimal("1.00"),
+                    "PREPARATION_ID": "PREP-001",
                 }
             ],
             [{"NAMA": "dr. Uji"}],
@@ -148,6 +224,7 @@ class ApotekerPageTests(SimpleTestCase):
                 bmhp=SimpleNamespace(nama_bmhp="BMHP 3"),
             )
         ]
+        signatures.filter.return_value.first.return_value = None
         request = request_with_session("/apoteker/TRX-001/receipt/")
         request.session.update(
             {
@@ -173,6 +250,38 @@ class ApotekerPageTests(SimpleTestCase):
         self.assertContains(response, "Yang Mengambil")
         self.assertContains(response, "Yang Menyerahkan")
         self.assertEqual(query.call_args_list[0].args[1], ["TRX-001", "001"])
+
+    @patch("dashboard.apoteker.ApotekerSignature.objects")
+    @patch("dashboard.apoteker.Globals.getDataQuery", return_value=[{"ok": 1}])
+    @patch("dashboard.apoteker.Globals.isLogin", return_value=True)
+    def test_save_signature_persists_both_signatures(
+        self, _is_login, _query, signatures
+    ):
+        stored_signature = MagicMock()
+        stored_signature.penerima_tanda_tangan = ""
+        stored_signature.penyerah_tanda_tangan = ""
+        signatures.get_or_create.return_value = (stored_signature, True)
+        request = RequestFactory().post(
+            "/apoteker/TRX-001/tanda-tangan/",
+            {
+                "penerima_nama": "Penerima Uji",
+                "penerima_tanda_tangan": "data:image/png;base64,aGVsbG8=",
+                "penyerah_nama": "Penyerah Uji",
+                "penyerah_tanda_tangan": "data:image/png;base64,aGVsbG8=",
+            },
+        )
+        middleware = SessionMiddleware(lambda current_request: None)
+        middleware.process_request(request)
+        MessageMiddleware(lambda current_request: None).process_request(request)
+        request.session["kdCabang"] = "001"
+
+        response = apoteker.save_signature(request, "TRX-001")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/apoteker/TRX-001/receipt/")
+        self.assertEqual(stored_signature.penerima_nama, "Penerima Uji")
+        self.assertEqual(stored_signature.penyerah_nama, "Penyerah Uji")
+        stored_signature.save.assert_called_once()
 
 
 class KasirVoucherTests(SimpleTestCase):

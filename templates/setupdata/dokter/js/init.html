@@ -17,13 +17,5 @@ $(document).ready(function () {
 })
 
 function setDisabled(id, enable = 1) {
-    if (enable == 1) {
-        $('#' + id).attr("disabled", false);
-        // $('#' + id).css("background-color", 'white');
-        // $('#' + id).css("color", 'black');
-    } else {
-        $('#' + id).attr("disabled", true);
-        // $('#' + id).css("background-color", 'white');
-        // $('#' + id).css("color", 'black');
-    }
+    $('#' + id).prop("disabled", enable != 1);
 }

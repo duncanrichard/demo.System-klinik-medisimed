@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^treatment_bmhp/(?P<treatment_id>[^/]+)/hapus-semua/$', treatment_bmhp.delete_treatment_bmhp_mapping, name='treatment_bmhp_delete_mapping'),
     url(r'^apoteker/$', apoteker.apoteker, name='apoteker'),
     url(r'^apoteker/(?P<transaction_id>[^/]+)/receipt/$', apoteker.receipt, name='apoteker_receipt'),
+    url(r'^apoteker/(?P<transaction_id>[^/]+)/tanda-tangan/$', apoteker.save_signature, name='apoteker_save_signature'),
     url(r'^apoteker/sudah-disiapkan/$', apoteker.mark_prepared, name='apoteker_mark_prepared'),
     url(r'^shift/', include([
         url(r'^setShift', shift.setShift),

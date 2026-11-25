@@ -5,6 +5,7 @@ var tempSatuan = ''
 var tempHjual = ''
 var tempSatuankekuatan = ''
 var tempKekuatan = ''
+window.eresepProductPickerMode = false
 
 $(document).ready(function () {
     $("#nmObat").keydown(function (e) {
@@ -300,6 +301,15 @@ function pilihBarang() {
         $('#kemasan2View').html('' + tempSatuankekuatan);
         $('#KebutuhanLabel').html('<div id="KebutuhanLabel"><label class="col-md-3 control-label" for="email" style="text-align: left;" id="">Kebutuhan Per ' + $('#bentukRacik').val() + '</label></div>');
 
+        $('#ModalBarang').modal('hide')
+        if (window.eresepProductPickerMode) {
+            window.eresepProductPickerMode = false
+            $('#ModalBarang').modal('hide')
+            $('#modalsEntryResep_aksi').html('<div id="modalsEntryResep_aksi">Tambah</div>')
+            $('#modalsEntryResep').modal('show')
+            $('#qty1').focus()
+            return
+        }
 
         $('#ModalBarang').modal('hide')
     } else {

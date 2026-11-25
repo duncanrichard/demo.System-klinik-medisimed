@@ -1,0 +1,47 @@
+/*
+ Jalankan pada database tujuan yang dipakai aplikasi lokal.
+ Jika nama database tujuan berbeda, ganti baris USE di bawah.
+ Data yang sudah ada tidak ditimpa.
+*/
+USE [IMMO_IMPORT_20261125];
+GO
+
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+
+INSERT INTO dbo.ERSIGNAW (FMSWKODE, FMSWSBL, FMSWMYT)
+SELECT sumber.FMSWKODE, sumber.FMSWSBL, sumber.FMSWMYT
+FROM IMMO.dbo.ERSIGNAW AS sumber
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dbo.ERSIGNAW AS tujuan
+    WHERE tujuan.FMSWKODE = sumber.FMSWKODE
+);
+
+INSERT INTO dbo.ERSIGNAF (FMSFKODE, FMSFSBL, FMSFMYT)
+SELECT sumber.FMSFKODE, sumber.FMSFSBL, sumber.FMSFMYT
+FROM IMMO.dbo.ERSIGNAF AS sumber
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dbo.ERSIGNAF AS tujuan
+    WHERE tujuan.FMSFKODE = sumber.FMSFKODE
+);
+
+INSERT INTO dbo.ERSIGNAS (FMSSKODE, FMSSSBL, FMSSMYT)
+SELECT sumber.FMSSKODE, sumber.FMSSSBL, sumber.FMSSMYT
+FROM IMMO.dbo.ERSIGNAS AS sumber
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dbo.ERSIGNAS AS tujuan
+    WHERE tujuan.FMSSKODE = sumber.FMSSKODE
+);
+
+COMMIT TRANSACTION;
+GO
+
+SELECT 'CARA_PAKAI' AS jenis, COUNT(*) AS jumlah_data FROM dbo.ERSIGNAW
+UNION ALL
+SELECT 'DURASI', COUNT(*) FROM dbo.ERSIGNAF
+UNION ALL
+SELECT 'PEMAKAIAN', COUNT(*) FROM dbo.ERSIGNAS;
+GO

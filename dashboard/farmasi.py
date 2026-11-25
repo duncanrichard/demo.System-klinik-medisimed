@@ -98,14 +98,14 @@ def getDataPasien(request):
 def getDataDokter(request):
     idDokter=request.GET['search_name']
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from  DOKTER a where FMDDOKTER_ID=%s and KD_CABANG=%s and a.FMDSTATUS='0' order by FMDDOKTERN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where FMDDOKTER_ID=%s and KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMDDOKTERN "
     result = Globals().getDataQuery(q,[idDokter,cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
 def getdokter(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from  DOKTER a where  KD_CABANG=%s and a.FMDSTATUS='0' order by FMDDOKTERN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMDDOKTERN) AS NO, a.FMDDOKTER_ID AS ID_DOKTER,FMDDOKTERN AS NAMA_DOKTER from DOKTER a where KD_CABANG=%s and a.FMDSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='DOKTER' and visibility.nakes_id=a.FMDDOKTER_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMDDOKTERN "
     result = Globals().getDataQuery(q,[cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
@@ -113,14 +113,14 @@ def getdokter(request):
 def getDataBC(request):
     idBC=request.GET['search_name']
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,FMPPERAWATN AS NAMA_BC,FMPJABATAN from  PERAWAT a where FMPPERAWAT_ID=%s and KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,FMPPERAWATN AS NAMA_BC,FMPJABATAN from PERAWAT a where FMPPERAWAT_ID=%s and KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMPPERAWATN "
     result = Globals().getDataQuery(q,[idBC,cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")
 
 def getBC(request):
     cabang_id = request.session['kdCabang']
-    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,FMPPERAWATN AS NAMA_BC,FMPJABATAN from  PERAWAT a where  KD_CABANG=%s and a.FMPSTATUS='0' order by FMPPERAWATN "
+    q = "select ROW_NUMBER() OVER (ORDER BY FMPPERAWATN) AS NO, a.FMPPERAWAT_ID AS ID_BC,FMPPERAWATN AS NAMA_BC,FMPJABATAN from PERAWAT a where KD_CABANG=%s and a.FMPSTATUS='0' and not exists (select 1 from NAKES_PEMBELIAN_VISIBILITY visibility where visibility.nakes_type='PERAWAT' and visibility.nakes_id=a.FMPPERAWAT_ID and visibility.kd_cabang=a.KD_CABANG and visibility.is_hidden=1) order by FMPPERAWATN "
     result = Globals().getDataQuery(q,[cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

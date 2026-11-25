@@ -61,6 +61,16 @@ $(document).ready(function () {
         $('#modalsEntryResep').modal('show');
         $('#modalsEntryResep_aksi').html('<div id="modalsEntryResep_aksi">Tambah</div>');
     });
+    $('#btnPilihProdukEresep').click(function () {
+        if ($('#noKunjunganResep').val().trim() === '') {
+            alert('Pilih transaksi pasien terlebih dahulu.');
+            return;
+        }
+        resetEntryResep();
+        window.eresepProductPickerMode = true;
+        $('#ModalBarang .modal-title').text('Pilih Produk dari Master Produk');
+        openModalBrg();
+    });
     $('#btnHapusResep').click(function () {
         var r = confirm("Delete Obat Resep?");
         if (r == true) {
@@ -1221,6 +1231,7 @@ function editResepRJ() {
             'SIGNAS': cekKondisiResep($('#signasKd').val()),
             'SIGNAW': cekKondisiResep($('#crapakaiKd').val()),
             'SIGNA': $('textarea#sigma').val(),
+            'SIGNAMODE': signaMode,
             'StatusAUD': 'U'
         },
         beforeSend: function () {

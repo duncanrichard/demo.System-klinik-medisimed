@@ -9,6 +9,7 @@ from IMMODERMA.globals import Globals
 from IMMODERMA.config import env
 from datetime import datetime
 from django.urls import include, re_path as url
+from django.db import transaction
 
 
 
@@ -57,6 +58,7 @@ def aud_dokter(request):
     far_kode_bpjs = request.POST["far_kode_bpjs"]
     far_no_telepon = request.POST["far_no_telepon"]
     aktif = request.POST["aktif"]
+    hidden = request.POST.get("hidden", "0")
     user = request.session["user_id"]
     cabang_id = request.session["kdCabang"]
     status_aud = request.POST["status_aud"]
@@ -81,6 +83,44 @@ def aud_dokter(request):
                 status_aud,
             ],
         )
+        dokter_id = far_kode_dokter
+        if result and status_aud != "D":
+            dokter_id = result[0].get("DOKTER_ID", dokter_id)
+        if dokter_id and status_aud != "D":
+            hidden = 1 if str(hidden) == "1" else 0
+            # The visibility row must use the branch stored on the doctor
+            # record.  Session branch codes and legacy doctor branch codes can
+            # have different formatting (for example, 001 versus 1), which
+            # otherwise makes the saved row impossible to read back.
+            branch_row = Globals().getDataQuery(
+                "SELECT TOP (1) KD_CABANG FROM DOKTER WHERE FMDDOKTER_ID = %s "
+                "ORDER BY CASE WHEN KD_CABANG = %s THEN 0 ELSE 1 END",
+                [dokter_id, cabang_id],
+            )
+            visibility_branch = branch_row[0]["KD_CABANG"] if branch_row else cabang_id
+            with transaction.atomic():
+                Globals().executeQuery(
+                    "IF EXISTS (SELECT 1 FROM NAKES_PEMBELIAN_VISIBILITY "
+                    "WHERE nakes_type = %s AND nakes_id = %s AND kd_cabang = %s) "
+                    "UPDATE NAKES_PEMBELIAN_VISIBILITY SET is_hidden = %s, updated_by = %s, "
+                    "updated_at = SYSUTCDATETIME() WHERE nakes_type = %s AND nakes_id = %s AND kd_cabang = %s "
+                    "ELSE INSERT INTO NAKES_PEMBELIAN_VISIBILITY "
+                    "(nakes_type, nakes_id, kd_cabang, is_hidden, updated_by) VALUES (%s, %s, %s, %s, %s)",
+                    [
+                        "DOKTER", dokter_id, visibility_branch, hidden, user,
+                        "DOKTER", dokter_id, visibility_branch,
+                        "DOKTER", dokter_id, visibility_branch, hidden, user,
+                    ],
+                )
+                saved_visibility = Globals().getDataQuery(
+                    "SELECT is_hidden FROM NAKES_PEMBELIAN_VISIBILITY "
+                    "WHERE nakes_type = %s AND nakes_id = %s AND kd_cabang = %s",
+                    ["DOKTER", dokter_id, visibility_branch],
+                )
+                if not saved_visibility or int(saved_visibility[0]["is_hidden"]) != hidden:
+                    raise RuntimeError("Status tampil Pembelian Dokter gagal disimpan.")
+            if result:
+                result[0]["IS_HIDDEN"] = hidden
         json_data = json.dumps(result, cls=DjangoJSONEncoder)
         return HttpResponse(json_data, content_type="application/json")
 
@@ -90,7 +130,7 @@ def aud_dokter(request):
 
 def open_dokter(request):
     cabang_id = request.session["kdCabang"]
-    q = "SELECT FMDDOKTER_ID,FMDDOKTERN,FMDJABATAN,FMDDOKTER_ID_BPJS,FMDNIP,KODEDOKTER,KODEDPJP,FMDNOTELP,SIP,FMDSTATUS,KD_CABANG,USERRS,UPDATERS,SSFHIR_KD_DOKTER FROM DOKTER  WHERE KD_CABANG= %s order by FMDDOKTERN"
+    q = "SELECT dokter.FMDDOKTER_ID,dokter.FMDDOKTERN,dokter.FMDJABATAN,dokter.FMDDOKTER_ID_BPJS,dokter.FMDNIP,dokter.KODEDOKTER,dokter.KODEDPJP,dokter.FMDNOTELP,dokter.SIP,dokter.FMDSTATUS,dokter.KD_CABANG,dokter.USERRS,dokter.UPDATERS,dokter.SSFHIR_KD_DOKTER,ISNULL(visibility.is_hidden, 0) AS IS_HIDDEN FROM DOKTER AS dokter LEFT JOIN NAKES_PEMBELIAN_VISIBILITY AS visibility ON visibility.nakes_type = 'DOKTER' AND visibility.nakes_id = dokter.FMDDOKTER_ID AND visibility.kd_cabang = dokter.KD_CABANG WHERE dokter.KD_CABANG = %s ORDER BY dokter.FMDDOKTERN"
     result = Globals().getDataQuery(q, [cabang_id])
     json_data = json.dumps(result, cls=DjangoJSONEncoder)
     return HttpResponse(json_data, content_type="application/json")

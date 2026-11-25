@@ -70,6 +70,7 @@ function load_Dokter() {
             } else {
                 $("#inlineCheckboxaktif1").prop('checked', false)
             }
+            $("#inlineCheckboxhidden1").prop('checked', parseInt(e.data.IS_HIDDEN || 0) !== 1)
             $("#kode_dokter_satu_sehat").val(e.data.SSFHIR_KD_DOKTER);
             $('#dxGridModaldokter').modal('hide')
             menuhidup();

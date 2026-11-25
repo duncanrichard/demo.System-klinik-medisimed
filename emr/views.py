@@ -17,7 +17,7 @@ import urllib
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
 import lzstring
-from django.db import connection
+from django.db import connection, transaction
 from django.db import connections
 from . import views_pcare
 from django.conf import settings
@@ -2565,135 +2565,121 @@ def crudRacikanResep(request):
     return HttpResponse(json_data, content_type="application/json")
 
 
+def _save_eresep_dokter(request, is_update=False):
+    """Persist an e-prescription without relying on the retired SQL procedure."""
+    def post_value(name, default=""):
+        value = request.POST.get(name, default)
+        return default if value in (None, "", "NULL") else value
+
+    visit_id = post_value("BUKTI_ID")
+    requested_resep_id = post_value("NOTRANSAKSI")
+    if not visit_id:
+        raise ValueError("Nomor kunjungan resep belum tersedia.")
+
+    with transaction.atomic():
+        with connection.cursor() as cursor:
+            resep_id = requested_resep_id
+            if not resep_id:
+                cursor.execute(
+                    "SELECT TOP 1 FHRNO_TRANSAKSI "
+                    "FROM ERESEPDOKTER WITH (UPDLOCK, HOLDLOCK) "
+                    "WHERE FHRBUKTI_ID = %s ORDER BY FHRUPDATE DESC",
+                    [visit_id],
+                )
+                row = cursor.fetchone()
+                resep_id = row[0] if row else visit_id
+
+            cursor.execute(
+                "SELECT 1 FROM ERESEPDOKTER WHERE FHRNO_TRANSAKSI = %s",
+                [resep_id],
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "INSERT INTO ERESEPDOKTER "
+                    "(FHRNO_TRANSAKSI, FHRBUKTI_ID, FHRDATE, FHRUSER, "
+                    "FHRUPDATE, FHRSTATUS, st) "
+                    "VALUES (%s, %s, CAST(%s AS date), %s, GETDATE(), 0, 0)",
+                    [
+                        resep_id,
+                        visit_id,
+                        post_value("TANGGAL", datetime.now().strftime("%Y-%m-%d")),
+                        request.session.get("user_id", ""),
+                    ],
+                )
+
+            detail_values = [
+                post_value("BRG_ID"),
+                post_value("BRGN"),
+                post_value("SATUAN"),
+                post_value("QTY", 0),
+                post_value("QTYOUT", 0),
+                post_value("DOSIS", 0),
+                post_value("SIGNAF"),
+                post_value("DOSIS2", 0),
+                post_value("SIGNAS"),
+                post_value("SIGNAW"),
+                post_value("SIGNA"),
+                request.POST.get("FDRRACIK_ID", "NULL") or "NULL",
+                request.POST.get("SIGNAMODE", "OTOMATIS") or "OTOMATIS",
+            ]
+            if not detail_values[0]:
+                raise ValueError("Produk resep belum dipilih.")
+
+            if is_update:
+                detail_number = post_value("batchno")
+                if not detail_number:
+                    raise ValueError("Baris resep yang akan diubah belum dipilih.")
+                cursor.execute(
+                    "UPDATE ERESEPDOKTERD SET FDRBRG_ID = %s, FDRBRGN = %s, "
+                    "FDRSATUAN = %s, FDRQTY = %s, FDRQTYOUT = %s, FDRDOSIS = %s, "
+                    "FDRSIGNAF = %s, FDRDOSIS2 = %s, FDRSIGNAS = %s, "
+                    "FDRSIGNAW = %s, FDRSIGNA = %s, FDRRACIK_ID = %s, "
+                    "FDRSIGNAMODE = %s "
+                    "WHERE FDRBUKTI_ID = %s AND FDRRESEP = %s",
+                    detail_values + [resep_id, detail_number],
+                )
+                if cursor.rowcount != 1:
+                    raise ValueError("Baris resep tidak ditemukan atau sudah berubah.")
+            else:
+                cursor.execute(
+                    "SELECT RIGHT('0000' + CAST(ISNULL(MAX(TRY_CONVERT(int, FDRRESEP)), 0) + 1 AS varchar(10)), 4) "
+                    "FROM ERESEPDOKTERD WITH (UPDLOCK, HOLDLOCK) "
+                    "WHERE FDRBUKTI_ID = %s",
+                    [resep_id],
+                )
+                detail_number = cursor.fetchone()[0]
+                cursor.execute(
+                    "INSERT INTO ERESEPDOKTERD "
+                    "(FDRRESEP, FDRBRG_ID, FDRBRGN, FDRSATUAN, FDRQTY, FDRQTYOUT, "
+                    "FDRDOSIS, FDRSIGNAF, FDRDOSIS2, FDRSIGNAS, FDRSIGNAW, FDRSIGNA, "
+                    "FDRBUKTI_ID, FDRRACIK_ID, FDRSTATUS, FDRBRG_ID2, FDRSTATUS2, FDRSIGNAMODE) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1, NULL, 1, %s)",
+                    [detail_number] + detail_values[:11] + [resep_id] + detail_values[11:],
+                )
+
+    return resep_id
+
+
 def crudResepRJ(request):
     json_data_list = []
     edit = {}
     if request.method == "POST":
         q = request.POST["q"]
-        now = datetime.now()
         if q == "entryResepRJ":
-            cursorUpdate = connection.cursor()
             try:
-                NODATE = "{}".format(now.strftime("%Y-%m-%d"))
-                if "FDRRACIK_ID" in request.POST:
-                    FDRRACIK_ID = request.POST["FDRRACIK_ID"]  # RACIKID
-                else:
-                    FDRRACIK_ID = "NULL"  # RACIKID
-
-                print
-                NORESEPRJ = request.POST["NOTRANSAKSI"]
-                isi = (
-                    request.POST["DOKTER_ID"],
-                    request.POST["TANGGAL"],
-                    NORESEPRJ,
-                    request.POST["BUKTI_ID"],
-                    "NULL",
-                    request.POST["BRG_ID"],
-                    request.POST["BRGN"],
-                    request.POST["SATUAN"],
-                    request.POST["QTY"],
-                    request.POST["QTYOUT"],
-                    request.POST["DOSIS"],
-                    request.POST["SIGNAF"],
-                    request.POST["DOSIS2"],
-                    request.POST["SIGNAS"],
-                    request.POST["SIGNAW"],
-                    request.POST["SIGNA"],
-                    request.session["user_id"],
-                    FDRRACIK_ID,
-                    NODATE,
-                    "NULL",
-                    "NULL",
-                    request.POST["StatusAUD"],
-                )
-                query = (
-                    "EXEC add_EresepDokter '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'"
-                    % isi
-                )
-                # print(query)
-                # param=[request.POST['DOKTER_ID'],request.POST['TANGGAL'],NORESEPRJ,request.POST['BUKTI_ID'],'NULL',request.POST['BRG_ID'],request.POST['BRGN'],request.POST['SATUAN'],request.POST['QTY'],request.POST['QTYOUT'],request.POST['DOSIS'],request.POST['SIGNAF'],request.POST['DOSIS2'],request.POST['SIGNAS'],request.POST['SIGNAW'],request.POST['SIGNA'],request.session['user_id'],FDRRACIK_ID,NODATE,'NULL','NULL',request.POST['StatusAUD']]
-
-                try:
-                    # cursor.execute(query)
-                    # print(query, [])
-                    result_set = Globals().getDataSP(query, [], setIndex=2)
-                    # print(result_set)
-
-                    # edit= json.dumps(result_set)
-                    # prints(result_set)
-                    if "FDRRACIK_ID" in request.POST:
-                        queryFDRRACIK_ID = "UPDATE ERESEPDOKTERD SET FDRRESEP=(SELECT MIN(FDRRESEP) FROM ERESEPDOKTERD WHERE FDRRACIK_ID='{}') WHERE FDRRACIK_ID='{}'".format(
-                            request.POST["FDRRACIK_ID"], request.POST["FDRRACIK_ID"]
-                        )
-                        cursorUpdate.execute(queryFDRRACIK_ID)
-
-                        # prints(queryFDRRACIK_ID)
-                        # prints("update racik")
-
-                    if request.POST["StatusAUD"] == "A":
-                        # result_set = cursor.fetchall()
-
-                        if int(len(result_set)) > 0:
-                            edit["success"] = True
-                            edit["message"] = "" + result_set[0]["FDRBUKTI_ID"]
-
-                            if "SIGNAMODE" in request.POST:
-                                queryFDRRACIK_ID = "UPDATE ERESEPDOKTERD SET FDRSIGNAMODE='{}' WHERE FDRBUKTI_ID='{}' AND FDRBRG_ID='{}'".format(
-                                    request.POST["SIGNAMODE"],
-                                    result_set[0]["FDRBUKTI_ID"],
-                                    request.POST["BRG_ID"],
-                                )
-                                cursorUpdate.execute(queryFDRRACIK_ID)
-                        else:
-                            edit["success"] = False
-                            edit["message"] = "Gagal Insert"
-                    else:
-                        edit["success"] = True
-                        edit["message"] = "Sukses {}".format(request.POST["StatusAUD"])
-                except Exception as e:
-                    # print(e)
-                    edit["success"] = False
-                    edit["message"] = str(e)
-            finally:
-                cursorUpdate.close()
-        elif q == "editResepRJ":
-            cursor = connection.cursor()
-            try:
-                ks = None
-                isi = '"{}"'.format(request.POST["DOKTER_ID"])
-                isi = '{},"{}"'.format(isi, request.POST["TANGGAL"])  # tanggal
-                isi = '{},"{}"'.format(isi, request.POST["NOTRANSAKSI"])  # NOTRANSAKSI
-                isi = '{},"{}"'.format(isi, request.POST["BUKTI_ID"])  # BUKTI_ID
-                isi = '{},"{}"'.format(isi, request.POST["batchno"])  # batchno
-                isi = '{},"{}"'.format(isi, request.POST["BRG_ID"])  # BRG_ID
-                isi = '{},"{}"'.format(isi, request.POST["BRGN"])  # BRGN
-                isi = '{},"{}"'.format(isi, request.POST["SATUAN"])  # SATUAN
-                isi = '{},"{}"'.format(isi, request.POST["QTY"])  # QTY
-                isi = '{},"{}"'.format(isi, request.POST["QTYOUT"])  # QTYOUT
-                isi = '{},"{}"'.format(isi, request.POST["DOSIS"])  # DOSIS
-                isi = '{},"{}"'.format(isi, request.POST["SIGNAF"])  # SIGNAF
-                isi = '{},"{}"'.format(isi, request.POST["DOSIS2"])  # DOSIS2
-                isi = '{},"{}"'.format(isi, request.POST["SIGNAS"])  # SIGNAS
-                isi = '{},"{}"'.format(isi, request.POST["SIGNAW"])  # SIGNAW
-                isi = '{},"{}"'.format(isi, request.POST["SIGNA"])  # SIGNA
-                isi = '{},"{}"'.format(isi, request.session["user_id"])  # USERRS
-                if "FDRRACIK_ID" in request.POST:
-                    isi = '{},"{}"'.format(isi, request.POST["FDRRACIK_ID"])  # RACIKID
-                else:
-                    isi = '{},"NULL"'.format(isi)  # RACIKID
-                isi = '{},"{}"'.format(isi, now.strftime("%Y-%m-%d"))  # tanggal
-                isi = '{},"NULL"'.format(isi)  # Formatheader
-                isi = '{},"NULL"'.format(isi)  # OutputNoBukti
-                isi = '{},"{}"'.format(isi, request.POST["StatusAUD"])  # StatusAUD
-                query = "EXEC add_EresepDokter {}".format(isi)
-                cursor.execute(query)
-                # result_set = cursor.fetchall()
-                # edit= json.dumps(result_set)
                 edit["success"] = True
-                # edit['message']=result_set[0][0]
+                edit["message"] = _save_eresep_dokter(request)
+            except Exception as e:
+                edit["success"] = False
+                edit["message"] = str(e)
+        elif q == "editResepRJ":
+            try:
+                edit["success"] = True
+                _save_eresep_dokter(request, is_update=True)
                 edit["message"] = "Sukses"
-            finally:
-                cursor.close()
+            except Exception as e:
+                edit["success"] = False
+                edit["message"] = str(e)
         elif q == "saveEResepManual":
             query = " "
             query += " DECLARE @KD_DOKTER varchar(20);   "

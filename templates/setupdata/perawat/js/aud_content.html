@@ -40,6 +40,7 @@ $(document).ready(function () {
       } else {
         aktif = '1'
       }
+      var hidden = $("#inlineCheckboxhidden1").prop('checked') ? '0' : '1'
       var bidan = '1'
       if ($("#inlineCheckboxbidan").prop('checked') == true) {
         bidan = '1'
@@ -56,6 +57,7 @@ $(document).ready(function () {
           far_kode_nip: $('#far_kode_nip').val(),
           far_sip: $('#far_sip').val(),
           aktif: aktif,
+          hidden: hidden,
           bidan: bidan,
           status_aud: status_aud,
           "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
@@ -85,6 +87,7 @@ $(document).ready(function () {
         } else {
           aktif = '1'
         }
+        var hidden = $("#inlineCheckboxhidden1").prop('checked') ? '0' : '1'
         var bidan = '1'
         if ($("#inlineCheckboxbidan").prop('checked') == true) {
           bidan = '1'
@@ -100,6 +103,7 @@ $(document).ready(function () {
             far_jabatan_perawat: $('#far_jabatan_perawat').val(),
             far_kode_nip: $('#far_kode_nip').val(),
             aktif: aktif,
+            hidden: hidden,
             bidan: bidan,
             status_aud: status_aud,
             "csrfmiddlewaretoken": $('[name=csrfmiddlewaretoken]').val(),
@@ -153,6 +157,7 @@ function menuhidup() {
   setReadOnly('far_jabatan_perawat')
   setReadOnly('far_kode_nip')
   setDisabled('inlineCheckboxaktif1', 0)
+  setDisabled('inlineCheckboxhidden1', 0)
   setDisabled('inlineCheckboxbidan', 0)
 }
 
@@ -170,10 +175,12 @@ function menumati() {
   setUnReadOnly('far_jabatan_perawat')
   setUnReadOnly('far_kode_nip')
   setDisabled('inlineCheckboxaktif1', 1)
+  setDisabled('inlineCheckboxhidden1', 1)
   setDisabled('inlineCheckboxbidan', 1)
   if ($("#far_kode_perawat").val() == '') {
-    $('input[id=inlineCheckboxaktif1]').iCheck('check');
-    $('input[id=inlineCheckboxbidan]').iCheck('uncheck');
+    $("#inlineCheckboxaktif1").prop('checked', true);
+    $("#inlineCheckboxhidden1").prop('checked', true);
+    $("#inlineCheckboxbidan").prop('checked', false);
   }
 
 }

@@ -37,3 +37,16 @@ class ApotekerPreparation(models.Model):
     class Meta:
         db_table = "APOTEKER_PERSIAPAN_BMHP"
         unique_together = [("transaction_id", "transaction_detail_number")]
+
+
+class ApotekerSignature(models.Model):
+    transaction_id = models.CharField("Nomor Transaksi", max_length=50, primary_key=True)
+    penerima_nama = models.CharField("Nama Yang Mengambil", max_length=100, blank=True)
+    penerima_tanda_tangan = models.TextField("Tanda Tangan Yang Mengambil", blank=True)
+    penyerah_nama = models.CharField("Nama Yang Menyerahkan", max_length=100, blank=True)
+    penyerah_tanda_tangan = models.TextField("Tanda Tangan Yang Menyerahkan", blank=True)
+    updated_at = models.DateTimeField("Waktu Diperbarui", auto_now=True)
+
+    class Meta:
+        db_table = "APOTEKER_TANDA_TANGAN_BMHP"
+        managed = False
